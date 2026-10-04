@@ -51,6 +51,8 @@ export async function startFixtureServer() {
   const customModels = [{ providerAlias: 'demo', id: 'demo-model', name: '演示自定义模型', type: 'llm', contextWindow: 32000, enabled: false }];
   const modelCaps = {};
   const disabledModels = {};
+  let distributionMode = 'all';
+  let distributionModels = [];
   const combos = [];
   const monitorCatalog = [{ id: 'codex', name: 'OpenAI Codex', active: true, models: ['gpt'], connections: [{ id: 'demo-codex', name: 'Codex · 开发连接' }] }, { id: 'claude', name: 'Claude Code', active: true, models: ['claude-sonnet'], connections: [{ id: 'demo-claude', name: 'Claude · 工作连接' }] }];
   let monitorConfig = { enabled: false, intervalMinutes: 360, revision: 'demo-monitor', providers: monitorCatalog.map(provider => ({ id: provider.id, mode: 'selected', models: provider.models, modelChecks: { [provider.models[0]]: ['availability', 'iq'] }, excludedConnectionIds: [] })), questions: [{ question: '计算 17 + 6。', answer: '23' }] };
@@ -118,6 +120,15 @@ export async function startFixtureServer() {
       if (method === 'POST') disabledModels[provider] = [...new Set([...(disabledModels[provider] || []), ...body.ids])];
       if (method === 'DELETE') disabledModels[provider] = (disabledModels[provider] || []).filter(id => id !== url.searchParams.get('id'));
       return send(200, { disabled: disabledModels });
+    }
+    if (url.pathname === '/api/models/distribution') {
+      if (method === 'GET') return send(200, { mode: distributionMode, models: distributionModels, modes: ['all', 'allowlist'] });
+      if (method === 'PUT') {
+        if (!['all', 'allowlist'].includes(body.mode) || (body.models !== undefined && !Array.isArray(body.models))) return send(400, { error: 'Invalid distribution config' });
+        distributionMode = body.mode || 'all';
+        distributionModels = Array.isArray(body.models) ? body.models : distributionModels;
+        return send(200, { mode: distributionMode, models: distributionModels });
+      }
     }
     if (url.pathname === '/api/combos') {
       if (method === 'GET') return send(200, { combos });

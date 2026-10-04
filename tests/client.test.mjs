@@ -51,9 +51,10 @@ test('core management permits only verified routes and methods', () => {
   assert.equal(isAllowedRequest('/api/providers/a', 'DELETE', false), false);
   assert.equal(isAllowedRequest('/api/providers/a', 'DELETE', true), true);
   assert.equal(isAllowedRequest('/api/usage/request-details?page=2', 'GET'), true);
+  assert.equal(isAllowedRequest('/api/models/distribution', 'GET'), true);
   assert.equal(isAllowedRequest('/api/pricing', 'GET'), true);
   assert.equal(isAllowedRequest('/api/pricing', 'PATCH', true), false);
-  for (const [url, method] of [['/api/settings', 'PATCH'], ['/api/provider-nodes', 'POST'], ['/api/provider-nodes/a', 'PUT'], ['/api/provider-nodes/a', 'DELETE'], ['/api/models/custom', 'POST'], ['/api/models/custom', 'DELETE'], ['/api/models/caps', 'PUT'], ['/api/models/disabled', 'POST'], ['/api/combos', 'POST'], ['/api/combos/a', 'PUT'], ['/api/combos/a', 'DELETE'], ['/api/channel-balances', 'PATCH']]) {
+  for (const [url, method] of [['/api/settings', 'PATCH'], ['/api/provider-nodes', 'POST'], ['/api/provider-nodes/a', 'PUT'], ['/api/provider-nodes/a', 'DELETE'], ['/api/models/custom', 'POST'], ['/api/models/custom', 'DELETE'], ['/api/models/caps', 'PUT'], ['/api/models/disabled', 'POST'], ['/api/models/distribution', 'PUT'], ['/api/combos', 'POST'], ['/api/combos/a', 'PUT'], ['/api/combos/a', 'DELETE'], ['/api/channel-balances', 'PATCH']]) {
     assert.equal(isAllowedRequest(url, method, true), true);
     assert.equal(isAllowedRequest(url, method, false), false);
   }
@@ -62,6 +63,9 @@ test('core management permits only verified routes and methods', () => {
   assert.equal(isAllowedRequest('/api/iq-monitor', 'PUT', true), true);
   assert.equal(isAllowedRequest('/api/iq-monitor', 'PUT', false), false);
   assert.equal(isAllowedRequest('/api/iq-monitor/tick', 'POST', true), false);
+  assert.equal(isAllowedRequest('/api/models/distribution', 'GET', true), true);
+  assert.equal(isAllowedRequest('/api/models/distribution', 'PUT', true), true);
+  assert.equal(isAllowedRequest('/api/models/distribution', 'PUT', false), false);
   assert.equal(isAllowedRequest('/api/models/test', 'POST', true), true);
   assert.equal(isAllowedRequest('/api/models/test', 'POST', false), false);
   assert.equal(isAllowedRequest('/api/models/test', 'GET'), false);
