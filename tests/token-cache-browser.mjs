@@ -1,0 +1,96 @@
+import assert from 'node:assert/strict';
+import { createRequire } from 'node:module';
+import { mkdir } from 'node:fs/promises';
+const { chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT_MODULE || 'playwright');
+const browser = await chromium.launch({ channel: 'msedge', headless: true });
+const base = process.env.PREVIEW_URL || 'http://127.0.0.1:4318';
+try {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, colorScheme: 'dark', hasTouch: true });
+  page.setDefaultNavigationTimeout(120000);
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  assert.equal((await (await page.request.get(`${base}/api/auth/status`)).json()).demo, true);
+  await page.goto(`${base}/dashboard/overview`);
+  await page.getByLabel('登录密码').fill('linear-demo');
+  await page.getByRole('button', { name: '进入管理端' }).click();
+  await page.getByTestId('chart-cache-rate').filter({ hasText: '54.6%' }).waitFor();
+  await page.locator('.token-cache-chart .recharts-area-curve').first().waitFor();
+  assert.equal(await page.locator('.token-cache-chart .recharts-area-curve').count(), 4);
+  assert.equal(await page.locator('.token-series-legend > button').count(), 4);
+  const legend = page.getByRole('group', { name: '图表指标' });
+  for (const name of ['输入', '输出', '缓存读取', '缓存创建']) {
+    await legend.getByRole('button', { name, exact: true }).click();
+    assert.equal(await page.locator('.token-cache-chart .recharts-area-curve').count(), 1);
+    assert.equal(await legend.locator('[aria-pressed="true"]').count(), 1);
+    assert.equal(await legend.getByRole('button', { name, exact: true }).getAttribute('aria-pressed'), 'true');
+  }
+  await legend.getByRole('button', { name: '缓存创建', exact: true }).click();
+  assert.equal(await page.locator('.token-cache-chart .recharts-area-curve').count(), 4);
+  await legend.getByRole('button', { name: '输出', exact: true }).click();
+  for (const [button, period] of [['今日', 'today'], ['24 小时', '24h'], ['7 天', '7d'], ['30 天', '30d'], ['60 天', '60d']]) {
+    const response = page.waitForResponse(value => value.url().includes(`/api/usage/chart?period=${period}`));
+    await page.getByRole('button', { name: button, exact: true }).click();
+    const points = await (await response).json();
+    assert.equal(points.length, ['today', '24h'].includes(period) ? 24 : Number.parseInt(period));
+    assert(points.every(point => typeof point.cachedTokens === 'number' && typeof point.cacheCreationTokens === 'number'));
+    await page.locator('.token-cache-chart .recharts-area-curve').first().waitFor();
+    assert.equal(await page.locator('.token-cache-chart .recharts-area-curve').count(), 1);
+  }
+  await legend.getByRole('button', { name: '输出', exact: true }).click();
+  const chart = Array.from({ length: 6 }, (_, index) => ({ label: `02:${String(index * 10).padStart(2, '0')}`, promptTokens: index % 3 ? 1000 + index * 200 : 0, completionTokens: index * 20, cachedTokens: index % 3 ? 975 + index * 195 : 0, cacheCreationTokens: index === 2 ? null : index * 10 }));
+  await page.route('**/api/usage/chart?**', route => route.fulfill({ json: chart }));
+  await page.route('**/api/usage/stats?**', route => route.fulfill({ json: { totalPromptTokens: 4000, totalCompletionTokens: 300, totalCachedTokens: 3900, totalRequests: 6, byModel: {}, recentRequests: [] } }));
+  await page.getByRole('button', { name: '今日', exact: true }).click();
+  await page.getByTestId('chart-cache-rate').filter({ hasText: '97.5%' }).waitFor();
+  await page.locator('.traffic-chart svg').getByText('02:20', { exact: true }).waitFor();
+  const box = await page.locator('.traffic-chart').boundingBox();
+  const tick = await page.locator('.traffic-chart svg').getByText('02:20', { exact: true }).boundingBox();
+  await page.mouse.move(tick.x + tick.width / 2, box.y + box.height / 2);
+  await page.locator('.token-tooltip').waitFor();
+  const tooltip = await page.locator('.token-tooltip').innerText();
+  assert(tooltip.includes('02:20') && tooltip.includes('1,400') && tooltip.includes('1,365') && tooltip.includes('97.5%'));
+  assert((await page.locator('.token-tooltip > div').nth(3).innerText()).includes('—'));
+  await mkdir('screenshots', { recursive: true });
+  await page.screenshot({ path: 'screenshots/token-cache-chart-desktop.png', fullPage: true });
+  await legend.getByRole('button', { name: '输出', exact: true }).click();
+  assert.equal(await page.locator('.token-cache-chart .recharts-area-curve').count(), 1);
+  const selectedBox = await page.locator('.traffic-chart').boundingBox();
+  await page.mouse.move(tick.x + tick.width / 2, selectedBox.y + selectedBox.height / 2);
+  await page.locator('.token-tooltip').waitFor();
+  assert.equal(await page.locator('.token-tooltip > div').count(), 2);
+  assert((await page.locator('.token-tooltip').innerText()).includes('输出'));
+  assert(!(await page.locator('.token-tooltip').innerText()).includes('输入'));
+  assert(!(await page.locator('.traffic-chart svg').textContent()).includes('2K'));
+  await page.screenshot({ path: 'screenshots/token-cache-selected-desktop.png', fullPage: true });
+  await legend.getByRole('button', { name: '缓存创建', exact: true }).click();
+  await page.mouse.move(tick.x + tick.width / 2, selectedBox.y + selectedBox.height / 2);
+  await page.locator('.token-tooltip').waitFor();
+  assert((await page.locator('.token-tooltip > div').first().innerText()).includes('—'));
+  await legend.getByRole('button', { name: '输出', exact: true }).click();
+  const refreshed = page.waitForResponse(value => value.url().includes('/api/usage/chart?period=today'));
+  await page.getByRole('button', { name: '刷新', exact: true }).click();
+  await refreshed;
+  await page.locator('.token-cache-chart .recharts-area-curve').first().waitFor();
+  assert.equal(await page.locator('.token-cache-chart .recharts-area-curve').count(), 1);
+  await legend.getByRole('button', { name: '输出', exact: true }).focus();
+  await page.keyboard.press('Enter');
+  assert.equal(await page.locator('.token-cache-chart .recharts-area-curve').count(), 4);
+  for (const width of [320, 375, 768, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.waitForTimeout(350);
+    assert(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
+    assert.equal(await page.locator('.token-cache-chart .recharts-area-curve').count(), 4);
+    const heading = await page.locator('.token-cache-chart .panel-heading').boundingBox();
+    const rate = await page.getByTestId('chart-cache-rate').boundingBox();
+    assert(rate.x + rate.width <= heading.x + heading.width + 1);
+  }
+  await page.setViewportSize({ width: 375, height: 900 });
+  await page.mouse.move(0, 0);
+  await page.waitForTimeout(350);
+  await page.screenshot({ path: 'screenshots/token-cache-chart-mobile.png', fullPage: true });
+  await legend.getByRole('button', { name: '缓存读取', exact: true }).tap();
+  assert.equal(await page.locator('.token-cache-chart .recharts-area-curve').count(), 1);
+  await page.screenshot({ path: 'screenshots/token-cache-selected-mobile.png', fullPage: true });
+  assert.deepEqual(errors, []);
+  console.log('PASS: four series, legend solo/switch/restore, rescaled axis, filtered tooltip, selection retained on refresh, keyboard/mobile controls, five periods, missing creation, responsive layouts.');
+} finally { await browser.close(); }

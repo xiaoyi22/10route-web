@@ -1,0 +1,25 @@
+[Unit]
+Description=10Router Web Console
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/.local/share/10router-web/current
+ExecStart=/usr/bin/node %h/.local/share/10router-web/current/scripts/serve.mjs
+Environment=TENROUTER_BACKEND_URL=http://127.0.0.1:20128
+Environment=TENROUTER_HOST=0.0.0.0
+Environment=TENROUTER_PORT=4317
+Environment=TENROUTER_ENABLE_MANAGEMENT=1
+Environment=TENROUTER_HERMES_URL=http://127.0.0.1:8888
+Environment=TENROUTER_HERMES_TOKEN_FILE=%h/.hermes/dashboard_token
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=15
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+UMask=0077
+
+[Install]
+WantedBy=default.target

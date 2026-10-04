@@ -1,0 +1,279 @@
+{
+  "alicode-intl": [],
+  "alicode": [],
+  "anthropic": [],
+  "antigravity": [
+    "ag"
+  ],
+  "assemblyai": [
+    "aai"
+  ],
+  "aws-polly": [
+    "polly"
+  ],
+  "azure": [],
+  "black-forest-labs": [
+    "bfl"
+  ],
+  "blackbox": [
+    "bb"
+  ],
+  "brave-search": [
+    "brave"
+  ],
+  "byteplus": [
+    "bpm"
+  ],
+  "cartesia": [],
+  "cerebras": [],
+  "chutes": [
+    "ch"
+  ],
+  "claude": [
+    "cc"
+  ],
+  "cline": [
+    "cl"
+  ],
+  "clinepass": [],
+  "cloudflare-ai": [
+    "cf"
+  ],
+  "codebuddy-cn": [
+    "cbcn"
+  ],
+  "codex": [
+    "cx"
+  ],
+  "cohere": [],
+  "comfyui": [],
+  "commandcode": [
+    "cmc"
+  ],
+  "coqui": [],
+  "cursor": [
+    "cu"
+  ],
+  "deepgram": [
+    "dg"
+  ],
+  "deepseek": [
+    "ds"
+  ],
+  "edge-tts": [],
+  "elevenlabs": [
+    "el"
+  ],
+  "exa": [],
+  "fal-ai": [
+    "fal"
+  ],
+  "featherless": [
+    "fl"
+  ],
+  "firecrawl": [],
+  "fireworks": [],
+  "gemini-cli": [
+    "gc"
+  ],
+  "gemini": [],
+  "github": [
+    "gh"
+  ],
+  "gitlab": [],
+  "glm-cn": [],
+  "glm": [],
+  "google-pse": [
+    "gpse"
+  ],
+  "google-tts": [],
+  "grok-cli": [
+    "gcli"
+  ],
+  "grok-web": [
+    "gw"
+  ],
+  "groq": [],
+  "huggingface": [
+    "hf"
+  ],
+  "hyperbolic": [
+    "hyp"
+  ],
+  "iflow": [
+    "if"
+  ],
+  "inworld": [],
+  "jina-ai": [
+    "jina"
+  ],
+  "jina-reader": [],
+  "kilocode": [
+    "kc"
+  ],
+  "kimchi": [],
+  "kimi": [],
+  "kiro": [
+    "kr"
+  ],
+  "linkup": [],
+  "local-device": [],
+  "mimo-free": [
+    "mmf"
+  ],
+  "minimax-cn": [],
+  "minimax": [],
+  "mistral": [],
+  "mmf": [],
+  "nanobanana": [
+    "nb"
+  ],
+  "nebius": [],
+  "nvidia": [],
+  "ollama-local": [],
+  "ollama": [],
+  "openai": [],
+  "opencode-go": [
+    "ocg"
+  ],
+  "opencode": [
+    "oc"
+  ],
+  "openrouter": [],
+  "perplexity-web": [
+    "pw"
+  ],
+  "perplexity": [
+    "pplx"
+  ],
+  "perplexity-agent": [
+    "pa"
+  ],
+  "playht": [],
+  "qoder": [
+    "qd"
+  ],
+  "recraft": [],
+  "runwayml": [
+    "runway"
+  ],
+  "sdwebui": [],
+  "searchapi": [],
+  "searxng": [],
+  "serper": [],
+  "siliconflow": [],
+  "stability-ai": [
+    "stability"
+  ],
+  "tavily": [],
+  "together": [],
+  "topaz": [],
+  "tortoise": [],
+  "venice": [],
+  "vercel-ai-gateway": [
+    "vercel"
+  ],
+  "vertex-partner": [
+    "vxp"
+  ],
+  "vertex": [
+    "vx"
+  ],
+  "volcengine-ark": [
+    "ark"
+  ],
+  "voyage-ai": [
+    "voyage"
+  ],
+  "xai": [],
+  "xiaomi-mimo": [
+    "mimo"
+  ],
+  "xiaomi-tokenplan": [
+    "xmtp"
+  ],
+  "youcom": [],
+  "alims-intl": [],
+  "codebuddy-intl": [
+    "cbai"
+  ],
+  "zed": [
+    "zd"
+  ],
+  "api-airforce": [
+    "af"
+  ],
+  "baidu": [
+    "qianfan"
+  ],
+  "bazaarlink": [
+    "bzl"
+  ],
+  "bluesminds": [
+    "bm"
+  ],
+  "kilo-gateway": [
+    "kgw"
+  ],
+  "llm7": [],
+  "sambanova": [
+    "samba"
+  ],
+  "tencent": [
+    "hunyuan"
+  ],
+  "morph": [],
+  "poolside": [
+    "ps"
+  ],
+  "tokenrouter": [],
+  "selfhosted-stt": [],
+  "selfhosted-tts": [],
+  "selfhosted-embedding": [],
+  "fish-audio": [
+    "fish"
+  ],
+  "alitp-intl": [],
+  "longcat": [],
+  "sensenova": [],
+  "dots": [],
+  "bai": [],
+  "tokenbom": [],
+  "agnes-ai": [],
+  "agnes-ai-cn": [],
+  "ollama-search": [],
+  "xquik": [],
+  "amd": [],
+  "siliconflow-cn": [
+    "sfcn"
+  ],
+  "qoder-cn": [
+    "qdc"
+  ],
+  "stepfun": [
+    "step"
+  ],
+  "stepfun-cn": [
+    "step-cn"
+  ],
+  "stepfun-plan": [
+    "stepp"
+  ],
+  "stepfun-plan-cn": [
+    "stepp-cn"
+  ],
+  "mimo-desktop": [
+    "xmd"
+  ],
+  "longcat-intl": [],
+  "zcode-free": [],
+  "keenable": [],
+  "tinyfish": [],
+  "drex": [],
+  "opencode-zen": [
+    "ocz"
+  ],
+  "dahl": [],
+  "atria": [],
+  "tokenharbor": []
+}

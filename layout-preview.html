@@ -1,0 +1,691 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>10router 网关控制台 · 布局方案对比</title>
+<style>
+:root{
+  --bg:#0b0d12; --panel:#11141b; --panel-2:#161a22; --hover:#1a1f29;
+  --border:#1e232d; --border-2:#252b37;
+  --text:#e6e9ef; --muted:#8b93a3; --dim:#5c6472;
+  --accent:#4f8cff; --accent-soft:rgba(79,140,255,.13);
+  --green:#34d399; --amber:#fbbf24; --red:#f87171;
+  --mono:ui-monospace,"JetBrains Mono","Cascadia Code",Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--text);font:13px/1.5 var(--sans);-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+svg{display:block}
+.mono{font-family:var(--mono)}
+.lay{display:none;min-height:100vh}
+.lay.on{display:block}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;padding:1px 6px;border-radius:4px;border:1px solid var(--border-2);color:var(--muted)}
+.st{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-family:var(--mono)}
+.st i{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.st.ok i{background:var(--green)} .st.warn i{background:var(--amber)} .st.bad i{background:var(--red)}
+.st.ok{color:var(--green)} .st.warn{color:var(--amber)} .st.bad{color:var(--red)}
+.track{height:5px;border-radius:3px;background:var(--panel-2);overflow:hidden;display:block}
+.track i{display:block;height:100%;border-radius:3px;background:var(--accent)}
+.track i.warn{background:var(--amber)} .track i.bad{background:var(--red)}
+.switcher{
+  position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:999;
+  display:flex;align-items:center;gap:5px;padding:6px;background:rgba(18,21,28,.9);
+  border:1px solid var(--border-2);border-radius:100px;backdrop-filter:blur(16px);
+  box-shadow:0 18px 48px -12px rgba(0,0,0,.8);
+}
+.switcher button{display:flex;align-items:center;gap:7px;padding:7px 15px;border-radius:100px;color:var(--muted);font-size:11.5px;font-weight:550;transition:background .15s,color .15s}
+.switcher button em{font-style:normal;font-size:10px;color:var(--dim);font-weight:400}
+.switcher button:hover{background:var(--hover);color:var(--text)}
+.switcher button.on{background:var(--accent);color:#fff}
+.switcher button.on em{color:rgba(255,255,255,.72)}
+@media(max-width:1000px){.switcher button em{display:none}}
+</style><style>
+/* ============ L1 顶部导航 · 全宽工作台 ============ */
+.l1-top{display:flex;align-items:center;gap:4px;height:54px;padding:0 22px;border-bottom:1px solid var(--border);background:var(--panel);position:sticky;top:0;z-index:20}
+.l1-brand{display:flex;align-items:center;gap:9px;margin-right:22px}
+.l1-brand i{width:26px;height:26px;border-radius:7px;background:var(--accent);color:#fff;display:grid;place-items:center;font:700 11px var(--sans);font-style:normal}
+.l1-brand b{font-size:14px;font-weight:650;letter-spacing:-.01em}
+.l1-tab{padding:7px 13px;border-radius:7px;font-size:12.5px;color:var(--muted);font-weight:500}
+.l1-tab:hover{color:var(--text);background:var(--hover)}
+.l1-tab.on{color:var(--text);background:var(--hover)}
+.l1-top .sp{flex:1}
+.l1-srch{display:flex;align-items:center;gap:8px;width:210px;height:32px;padding:0 11px;border:1px solid var(--border-2);border-radius:8px;color:var(--dim);font-size:11.5px;background:var(--bg)}
+.l1-srch kbd{margin-left:auto;font:10px var(--mono);border:1px solid var(--border-2);border-radius:4px;padding:1px 5px}
+.l1-av{width:30px;height:30px;border-radius:50%;background:var(--panel-2);border:1px solid var(--border-2);display:grid;place-items:center;font-size:11px;color:var(--muted);font-weight:600}
+
+.l1-strip{display:grid;grid-template-columns:repeat(4,1fr);background:var(--panel);border-bottom:1px solid var(--border)}
+.l1-stat{padding:15px 22px;border-left:1px solid var(--border);display:flex;flex-direction:column;gap:3px}
+.l1-stat:first-child{border-left:0}
+.l1-stat span{font-size:11px;color:var(--muted)}
+.l1-stat b{font-size:24px;font-weight:600;letter-spacing:-.025em;line-height:1.2}
+.l1-stat b u{font-size:11.5px;font-weight:500;color:var(--muted);text-decoration:none;margin-left:3px}
+.l1-stat em{font-style:normal;font-size:10.5px;color:var(--dim);display:flex;gap:6px;align-items:center}
+.up{color:var(--green);font-weight:650}
+.down{color:var(--red);font-weight:650}
+
+.l1-body{display:grid;grid-template-columns:minmax(0,2.15fr) minmax(0,1fr);gap:16px;padding:16px 22px 70px}
+.l1-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.l1-ch{display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:1px solid var(--border)}
+.l1-ch h3{margin:0;font-size:12.5px;font-weight:600}
+.l1-ch p{margin:2px 0 0;font-size:10.5px;color:var(--dim)}
+.l1-ch .r{margin-left:auto;font-size:11px;color:var(--dim);display:flex;align-items:center;gap:8px}
+.l1-chips{display:flex;gap:5px}
+.l1-chip{padding:4px 10px;border:1px solid var(--border-2);border-radius:100px;font-size:11px;color:var(--muted)}
+.l1-chip.on{background:var(--accent-soft);border-color:transparent;color:var(--text);font-weight:550}
+.l1-tbl{width:100%;border-collapse:collapse}
+.l1-tbl th{text-align:left;font-size:10.5px;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:.07em;padding:9px 16px;border-bottom:1px solid var(--border)}
+.l1-tbl td{padding:11px 16px;font-size:11.5px;border-bottom:1px solid var(--border);white-space:nowrap}
+.l1-tbl tbody tr:last-child td{border-bottom:0}
+.l1-tbl tbody tr:hover{background:var(--hover)}
+.l1-tbl .id{color:var(--dim);font-family:var(--mono);font-size:10.5px}
+.l1-side{display:flex;flex-direction:column;gap:16px;min-width:0}
+.l1-chart{padding:10px 6px 0}
+.l1-axis{display:flex;justify-content:space-between;padding:8px 16px 13px;font-size:10px;color:var(--dim);font-family:var(--mono)}
+.l1-hl{padding:16px;display:flex;flex-direction:column;gap:11px}
+.l1-hl div{display:flex;align-items:center;gap:9px;font-size:12px}
+.l1-hl b{margin-left:auto;font-family:var(--mono);font-weight:600}
+</style><style>
+/* ============ L2 三栏排查台 ============ */
+.l2{display:grid;grid-template-columns:58px 316px minmax(0,1fr);height:100vh;overflow:hidden}
+.l2-rail{background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px 0}
+.l2-rail .lg{width:30px;height:30px;border-radius:8px;background:var(--accent);color:#fff;display:grid;place-items:center;font:700 11px var(--sans);margin-bottom:14px;flex-shrink:0}
+.l2-ic{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;color:var(--dim);position:relative}
+.l2-ic:hover{background:var(--hover);color:var(--text)}
+.l2-ic.on{background:var(--accent-soft);color:var(--accent)}
+.l2-ic.on::before{content:"";position:absolute;left:-11px;top:50%;transform:translateY(-50%);width:2px;height:18px;background:var(--accent);border-radius:0 2px 2px 0}
+.l2-rail .sp{flex:1}
+.l2-list{background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;min-width:0}
+.l2-lh{padding:16px 16px 12px;border-bottom:1px solid var(--border)}
+.l2-lh h2{margin:0 0 12px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+.l2-lh h2 span{margin-left:auto;font-size:11px;color:var(--dim);font-weight:400}
+.l2-in{display:flex;align-items:center;gap:8px;height:32px;padding:0 10px;border:1px solid var(--border-2);border-radius:8px;background:var(--bg);color:var(--dim);font-size:11.5px}
+.l2-items{flex:1;overflow-y:auto}
+.l2-it{padding:11px 16px;border-bottom:1px solid var(--border);cursor:pointer;display:flex;flex-direction:column;gap:5px;border-left:2px solid transparent}
+.l2-it:hover{background:var(--hover)}
+.l2-it.on{background:var(--accent-soft);border-left-color:var(--accent)}
+.l2-it .r1{display:flex;align-items:center;gap:8px}
+.l2-it .r1 b{font-size:12px;font-weight:550;font-family:var(--mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.l2-it .r1 .t{margin-left:auto;font-size:10px;color:var(--dim);font-family:var(--mono);flex-shrink:0}
+.l2-it .r2{display:flex;align-items:center;gap:8px;font-size:10.5px;color:var(--dim);font-family:var(--mono)}
+.l2-detail{overflow-y:auto;padding:22px 26px 90px;min-width:0}
+.l2-dh{display:flex;align-items:flex-start;gap:14px;margin-bottom:20px}
+.l2-dh h1{margin:0;font-size:19px;font-weight:600;letter-spacing:-.02em;font-family:var(--mono)}
+.l2-dh .sub{margin-top:5px;font-size:11.5px;color:var(--muted);font-family:var(--mono)}
+.l2-dh .acts{margin-left:auto;display:flex;gap:8px}
+.l2-btn{height:31px;padding:0 13px;border:1px solid var(--border-2);border-radius:8px;font-size:12px;font-weight:550;color:var(--text);display:inline-flex;align-items:center;gap:7px}
+.l2-btn:hover{border-color:var(--accent);color:var(--accent)}
+.l2-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.l2-m{padding:13px 15px;background:var(--panel);border:1px solid var(--border);border-radius:10px}
+.l2-m span{font-size:10.5px;color:var(--dim);text-transform:uppercase;letter-spacing:.07em;font-weight:600}
+.l2-m b{display:block;font-size:20px;font-weight:600;letter-spacing:-.02em;margin-top:5px;font-family:var(--mono)}
+.l2-m b u{font-size:11px;color:var(--muted);font-weight:500;text-decoration:none;margin-left:3px}
+.l2-sec{background:var(--panel);border:1px solid var(--border);border-radius:10px;margin-bottom:14px;overflow:hidden}
+.l2-sh{padding:12px 16px;border-bottom:1px solid var(--border);font-size:12px;font-weight:600;display:flex;align-items:center;gap:8px}
+.l2-sh span{margin-left:auto;font-size:10.5px;color:var(--dim);font-weight:400}
+.l2-wf{padding:16px}
+.l2-wr{display:grid;grid-template-columns:110px 1fr 62px;align-items:center;gap:12px;margin-bottom:11px;font-size:11.5px}
+.l2-wr .lbl{color:var(--muted);font-family:var(--mono);font-size:11px}
+.l2-wr .bar{height:16px;border-radius:4px;background:var(--panel-2);position:relative;overflow:hidden}
+.l2-wr .bar i{position:absolute;top:0;bottom:0;border-radius:4px;background:var(--accent);opacity:.85}
+.l2-wr .ms{text-align:right;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.l2-code{margin:0;padding:16px;font:11px/1.75 var(--mono);color:var(--muted);background:var(--bg);overflow-x:auto;white-space:pre}
+.l2-code .k{color:var(--accent)} .l2-code .s{color:var(--green)} .l2-code .n{color:var(--amber)}
+</style><style>
+/* ============ L3 Bento 磁贴拼接 ============ */
+.l3-top{display:flex;align-items:center;gap:12px;padding:20px 26px 6px}
+.l3-top h1{margin:0;font-size:20px;font-weight:600;letter-spacing:-.025em}
+.l3-top .sp{flex:1}
+.l3-top .seg{display:flex;border:1px solid var(--border-2);border-radius:100px;padding:2px;gap:2px}
+.l3-top .seg button{padding:5px 12px;border-radius:100px;font-size:11.5px;color:var(--muted)}
+.l3-top .seg button.on{background:var(--panel-2);color:var(--text);font-weight:550}
+.l3-grid{display:grid;grid-template-columns:repeat(12,1fr);grid-auto-rows:minmax(0,auto);gap:14px;padding:16px 26px 80px}
+.b{background:var(--panel);border:1px solid var(--border);border-radius:14px;overflow:hidden;position:relative;min-width:0}
+.b-lbl{font-size:10.5px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;font-weight:600;padding:15px 17px 0}
+.b-num{font-size:30px;font-weight:600;letter-spacing:-.03em;line-height:1.15;padding:6px 17px 0;font-family:var(--mono)}
+.b-num u{font-size:12px;color:var(--muted);font-weight:500;text-decoration:none;margin-left:3px;font-family:var(--sans)}
+.b-sub{font-size:10.5px;color:var(--dim);padding:3px 17px 15px;display:flex;gap:6px;align-items:center}
+.b-kpi{grid-column:span 3}
+.b-hero{grid-column:span 8;display:flex;flex-direction:column}
+.b-ring{grid-column:span 4}
+.b-mdl{grid-column:span 5}
+.b-bal{grid-column:span 7}
+.b-log{grid-column:span 12}
+.b-hd{display:flex;align-items:center;gap:10px;padding:15px 17px 0}
+.b-hd h3{margin:0;font-size:12.5px;font-weight:600}
+.b-hd .r{margin-left:auto;font-size:10.5px;color:var(--dim)}
+.b-hd + .b-bd{padding:13px 17px 16px}
+.b-chart{padding:6px 4px 0;flex:1;display:flex;flex-direction:column}
+.b-axis{display:flex;justify-content:space-between;padding:8px 17px 14px;font-size:10px;color:var(--dim);font-family:var(--mono)}
+.b-health{display:flex;align-items:center;gap:16px;padding:14px 17px 18px}
+.b-health .lg{flex:1;display:flex;flex-direction:column;gap:9px;font-size:11.5px}
+.b-health .lg div{display:flex;align-items:center;gap:8px}
+.b-health .lg b{margin-left:auto;font-family:var(--mono);font-weight:600}
+.b-mrow{display:grid;grid-template-columns:130px 1fr 56px;align-items:center;gap:11px;font-size:11.5px;margin-bottom:10px}
+.b-mrow .nm{color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--mono);font-size:11px}
+.b-mrow .n{text-align:right;font-family:var(--mono);font-weight:550}
+.b-mrow:last-child{margin-bottom:0}
+.b-brow{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:10px 17px;border-bottom:1px solid var(--border)}
+.b-brow:last-child{border-bottom:0}
+.b-brow .t{display:flex;align-items:center;gap:8px;min-width:0}
+.b-brow .t b{font-size:11.5px;font-weight:550;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.b-brow .t u{text-decoration:none;font-size:9.5px;color:var(--dim);border:1px solid var(--border-2);border-radius:4px;padding:0 5px;font-family:var(--mono)}
+.b-brow .v{font-size:12px;font-weight:600;font-family:var(--mono);text-align:right}
+.b-brow .v small{display:block;font-size:9.5px;color:var(--dim);font-weight:400;font-family:var(--sans)}
+.b-brow .track{grid-column:1/-1}
+.b-tbl{width:100%;border-collapse:collapse}
+.b-tbl th{text-align:left;font-size:10px;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:.07em;padding:8px 17px;border-bottom:1px solid var(--border)}
+.b-tbl td{padding:9px 17px;font-size:11.5px;border-bottom:1px solid var(--border);white-space:nowrap}
+.b-tbl tbody tr:last-child td{border-bottom:0}
+.b-tbl tbody tr:hover{background:var(--hover)}
+.b-tbl .id{color:var(--dim);font-family:var(--mono);font-size:10.5px}
+</style><style>
+/* ============ L4 值班大屏 ============ */
+.l4{
+  position:relative;height:100vh;overflow:hidden;background:#05070b;
+  background-image:
+    radial-gradient(900px 560px at 50% 42%, rgba(79,140,255,.10), transparent 66%),
+    linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px);
+  background-size:auto, 44px 44px, 44px 44px;
+}
+.l4-head{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;gap:16px;padding:22px 30px;z-index:3}
+.l4-head .lg{display:flex;align-items:center;gap:11px}
+.l4-head .lg i{width:32px;height:32px;border-radius:9px;background:var(--accent);color:#fff;display:grid;place-items:center;font:700 13px var(--sans);font-style:normal;box-shadow:0 0 24px -4px var(--accent)}
+.l4-head h1{margin:0;font-size:17px;font-weight:650;letter-spacing:.02em}
+.l4-head .sub{font-size:10.5px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase;font-family:var(--mono)}
+.l4-head .sp{flex:1}
+.l4-clock{font-family:var(--mono);font-size:26px;font-weight:600;letter-spacing:.02em;color:var(--text)}
+.l4-clock small{display:block;font-size:10px;color:var(--dim);letter-spacing:.14em;text-transform:uppercase;text-align:right;font-weight:400}
+.l4-live{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--green);font-family:var(--mono)}
+.l4-live i{width:7px;height:7px;border-radius:50%;background:var(--green);animation:blink 1.8s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(52,211,153,.5)}50%{opacity:.45;box-shadow:0 0 0 7px rgba(52,211,153,0)}}
+
+.l4-topo{position:absolute;inset:0;display:grid;place-items:center;z-index:1}
+.l4-topo svg{width:min(880px,72vw);height:auto;opacity:.96}
+.node-label{font:10px var(--mono);fill:var(--muted)}
+.node-name{font:600 10.5px var(--sans);fill:var(--text)}
+.node-sub{font:9.5px var(--mono);fill:var(--dim)}
+.flow{stroke-dasharray:5 7;animation:flow 1.3s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-24}}
+.ring-pulse{animation:rp 3s ease-out infinite}
+@keyframes rp{0%{r:44;opacity:.45}100%{r:74;opacity:0}}
+
+.l4-stat{display:flex;gap:26px}
+.l4-stat div{text-align:right}
+.l4-stat span{font-size:10px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase;display:block;font-family:var(--mono)}
+.l4-stat b{font-size:27px;font-weight:600;letter-spacing:-.02em;font-family:var(--mono);line-height:1.25}
+.l4-stat b.g{color:var(--green)} .l4-stat b.a{color:var(--amber)} .l4-stat b.r{color:var(--red)}
+
+.l4-corner{position:absolute;z-index:3;background:rgba(10,13,19,.72);border:1px solid var(--border);border-radius:12px;backdrop-filter:blur(10px);overflow:hidden}
+.l4-bl{left:30px;bottom:30px;width:290px}
+.l4-br{right:30px;bottom:30px;width:380px}
+.l4-ttl{font-size:10px;color:var(--dim);letter-spacing:.13em;text-transform:uppercase;font-weight:600;padding:12px 15px 0;font-family:var(--mono);display:flex;align-items:center;gap:7px}
+.l4-ttl i{width:3px;height:11px;background:var(--accent);border-radius:1px;display:inline-block}
+.l4-mrow{display:flex;align-items:center;gap:11px;padding:7px 15px;font-size:11.5px}
+.l4-mrow:first-of-type{margin-top:7px}
+.l4-mrow:last-child{padding-bottom:14px}
+.l4-mrow .rk{font-family:var(--mono);font-size:10px;color:var(--dim);width:14px}
+.l4-mrow .nm{flex:1;font-family:var(--mono);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.l4-mrow .bw{width:74px;height:5px;border-radius:3px;background:rgba(255,255,255,.07);overflow:hidden;flex-shrink:0}
+.l4-mrow .bw i{display:block;height:100%;background:var(--accent);border-radius:3px}
+.l4-mrow .vv{font-family:var(--mono);font-size:11px;color:var(--muted);width:52px;text-align:right}
+.l4-alert{display:flex;align-items:flex-start;gap:10px;padding:8px 15px;font-size:11px;border-bottom:1px solid rgba(255,255,255,.045)}
+.l4-alert:last-child{padding-bottom:14px;border-bottom:0}
+.l4-alert .tm{font-family:var(--mono);font-size:10px;color:var(--dim);flex-shrink:0;padding-top:1px}
+.l4-alert .tx{color:var(--muted);line-height:1.5}
+.l4-alert .tx b{color:var(--text);font-weight:550}
+.l4-alert.w .tx{color:#e2c48a}
+.l4-alert.e .tx{color:#e79aa2}
+@media(max-width:1180px){.l4-bl,.l4-br{display:none}}
+</style><body>
+
+<!-- ============================ L1 顶部导航 · 全宽工作台 ============================ -->
+<div class="lay on" id="lay1">
+  <header class="l1-top">
+    <div class="l1-brand"><i>10</i><b>10router</b></div>
+    <button class="l1-tab on">总览</button>
+    <button class="l1-tab">用量</button>
+    <button class="l1-tab">配额</button>
+    <button class="l1-tab">日志</button>
+    <button class="l1-tab">上游渠道</button>
+    <button class="l1-tab">路由</button>
+    <button class="l1-tab">设置</button>
+    <span class="sp"></span>
+    <div class="l1-srch">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20.5 20.5L16.7 16.7"/></svg>
+      <span>搜索</span><kbd>Ctrl K</kbd>
+    </div>
+    <div class="l1-av">M</div>
+  </header>
+
+  <div class="l1-strip">
+    <div class="l1-stat"><span>请求总量</span><b>48,213<u>次</u></b><em><span class="up">▲ 12.4%</span> 较昨日</em></div>
+    <div class="l1-stat"><span>Token 消耗</span><b>12.7<u>M</u></b><em><span class="up">▲ 8.1%</span> 输入 9.4M / 输出 3.3M</em></div>
+    <div class="l1-stat"><span>平均延迟</span><b>1.82<u>s</u></b><em><span class="down">▼ 6.3%</span> P95 4.10s</em></div>
+    <div class="l1-stat"><span>今日费用</span><b>$21.40</b><em><span class="up">▲ 4.7%</span> 上游计价 · USD</em></div>
+  </div>
+
+  <div class="l1-body">
+    <section class="l1-card">
+      <div class="l1-ch">
+        <div><h3>实时请求日志</h3><p>最近 200 条 · SSE 推送</p></div>
+        <div class="r">
+          <div class="l1-chips">
+            <button class="l1-chip on">全部</button>
+            <button class="l1-chip">异常</button>
+            <button class="l1-chip">慢请求</button>
+          </div>
+          <span class="st ok"><i></i>已连接</span>
+        </div>
+      </div>
+      <table class="l1-tbl">
+        <thead><tr><th>时间</th><th>模型</th><th>上游渠道</th><th>输入</th><th>输出</th><th>延迟</th><th>状态</th></tr></thead>
+        <tbody id="l1-logs"></tbody>
+      </table>
+    </section>
+
+    <aside class="l1-side">
+      <div class="l1-card">
+        <div class="l1-ch"><div><h3>Token 流量</h3><p>按小时聚合</p></div><div class="r">24 小时</div></div>
+        <div class="l1-chart"><svg id="l1-area" viewBox="0 0 420 150" width="100%" height="150" preserveAspectRatio="none"></svg></div>
+        <div class="l1-axis"><span>00</span><span>06</span><span>12</span><span>18</span><span>现在</span></div>
+      </div>
+      <div class="l1-card">
+        <div class="l1-ch"><div><h3>渠道健康</h3><p>12 条上游连接</p></div></div>
+        <div class="l1-hl">
+          <div><span class="st ok"><i></i>正常</span><b>9</b></div>
+          <div><span class="st warn"><i></i>降级</span><b>1</b></div>
+          <div><span class="st bad"><i></i>异常</span><b>2</b></div>
+          <div style="color:var(--dim)"><span>熔断中</span><b style="color:var(--amber)">2</b></div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div><!-- ============================ L2 三栏排查台 ============================ -->
+<div class="lay" id="lay2">
+  <div class="l2">
+    <nav class="l2-rail">
+      <div class="lg">10</div>
+      <button class="l2-ic on" title="请求"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6.5h16M4 12h16M4 17.5h10"/></svg></button>
+      <button class="l2-ic" title="渠道"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3.2l8 4v5.8c0 4.8-3.4 7.3-8 7.8-4.6-.5-8-3-8-7.8V7.2z"/></svg></button>
+      <button class="l2-ic" title="用量"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 17.5l5-6.5 4 4L17 6l4 5"/></svg></button>
+      <button class="l2-ic" title="配额"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3.5v17M3.5 12h17"/></svg></button>
+      <button class="l2-ic" title="拓扑"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="7" width="17" height="12" rx="2"/><path d="M3.5 7L12 3l8.5 4"/></svg></button>
+      <span class="sp"></span>
+      <button class="l2-ic" title="设置"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.9l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-2.9 1.2 2 2 0 11-4 0 1.7 1.7 0 00-2.9-1.2l-.1.1a2 2 0 11-2.8-2.8l.1-.1A1.7 1.7 0 003 15a2 2 0 110-4 1.7 1.7 0 001.2-2.9l-.1-.1a2 2 0 112.8-2.8l.1.1A1.7 1.7 0 0010 4.6a2 2 0 114 0 1.7 1.7 0 002.9 1.2l.1-.1a2 2 0 112.8 2.8l-.1.1A1.7 1.7 0 0021 11a2 2 0 110 4z"/></svg></button>
+    </nav>
+
+    <section class="l2-list">
+      <div class="l2-lh">
+        <h2>请求<span>1,284 条</span></h2>
+        <div class="l2-in">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20.5 20.5L16.7 16.7"/></svg>
+          <span>筛选模型 / 渠道 / 状态</span>
+        </div>
+      </div>
+      <div class="l2-items" id="l2-items"></div>
+    </section>
+
+    <section class="l2-detail">
+      <div class="l2-dh">
+        <div>
+          <h1>req_8f3a91c4</h1>
+          <div class="sub">claude-sonnet-4.5 · Anthropic 主号 · 2026-10-02 08:42:17</div>
+        </div>
+        <div class="acts">
+          <button class="l2-btn">复制 JSON</button>
+          <button class="l2-btn">重放</button>
+        </div>
+      </div>
+
+      <div class="l2-metrics">
+        <div class="l2-m"><span>状态</span><b style="color:var(--green);font-size:16px">200 OK</b></div>
+        <div class="l2-m"><span>总延迟</span><b>2.14<u>s</u></b></div>
+        <div class="l2-m"><span>输入 Token</span><b>12,480</b></div>
+        <div class="l2-m"><span>输出 Token</span><b>3,120</b></div>
+      </div>
+
+      <div class="l2-sec">
+        <div class="l2-sh">耗时瀑布<span>共 2,140 ms</span></div>
+        <div class="l2-wf">
+          <div class="l2-wr"><span class="lbl">鉴权</span><span class="bar"><i style="left:0%;width:3%"></i></span><span class="ms">64 ms</span></div>
+          <div class="l2-wr"><span class="lbl">路由选择</span><span class="bar"><i style="left:3%;width:5%"></i></span><span class="ms">108 ms</span></div>
+          <div class="l2-wr"><span class="lbl">上游首字节</span><span class="bar"><i style="left:8%;width:34%"></i></span><span class="ms">728 ms</span></div>
+          <div class="l2-wr"><span class="lbl">流式生成</span><span class="bar"><i style="left:42%;width:55%"></i></span><span class="ms">1,178 ms</span></div>
+          <div class="l2-wr"><span class="lbl">落库</span><span class="bar"><i style="left:97%;width:3%"></i></span><span class="ms">62 ms</span></div>
+        </div>
+      </div>
+
+      <div class="l2-sec">
+        <div class="l2-sh">请求详情<span>只读</span></div>
+        <pre class="l2-code">{
+  <span class="k">"id"</span>: <span class="s">"req_8f3a91c4"</span>,
+  <span class="k">"model"</span>: <span class="s">"claude-sonnet-4.5"</span>,
+  <span class="k">"channel"</span>: <span class="s">"Anthropic 主号"</span>,
+  <span class="k">"stream"</span>: <span class="n">true</span>,
+  <span class="k">"usage"</span>: { <span class="k">"prompt"</span>: <span class="n">12480</span>, <span class="k">"completion"</span>: <span class="n">3120</span>, <span class="k">"cached"</span>: <span class="n">8192</span> },
+  <span class="k">"latency_ms"</span>: <span class="n">2140</span>,
+  <span class="k">"upstream_status"</span>: <span class="n">200</span>,
+  <span class="k">"egress"</span>: <span class="s">"tw"</span>
+}</pre>
+      </div>
+    </section>
+  </div>
+</div><!-- ============================ L3 Bento 磁贴拼接 ============================ -->
+<div class="lay" id="lay3">
+  <div class="l3-top">
+    <h1>网关总览</h1>
+    <span class="badge"><span class="st ok"><i></i>已连接</span></span>
+    <span class="sp"></span>
+    <div class="seg">
+      <button class="on">今日</button><button>24 小时</button><button>7 天</button><button>30 天</button>
+    </div>
+  </div>
+
+  <div class="l3-grid">
+    <div class="b b-hero">
+      <div class="b-hd"><h3>Token 流量</h3><span class="r">输入与输出 · 按小时</span></div>
+      <div class="b-chart"><svg id="l3-area" viewBox="0 0 700 190" width="100%" height="190" preserveAspectRatio="none"></svg></div>
+      <div class="b-axis"><span>00:00</span><span>04:00</span><span>08:00</span><span>12:00</span><span>16:00</span><span>20:00</span><span>现在</span></div>
+    </div>
+
+    <div class="b b-ring">
+      <div class="b-lbl">渠道健康</div>
+      <div class="b-health">
+        <svg width="104" height="104" viewBox="0 0 42 42" style="flex-shrink:0">
+          <circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--panel-2)" stroke-width="4.4"></circle>
+          <circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--accent)" stroke-width="4.4" stroke-dasharray="75 25" stroke-dashoffset="25" stroke-linecap="round"></circle>
+          <text x="21" y="20.4" text-anchor="middle" fill="var(--text)" font-size="8.6" font-weight="600" font-family="var(--mono)">9/12</text>
+          <text x="21" y="26.2" text-anchor="middle" fill="var(--dim)" font-size="4.4">正常</text>
+        </svg>
+        <div class="lg">
+          <div><span class="st ok"><i></i>正常</span><b>9</b></div>
+          <div><span class="st warn"><i></i>降级</span><b>1</b></div>
+          <div><span class="st bad"><i></i>异常</span><b>2</b></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="b b-kpi">
+      <div class="b-lbl">请求总量</div>
+      <div class="b-num">48,213<u>次</u></div>
+      <div class="b-sub"><span class="up">▲ 12.4%</span> 较昨日</div>
+    </div>
+    <div class="b b-kpi">
+      <div class="b-lbl">Token 消耗</div>
+      <div class="b-num">12.7<u>M</u></div>
+      <div class="b-sub"><span class="up">▲ 8.1%</span> 输入 9.4M</div>
+    </div>
+    <div class="b b-kpi">
+      <div class="b-lbl">平均延迟</div>
+      <div class="b-num">1.82<u>s</u></div>
+      <div class="b-sub"><span class="down">▼ 6.3%</span> P95 4.10s</div>
+    </div>
+    <div class="b b-kpi">
+      <div class="b-lbl">今日费用</div>
+      <div class="b-num">$21.40</div>
+      <div class="b-sub"><span class="up">▲ 4.7%</span> USD</div>
+    </div>
+
+    <div class="b b-mdl">
+      <div class="b-hd"><h3>模型分布</h3><span class="r">Top 5</span></div>
+      <div class="b-bd" id="l3-models"></div>
+    </div>
+
+    <div class="b b-bal">
+      <div class="b-hd"><h3>渠道余额与配额</h3><span class="r">每 5 分钟刷新</span></div>
+      <div id="l3-balances"></div>
+    </div>
+
+    <div class="b b-log">
+      <div class="b-hd"><h3>实时请求日志</h3><span class="r">最近 200 条 · SSE</span></div>
+      <table class="b-tbl">
+        <thead><tr><th>时间</th><th>模型</th><th>上游渠道</th><th>输入</th><th>输出</th><th>延迟</th><th>状态</th></tr></thead>
+        <tbody id="l3-logs"></tbody>
+      </table>
+    </div>
+  </div>
+</div><!-- ============================ L4 值班大屏 ============================ -->
+<div class="lay" id="lay4">
+  <div class="l4">
+    <header class="l4-head">
+      <div class="lg"><i>10</i><div><h1>10router 网关</h1><div class="sub">main-gateway · 192.168.11.150:20128</div></div></div>
+      <span class="sp"></span>
+      <div class="l4-stat">
+        <div><span>请求</span><b class="g">48.2K</b></div>
+        <div><span>Token</span><b class="g">12.7M</b></div>
+        <div><span>延迟</span><b class="a">1.82s</b></div>
+        <div><span>异常</span><b class="r">2</b></div>
+      </div>
+      <div class="l4-clock" id="l4-clock">08:42:17<small>2026-10-02</small></div>
+      <div class="l4-live"><i></i>LIVE</div>
+    </header>
+
+    <div class="l4-topo">
+      <svg viewBox="0 0 880 560" fill="none">
+        <circle class="ring-pulse" cx="440" cy="280" r="44" stroke="#4f8cff" stroke-width="1"/>
+        <circle cx="440" cy="280" r="52" fill="rgba(79,140,255,.07)" stroke="#4f8cff" stroke-width="1.4"/>
+        <circle cx="440" cy="280" r="37" fill="var(--panel)" stroke="#4f8cff" stroke-width="1"/>
+        <text x="440" y="277" text-anchor="middle" class="node-name" style="font-size:14px">GATEWAY</text>
+        <text x="440" y="293" text-anchor="middle" class="node-sub">2,140 r/min</text>
+
+        <g>
+          <path class="flow" d="M440 228 C440 170, 220 175, 220 122" stroke="#34d399" stroke-width="1.6"/>
+          <path class="flow" d="M440 228 C440 165, 440 170, 440 106" stroke="#34d399" stroke-width="1.6"/>
+          <path class="flow" d="M440 228 C440 170, 660 175, 660 122" stroke="#f87171" stroke-width="1.6"/>
+          <path class="flow" d="M440 332 C440 390, 220 385, 220 438" stroke="#34d399" stroke-width="1.6"/>
+          <path class="flow" d="M440 332 C440 395, 440 390, 440 454" stroke="#fbbf24" stroke-width="1.6"/>
+          <path class="flow" d="M440 332 C440 390, 660 385, 660 438" stroke="#34d399" stroke-width="1.6"/>
+        </g>
+
+        <g>
+          <circle cx="220" cy="100" r="26" fill="var(--panel)" stroke="#34d399" stroke-width="1.4"/>
+          <text x="220" y="98" text-anchor="middle" class="node-label">ANTHROPIC</text>
+          <text x="220" y="112" text-anchor="middle" class="node-sub" fill="#34d399">68%</text>
+
+          <circle cx="440" cy="84" r="26" fill="var(--panel)" stroke="#34d399" stroke-width="1.4"/>
+          <text x="440" y="82" text-anchor="middle" class="node-label">OPENAI</text>
+          <text x="440" y="96" text-anchor="middle" class="node-sub" fill="#34d399">31%</text>
+
+          <circle cx="660" cy="100" r="26" fill="var(--panel)" stroke="#f87171" stroke-width="1.4"/>
+          <text x="660" y="98" text-anchor="middle" class="node-label">GEMINI</text>
+          <text x="660" y="112" text-anchor="middle" class="node-sub" fill="#f87171">耗尽</text>
+
+          <circle cx="220" cy="460" r="26" fill="var(--panel)" stroke="#34d399" stroke-width="1.4"/>
+          <text x="220" y="458" text-anchor="middle" class="node-label">DEEPSEEK</text>
+          <text x="220" y="472" text-anchor="middle" class="node-sub" fill="#34d399">84%</text>
+
+          <circle cx="440" cy="476" r="26" fill="var(--panel)" stroke="#fbbf24" stroke-width="1.4"/>
+          <text x="440" y="474" text-anchor="middle" class="node-label">GLM</text>
+          <text x="440" y="488" text-anchor="middle" class="node-sub" fill="#fbbf24">9%</text>
+
+          <circle cx="660" cy="460" r="26" fill="var(--panel)" stroke="#34d399" stroke-width="1.4"/>
+          <text x="660" y="458" text-anchor="middle" class="node-label">CURSOR</text>
+          <text x="660" y="472" text-anchor="middle" class="node-sub" fill="#34d399">92%</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="l4-corner l4-bl">
+      <div class="l4-ttl"><i></i>模型分布 TOP 5</div>
+      <div id="l4-models"></div>
+    </div>
+
+    <div class="l4-corner l4-br">
+      <div class="l4-ttl"><i style="background:var(--amber)"></i>告警与事件流</div>
+      <div id="l4-alerts"></div>
+    </div>
+  </div>
+</div><div class="switcher" id="sw">
+  <button data-l="1" class="on">布局一<em>顶部导航 · 全宽</em></button>
+  <button data-l="2">布局二<em>三栏排查台</em></button>
+  <button data-l="3">布局三<em>Bento 磁贴</em></button>
+  <button data-l="4">布局四<em>值班大屏</em></button>
+</div>
+
+<script>
+(function(){
+  var $ = function(s){ return document.querySelector(s); };
+  var $$ = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
+  function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+  function clock(off){ return new Date(Date.now()-(off||0)*1000).toTimeString().slice(0,8); }
+
+  /* ---------- 数据 ---------- */
+  var SEED = [
+    ['claude-sonnet-4.5','Anthropic 主号','12,480','3,120','2.14s','ok','200'],
+    ['gpt-5-codex','OpenAI Team','8,910','2,004','1.62s','ok','200'],
+    ['gemini-3-pro','Google AI','4,220','1,180','3.41s','warn','429'],
+    ['deepseek-v3.2','DeepSeek 官方','2,180','640','0.94s','ok','200'],
+    ['claude-sonnet-4.5','Anthropic 主号','9,640','2,910','2.02s','ok','200'],
+    ['glm-4.7','GLM 智谱','1,540','410','1.18s','bad','402'],
+    ['gpt-5-codex','OpenAI Team','15,220','4,880','2.76s','ok','200'],
+    ['cursor-sonnet','Cursor 中转','6,120','1,840','1.88s','ok','200'],
+    ['gemini-3-pro','Google AI','3,880','1,020','3.62s','warn','429'],
+    ['claude-sonnet-4.5','Anthropic 主号','11,320','3,540','2.31s','ok','200']
+  ];
+  var POOL = ['claude-sonnet-4.5','gpt-5-codex','gemini-3-pro','deepseek-v3.2','glm-4.7','cursor-sonnet'];
+  var CHANS = ['Anthropic 主号','OpenAI Team','Google AI','DeepSeek 官方','GLM 智谱','Cursor 中转'];
+
+  function logCells(t,m,c,i,o,l,s,code){
+    return '<td class="id">'+t+'</td><td>'+m+'</td><td style="color:var(--muted)">'+c+'</td>'+
+      '<td class="mono" style="color:var(--muted)">'+i+'</td><td class="mono" style="color:var(--muted)">'+o+'</td>'+
+      '<td class="mono">'+l+'</td><td><span class="st '+s+'"><i></i>'+code+'</span></td>';
+  }
+
+  ['l1-logs','l3-logs'].forEach(function(id){
+    var tb = document.getElementById(id); if (!tb) return;
+    tb.innerHTML = SEED.map(function(s,i){
+      return '<tr>'+logCells(clock((SEED.length-i)*8),s[0],s[1],s[2],s[3],s[4],s[5],s[6])+'</tr>';
+    }).join('');
+  });
+
+  setInterval(function(){
+    if (document.hidden) return;
+    var inp=(Math.floor(Math.random()*14)+1)*1000, out=(Math.floor(Math.random()*4)+1)*400;
+    var lat=(0.7+Math.random()*2.6).toFixed(2)+'s';
+    var roll=Math.random(), s=roll>0.9?'warn':roll>0.82?'bad':'ok';
+    var code=s==='ok'?'200':s==='warn'?'429':'402';
+    ['l1-logs','l3-logs'].forEach(function(id){
+      var tb=document.getElementById(id); if(!tb) return;
+      tb.insertAdjacentHTML('afterbegin','<tr>'+logCells(clock(0),pick(POOL),pick(CHANS),inp.toLocaleString(),out.toLocaleString(),lat,s,code)+'</tr>');
+      while (tb.children.length>10) tb.removeChild(tb.lastChild);
+    });
+  }, 2400);
+
+  /* ---------- 图表 ---------- */
+  var IN  = [22,31,26,44,38,57,49,72,64,88,79,102,91,118,104,131,122,148,139,167];
+  var OUT = [8,12,9,17,14,22,19,28,24,33,30,39,34,45,40,50,46,56,52,63];
+
+  function curve(vals,w,h,pad,max){
+    var n=vals.length, step=w/(n-1);
+    var pts=vals.map(function(v,i){ return [i*step, h-pad-(v/max)*(h-pad*2)]; });
+    var d='M'+pts[0][0].toFixed(1)+' '+pts[0][1].toFixed(1);
+    for (var i=0;i<pts.length-1;i++){
+      var p0=pts[i-1]||pts[i], p1=pts[i], p2=pts[i+1], p3=pts[i+2]||p2;
+      var c1x=p1[0]+(p2[0]-p0[0])/6, c1y=p1[1]+(p2[1]-p0[1])/6;
+      var c2x=p2[0]-(p3[0]-p1[0])/6, c2y=p2[1]-(p3[1]-p1[1])/6;
+      d+=' C'+c1x.toFixed(1)+' '+c1y.toFixed(1)+','+c2x.toFixed(1)+' '+c2y.toFixed(1)+','+p2[0].toFixed(1)+' '+p2[1].toFixed(1);
+    }
+    return {d:d, pts:pts};
+  }
+
+  function drawChart(id,w,h){
+    var svg=document.getElementById(id); if(!svg) return;
+    var pad=16, max=180, grid='';
+    for (var g=0;g<=4;g++){
+      var y=(h-pad*2)*g/4+pad;
+      grid+='<line x1="0" y1="'+y.toFixed(1)+'" x2="'+w+'" y2="'+y.toFixed(1)+'" stroke="var(--border)" stroke-width="1" stroke-dasharray="2 7"/>';
+    }
+    var top=curve(IN,w,h,pad,max), bot=curve(OUT,w,h,pad,max);
+    var area=top.d+' L'+w+' '+(h-pad)+' L0 '+(h-pad)+' Z';
+    var last=top.pts[top.pts.length-1];
+    svg.innerHTML='<defs><linearGradient id="g-'+id+'" x1="0" y1="0" x2="0" y2="1">'+
+      '<stop offset="0%" stop-color="var(--accent)" stop-opacity=".32"/>'+
+      '<stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>'+grid+
+      '<path d="'+area+'" fill="url(#g-'+id+')"/>'+
+      '<path d="'+bot.d+'" fill="none" stroke="var(--dim)" stroke-width="1.4" stroke-dasharray="4 5" vector-effect="non-scaling-stroke"/>'+
+      '<path d="'+top.d+'" fill="none" stroke="var(--accent)" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round"/>'+
+      '<circle cx="'+last[0].toFixed(1)+'" cy="'+last[1].toFixed(1)+'" r="3.2" fill="var(--accent)"/>'+
+      '<circle cx="'+last[0].toFixed(1)+'" cy="'+last[1].toFixed(1)+'" r="7" fill="var(--accent)" opacity=".2"/>';
+  }
+  drawChart('l1-area',420,150);
+  drawChart('l3-area',700,190);
+
+  /* ---------- 列表（布局二） ---------- */
+  var items=$('#l2-items');
+  if (items){
+    items.innerHTML=SEED.map(function(s,i){
+      return '<div class="l2-it'+(i===0?' on':'')+'">'+
+        '<div class="r1"><b>req_8f3a'+((91+i*7)%90+10)+'c4</b><span class="st '+s[5]+'"><i></i>'+s[6]+'</span><span class="t">'+clock((i+1)*23)+'</span></div>'+
+        '<div class="r2"><span>'+s[0]+'</span><span>·</span><span>'+s[1]+'</span><span>·</span><span>'+s[4]+'</span></div>'+
+      '</div>';
+    }).join('');
+    items.addEventListener('click',function(e){
+      var it=e.target.closest('.l2-it'); if(!it) return;
+      $$('.l2-it').forEach(function(x){ x.classList.toggle('on', x===it); });
+    });
+  }
+
+  /* ---------- 模型分布 ---------- */
+  var MODELS=[['claude-sonnet-4.5',41,'18,240'],['gpt-5-codex',29,'12,910'],['gemini-3-pro',17,'7,430'],['deepseek-v3.2',8,'3,610'],['glm-4.7',5,'2,180']];
+  var mb=$('#l3-models');
+  if (mb) mb.innerHTML=MODELS.map(function(m,i){
+    return '<div class="b-mrow"><span class="nm"'+(i===0?' style="color:var(--text)"':'')+'>'+m[0]+'</span>'+
+      '<span class="track"><i style="width:'+m[1]+'%;opacity:'+(1-i*0.14).toFixed(2)+'"></i></span>'+
+      '<span class="n">'+m[2]+'</span></div>';
+  }).join('');
+
+  var l4m=$('#l4-models');
+  if (l4m) l4m.innerHTML=MODELS.map(function(m,i){
+    return '<div class="l4-mrow"><span class="rk">'+(i+1)+'</span><span class="nm">'+m[0]+'</span>'+
+      '<span class="bw"><i style="width:'+m[1]+'%"></i></span><span class="vv">'+m[2]+'</span></div>';
+  }).join('');
+
+  /* ---------- 余额配额 ---------- */
+  var BAL=[['Anthropic 主号','claude','$182.40','剩余 68%',68,''],['OpenAI Team','openai','$46.10','剩余 31%',31,'warn'],['Google AI Studio','gemini','$0.00','配额已耗尽',100,'bad'],['DeepSeek 官方','deepseek','¥320.00','剩余 84%',84,''],['GLM 智谱','glm','¥12.50','剩余 9%',9,'warn']];
+  var bb=$('#l3-balances');
+  if (bb) bb.innerHTML=BAL.map(function(b){
+    return '<div class="b-brow"><div class="t"><b>'+b[0]+'</b><u>'+b[1]+'</u></div>'+
+      '<div class="v">'+b[2]+'<small>'+b[3]+'</small></div>'+
+      '<span class="track"><i class="'+b[5]+'" style="width:'+b[4]+'%"></i></span></div>';
+  }).join('');
+
+  /* ---------- 告警流 ---------- */
+  var ALERTS=[
+    ['08:41:52','e','Gemini 渠道 <b>配额耗尽</b>，已自动切换至备用'],
+    ['08:38:10','w','GLM 余额低于 <b>10%</b>，建议充值'],
+    ['08:31:44','w','<b>429</b> 触发频控，渠道暂停 60 秒'],
+    ['08:22:03','','Anthropic 主号 token 已自动刷新'],
+    ['08:14:37','','拓扑变更：新增 <b>Cursor 中转</b> 节点']
+  ];
+  var al=$('#l4-alerts');
+  if (al) al.innerHTML=ALERTS.map(function(a){
+    return '<div class="l4-alert '+a[1]+'"><span class="tm">'+a[0]+'</span><span class="tx">'+a[2]+'</span></div>';
+  }).join('');
+
+  /* ---------- 大屏时钟 ---------- */
+  var ck=$('#l4-clock');
+  function tick(){
+    if (!ck) return;
+    var d=new Date();
+    ck.innerHTML=d.toTimeString().slice(0,8)+'<small>'+d.toISOString().slice(0,10)+'</small>';
+  }
+  tick(); setInterval(tick,1000);
+
+  /* ---------- 布局切换 ---------- */
+  $$('#sw button').forEach(function(b){
+    b.addEventListener('click',function(){
+      $$('.lay').forEach(function(l){ l.classList.toggle('on', l.id==='lay'+b.dataset.l); });
+      $$('#sw button').forEach(function(x){ x.classList.toggle('on', x===b); });
+      drawChart('l1-area',420,150);
+      drawChart('l3-area',700,190);
+    });
+  });
+})();
+</script>
+</body>
+</html>

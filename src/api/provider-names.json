@@ -1,0 +1,431 @@
+{
+  "alicode-intl": {
+    "name": "Alibaba Coding"
+  },
+  "alicode": {
+    "name": "Alibaba"
+  },
+  "anthropic": {
+    "name": "Anthropic"
+  },
+  "antigravity": {
+    "name": "Antigravity"
+  },
+  "assemblyai": {
+    "name": "AssemblyAI"
+  },
+  "aws-polly": {
+    "name": "AWS Polly"
+  },
+  "azure": {
+    "name": "Azure OpenAI"
+  },
+  "black-forest-labs": {
+    "name": "Black Forest Labs"
+  },
+  "blackbox": {
+    "name": "Blackbox AI"
+  },
+  "brave-search": {
+    "name": "Brave Search"
+  },
+  "byteplus": {
+    "name": "BytePlus ModelArk"
+  },
+  "cartesia": {
+    "name": "Cartesia"
+  },
+  "cerebras": {
+    "name": "Cerebras"
+  },
+  "chutes": {
+    "name": "Chutes AI"
+  },
+  "claude": {
+    "name": "Claude Code"
+  },
+  "cline": {
+    "name": "Cline"
+  },
+  "clinepass": {
+    "name": "ClinePass"
+  },
+  "cloudflare-ai": {
+    "name": "Cloudflare"
+  },
+  "codebuddy-cn": {
+    "name": "CodeBuddy CN"
+  },
+  "codex": {
+    "name": "OpenAI Codex"
+  },
+  "cohere": {
+    "name": "Cohere"
+  },
+  "comfyui": {
+    "name": "ComfyUI"
+  },
+  "commandcode": {
+    "name": "Command Code"
+  },
+  "coqui": {
+    "name": "Coqui TTS"
+  },
+  "cursor": {
+    "name": "Cursor IDE"
+  },
+  "deepgram": {
+    "name": "Deepgram"
+  },
+  "deepseek": {
+    "name": "DeepSeek"
+  },
+  "edge-tts": {
+    "name": "Edge TTS"
+  },
+  "elevenlabs": {
+    "name": "ElevenLabs"
+  },
+  "exa": {
+    "name": "Exa"
+  },
+  "fal-ai": {
+    "name": "Fal.ai"
+  },
+  "featherless": {
+    "name": "Featherless"
+  },
+  "firecrawl": {
+    "name": "Firecrawl"
+  },
+  "fireworks": {
+    "name": "Fireworks AI"
+  },
+  "gemini-cli": {
+    "name": "Gemini CLI"
+  },
+  "gemini": {
+    "name": "Gemini"
+  },
+  "github": {
+    "name": "GitHub Copilot"
+  },
+  "gitlab": {
+    "name": "GitLab Duo"
+  },
+  "glm-cn": {
+    "name": "GLM (China)"
+  },
+  "glm": {
+    "name": "GLM Coding"
+  },
+  "google-pse": {
+    "name": "Google PSE"
+  },
+  "google-tts": {
+    "name": "Google TTS"
+  },
+  "grok-cli": {
+    "name": "Grok CLI (Grok Build)"
+  },
+  "grok-web": {
+    "name": "Grok Web (Subscription)"
+  },
+  "groq": {
+    "name": "Groq"
+  },
+  "huggingface": {
+    "name": "HuggingFace"
+  },
+  "hyperbolic": {
+    "name": "Hyperbolic"
+  },
+  "iflow": {
+    "name": "iFlow AI"
+  },
+  "inworld": {
+    "name": "Inworld TTS"
+  },
+  "jina-ai": {
+    "name": "Jina AI"
+  },
+  "jina-reader": {
+    "name": "Jina Reader"
+  },
+  "kilocode": {
+    "name": "Kilo Code"
+  },
+  "kimchi": {
+    "name": "Kimchi"
+  },
+  "kimi": {
+    "name": "Kimi"
+  },
+  "kiro": {
+    "name": "Kiro AI"
+  },
+  "linkup": {
+    "name": "Linkup"
+  },
+  "local-device": {
+    "name": "Local Device"
+  },
+  "mimo-free": {
+    "name": "MiMo Code Free"
+  },
+  "minimax-cn": {
+    "name": "Minimax (China)"
+  },
+  "minimax": {
+    "name": "Minimax Coding"
+  },
+  "mistral": {
+    "name": "Mistral"
+  },
+  "mmf": {
+    "name": "MMF"
+  },
+  "nanobanana": {
+    "name": "NanoBanana API"
+  },
+  "nebius": {
+    "name": "Nebius AI"
+  },
+  "nvidia": {
+    "name": "NVIDIA NIM"
+  },
+  "ollama-local": {
+    "name": "Ollama Local"
+  },
+  "ollama": {
+    "name": "Ollama Cloud"
+  },
+  "openai": {
+    "name": "OpenAI"
+  },
+  "opencode-go": {
+    "name": "OpenCode Go"
+  },
+  "opencode": {
+    "name": "OpenCode Free"
+  },
+  "openrouter": {
+    "name": "OpenRouter"
+  },
+  "perplexity-web": {
+    "name": "Perplexity Web (Pro/Max)"
+  },
+  "perplexity": {
+    "name": "Perplexity"
+  },
+  "perplexity-agent": {
+    "name": "Perplexity Agent"
+  },
+  "playht": {
+    "name": "PlayHT"
+  },
+  "qoder": {
+    "name": "Qoder"
+  },
+  "recraft": {
+    "name": "Recraft"
+  },
+  "runwayml": {
+    "name": "Runway ML"
+  },
+  "sdwebui": {
+    "name": "SD WebUI"
+  },
+  "searchapi": {
+    "name": "SearchAPI"
+  },
+  "searxng": {
+    "name": "SearXNG"
+  },
+  "serper": {
+    "name": "Serper"
+  },
+  "siliconflow": {
+    "name": "SiliconFlow"
+  },
+  "stability-ai": {
+    "name": "Stability AI"
+  },
+  "tavily": {
+    "name": "Tavily"
+  },
+  "together": {
+    "name": "Together AI"
+  },
+  "topaz": {
+    "name": "Topaz"
+  },
+  "tortoise": {
+    "name": "Tortoise TTS"
+  },
+  "venice": {
+    "name": "Venice AI"
+  },
+  "vercel-ai-gateway": {
+    "name": "Vercel AI Gateway"
+  },
+  "vertex-partner": {
+    "name": "Vertex Partner"
+  },
+  "vertex": {
+    "name": "Vertex AI"
+  },
+  "volcengine-ark": {
+    "name": "Volcengine Ark"
+  },
+  "voyage-ai": {
+    "name": "Voyage AI"
+  },
+  "xai": {
+    "name": "xAI (Grok)"
+  },
+  "xiaomi-mimo": {
+    "name": "Xiaomi MiMo"
+  },
+  "xiaomi-tokenplan": {
+    "name": "MiMo Token Plan"
+  },
+  "youcom": {
+    "name": "You.com Search"
+  },
+  "alims-intl": {
+    "name": "Alibaba Studio"
+  },
+  "codebuddy-intl": {
+    "name": "CodeBuddy"
+  },
+  "zed": {
+    "name": "Zed"
+  },
+  "api-airforce": {
+    "name": "API.airforce"
+  },
+  "baidu": {
+    "name": "Baidu Qianfan"
+  },
+  "bazaarlink": {
+    "name": "Bazaarlink"
+  },
+  "bluesminds": {
+    "name": "BluesMinds"
+  },
+  "kilo-gateway": {
+    "name": "Kilo Gateway"
+  },
+  "llm7": {
+    "name": "LLM7"
+  },
+  "sambanova": {
+    "name": "SambaNova"
+  },
+  "tencent": {
+    "name": "Tencent Hunyuan"
+  },
+  "morph": {
+    "name": "Morph"
+  },
+  "poolside": {
+    "name": "Poolside"
+  },
+  "tokenrouter": {
+    "name": "TokenRouter"
+  },
+  "selfhosted-stt": {
+    "name": "Self-hosted STT"
+  },
+  "selfhosted-tts": {
+    "name": "Self-hosted TTS"
+  },
+  "selfhosted-embedding": {
+    "name": "Self-hosted Embedding"
+  },
+  "fish-audio": {
+    "name": "Fish Audio"
+  },
+  "alitp-intl": {
+    "name": "Alibaba Token Plan"
+  },
+  "longcat": {
+    "name": "LongCat"
+  },
+  "sensenova": {
+    "name": "SenseNova"
+  },
+  "dots": {
+    "name": "Dots"
+  },
+  "bai": {
+    "name": "B.AI"
+  },
+  "tokenbom": {
+    "name": "TokenBom"
+  },
+  "agnes-ai": {
+    "name": "Agnes AI"
+  },
+  "agnes-ai-cn": {
+    "name": "Agnes AI (CN)"
+  },
+  "ollama-search": {
+    "name": "Ollama Search"
+  },
+  "xquik": {
+    "name": "Xquik"
+  },
+  "amd": {
+    "name": "AMD Token Factory"
+  },
+  "siliconflow-cn": {
+    "name": "SiliconFlow CN"
+  },
+  "qoder-cn": {
+    "name": "Qoder CN"
+  },
+  "stepfun": {
+    "name": "StepFun"
+  },
+  "stepfun-cn": {
+    "name": "StepFun CN"
+  },
+  "stepfun-plan": {
+    "name": "StepFun Plan"
+  },
+  "stepfun-plan-cn": {
+    "name": "StepFun CN Plan"
+  },
+  "mimo-desktop": {
+    "name": "MiMo Desktop"
+  },
+  "longcat-intl": {
+    "name": "LongCat Intl"
+  },
+  "zcode-free": {
+    "name": "ZCode Free"
+  },
+  "keenable": {
+    "name": "Keenable"
+  },
+  "tinyfish": {
+    "name": "TinyFish"
+  },
+  "drex": {
+    "name": "Drex"
+  },
+  "opencode-zen": {
+    "name": "OpenCode Zen"
+  },
+  "dahl": {
+    "name": "Dahl Inference"
+  },
+  "atria": {
+    "name": "Atria Dawn"
+  },
+  "tokenharbor": {
+    "name": "Token Harbor"
+  }
+}
