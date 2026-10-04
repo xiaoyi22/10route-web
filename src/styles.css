@@ -625,6 +625,19 @@ tbody tr:hover { background: var(--hover); }
 .provider-link strong { display: block; font-size: 12px; overflow-wrap: anywhere; }
 .provider-link small, .connection-open small { display: block; margin-top: 5px; color: var(--muted); font-size: 11px; overflow-wrap: anywhere; }
 .connection-open { border: 0; background: transparent; color: var(--text); padding: 0; text-align: left; cursor: pointer; }
+.provider-health small { display: block; margin-top: 6px; color: var(--muted); font-size: 11px; }
+.provider-failures { min-width: 180px; max-width: 280px; white-space: normal; }
+.provider-failures a { display: block; color: var(--red); font-size: 12px; margin: 4px 0; overflow-wrap: anywhere; }
+.provider-test-status { min-width: 220px; max-width: 320px; white-space: normal; }
+.provider-test-status .status { white-space: normal; }
+.provider-test-status > small { display: block; color: var(--muted); font-size: 12px; line-height: 1.7; margin-top: 6px; }
+.provider-test-status .text-button { margin-top: 6px; }
+.provider-error { border-left: 3px solid var(--red); padding: 12px 14px; margin: 12px 0; font-size: 13px; overflow-wrap: anywhere; }
+.provider-error > strong { display: block; color: var(--red); }
+.provider-error-name { display: block; color: var(--muted); margin-bottom: 6px; }
+.provider-error p { color: var(--text); line-height: 1.7; margin: 8px 0; }
+.provider-error summary { color: var(--muted); cursor: pointer; }
+.provider-error pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px; max-height: 240px; overflow-y: auto; margin-bottom: 0; }
 .proxy-cell { min-width: 180px; max-width: 280px; white-space: normal; overflow-wrap: anywhere; }
 .proxy-cell > span, .proxy-cell > small { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; }
 .proxy-note { color: var(--muted); font-size: 12px; line-height: 1.7; overflow-wrap: anywhere; }

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ErrorBlock, Modal } from './Controls.jsx';
 import { requestJson } from '../api/client.js';
+import ProviderError from './ProviderError.jsx';
 
 export default function UpstreamModels({ supplier, connections, existing, onClose, onSaved }) {
   const [connectionId, setConnectionId] = useState(connections[0]?.id || '');
@@ -23,7 +24,7 @@ export default function UpstreamModels({ supplier, connections, existing, onClos
       }).filter(Boolean);
       setModels([...new Map(items.map(item => [item.id, item])).values()]);
       setWarning(result.warning || '');
-    } catch (failure) { setError(failure.message); }
+    } catch (failure) { setError(failure); }
     finally { setBusy(false); }
   }
   async function importModels() {
@@ -45,7 +46,7 @@ export default function UpstreamModels({ supplier, connections, existing, onClos
   return <Modal title={`获取上游模型 · ${supplier.name}`} busy={busy} onClose={onClose}>
     <div className="editor-form"><label>查询账号<select value={connectionId} disabled={busy} onChange={event => { setConnectionId(event.target.value); setModels(null); setSelected([]); setError(''); setWarning(''); }}>{connections.map(connection => <option key={connection.id} value={connection.id}>{connection.name}</option>)}</select></label>
       <button className="button" disabled={busy || !connectionId} onClick={fetchModels}>{busy ? '正在处理…' : '获取模型列表'}</button>
-      {error && <ErrorBlock message={error}/>} {warning && <p className="inline-note" role="status">{warning}</p>}
+      {error && (typeof error === 'string' ? <ErrorBlock message={error}/> : <ProviderError error={error} authType={connections.find(connection => connection.id === connectionId)?.authType}/>)} {warning && <p className="inline-note" role="status">{warning}</p>}
       {models && <><label>搜索上游模型<input value={query} onChange={event => setQuery(event.target.value)}/></label>
         <label className="checkbox-filter"><input type="checkbox" disabled={busy || !available.length} checked={!!available.length && available.every(model => selected.includes(model.id))} onChange={event => setSelected(previous => event.target.checked ? [...new Set([...previous, ...available.map(model => model.id)])] : previous.filter(id => !available.some(model => model.id === id)))}/>选择当前搜索结果</label>
         <div className="table-shell" style={{ maxHeight: 360, overflowY: 'auto' }}><table><thead><tr><th>导入</th><th>上游模型 ID</th><th>名称</th></tr></thead><tbody>{shown.map(model => <tr key={model.id}><td><input type="checkbox" aria-label={`导入 ${model.id}`} disabled={busy || registered.has(model.id)} checked={selected.includes(model.id)} onChange={event => setSelected(previous => event.target.checked ? [...previous, model.id] : previous.filter(id => id !== model.id))}/>{registered.has(model.id) && <span className="muted">已登记</span>}</td><td className="log-model">{model.id}</td><td>{model.name}</td></tr>)}{!shown.length && <tr><td colSpan="3" className="table-empty">{models.length ? '没有匹配的模型' : '上游返回了空模型列表，可手动添加自定义模型'}</td></tr>}</tbody></table></div>
