@@ -182,3 +182,5 @@ $env:CHOKIDAR_USEPOLLING = 'true'
 node scripts/dev.mjs
 node scripts/build.mjs
 ```
+
+<!-- publish-watch self test 2026-10-04 -->
