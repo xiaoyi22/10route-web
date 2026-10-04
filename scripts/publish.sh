@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Publish the Windows share source tree (R:\10router-web) to the KN10 production release.
-# Manual trigger: bash scripts/publish-watch.sh --once
+# Manual trigger: bash scripts/publish.sh
 set -euo pipefail
 
 src=/home/meet/10router-web
