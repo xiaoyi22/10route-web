@@ -14,6 +14,7 @@ const connections = [
   { id: 'bad-request', name: '参数错误账号', authType: 'apikey', lastError: 'API error: 400 Unsupported model' },
   { id: 'bad-key', name: '密钥异常账号', authType: 'apikey', lastError: 'Failed to fetch models: 401' },
   { id: 'expired', name: '过期授权账号', authType: 'oauth', lastError: 'Token expired and refresh failed' },
+  { id: 'bad-sse', name: '同步响应异常账号', authType: 'apikey', lastError: 'Invalid SSE response for non-streaming request' },
   { id: 'disabled', name: '停用账号', authType: 'apikey', isActive: false, lastError: 'HTTP 403' },
   { id: 'healthy', name: '正常账号', testStatus: 'success' },
   { id: 'unknown', name: '未测试账号' },
@@ -31,7 +32,8 @@ try {
   const row = page.locator('tbody tr').filter({ hasText: 'OpenAI' }).first();
   await row.getByText('HTTP 400 · 请求参数错误', { exact: true }).waitFor();
   await row.getByText('HTTP 401 · 认证失败', { exact: true }).waitFor();
-  await row.getByText('3 个异常', { exact: true }).waitFor();
+  await row.getByText('流式响应转同步失败', { exact: true }).waitFor();
+  await row.getByText('4 个异常', { exact: true }).waitFor();
   await row.getByRole('link', { name: '查看供应商 OpenAI' }).click();
   const keyRow = page.locator('tr').filter({ hasText: '密钥异常账号' });
   await keyRow.getByText('HTTP 401 · 认证失败', { exact: true }).waitFor();
@@ -40,6 +42,16 @@ try {
   await dialog.getByText('HTTP 401 · 认证失败', { exact: true }).waitFor();
   await dialog.getByText('原始错误', { exact: true }).click();
   assert.equal(await dialog.locator('pre').innerText(), 'Failed to fetch models: 401');
+  await page.getByRole('button', { name: '关闭窗口' }).click();
+  const sseRow = page.locator('tr').filter({ hasText: '同步响应异常账号' });
+  await sseRow.getByText('流式响应转同步失败', { exact: true }).waitFor();
+  await sseRow.getByRole('button', { name: '查看错误详情' }).click();
+  dialog = page.getByRole('dialog');
+  await dialog.getByText('流式响应转同步失败', { exact: true }).waitFor();
+  assert.equal(await dialog.locator('pre').isVisible(), false, '原始英文错误默认折叠');
+  assert(!(await dialog.innerText()).includes('Invalid SSE'));
+  await dialog.getByText('原始错误', { exact: true }).click();
+  assert.equal(await dialog.locator('pre').innerText(), 'Invalid SSE response for non-streaming request');
   await page.getByRole('button', { name: '关闭窗口' }).click();
   await keyRow.getByRole('button', { name: '测试 密钥异常账号', exact: true }).click();
   await page.locator('.provider-error').getByText('HTTP 401 · 认证失败', { exact: true }).waitFor();
@@ -60,7 +72,7 @@ try {
       await page.evaluate(value => { document.documentElement.dataset.theme = value; }, theme);
       assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `Page overflow: ${width}`);
       await page.screenshot({ path: `${shotDir}/accounts-${width}-${theme}.png`, fullPage: true });
-      await keyRow.getByRole('button', { name: '查看错误详情' }).click();
+      await sseRow.getByRole('button', { name: '查看错误详情' }).click();
       dialog = page.getByRole('dialog');
       await dialog.getByText('原始错误', { exact: true }).click();
       assert(await dialog.evaluate(element => element.scrollWidth <= element.clientWidth), `Dialog overflow: ${width}`);

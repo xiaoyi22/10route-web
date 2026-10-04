@@ -48,7 +48,8 @@ try {
     await click('获取上游模型'); await click('获取模型列表');
     await until("!!document.querySelector('input[aria-label=\"导入 fallback-model\"]')");
     assert.equal(await evaluate("document.querySelector('input[aria-label=\"导入 e2e-model\"]').disabled"),true);
-    await evaluate("document.querySelector('input[aria-label=\"导入 fallback-model\"]').click()"); await click('导入所选模型');
+    await evaluate("document.querySelector('input[aria-label=\"导入 fallback-model\"]').click()"); await click('导入所选模型（1）');
+    await until("document.body.innerText.includes('已导入 1 个模型，已向下游发布。')"); await click('完成');
     await until("!document.querySelector('dialog[open]')"); await until(`document.body.innerText.includes(${JSON.stringify(prefix+'/fallback-model')})`);
     await send('Page.reload'); await until(`document.body.innerText.includes(${JSON.stringify(prefix+'/fallback-model')})`);
     const models=(await api('/api/models/custom')).data.models.filter(model=>model.providerAlias===node.id);

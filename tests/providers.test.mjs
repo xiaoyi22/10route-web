@@ -61,3 +61,16 @@ test('provider failures retain full raw JSON and avoid guessing HTTP codes from 
   assert.equal(providerFailure('Request took 400 ms via http://localhost:401/path').status, 0);
   assert.equal(providerFailure('Unrecognized upstream response').label, '连接异常');
 });
+
+test('流式与同步转换错误显示中文原因并保留原始错误', () => {
+  const raw = 'Invalid SSE response for non-streaming request';
+  const failure = providerFailure({ status: 502, message: raw });
+  assert.equal(failure.label, 'HTTP 502 · 流式响应转同步失败');
+  assert.match(failure.hint, /格式.*为空.*截断/);
+  assert.equal(failure.raw, raw);
+  assert.equal(providerFailure(raw).label, '流式响应转同步失败');
+  assert.equal(providerFailure('Failed to convert streaming response to JSON').label, '流式响应转同步失败');
+  assert.equal(providerFailure('Failed to read SSE response for non-streaming request').label, '流式响应读取失败');
+  assert.equal(providerFailure('Invalid JSON response from bx').label, '响应格式异常');
+  assert.equal(providerFailure({ status: 502, message: 'Bad Gateway' }).label, 'HTTP 502 · 上游服务异常');
+});

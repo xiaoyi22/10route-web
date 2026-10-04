@@ -9,6 +9,7 @@ import { normalizeProviders, requestJson } from '../api/client.js';
 import { connectionProxy, groupProviders, providerFailure, providerInfo, safeProxyUrl } from '../api/providers.js';
 import { ModelsPage } from './CorePages.jsx';
 import { proxyBinding } from '../api/hermes.js';
+import { usePreferences } from '../store/preferences.js';
 
 const labels = { healthy: '历史测试正常', error: '连接异常', disabled: '已停用', unknown: '未测试 / 未知' };
 
@@ -99,7 +100,8 @@ export function ProvidersPage() {
   const canCreate = !selectedId || selected?.custom || builtInProviders.some(([id]) => id === selected?.id);
   const [query, setQuery] = useState('');
   const deferredQuery = useDeferredValue(query);
-  const [healthyOnly, setHealthyOnly] = useState(false);
+  const healthyOnly = usePreferences(state => state.healthyConnectionsOnly);
+  const setHealthyOnly = usePreferences(state => state.setHealthyConnectionsOnly);
   const [editor, setEditor] = useState(null);
   const [nodeEditor, setNodeEditor] = useState(null);
   const [removingNode, setRemovingNode] = useState(null);
@@ -132,7 +134,7 @@ export function ProvidersPage() {
     {managementEnabled && <div className="section-toolbar"><button className="button primary" onClick={() => setNodeEditor({})}><Icon name="plus"/>添加供应商</button>{selected?.custom && <div className="row-actions"><button className="button" onClick={() => setNodeEditor(nodes.data.nodes.find(node => node.id === selected.id))}>编辑供应商</button><button className="button danger" onClick={() => setRemovingNode(selected)}>删除供应商</button></div>}</div>}
     {nodeEditor && <ProviderNodeEditor node={nodeEditor.id ? nodeEditor : null} onClose={() => { setNodeEditor(null); refresh(); }} onSaved={id => { refresh(); navigate(`/dashboard/providers/${encodeURIComponent(id)}`); }}/>} 
     {removingNode && <ConfirmDelete title="删除供应商及全部账号、模型" name={removingNode.name} url={`/api/provider-nodes/${encodeURIComponent(removingNode.id)}`} onClose={() => setRemovingNode(null)} onDeleted={() => { refresh(); navigate('/dashboard/providers'); }}/>} 
-    {selectedId && <Link className="text-button provider-back" to="/dashboard/providers" onClick={() => { setQuery(''); setHealthyOnly(false); }}><Icon name="back"/>全部供应商</Link>}
+    {selectedId && <Link className="text-button provider-back" to="/dashboard/providers" onClick={() => setQuery('')}><Icon name="back"/>全部供应商</Link>}
     <PageHeading title={selected?.name || (selectedId ? '供应商详情' : '供应商')} subtitle={selected ? `我的网关 / ${selected.connections.length} 个账号连接` : '我的网关 / 供应商与账号连接'}><button className="button" onClick={refresh} disabled={resource.loading || !!busy}><Icon name="refresh"/>刷新连接</button>{managementEnabled && canCreate && <button className="button primary" onClick={() => setEditor({ provider: selected?.id })}><Icon name="plus"/>新增连接</button>}</PageHeading>
     <div className="provider-summary"><span><strong>{groups.length}</strong> 个供应商 / 节点</span><span><strong>{connections.length}</strong> 个连接</span><span><strong>{connections.filter(connection => connection.isActive).length}</strong> 个启用</span><span className="badge subdued">{managementEnabled ? '管理访问' : '只读'}</span></div>
     {message && <p className="success-message" role="status">{message}</p>}{error && (typeof error === 'string' ? <ErrorBlock message={error}/> : <ProviderError name={error.name} error={error.failure} authType={error.authType}/>)}
@@ -141,7 +143,7 @@ export function ProvidersPage() {
       {!selectedId ? <div className="table-shell"><table><caption className="sr-only">供应商分组列表</caption><thead><tr><th>供应商 / 节点</th><th>账号连接</th><th>历史测试 / 启用</th><th>异常原因</th><th>当前代理</th><th>详情</th></tr></thead><tbody>{resource.loading && !resource.data ? <tr><td colSpan="6" className="table-empty">正在加载供应商…</td></tr> : shownGroups.map(group => {
         const paths = [...new Set(group.connections.map(connection => { const path = proxy(connection); return `${path.title} · ${path.address}`; }))];
         const failures = [...new Set(group.connections.filter(connection => connection.lastError || connection.status === 'error').map(connection => providerFailure(connection.lastError, connection.authType).label))];
-        return <tr key={group.id}><td><Link className="provider-link" to={`/dashboard/providers/${encodeURIComponent(group.id)}`} onClick={() => { setQuery(''); setHealthyOnly(false); }}><ProviderIcon provider={group.id}/><div><strong>{group.name}</strong><small>{group.custom ? '自定义节点' : '内置供应商'}{group.prefix ? ` · ${group.prefix}` : ''}</small></div></Link></td><td>{group.connections.length}</td><td><div className="provider-health"><span className={`status ${group.errors ? 'error' : group.healthy ? 'healthy' : 'unknown'}`}><span className="dot"/>{group.errors ? `${group.errors} 个异常` : group.healthy ? `${group.healthy} 个测试正常` : '未测试 / 已停用'}</span><small>{group.enabled} 个启用 · {group.healthy} 个测试正常</small></div></td><td className="provider-failures">{failures.length ? failures.map(label => <Link key={label} to={`/dashboard/providers/${encodeURIComponent(group.id)}`}>{label}</Link>) : <span className="muted">—</span>}</td><td className="proxy-cell">{paths.map(path => <span key={path}>{path}</span>)}</td><td><Link className="icon-button" title={`查看供应商 ${group.name}`} aria-label={`查看供应商 ${group.name}`} to={`/dashboard/providers/${encodeURIComponent(group.id)}`}><Icon name="arrow"/></Link></td></tr>;
+        return <tr key={group.id}><td><Link className="provider-link" to={`/dashboard/providers/${encodeURIComponent(group.id)}`} onClick={() => setQuery('')}><ProviderIcon provider={group.id}/><div><strong>{group.name}</strong><small>{group.custom ? '自定义节点' : '内置供应商'}{group.prefix ? ` · ${group.prefix}` : ''}</small></div></Link></td><td>{group.connections.length}</td><td><div className="provider-health"><span className={`status ${group.errors ? 'error' : group.healthy ? 'healthy' : 'unknown'}`}><span className="dot"/>{group.errors ? `${group.errors} 个异常` : group.healthy ? `${group.healthy} 个测试正常` : '未测试 / 已停用'}</span><small>{group.enabled} 个启用 · {group.healthy} 个测试正常</small></div></td><td className="provider-failures">{failures.length ? failures.map(label => <Link key={label} to={`/dashboard/providers/${encodeURIComponent(group.id)}`}>{label}</Link>) : <span className="muted">—</span>}</td><td className="proxy-cell">{paths.map(path => <span key={path}>{path}</span>)}</td><td><Link className="icon-button" title={`查看供应商 ${group.name}`} aria-label={`查看供应商 ${group.name}`} to={`/dashboard/providers/${encodeURIComponent(group.id)}`}><Icon name="arrow"/></Link></td></tr>;
       })}{!resource.loading && !shownGroups.length && <tr><td colSpan="6" className="table-empty">没有匹配的供应商</td></tr>}</tbody></table></div> : selected ? <>
         {selected.baseUrl && <div className="provider-endpoint"><span>接口地址</span><code>{safeProxyUrl(selected.baseUrl)}</code></div>}
         <div className="table-shell"><table><caption className="sr-only">供应商账号连接列表</caption><thead><tr><th>账号连接</th><th>测试状态</th><th>优先级</th><th>当前代理</th><th>启用</th><th>操作</th></tr></thead><tbody>{shownConnections.map(connection => {

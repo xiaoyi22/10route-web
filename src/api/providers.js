@@ -40,7 +40,13 @@ export function providerFailure(error, authType = '') {
   const credential = authType === 'oauth' ? 'Token' : 'API Key';
   let reason = '连接异常';
   let hint = '查看原始错误，核对接口地址、账号配置和代理连接后重新测试。';
-  if (status === 400) {
+  if (/Invalid SSE response for non-streaming request|Failed to convert streaming response to JSON/i.test(message)) {
+    reason = '流式响应转同步失败'; hint = '供应商返回的流式内容无法转换成完整的同步结果，请检查响应格式是否兼容、内容是否为空或被截断。';
+  } else if (/Failed to read SSE response for non-streaming request/i.test(message)) {
+    reason = '流式响应读取失败'; hint = '读取供应商响应时连接中断，请检查上游服务及网络或代理连接。';
+  } else if (/Invalid JSON response from/i.test(message)) {
+    reason = '响应格式异常'; hint = '供应商返回的内容不是有效的同步响应，请核对接口地址、协议及上游返回内容。';
+  } else if (status === 400) {
     reason = '请求参数错误'; hint = '检查接口地址、协议、模型名称和请求参数；400 本身不能说明 Key 失效。';
   } else if (status === 401) {
     reason = '认证失败'; hint = `上游拒绝了认证，${credential} 可能无效、过期或已撤销；${authType === 'oauth' ? '请重新授权账号' : '请核对或更换 API Key'}。`;

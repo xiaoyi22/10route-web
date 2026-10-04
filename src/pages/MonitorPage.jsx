@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Icon from '../components/Icon.jsx';
 import ProviderIcon from '../components/ProviderIcon.jsx';
+import ProviderError from '../components/ProviderError.jsx';
 import { ErrorBlock, IconButton, Modal, PageHeading, formatDate, formatNumber, managementEnabled, useResource } from '../components/Controls.jsx';
 import { requestJson } from '../api/client.js';
 import { providerInfo } from '../api/providers.js';
@@ -18,7 +19,7 @@ function CheckDetail({ row, name, catalog, onClose }) {
   const accountName = id => provider?.connections?.find(connection => connection.id === id)?.name || id || '后端未返回';
   return <Modal title={`${checkNames[row.check || 'iq']} · ${row.model}`} onClose={onClose}>
     <dl className="request-details"><div><dt>供应商</dt><dd>{name(row.provider)}</dd></div><div><dt>检测时间</dt><dd>{formatDate(row.at)}</dd></div><div><dt>结果</dt><dd><CheckStatus status={row.status}/></dd></div><div><dt>本轮耗时</dt><dd>{duration(checkLatency(row))}</dd></div>{row.check !== 'availability' && <div><dt>题库正确率</dt><dd>{row.score == null ? '未评分' : `${row.score}%`}</dd></div>}<div><dt>记录来源</dt><dd>{row.manual ? '本页单次测试' : '后台检测记录'}</dd></div></dl>
-    {(row.answers || []).map((answer, index) => <section className="monitor-answer" key={index}><h3>{row.check === 'availability' ? '模型回复' : `题目 ${index + 1}`}</h3>{answer.question && <p>{answer.question}</p>}<dl className="request-details">{row.check !== 'availability' && <><div><dt>标准答案</dt><dd>{answer.answer ?? answer.iq?.expected ?? '—'}</dd></div><div><dt>模型答案</dt><dd>{answer.iq?.modelAnswered || '—'}</dd></div></>}<div><dt>状态</dt><dd><CheckStatus status={answer.status}/></dd></div><div><dt>HTTP 状态</dt><dd>{answer.ok ? answer.statusCode ?? answer.httpStatus ?? '—' : answer.statusCode ?? answer.httpStatus ?? '—'}</dd></div><div><dt>耗时</dt><dd>{duration(answer.latencyMs)}</dd></div><div><dt>使用账号</dt><dd>{accountName(answer.connectionId)}</dd></div></dl>{answer.error ? <ErrorBlock message={answer.error}/> : <pre className="request-metadata">{answer.content || answer.iq?.modelAnswered || '后端未返回文本'}</pre>}</section>)}
+    {(row.answers || []).map((answer, index) => <section className="monitor-answer" key={index}><h3>{row.check === 'availability' ? '模型回复' : `题目 ${index + 1}`}</h3>{answer.question && <p>{answer.question}</p>}<dl className="request-details">{row.check !== 'availability' && <><div><dt>标准答案</dt><dd>{answer.answer ?? answer.iq?.expected ?? '—'}</dd></div><div><dt>模型答案</dt><dd>{answer.iq?.modelAnswered || '—'}</dd></div></>}<div><dt>状态</dt><dd><CheckStatus status={answer.status}/></dd></div><div><dt>HTTP 状态</dt><dd>{answer.ok ? answer.statusCode ?? answer.httpStatus ?? '—' : answer.statusCode ?? answer.httpStatus ?? '—'}</dd></div><div><dt>耗时</dt><dd>{duration(answer.latencyMs)}</dd></div><div><dt>使用账号</dt><dd>{accountName(answer.connectionId)}</dd></div></dl>{answer.error ? <ProviderError error={{ message: answer.error, status: answer.statusCode ?? answer.httpStatus }} authType={provider?.connections?.find(connection => connection.id === answer.connectionId)?.authType}/> : <pre className="request-metadata">{answer.content || answer.iq?.modelAnswered || '后端未返回文本'}</pre>}</section>)}
   </Modal>;
 }
 

@@ -59,6 +59,17 @@ try {
   await page.getByRole('button', { name: '关闭窗口' }).click();
   await page.unroute('**/api/models/test');
 
+  await page.route('**/api/models/test', route => route.fulfill({ json: { ok: false, status: 502, error: 'Invalid SSE response for non-streaming request', latencyMs: 72 } }));
+  await page.getByRole('button', { name: '单次智商检测 gpt', exact: true }).click();
+  await start.click();
+  const sseDialog = page.getByRole('dialog');
+  await sseDialog.getByText('HTTP 502 · 流式响应转同步失败', { exact: true }).waitFor();
+  assert(!(await sseDialog.innerText()).includes('Invalid SSE'));
+  await sseDialog.getByText('原始错误', { exact: true }).click();
+  assert.equal(await sseDialog.locator('.provider-error pre').innerText(), 'Invalid SSE response for non-streaming request');
+  await page.getByRole('button', { name: '关闭窗口' }).click();
+  await page.unroute('**/api/models/test');
+
   await page.route('**/api/models/test', route => route.fulfill({ json: { ok: true, iq: {}, latencyMs: 72 } }));
   await page.getByRole('button', { name: '单次智商检测 gpt', exact: true }).click();
   await start.click();

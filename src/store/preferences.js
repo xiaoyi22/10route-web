@@ -10,4 +10,6 @@ export const usePreferences = create(persist(set => ({
   setShowLogPrices: showLogPrices => set({ showLogPrices }),
   autoRefreshLogs: true,
   setAutoRefreshLogs: autoRefreshLogs => set({ autoRefreshLogs }),
+  healthyConnectionsOnly: false,
+  setHealthyConnectionsOnly: healthyConnectionsOnly => set({ healthyConnectionsOnly }),
 }), { name: '10router-web-preferences' }));
