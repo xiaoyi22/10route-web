@@ -28,10 +28,7 @@ cp "$source_dir/package.json" "$release/"
 cp "$source_dir/scripts/10router-web.service" "$backup/service-next"
 node --check "$release/scripts/serve.mjs"
 node --check "$release/scripts/hermes-bridge.mjs"
-node --input-type=module - "$release/scripts/serve.mjs" <<'JS'
-import { pathToFileURL } from 'node:url';
-await import(pathToFileURL(process.argv[2]));
-JS
+TENROUTER_RELEASE_SERVER="$release/scripts/serve.mjs" node --input-type=module -e 'await import(process.env.TENROUTER_RELEASE_SERVER)'
 if grep -Rl 'linear-demo' "$release/dist/assets" --include='*.js'; then
   printf 'Demo frontend cannot be deployed\n' >&2
   exit 1
