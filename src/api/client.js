@@ -25,12 +25,14 @@ export async function requestJson(url, options = {}, fetcher = globalThis.fetch)
   try { data = await response.json(); }
   catch { throw new ApiError('接口返回的 JSON 格式无效', response.status); }
   const upstreamModels = /^\/api\/providers\/[^/]+\/models$/.test(new URL(url, 'http://localhost').pathname) && data.error !== 'Unauthorized';
-  if (response.status === 401 && url !== '/api/auth/login' && !upstreamModels && typeof window !== 'undefined') {
+  const oauthFailure = new URL(url, 'http://localhost').pathname.startsWith('/api/oauth/') && data.error !== 'Unauthorized';
+  const passwordRejected = ['/api/settings', '/api/settings/database', '/api/auth/verify-password', '/api/oauth/transfer/export', '/api/oauth/codebuddy-cn/bulk-import', '/api/host-management'].includes(new URL(url, 'http://localhost').pathname) && /password/i.test(data.error || '');
+  if (response.status === 401 && url !== '/api/auth/login' && !upstreamModels && !passwordRejected && !oauthFailure && typeof window !== 'undefined') {
     window.dispatchEvent(new Event('tenrouter:unauthorized'));
   }
   if (!response.ok) {
     const messages = { 401: '登录已失效，请重新登录', 403: '访问被权限或本机安全策略拒绝', 429: '请求过于频繁，请稍后重试' };
-    throw new ApiError((upstreamModels && data.error) || messages[response.status] || data.error || `请求失败 (${response.status})`, response.status, data);
+    throw new ApiError((passwordRejected && '管理员密码验证失败，请检查后重试') || ((upstreamModels || oauthFailure) && data.error) || messages[response.status] || data.error || `请求失败 (${response.status})`, response.status, data);
   }
   return data;
 }

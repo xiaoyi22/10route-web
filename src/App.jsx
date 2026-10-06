@@ -5,9 +5,10 @@ import ProviderIcon from './components/ProviderIcon.jsx';
 import TokenUsageTable from './components/TokenUsageTable.jsx';
 import { requestJson, normalizeProviders, normalizeStats } from './api/client.js';
 import { usePreferences } from './store/preferences.js';
-import { ErrorBlock, PageHeading, managementEnabled, useResource } from './components/Controls.jsx';
+import { CopyButton, ErrorBlock, PageHeading, managementEnabled, useResource } from './components/Controls.jsx';
 import { groupProviders, providerInfo } from './api/providers.js';
 import { ProxyPage } from './pages/ProxyPage.jsx';
+import './admin.css';
 
 const TokenCacheChart = lazy(() => import('./components/TokenCacheChart.jsx'));
 const ProvidersPage = lazy(() => import('./pages/ProvidersPage.jsx').then(module => ({ default: module.ProvidersPage })));
@@ -19,21 +20,33 @@ const CombosPage = lazy(() => import('./pages/CombosPage.jsx').then(module => ({
 const DistributionPage = lazy(() => import('./pages/DistributionPage.jsx').then(module => ({ default: module.DistributionPage })));
 const BalancesPage = lazy(() => import('./pages/BalancesPage.jsx').then(module => ({ default: module.BalancesPage })));
 const ChainHealthPage = lazy(() => import('./pages/ChainHealthPage.jsx').then(module => ({ default: module.ChainHealthPage })));
+const PricingPage = lazy(() => import('./pages/PricingPage.jsx').then(module => ({ default: module.PricingPage })));
+const ProxyPoolsPage = lazy(() => import('./pages/ProxyPoolsPage.jsx').then(module => ({ default: module.ProxyPoolsPage })));
+const SettingsPage = lazy(() => import('./pages/SettingsPage.jsx').then(module => ({ default: module.SettingsPage })));
+const AuthorizationPage = lazy(() => import('./pages/AuthorizationPage.jsx').then(module => ({ default: module.AuthorizationPage })));
+const ChatPage = lazy(() => import('./pages/ChatPage.jsx').then(module => ({ default: module.ChatPage })));
+const TranslatorPage = lazy(() => import('./pages/TranslatorPage.jsx').then(module => ({ default: module.TranslatorPage })));
 
 const demo = __DATA_MODE__ === 'demo';
 const navItems = [
   { path: '/dashboard/overview', title: '概览', icon: 'grid', group: '工作区' },
   { path: '/dashboard/providers', title: '供应商', icon: 'server', group: '工作区' },
+  { path: '/dashboard/authorization', title: '账号授权', icon: 'key', group: '工作区' },
   { path: '/dashboard/endpoint', title: '端点与接入', icon: 'link', group: '工作区' },
   { path: '/dashboard/models', title: '模型', icon: 'grid', group: '工作区' },
   { path: '/dashboard/combos', title: '组合模型', icon: 'radio', group: '工作区' },
   { path: '/dashboard/distribution', title: '下游分发', icon: 'globe', group: '工作区' },
+  { path: '/dashboard/chat', title: '在线聊天', icon: 'radio', group: '工作区' },
   { path: '/dashboard/proxy', title: '代理控制', icon: 'globe', group: '工作区' },
   { path: '/dashboard/balances', title: '余额与配额', icon: 'coins', group: '监控' },
   { path: '/dashboard/usage', title: '用量统计', icon: 'chart', group: '监控' },
   { path: '/dashboard/logs', title: '请求日志', icon: 'logs', group: '监控' },
   { path: '/dashboard/monitor', title: '模型检测', icon: 'activity', group: '监控' },
   { path: '/dashboard/chain-health', title: '链路健康', icon: 'shield', group: '监控' },
+  { path: '/dashboard/pricing', title: '模型价格', icon: 'coins', group: '管理' },
+  { path: '/dashboard/proxy-pools', title: '代理池', icon: 'server', group: '管理' },
+  { path: '/dashboard/settings', title: '系统设置', icon: 'shield', group: '管理' },
+  { path: '/dashboard/translator', title: '协议调试', icon: 'activity', group: '管理' },
 ];
 const number = value => value === null || value === undefined ? '—' : new Intl.NumberFormat('zh-CN').format(value);
 const compact = value => value === null || value === undefined ? '—' : new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 2 }).format(value);
@@ -54,10 +67,15 @@ function useTheme() {
   }, [theme]);
 }
 
-function Login({ onLogin }) {
+function Login({ auth, onLogin }) {
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const passwordEnabled = !['sso', 'oidc', 'saml'].includes(auth.authMode);
+  const ssoEnabled = auth.authMode && auth.authMode !== 'password';
+  const saml = auth.ssoType === 'saml' || auth.authMode === 'saml';
+  const ssoConfigured = saml ? auth.samlConfigured : auth.oidcConfigured;
+  const callbackError = new URLSearchParams(window.location.search).get('error');
   async function submit(event) {
     event.preventDefault();
     setBusy(true);
@@ -76,7 +94,9 @@ function Login({ onLogin }) {
       <span className="eyebrow">MY AI GATEWAY</span>
       <h1>连接你的工作空间</h1><p className="subtitle">登录 10router，查看你的网关。</p>
       <div className="mode-banner"><Icon name="shield"/><div><strong>{demo ? '演示工作区' : '网关登录'}</strong><span>{demo ? '演示数据 · 未连接真实网关' : '使用网关管理密码登录'}</span></div></div>
-      <form onSubmit={submit}><label htmlFor="login-password">登录密码</label><input id="login-password" type="password" autoComplete="current-password" value={password} onChange={event => setPassword(event.target.value)} required autoFocus placeholder="输入管理密码"/>{error && <p className="error-message" role="alert">{error}</p>}<button className="button primary full" disabled={busy} type="submit">{busy ? '正在登录…' : '进入管理端'}<Icon name="arrow"/></button></form>
+      {passwordEnabled && <form onSubmit={submit}><label htmlFor="login-password">登录密码</label><input id="login-password" type="password" autoComplete="current-password" value={password} onChange={event => setPassword(event.target.value)} required autoFocus placeholder="输入管理密码"/>{error && <p className="error-message" role="alert">{error}</p>}<button className="button primary full" disabled={busy} type="submit">{busy ? '正在登录…' : '进入管理端'}<Icon name="arrow"/></button></form>}
+      {ssoEnabled && (ssoConfigured ? <a className="button full" href={`/api/auth/${saml ? 'saml' : 'oidc'}/start`}><Icon name="shield"/>{(saml ? auth.samlLoginLabel : auth.oidcLoginLabel) || '使用统一账号登录'}</a> : <p className="error-message" role="alert">统一登录尚未配置完整，请联系网关管理员。</p>)}
+      {callbackError && <p className="error-message" role="alert">统一登录未完成：{callbackError}</p>}
       {demo && <p className="demo-password">演示密码 <code>linear-demo</code><button type="button" className="text-button" onClick={() => setPassword('linear-demo')}>填入</button></p>}
     </main><div className="login-footer">10router / 网关控制台</div>
   </div>;
@@ -118,13 +138,13 @@ function Layout({ auth, onLogout }) {
       <Brand/>
       <div className="workspace"><span className="workspace-mark"><Icon name="radio"/></span><div><strong>我的网关</strong><small>{demo ? '演示工作区' : '10router 工作区'}</small></div></div>
       <button type="button" className="sidebar-search" onClick={() => setSearchOpen(true)}><Icon name="search"/><span>搜索页面</span><Icon name="arrow"/></button>
-      <nav aria-label="主导航">{['工作区', '监控'].map(group => <div key={group}><p className="nav-group">{group}</p>{navItems.filter(item => item.group === group).map(item => <NavLink key={item.path} to={item.path} className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}><Icon name={item.icon}/><span>{item.title}</span></NavLink>)}</div>)}</nav>
+      <nav aria-label="主导航">{['工作区', '监控', '管理'].map(group => <div key={group}><p className="nav-group">{group}</p>{navItems.filter(item => item.group === group).map(item => <NavLink key={item.path} to={item.path} className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}><Icon name={item.icon}/><span>{item.title}</span></NavLink>)}</div>)}</nav>
       <div className="sidebar-bottom"><div className="sidebar-caption"><Icon name="shield"/><span>{managementEnabled ? '网关管理访问' : '网关只读访问'}</span></div><div className="profile"><span className="avatar">{demo ? 'D' : 'R'}</span><div><strong>{auth.displayName || '管理用户'}</strong><small>{demo ? '演示访客' : '网关管理员'}</small></div><button className="icon-button" aria-label="退出登录" title="退出登录" onClick={onLogout}><Icon name="logout"/></button></div></div>
     </aside>
     <div className="app-content">
       <header className="topbar"><button className="icon-button mobile-menu" aria-label="打开导航" title="打开导航" onClick={() => setMobileOpen(true)}><Icon name="menu"/></button><span className="mobile-brand">10router</span><span>我的网关</span><span className="breadcrumb-slash">/</span><strong>{current.title}</strong><div className="topbar-right"><span className="mode-indicator"><span className="dot"/>{demo ? '演示数据' : managementEnabled ? '网关管理' : '网关只读'}</span><ThemeControl /></div></header>
       <Suspense fallback={<main id="main" className="main-content"><p className="empty-state" role="status" aria-busy="true">正在加载…</p></main>}>
-      <main id="main" className="main-content"><Routes><Route index element={<Navigate to="/dashboard/overview" replace/>}/><Route path="overview" element={<UsagePage overview/>}/><Route path="usage" element={<UsagePage/>}/><Route path="providers" element={<ProvidersPage/>}/><Route path="providers/:provider" element={<ProvidersPage/>}/><Route path="endpoint" element={<EndpointPage/>}/><Route path="models" element={<ModelsPage/>}/><Route path="logs" element={<LogsPage/>}/><Route path="monitor" element={<MonitorPage/>}/><Route path="combos" element={<CombosPage/>}/><Route path="distribution" element={<DistributionPage/>}/><Route path="balances" element={<BalancesPage/>}/><Route path="proxy" element={<ProxyPage/>}/><Route path="chain-health" element={<ChainHealthPage/>}/><Route path="*" element={<NotFound/>}/></Routes><footer className="page-footer"><span><span className="dot"/>{demo ? '演示工作区 · 未连接真实网关' : `10router · ${managementEnabled ? '管理' : '只读'}工作区`}</span><span>YOUR MODELS. YOUR GATEWAY.</span></footer></main>
+      <main id="main" className="main-content"><Routes><Route index element={<Navigate to="/dashboard/overview" replace/>}/><Route path="overview" element={<UsagePage overview/>}/><Route path="usage" element={<UsagePage/>}/><Route path="providers" element={<ProvidersPage/>}/><Route path="providers/:provider" element={<ProvidersPage/>}/><Route path="endpoint" element={<EndpointPage/>}/><Route path="models" element={<ModelsPage/>}/><Route path="logs" element={<LogsPage/>}/><Route path="monitor" element={<MonitorPage/>}/><Route path="combos" element={<CombosPage/>}/><Route path="distribution" element={<DistributionPage/>}/><Route path="balances" element={<BalancesPage/>}/><Route path="proxy" element={<ProxyPage/>}/><Route path="chain-health" element={<ChainHealthPage/>}/><Route path="pricing" element={<PricingPage/>}/><Route path="proxy-pools" element={<ProxyPoolsPage/>}/><Route path="settings" element={<SettingsPage/>}/><Route path="authorization" element={<AuthorizationPage/>}/><Route path="chat" element={<ChatPage/>}/><Route path="translator" element={<TranslatorPage/>}/><Route path="*" element={<NotFound/>}/></Routes><footer className="page-footer"><span><span className="dot"/>{demo ? '演示工作区 · 未连接真实网关' : `10router · ${managementEnabled ? '管理' : '只读'}工作区`}</span><span>YOUR MODELS. YOUR GATEWAY.</span></footer></main>
     </Suspense>
     </div><SearchDialog open={searchOpen} onClose={() => setSearchOpen(false)}/>
   </div>;
@@ -259,8 +279,9 @@ export default function App() {
     catch (failure) { setError(failure.message); }
   }
   const accessible = auth && (auth.authenticated || auth.requireLogin === false || auth.bootstrapLocal);
+  if (location.pathname === '/callback') return <div className="login-page"><div className="login-card"><Brand/><h1>授权页面已返回</h1><p className="subtitle">复制当前回调地址，返回账号授权窗口粘贴并完成接入。</p><div className="dialog-actions"><CopyButton value={window.location.href} label="复制回调地址"/><a className="button" href="/dashboard/authorization">返回账号授权</a></div></div></div>;
   if (error) return <div className="connection-error"><Brand/><h1>暂时无法连接验证接口</h1><p role="alert">{error}</p><button className="button" onClick={() => { setError(''); checkAuth().catch(failure => setError(failure.message)); }}>重新连接</button></div>;
   if (!auth) return <div className="loading-screen"><Brand/><p>正在连接工作区…</p></div>;
-  if (!accessible) return <Login onLogin={async () => { await checkAuth(); if (!location.pathname.startsWith('/dashboard')) navigate('/dashboard/overview'); }}/>;
+  if (!accessible) return <Login auth={auth} onLogin={async () => { await checkAuth(); if (!location.pathname.startsWith('/dashboard')) navigate('/dashboard/overview'); }}/>;
   return <Routes><Route path="/dashboard/*" element={<Layout auth={auth} onLogout={logout}/>}/><Route path="*" element={<Navigate to="/dashboard/overview" replace/>}/></Routes>;
 }

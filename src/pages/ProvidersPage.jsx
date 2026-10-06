@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import Icon from '../components/Icon.jsx';
 import ProviderIcon from '../components/ProviderIcon.jsx';
 import ProviderNodeEditor from '../components/ProviderNodeEditor.jsx';
+import ProviderRouting from '../components/ProviderRouting.jsx';
 import ProviderError from '../components/ProviderError.jsx';
 import { ConfirmDelete, ErrorBlock, IconButton, Modal, PageHeading, formatDate, managementEnabled, useResource } from '../components/Controls.jsx';
 import { normalizeProviders, requestJson } from '../api/client.js';
@@ -139,6 +140,7 @@ export function ProvidersPage() {
     <div className="provider-summary"><span><strong>{groups.length}</strong> 个供应商 / 节点</span><span><strong>{connections.length}</strong> 个连接</span><span><strong>{connections.filter(connection => connection.isActive).length}</strong> 个启用</span><span className="badge subdued">{managementEnabled ? '管理访问' : '只读'}</span></div>
     {message && <p className="success-message" role="status">{message}</p>}{error && (typeof error === 'string' ? <ErrorBlock message={error}/> : <ProviderError name={error.name} error={error.failure} authType={error.authType}/>)}
     {[resource, nodes, pools, settings].map((item, index) => item.error && <ErrorBlock key={index} message={`${['连接列表', '节点名称', '代理池', '全局规则'][index]}：${item.error}`} onRetry={item.refresh}/>)}
+    {selected && settings.data && !settings.error && <ProviderRouting key={`routing-${selected.id}`} provider={selected.id} settings={settings.data} onSaved={settings.refresh}/>}
     <section className="panel"><div className="table-toolbar"><div className="filter-search"><Icon name="search"/><input aria-label="搜索供应商" placeholder="搜索供应商或账号连接…" value={query} onChange={event => setQuery(event.target.value)}/></div><label className="checkbox-filter"><input type="checkbox" aria-label="仅显示正常连接" checked={healthyOnly} onChange={event => setHealthyOnly(event.target.checked)}/>仅正常连接</label></div>
       {!selectedId ? <div className="table-shell"><table><caption className="sr-only">供应商分组列表</caption><thead><tr><th>供应商 / 节点</th><th>账号连接</th><th>历史测试 / 启用</th><th>异常原因</th><th>当前代理</th><th>详情</th></tr></thead><tbody>{resource.loading && !resource.data ? <tr><td colSpan="6" className="table-empty">正在加载供应商…</td></tr> : shownGroups.map(group => {
         const paths = [...new Set(group.connections.map(connection => { const path = proxy(connection); return `${path.title} · ${path.address}`; }))];

@@ -80,10 +80,16 @@ export function createHermesBridge({ backendUrl, hermesUrl, token, tokenFile, ma
     const read = request.method === 'GET' && (route === 'health' || route === 'egress-ip' || route === 'subscription/status' || (route.startsWith('proxy/') && proxyReads.has(route.slice(6))));
     const write = request.method === 'POST' && (postRoutes.has(route) || deleting);
     if (!read && !write || write && !management) return send(response, 405, { error: '接口尚未开放' });
-    if (write && request.headers.origin) {
-      let source;
-      try { source = new URL(request.headers.origin).host; } catch { source = ''; }
-      if (source !== request.headers.host) return send(response, 403, { error: '请求来源不匹配' });
+    if (write) {
+      let source = null;
+      if (request.headers.origin) {
+        try { source = new URL(request.headers.origin).host; }
+        catch { return send(response, 403, { error: '请求来源无效' }); }
+      } else if (request.headers.referer) {
+        try { source = new URL(request.headers.referer).host; }
+        catch { return send(response, 403, { error: '请求来源无效' }); }
+      }
+      if (source && source !== request.headers.host) return send(response, 403, { error: '请求来源不匹配' });
     }
     try {
       // Check the gateway session before using the server-held Hermes credential.

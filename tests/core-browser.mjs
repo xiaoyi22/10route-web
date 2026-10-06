@@ -128,7 +128,7 @@ try {
   await page.getByLabel('绕过代理', { exact: true }).fill('.example.invalid');
   await page.getByRole('button', { name: '保存代理配置', exact: true }).click();
   await page.getByRole('cell').filter({ hasText: '连接专用代理' }).waitFor();
-  assert(!(await page.locator('tbody').innerText()).includes('secret'));
+  assert(!(await page.getByRole('table', { name: '供应商账号连接列表' }).locator('tbody').innerText()).includes('secret'));
   await page.getByRole('button', { name: '代理 浏览器验收连接已编辑', exact: true }).click();
   await page.getByLabel('代理方式', { exact: true }).selectOption('global');
   await page.getByRole('button', { name: '保存代理配置', exact: true }).click();

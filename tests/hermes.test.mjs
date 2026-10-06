@@ -55,6 +55,7 @@ test('subscription and watchdog operations preserve access boundaries, redact UR
       assert.equal((await post(path, {}, readOnly.url)).status, 405);
       assert.equal((await post(path, {}, app.url, {})).status, 401);
       assert.equal((await post(path, {}, app.url, { ...headers, Origin: 'http://foreign.invalid' })).status, 403);
+      assert.equal((await post(path, {}, app.url, { ...headers, Referer: 'http://foreign.invalid/admin' })).status, 403);
     }
     assert.equal(calls.length, 0);
     assert.equal(isAllowedRequest('/api/hermes/subscription/status'), true);

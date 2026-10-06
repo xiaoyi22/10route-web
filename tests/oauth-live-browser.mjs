@@ -1,0 +1,106 @@
+import assert from 'node:assert/strict';
+import { randomBytes } from 'node:crypto';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { parseEnv } from 'node:util';
+import { resolve } from 'node:path';
+import { openLiveSession } from './live-support.mjs';
+import { providerInfo } from '../src/api/providers.js';
+import { oauthProviders } from '../src/api/oauth-catalog.js';
+
+assert.equal(process.env.PREVIEW_URL, 'http://127.0.0.1:4319', '账号导入测试仅允许独立真实副本');
+const live = await openLiveSession('oauth');
+const { base, page, context, read, check } = live;
+const privateDir = resolve(process.env.USERPROFILE || process.env.HOME, '.codex/credentials/full-integration-backups');
+const credentials = parseEnv(await readFile(resolve(process.env.USERPROFILE || process.env.HOME, '.codex/credentials/10router-web.env'), 'utf8'));
+const password = credentials.TENROUTER_TEST_PASSWORD;
+const passphrase = randomBytes(24).toString('base64url');
+let baseline;
+let failure;
+const secrets = [password, passphrase];
+const sanitize = error => new Error(secrets.filter(Boolean).reduce((message, value) => message.replaceAll(value, '[已隐藏]'), error.message));
+try {
+  assert.equal((await read('/api/settings')).enableTranslator, true);
+  baseline = await live.backupDatabase();
+  for (const account of baseline.providerConnections) secrets.push(account.accessToken, account.refreshToken, account.apiKey);
+  const provider = 'codebuddy-cn';
+  const realAccounts = baseline.providerConnections.filter(account => account.provider === provider && account.accessToken);
+  assert(realAccounts.length, '需要真实 CodeBuddy 账号验证导入');
+  await page.goto(base + '/dashboard/authorization', { waitUntil: 'domcontentloaded' });
+  await page.getByRole('heading', { name: '账号授权', exact: true }).waitFor();
+  assert.equal(await page.getByRole('article').count(), oauthProviders.length);
+  await live.screenshots('/dashboard/authorization', 'authorization');
+  await page.getByLabel('搜索授权供应商').fill(provider);
+  const card = page.getByRole('article', { name: `授权供应商 ${providerInfo(provider).name}`, exact: true });
+  await card.waitFor();
+  await card.getByRole('button', { name: '导出加密账号', exact: true }).click();
+  await page.getByLabel('文件密码', { exact: true }).fill(passphrase);
+  await page.getByLabel('管理员密码', { exact: true }).fill(password);
+  const downloaded = page.waitForEvent('download');
+  const exported = page.waitForResponse(r => new URL(r.url()).pathname === '/api/oauth/transfer/export');
+  await page.getByRole('button', { name: '加密并下载', exact: true }).click();
+  const exportResponse = await exported;
+  assert.equal(exportResponse.status(), 200);
+  assert.equal((await exportResponse.json()).count, realAccounts.length);
+  await mkdir(privateDir, { recursive: true });
+  const encryptedFile = resolve(privateDir, `oauth-transfer-${Date.now()}.json`);
+  await (await downloaded).saveAs(encryptedFile);
+  const encrypted = await readFile(encryptedFile, 'utf8');
+  for (const account of realAccounts) assert(!encrypted.includes(account.accessToken), '导出文件包含明文访问令牌');
+  await page.getByRole('button', { name: '完成', exact: true }).click();
+  await card.getByRole('button', { name: '导入加密账号', exact: true }).click();
+  await page.getByLabel('账号文件', { exact: true }).setInputFiles(encryptedFile);
+  await page.getByLabel('文件密码', { exact: true }).fill(passphrase);
+  const imported = page.waitForResponse(r => new URL(r.url()).pathname === '/api/oauth/transfer/import');
+  await page.getByRole('button', { name: '导入账号', exact: true }).click();
+  const importResponse = await imported;
+  assert.equal(importResponse.status(), 200);
+  const summary = await importResponse.json();
+  assert.equal(summary.failed, 0);
+  assert.equal(summary.imported + summary.updated + summary.skipped, realAccounts.length);
+  assert.equal((await read('/api/providers')).connections.length, baseline.providerConnections.length);
+  await page.getByRole('button', { name: '完成', exact: true }).click();
+  check('真实 OAuth 账号：页面加密导出与重新导入通过，文件无明文令牌，账号数量无重复');
+  const bulkFile = resolve(privateDir, `oauth-bulk-${Date.now()}.json`);
+  await writeFile(bulkFile, JSON.stringify({ accounts: realAccounts }), { flag: 'wx', mode: 0o600 });
+  await card.getByRole('button', { name: '批量导入', exact: true }).click();
+  await page.getByLabel('账号文件', { exact: true }).setInputFiles(bulkFile);
+  await page.getByLabel('管理员密码', { exact: true }).fill(password);
+  const bulkResponse = page.waitForResponse(r => new URL(r.url()).pathname === `/api/oauth/${provider}/bulk-import`);
+  await page.getByRole('button', { name: '导入账号', exact: true }).click();
+  const bulk = await bulkResponse;
+  assert.equal(bulk.status(), 200);
+  assert.equal((await bulk.json()).failed, 0);
+  await page.getByRole('button', { name: '完成', exact: true }).click();
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  assert.equal((await read('/api/providers')).connections.length, baseline.providerConnections.length);
+  check('真实 CodeBuddy 批量导入、管理员验证与刷新后账号数量检查通过');
+  await page.getByLabel('搜索授权供应商').fill('qoder');
+  const qoder = page.getByRole('article', { name: `授权供应商 ${providerInfo('qoder').name}`, exact: true });
+  await qoder.getByRole('button', { name: '授权连接', exact: true }).click();
+  const requested = page.waitForResponse(r => new URL(r.url()).pathname === '/api/oauth/qoder/device-code');
+  await page.getByRole('button', { name: '开始授权', exact: true }).click();
+  const request = await requested;
+  assert.equal(request.status(), 200);
+  const device = await request.json();
+  assert(device.device_code && (device.verification_uri || device.verification_uri_complete));
+  const polled = page.waitForResponse(r => new URL(r.url()).pathname === '/api/oauth/qoder/poll', { timeout: 30000 });
+  await page.getByRole('link', { name: '打开供应商授权页面', exact: true }).waitFor();
+  const poll = await polled;
+  assert.equal(poll.status(), 200);
+  const pending = await poll.json();
+  assert.equal(pending.pending, true, '此测试未人工授权，不应生成成功账号');
+  await page.getByRole('button', { name: '取消授权', exact: true }).click();
+  const before = live.report.writes.filter(w => w.path === '/api/oauth/qoder/poll').length;
+  await new Promise(resolve => setTimeout(resolve, (Number(device.interval) || 5) * 1000 + 1000));
+  assert.equal(live.report.writes.filter(w => w.path === '/api/oauth/qoder/poll').length, before);
+  check('真实 Qoder 设备授权：上游签发设备码、轮询返回待确认、取消后停止请求；人工授予及最终换令牌尚待验收');
+  assert.deepEqual(live.report.errors, []);
+} catch (error) { failure = sanitize(error); console.error(failure.message); }
+finally {
+  if (baseline) {
+    try { assert.equal((await context.request.post(base + '/api/settings/database', { data: { ...baseline, password } })).status(), 200); check('OAuth 测试副本已恢复原始账号与配置'); }
+    catch (error) { failure ||= sanitize(error); console.error('副本恢复失败：' + sanitize(error).message); }
+  }
+  await live.finish(failure);
+}
+if (failure) throw failure;

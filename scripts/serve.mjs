@@ -9,7 +9,7 @@ import { createHermesBridge } from './hermes-bridge.mjs';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const mime = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.png': 'image/png', '.svg': 'image/svg+xml', '.ico': 'image/x-icon', '.woff2': 'font/woff2' };
-const strippedHeaders = ['x-real-ip', 'x-forwarded-for', 'x-forwarded-host', 'x-forwarded-proto', 'x-10r-real-ip', 'x-10r-via-proxy', 'x-10r-peer-token', 'x-9r-cli-token', 'x-10r-iq-token'];
+const strippedHeaders = ['x-real-ip', 'x-forwarded-for', 'x-forwarded-host', 'x-forwarded-proto', 'x-10r-real-ip', 'x-10r-via-proxy', 'x-10r-peer-token', 'x-9r-cli-token', 'x-10r-cli-token', 'x-10r-iq-token'];
 
 export async function startGatewayServer({ backendUrl, distDir = resolve(root, 'dist'), host = '0.0.0.0', port = 4317, management = false, hermesUrl, hermesToken, hermesTokenFile }) {
   const backend = new URL(backendUrl);
@@ -31,10 +31,12 @@ export async function startGatewayServer({ backendUrl, distDir = resolve(root, '
       if (url.pathname.startsWith('/api/hermes/')) return await hermesBridge(request, response);
       if (url.pathname === '/api' || url.pathname.startsWith('/api/')) {
         if (!isAllowedRequest(request.url, request.method, management)) return json(response, 405, '接口尚未开放');
-        if (request.headers.origin && request.method !== 'GET') {
-          let originHost;
-          try { originHost = new URL(request.headers.origin).host; } catch { return json(response, 403, '请求来源无效'); }
-          if (originHost !== request.headers.host) return json(response, 403, '请求来源不匹配');
+        if (request.method !== 'GET') {
+          let sourceHost = null;
+          if (request.headers.origin) { try { sourceHost = new URL(request.headers.origin).host; } catch { return json(response, 403, '请求来源无效'); } }
+          else if (request.headers.referer) { try { sourceHost = new URL(request.headers.referer).host; } catch { return json(response, 403, '请求来源无效'); } }
+          // SAML posts a signed assertion from the external identity provider; the backend verifies it.
+          if (sourceHost && sourceHost !== request.headers.host && url.pathname !== '/api/auth/saml/acs') return json(response, 403, '请求来源不匹配');
         }
         const headers = { ...request.headers };
         for (const header of strippedHeaders) delete headers[header];
@@ -59,7 +61,7 @@ export async function startGatewayServer({ backendUrl, distDir = resolve(root, '
       if (!['GET', 'HEAD'].includes(request.method)) return json(response, 405, '不支持此请求方法');
       let pathname;
       try { pathname = decodeURIComponent(url.pathname); } catch { return json(response, 400, '路径无效'); }
-      const dashboard = pathname === '/' || pathname === '/dashboard' || pathname.startsWith('/dashboard/');
+      const dashboard = pathname === '/' || pathname === '/login' || pathname === '/callback' || pathname === '/dashboard' || pathname.startsWith('/dashboard/');
       if (!dashboard && pathname !== '/favicon.svg' && !pathname.startsWith('/assets/')) return json(response, 404, '文件不存在');
       const file = dashboard ? resolve(distDir, 'index.html') : resolve(distDir, `.${pathname}`);
       if (!file.startsWith(`${distDir}${sep}`)) return json(response, 404, '文件不存在');

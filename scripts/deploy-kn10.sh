@@ -22,10 +22,16 @@ cp -a "$source_dir/dist" "$release/"
 cp "$source_dir/scripts/serve.mjs" "$release/scripts/"
 cp "$source_dir/scripts/hermes-bridge.mjs" "$release/scripts/"
 cp "$source_dir/src/api/policy.js" "$release/src/api/"
+cp "$source_dir/src/api/oauth-catalog.js" "$release/src/api/"
+cp "$source_dir/src/api/cli-tools.js" "$release/src/api/"
 cp "$source_dir/package.json" "$release/"
 cp "$source_dir/scripts/10router-web.service" "$backup/service-next"
 node --check "$release/scripts/serve.mjs"
 node --check "$release/scripts/hermes-bridge.mjs"
+node --input-type=module - "$release/scripts/serve.mjs" <<'JS'
+import { pathToFileURL } from 'node:url';
+await import(pathToFileURL(process.argv[2]));
+JS
 if grep -Rl 'linear-demo' "$release/dist/assets" --include='*.js'; then
   printf 'Demo frontend cannot be deployed\n' >&2
   exit 1

@@ -38,6 +38,7 @@ test('production server serves deep links/assets and streams authenticated API r
     assert.equal((await fetch(`${url}/package.json`)).status, 404);
     assert.equal((await fetch(`${url}/api/shutdown`, { method: 'POST' })).status, 405);
     assert.equal((await fetch(`${url}/api/auth/login`, { method: 'POST', headers: { Origin: 'https://foreign.invalid' }, body: '{}' })).status, 403);
+    assert.equal((await fetch(`${url}/api/auth/login`, { method: 'POST', headers: { Referer: 'https://foreign.invalid/login' }, body: '{}' })).status, 403);
     const login = await fetch(`${url}/api/auth/login`, { method: 'POST', headers: { Origin: url, 'Content-Type': 'application/json', 'x-9r-cli-token': 'spoof', 'x-10r-peer-token': 'spoof', 'x-forwarded-for': 'spoof' }, body: '{"password":"test"}' });
     assert.equal(login.status, 200);
     assert.match(login.headers.get('set-cookie'), /auth_token=test-session/);

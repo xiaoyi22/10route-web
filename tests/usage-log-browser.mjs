@@ -27,10 +27,10 @@ try {
   await page.getByRole('button', { name: '30 天', exact: true }).click();
   assert.equal(await page.locator('.usage-total-row').count(), 0);
   await page.getByTestId('cache-rate').filter({ hasText: '20.0%' }).waitFor();
-  await page.clock.install();
-  await page.clock.pauseAt(new Date());
   await page.goto(`${base}/dashboard/logs`);
   await page.waitForFunction(() => document.querySelectorAll('tbody tr').length === 20);
+  await page.clock.install();
+  await page.clock.pauseAt(new Date());
   assert.equal(await page.getByLabel('自动刷新日志').isChecked(), true);
   assert.equal(await page.getByRole('columnheader', { name: '估算费用 · USD' }).count(), 0);
   await page.getByLabel('显示日志价格').check();
@@ -61,12 +61,12 @@ try {
   await page.clock.runFor(60000);
   assert.equal(calls.length, 1);
   await page.getByLabel('显示日志价格').check();
+  await page.clock.resume();
   await page.reload();
   await page.getByLabel('自动刷新日志').waitFor();
   assert.equal(await page.getByLabel('自动刷新日志').isChecked(), false);
   assert.equal(await page.getByLabel('显示日志价格').isChecked(), true);
   await page.waitForFunction(() => document.querySelectorAll('tbody tr').length === 20);
-  await page.clock.resume();
   await mkdir('screenshots', { recursive: true });
   await page.waitForFunction(() => [...document.querySelectorAll('.provider-mark img')].every(image => image.complete && image.naturalWidth > 0));
   await page.screenshot({ path: 'screenshots/log-prices-refresh.png', fullPage: true });

@@ -104,7 +104,7 @@ try {
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), `Many connections overflow at ${width}`);
   }
   await page.goto(`${url}/dashboard/providers/antigravity`);
-  await page.waitForFunction(() => document.querySelectorAll('tbody tr').length === 8);
+  await page.waitForFunction(() => document.querySelectorAll('.panel:first-of-type tbody tr').length === 8);
   assert((await page.locator('.provider-summary').innerText()).includes('40'));
   await page.getByRole('button', { name: '退出登录' }).click();
   await page.getByRole('heading', { name: '连接你的工作空间' }).waitFor();
