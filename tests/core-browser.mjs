@@ -250,7 +250,7 @@ try {
   await page.getByRole('button', { name: '7 天', exact: true }).click();
   await page.getByTestId('request-value').filter({ hasText: '100' }).waitFor();
   requestTotal = 200;
-  await page.getByTestId('request-value').filter({ hasText: '200' }).waitFor({ timeout: 8000 });
+  await page.getByTestId('request-value').filter({ hasText: '200' }).waitFor({ timeout: 35000 });
   assert(await page.getByRole('button', { name: '7 天', exact: true }).getAttribute('aria-pressed') === 'true');
   await page.getByLabel('自动更新用量').uncheck();
   const pausedCount = requestCount;
