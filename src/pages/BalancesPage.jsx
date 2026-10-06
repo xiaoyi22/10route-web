@@ -33,12 +33,12 @@ export function BalancesPage() {
     catch (failure) { setError(failure.message); }
     finally { setBusy(null); }
   }
-  return <><PageHeading title="余额与配额" subtitle="上游钱包 / 密钥额度 / 账号限额"><button className="button" disabled={balances.loading || quotas.loading} onClick={() => setRevision(value => value + 1)}><Icon name="refresh"/>刷新余额与配额</button></PageHeading>
+  return <><PageHeading title="余额与配额" subtitle="上游钱包 / 密钥额度 / 账号限额"><button className="button refresh-button" aria-label="刷新余额与配额" aria-busy={balances.loading || quotas.loading} disabled={balances.loading || quotas.loading} onClick={() => setRevision(value => value + 1)}><Icon name="refresh"/>{balances.loading || quotas.loading ? '余额配额更新中' : '刷新余额与配额'}</button></PageHeading>
     <p className="inline-note">钱包余额、密钥额度和订阅限额分别展示，不相加。未提供数据的项目显示“—”，不代表余额为零。</p>
     <div className="filter-search"><Icon name="search"/><input aria-label="搜索余额账号" placeholder="搜索供应商或账号…" value={query} onChange={event => setQuery(event.target.value)}/></div>
     {error && <ErrorBlock message={error}/>} {[balances, quotas].map((item, index) => item.error && <ErrorBlock key={index} message={`${index ? '账号配额' : '渠道余额'}：${item.error}`} onRetry={item.refresh}/>)}
-    <section className="finance-section"><div className="panel-heading"><h2>账号配额</h2><span className="muted">{quotas.loading ? '读取中' : `${quotaAccounts.length} 个账号`}</span></div>{quotas.loading && <p className="muted">正在读取账号配额…</p>}<div className="quota-groups" aria-busy={quotas.loading}>{[...quotaGroups].map(([key, group]) => <section className="quota-provider-group" key={key} aria-label={`${group.name}配额账号`}><div className="quota-group-heading"><h3>{group.name}</h3><span className="muted">{group.accounts.length} 个账号</span></div><div className="quota-grid">{group.accounts.map(connection => <QuotaCard key={connection.id} connection={connection}/>)}</div></section>)}</div>{!quotas.loading && !quotas.error && !quotaAccounts.length && <p className="empty-state">{query ? '没有匹配的配额账号。' : '暂无支持配额查询的账号。'}</p>}</section>
-    <section className="finance-section"><h2>供应商余额</h2>{balances.loading && <p className="muted">正在读取余额…</p>}
+    <section className="finance-section"><div className="panel-heading"><h2>账号配额</h2><span className="muted">{quotas.loading && !quotas.data ? '读取中' : `${quotaAccounts.length} 个账号`}</span></div>{quotas.loading && !quotas.data && <p className="muted">正在读取账号配额…</p>}<div className="quota-groups" aria-busy={quotas.loading}>{[...quotaGroups].map(([key, group]) => <section className="quota-provider-group" key={key} aria-label={`${group.name}配额账号`}><div className="quota-group-heading"><h3>{group.name}</h3><span className="muted">{group.accounts.length} 个账号</span></div><div className="quota-grid">{group.accounts.map(connection => <QuotaCard key={connection.id} connection={connection}/>)}</div></section>)}</div>{(!quotas.loading || quotas.data) && !quotas.error && !quotaAccounts.length && <p className="empty-state">{query ? '没有匹配的配额账号。' : '暂无支持配额查询的账号。'}</p>}</section>
+    <section className="finance-section"><h2>供应商余额</h2>{balances.loading && !balances.data && <p className="muted">正在读取余额…</p>}
       {options.filter(option => matches(`${option.name} ${channels.find(channel => channel.id === option.id)?.connections.map(connection => connection.name).join(' ') || ''}`)).map(option => {
         const channel = channels.find(item => item.id === option.id);
         const failures = (balances.data?.errors || []).filter(item => item.channelId === option.id);
@@ -50,7 +50,7 @@ export function BalancesPage() {
             {(connection.channelFunding || []).map(funding => <div key={funding.id}><h4>{funding.name} · {funding.status === 'available' ? '可用' : '不可用'}</h4><Limits rows={funding.windows}/></div>)}
           </div>)}{channel?.subscriptions.map((subscription, index) => <div key={subscription.id || index}><h4>{subscription.name || '订阅'} · 到期 {formatDate(subscription.expiresAt)}</h4><Limits rows={subscription.windows}/></div>)}</>}
         </section>;
-      })}{!balances.loading && !options.length && <p className="empty-state">暂无兼容供应商账号。</p>}
+      })}{(!balances.loading || balances.data) && !options.length && <p className="empty-state">暂无兼容供应商账号。</p>}
     </section>
   </>;
 }
