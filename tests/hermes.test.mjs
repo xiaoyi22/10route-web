@@ -84,13 +84,16 @@ test('subscription and watchdog operations preserve access boundaries, redact UR
     assert.equal((await updated.json()).status.airports[0].url, undefined);
     assert.equal((await cached()).checked_at, null);
     for (const rolledBack of [true, false]) {
-      result = { success: false, error: 'reload failed', rolled_back: rolledBack, backup: '/test/config.bak', url: airport.url };
+      result = { success: false, error: 'reload failed', rolled_back: rolledBack, backup: '/test/config.bak', stage: 'reload', url: airport.url };
       await post('egress-ip', { port: 7891 });
       const failure = await post('subscription/update', { airport_id: 'test' });
       assert.equal(failure.status, 502);
-      assert.deepEqual(await failure.json(), { error: 'reload failed', rolled_back: rolledBack, backup: '/test/config.bak' });
+      assert.deepEqual(await failure.json(), { error: 'reload failed', rolled_back: rolledBack, backup: '/test/config.bak', stage: 'reload' });
       assert.equal((await cached()).checked_at, null);
     }
+    result = { success: false, error: 'install not confirmed', stage: 'install', state: 'unknown', backup: '/test/config.bak', url: airport.url };
+    assert.deepEqual(await (await post('subscription/update', { airport_id: 'test' })).json(),
+      { error: 'install not confirmed', stage: 'install', state: 'unknown', backup: '/test/config.bak' });
     result = { success: true, airports: [airport], backup: '/test/delete.bak' };
     await post('egress-ip', { port: 7891 });
     assert.equal((await post('airports/test/delete', { airport_id: 'different', unsafe: true })).status, 200);

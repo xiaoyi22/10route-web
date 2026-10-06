@@ -37,7 +37,7 @@ const hermes = http.createServer(async (request, response) => {
   if (url.pathname.endsWith('/airports')) { airports.push({ id: 'new-airport', name: data.name, group: data.group || data.name, masked_url: 'https://new.example.test/***', updated_at: new Date().toISOString() }); return send({ success: true, airports }); }
   if (url.pathname.endsWith('/subscription/save')) { airports.find(item => item.id === data.airport_id).masked_url = 'https://edited.example.test/***'; return send({ success: true, airports }); }
   if (url.pathname.endsWith('/subscription/update')) {
-    if (updateFailure) return send({ success: false, error: '隔离重载失败', rolled_back: false, backup: '/test/config.bak-update' });
+    if (updateFailure) return send({ success: false, error: '隔离重载失败', stage: 'reload', rolled_back: false, backup: '/test/config.bak-update' });
     loaded.add(airports.find(item => item.id === data.airport_id).group); return send({ success: true, airports, backup: '/test/config.bak-update', warning: '隔离更新提示' });
   }
   if (/\/airports\/[^/]+\/delete$/.test(url.pathname)) {
@@ -170,7 +170,7 @@ try {
   await until("!document.querySelector('dialog[open]') && document.body.innerText.includes('https://edited.example.test/***')");
   updateFailure = true;
   await click('更新节点 测试机场'); await click('确认操作');
-  await until("document.body.innerText.includes('配置回滚未成功') && document.body.innerText.includes('重新执行')");
+  await until("document.body.innerText.includes('配置回滚未成功') && document.body.innerText.includes('失败阶段：配置重载') && document.body.innerText.includes('重新执行')");
   assert.equal(loaded.has('测试组'), false, 'Failed reload must not mark nodes loaded');
   updateFailure = false; await click('重新执行');
   await until("!document.querySelector('dialog[open]') && document.body.innerText.includes('节点已加载') && document.body.innerText.includes('/test/config.bak-update')");

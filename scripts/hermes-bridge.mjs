@@ -55,7 +55,7 @@ export function createHermesBridge({ backendUrl, hermesUrl, token, tokenFile, ma
     const result = await response.json();
     if (!response.ok || result.error || result.success === false) throw Object.assign(new Error(result.error || `Hermes 调用失败 (${response.status})`), {
       status: response.status >= 400 && response.status < 500 ? response.status : 502,
-      details: { ...(typeof result.rolled_back === 'boolean' ? { rolled_back: result.rolled_back } : {}), ...(result.backup ? { backup: result.backup } : {}), ...(result.warning ? { warning: result.warning } : {}) },
+      details: { ...(typeof result.rolled_back === 'boolean' ? { rolled_back: result.rolled_back } : {}), ...(result.backup ? { backup: result.backup } : {}), ...(result.warning ? { warning: result.warning } : {}), ...(['policy', 'install', 'reload'].includes(result.stage) ? { stage: result.stage } : {}), ...(['committed', 'rejected', 'unknown'].includes(result.state) ? { state: result.state } : {}) },
     });
     if (result.airports) result.airports = safeAirports(result.airports);
     if (result.status?.airports) result.status.airports = safeAirports(result.status.airports);
