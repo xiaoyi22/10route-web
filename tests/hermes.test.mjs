@@ -35,7 +35,7 @@ test('subscription and watchdog operations preserve access boundaries, redact UR
     response.end(JSON.stringify({ authenticated: request.headers.cookie === 'auth_token=session', requireLogin: true }));
   });
   const calls = [];
-  const airport = { id: 'test', name: 'Airport', group: 'Airport', url: 'https://example.test/private-secret', masked_url: 'https://example.test/***', updated_at: '2026-10-03' };
+  const airport = { id: 'test', name: 'Airport', group: 'Airport', url: 'https://example.test/private-secret', masked_url: 'https://example.test/***', updated_at: '2026-10-03', subscription_mode: 'one_time', one_time_consumed: true, subscription_snapshot: 'private-snapshot.txt' };
   let result = { success: true, airports: [airport] };
   const hermes = await listen(async (request, response) => {
     let raw = ''; for await (const chunk of request) raw += chunk;
@@ -62,12 +62,16 @@ test('subscription and watchdog operations preserve access boundaries, redact UR
     assert.equal(isAllowedRequest('/api/hermes/airports/test/delete/extra', 'POST', true), false);
     const status = await fetch(`${app.url}/api/hermes/subscription/status`, { headers }).then(response => response.json());
     assert.equal(status.airports[0].url, undefined);
+    assert.equal(status.airports[0].subscription_snapshot, undefined);
+    assert.equal(status.airports[0].subscription_mode, 'one_time');
+    assert.equal(status.airports[0].one_time_consumed, true);
     assert(!JSON.stringify(status).includes('private-secret'));
     const initialCalls = calls.length;
     for (const [path, data] of [
       ['subscription/save', { url: airport.url }], ['subscription/update', {}],
       ['subscription/save', { airport_id: 'test', url: airport.masked_url }],
       ['airports', { name: 'Airport', url: 'file:///private' }],
+      ['airports', { name: 'Airport', url: airport.url, subscription_mode: 'unsupported' }],
       ['proxy/failover/observe', { group: 'AI-优选', observe_only: 'false' }],
       ['proxy/failover/tick', { group: 'unrecognized' }], ['airports', null], ['airports', []],
     ]) assert.equal((await post(path, data)).status, 400);
@@ -76,9 +80,11 @@ test('subscription and watchdog operations preserve access boundaries, redact UR
     assert.deepEqual(calls.at(-1).data, { name: 'New', group: 'NewGroup', url: airport.url });
     assert.equal((await post('subscription/save', { airport_id: 'test', url: airport.url, group: 'other' })).status, 200);
     assert.deepEqual(calls.at(-1).data, { airport_id: 'test', url: airport.url });
+    assert.equal((await post('subscription/save', { airport_id: 'test', url: airport.url, subscription_mode: 'one_time' })).status, 200);
+    assert.deepEqual(calls.at(-1).data, { airport_id: 'test', url: airport.url, subscription_mode: 'one_time' });
     result = { success: true, status: { airports: [airport] }, backup: '/test/config.bak', warning: 'isolated warning' };
     await post('egress-ip', { port: 7891 }); assert((await cached()).checked_at);
-    const updated = await post('subscription/update', { airport_id: 'test', arbitrary: true });
+    const updated = await post('subscription/update', { airport_id: 'test', arbitrary: true, subscription_mode: 'regular' });
     assert.equal(updated.status, 200);
     assert.deepEqual(calls.at(-1).data, { airport_id: 'test' });
     assert.equal((await updated.json()).status.airports[0].url, undefined);

@@ -5,7 +5,7 @@ const postRoutes = new Set(['proxy/select', 'proxy/delay', 'egress-ip', 'health/
 const watchGroups = new Set(['ai-谷歌', 'AI-优选']);
 
 function safeAirports(airports) {
-  return (airports || []).map(({ id, name, group, masked_url, updated_at }) => ({ id, name, group, masked_url, updated_at }));
+  return (airports || []).map(({ id, name, group, masked_url, updated_at, subscription_mode, one_time_consumed }) => ({ id, name, group, masked_url, updated_at, subscription_mode, one_time_consumed }));
 }
 
 function origin(value) {
@@ -108,6 +108,10 @@ export function createHermesBridge({ backendUrl, hermesUrl, token, tokenFile, ma
       if (write && (route.startsWith('subscription/') || route === 'airports' || deleting)) {
         const data = await body(request);
         const payload = {};
+        if (['airports', 'subscription/save'].includes(route) && data.subscription_mode !== undefined) {
+          if (!['regular', 'one_time'].includes(data.subscription_mode)) return send(response, 400, { error: '订阅方式无效' });
+          payload.subscription_mode = data.subscription_mode;
+        }
         if (route === 'airports') {
           if (typeof data.name !== 'string' || !data.name.trim()) return send(response, 400, { error: '请填写机场名称' });
           payload.name = data.name.trim();

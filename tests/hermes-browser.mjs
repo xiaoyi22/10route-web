@@ -34,7 +34,7 @@ const hermes = http.createServer(async (request, response) => {
   const url = new URL(request.url, 'http://localhost');
   const data = raw ? JSON.parse(raw) : {};
   if (url.pathname.endsWith('/subscription/status')) return send({ airports, config_mtime: new Date().toISOString() });
-  if (url.pathname.endsWith('/airports')) { airports.push({ id: 'new-airport', name: data.name, group: data.group || data.name, masked_url: 'https://new.example.test/***', updated_at: new Date().toISOString() }); return send({ success: true, airports }); }
+  if (url.pathname.endsWith('/airports')) { airports.push({ id: 'new-airport', name: data.name, group: data.group || data.name, subscription_mode: data.subscription_mode, masked_url: 'https://new.example.test/***', updated_at: new Date().toISOString() }); return send({ success: true, airports }); }
   if (url.pathname.endsWith('/subscription/save')) { airports.find(item => item.id === data.airport_id).masked_url = 'https://edited.example.test/***'; return send({ success: true, airports }); }
   if (url.pathname.endsWith('/subscription/update')) {
     if (updateFailure) return send({ success: false, error: '隔离重载失败', stage: 'reload', rolled_back: false, backup: '/test/config.bak-update' });
@@ -188,6 +188,23 @@ try {
   await until("!document.querySelector('dialog[open]') && document.body.innerText.includes('测试机场：已删除')");
   assert.equal(airports.length, 1);
   assert.equal(await evaluate("new URL(location.href).searchParams.has('group')"), false, 'Deleting the viewed group clears the stale selection');
+  await click('添加机场');
+  await fill('机场名称', '一次性机场'); await fill('订阅地址', 'https://new.example.test/unused');
+  await evaluate("(() => { const select = document.querySelector('dialog select'); const setter = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set; setter.call(select, 'one_time'); select.dispatchEvent(new Event('change', { bubbles: true })); })()");
+  await click('保存');
+  await until("!document.querySelector('dialog[open]') && document.body.innerText.includes('一次性订阅')");
+  const beforeImport = calls.filter(path => path.includes('subscription/update')).length;
+  await click('重新导入 一次性机场');
+  await until("!!document.querySelector('dialog[open]')");
+  assert.equal(calls.filter(path => path.includes('subscription/update')).length, beforeImport, 'Opening one-time import must not fetch the used link');
+  assert.equal(await evaluate("document.querySelector('input[type=password]').value"), '');
+  assert.equal(await evaluate("Array.from(document.querySelectorAll('dialog button')).find(b=>b.textContent.includes('导入节点')).disabled"), true);
+  await screenshots('one-time-import');
+  await fill('新订阅地址', 'https://new.example.test/fresh'); await click('导入节点');
+  await until("!document.querySelector('dialog[open]') && document.body.innerText.includes('节点已导入并保存')");
+  assert.equal(calls.filter(path => path.includes('subscription/update')).length, beforeImport + 1);
+  await click('删除机场 一次性机场'); await click('确认操作');
+  await until("!document.querySelector('dialog[open]') && !document.querySelector('.proxy-table tbody').innerText.includes('一次性机场')");
   await click('故障看护');
   await until("document.querySelectorAll('.proxy-watch input:not(:disabled)').length === 2");
   const switchBefore = calls.filter(path => path.endsWith('/proxy/failover/observe')).length;
