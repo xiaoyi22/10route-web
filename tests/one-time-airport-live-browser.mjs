@@ -21,11 +21,13 @@ try {
   assert(actual.every(node => !node.is_info));
   const google = await read(`/api/hermes/proxy/status?group=${encodeURIComponent('ai-谷歌')}`);
   const suxin = await read(`/api/hermes/proxy/status?group=${encodeURIComponent('素心机场')}`);
-  assert.equal(google.nodes.length, 9);
-  assert(google.nodes.every(node => suxin.nodes.some(member => member.name === node.name)));
+  const h1Google = actual.filter(node => node.name.includes('美国') || node.name.includes('🇺🇸'));
+  assert.equal(h1Google.length, 4);
+  assert(h1Google.every(node => google.nodes.some(member => member.name === node.name)));
+  assert(google.nodes.every(node => [...suxin.nodes, ...h1Google].some(member => member.name === node.name)));
   const best = await read(`/api/hermes/proxy/status?group=${encodeURIComponent('AI-优选')}`);
   assert.equal(actual.filter(node => best.nodes.some(member => member.name === node.name)).length, 47);
-  check('已验证三个机场共存、51 个真实节点、47 个新 AI-优选候选和素心谷歌出口归属');
+  check('已验证三个机场共存、51 个真实节点，H1P2M3 的 4 个美国节点进入 ai-谷歌、47 个节点进入 AI-优选');
   await page.goto(session.base + '/dashboard/proxy?view=subscriptions');
   const row = page.locator('.proxy-table tbody tr').filter({ hasText: 'H1P2M3 机场' });
   await row.waitFor();
@@ -49,6 +51,21 @@ try {
   await dialog.getByRole('button', { name: '取消', exact: true }).click();
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.screenshot({ path: resolve(directory, 'airports.png'), fullPage: true, animations: 'disabled' });
+  for (const [group, expected, label] of [
+    ['ai-谷歌', h1Google, 'google-pool'],
+    ['AI-优选', actual.filter(node => best.nodes.some(member => member.name === node.name)), 'best-pool'],
+  ]) {
+    await page.goto(session.base + '/dashboard/proxy?group=' + encodeURIComponent(group));
+    await page.locator('.proxy-node-name').getByText(expected[0].name, { exact: true }).waitFor();
+    await page.waitForFunction(value => document.querySelector('select[aria-label="代理组"]')?.value === value, group);
+    assert.equal(await page.getByLabel('代理组', { exact: true }).inputValue(), group);
+    const displayed = await page.locator('.proxy-node-name strong').allTextContents();
+    assert(expected.every(node => displayed.includes(node.name)), `${group} 页面缺少 H1P2M3 节点`);
+    const file = resolve(directory, `${label}.png`);
+    await page.screenshot({ path: file, fullPage: true, animations: 'disabled' });
+    report.screenshots.push({ file });
+  }
+  check('已验证两个 AI 池的真实节点页面均显示对应的 H1P2M3 节点');
   assert.equal(report.errors.length, 0, '真实页面出现控制台错误');
 } catch (error) {
   failure = error;

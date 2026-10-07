@@ -43,10 +43,14 @@ try {
   const names = members.map(member => member.name);
   assert(names.includes(google.now), '运行选择必须属于有效候选');
   assert(names.every(name => name.includes('美国') || name.includes('🇺🇸')));
-  assert(members.every(member => member.type.toLowerCase() === 'vless' || member.name.includes('住宅')));
   const suxin = await read(`/api/hermes/proxy/status?group=${encodeURIComponent(airports.find(airport => airport.id === 'suxin').group)}`);
-  const suxinMembers = suxin.nodes.map(member => member.name);
-  assert(names.every(name => suxinMembers.includes(name)), '谷歌出口必须归属素心机场');
+  const h1 = before.airports.find(airport => airport.name === 'H1P2M3 机场');
+  const h1Status = h1 ? await read(`/api/hermes/proxy/status?group=${encodeURIComponent(h1.group)}`) : { nodes: [] };
+  const h1Members = h1Status.nodes.filter(member => ['vless', 'anytls', 'hysteria2'].includes(member.type.toLowerCase())
+    && (member.name.includes('美国') || member.name.includes('🇺🇸'))).map(member => member.name);
+  const suxinMembers = suxin.nodes.filter(member => member.type.toLowerCase() === 'vless'
+    || (member.type.toLowerCase() === 'hysteria2' && member.name.includes('住宅'))).map(member => member.name);
+  assert(names.every(name => [...suxinMembers, ...h1Members].includes(name)), '谷歌出口必须归属素心或 H1P2M3 的合规美国节点');
   check(`已验证 ai-谷歌 包含 ${names.length} 个美国候选，当前选择有效`);
   const screenshot = resolve(directory, 'subscription-updated.png');
   await page.screenshot({ path: screenshot, fullPage: true, animations: 'disabled' });

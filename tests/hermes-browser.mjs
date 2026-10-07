@@ -11,6 +11,7 @@ const fixture = await startFixtureServer();
 const calls = [];
 let current = '美国 · VLESS · 住宅节点';
 const names = [current, '日本 · Hysteria2 · 高速节点', '未知 · 尚未检测节点'];
+const aiCurrent = { 'ai-谷歌': current, 'AI-优选': names[1] };
 let globalCurrent = '机场';
 let airports = [{ id: 'original', name: '机场', group: '机场', masked_url: 'https://example.test/***', updated_at: new Date().toISOString() }];
 const loaded = new Set(['机场']);
@@ -21,8 +22,8 @@ let tickFailure = false;
 const groups = () => [
   { name: '机场', type: 'Selector', is_airport: true, now: current, member_count: 3 },
   { name: 'GLOBAL', type: 'Selector', now: globalCurrent, member_count: loaded.size },
-  { name: 'ai-谷歌', type: 'Selector', now: current, member_count: 3 },
-  { name: 'AI-优选', type: 'URLTest', now: names[1], member_count: 2 },
+  { name: 'ai-谷歌', type: 'Selector', now: aiCurrent['ai-谷歌'], member_count: 3 },
+  { name: 'AI-优选', type: 'Selector', now: aiCurrent['AI-优选'], member_count: 3 },
   ...airports.filter(item => item.group !== '机场' && loaded.has(item.group)).map(item => ({ name: item.group, type: 'Selector', is_airport: true, now: current, member_count: 3 })),
 ];
 const hermes = http.createServer(async (request, response) => {
@@ -53,10 +54,10 @@ const hermes = http.createServer(async (request, response) => {
     if (url.pathname.endsWith('/tick')) return send({ ok: !tickFailure, action: tickFailure ? 'probe-failed' : 'probe-ok', detail: tickFailure ? '隔离探测失败' : 'ok' });
   }
   if (url.pathname.endsWith('/proxy/groups')) return send({ groups: groups(), entry_ports: { mixed: 7890, listeners: [{ port: 7891, name: 'ai-tw', proxy: 'ai-谷歌' }, { port: 7892, name: 'ai-best', proxy: 'AI-优选' }] } });
-  if (url.pathname.endsWith('/proxy/status')) { const group = url.searchParams.get('group') || '机场'; return send({ group, type: groups().find(item => item.name === group)?.type, now: group === 'GLOBAL' ? globalCurrent : current, active_airport: globalCurrent, mode: 'rule', nodes: names.map((name, index) => ({ name, type: index === 1 ? 'Hysteria2' : 'VLESS', alive: index === 2 ? null : true, delay: index === 2 ? null : 120 + index * 30 })) }); }
-  if (url.pathname.endsWith('/proxy/select')) { if (data.group === 'GLOBAL') globalCurrent = data.name; else current = data.name; return send({ success: true }); }
+  if (url.pathname.endsWith('/proxy/status')) { const group = url.searchParams.get('group') || '机场'; return send({ group, type: groups().find(item => item.name === group)?.type, now: group === 'GLOBAL' ? globalCurrent : aiCurrent[group] || current, active_airport: globalCurrent, mode: 'rule', nodes: names.map((name, index) => ({ name, type: index === 1 ? 'Hysteria2' : 'VLESS', alive: index === 2 ? null : true, delay: index === 2 ? null : 120 + index * 30 })) }); }
+  if (url.pathname.endsWith('/proxy/select')) { if (data.group === 'GLOBAL') globalCurrent = data.name; else if (data.group in aiCurrent) aiCurrent[data.group] = data.name; else current = data.name; return send({ success: true }); }
   if (url.pathname.endsWith('/proxy/delay')) return send({ success: true, delay: 87 });
-  if (url.pathname.endsWith('/proxy/failover')) return send({ current, ...watch[url.searchParams.get('group')], consecutive_failures: 0, last_probe: { time: new Date().toISOString(), ok: true }, last_switch: {} });
+  if (url.pathname.endsWith('/proxy/failover')) return send({ current: aiCurrent[url.searchParams.get('group')], ...watch[url.searchParams.get('group')], consecutive_failures: 0, last_probe: { time: new Date().toISOString(), ok: true }, last_switch: {} });
   if (url.pathname.endsWith('/egress-ip')) return send({ ip: '203.0.113.10', country: '测试位置', city: '测试城市', checked_at: new Date().toISOString(), probe_url: 'https://ipinfo.io/json' });
   if (url.pathname.endsWith('/mem0-health')) return send({ checked_at: new Date().toISOString(), memory_count: 123, components: [{ name: 'LLM', ok: true, latency_ms: 200, status: 200, detail: 'test-model' }, { name: 'Embedder', ok: true, latency_ms: 80, status: 200, detail: 'test-embedding' }, { name: 'Reranker', ok: false, latency_ms: 30, status: 429, detail: '请求过于频繁' }, { name: 'Qdrant', ok: true, latency_ms: 2, status: 200, detail: '123 条' }] });
   if (url.pathname.endsWith('/icarus-health')) return send({ checked_at: new Date().toISOString(), fabric_count: 6, components: [{ name: '配置', ok: true, latency_ms: 0, status: 200, detail: 'test-model' }, { name: 'API Key', ok: true, latency_ms: 0, status: 200, detail: '已配置' }, { name: 'LLM 端点', ok: true, latency_ms: 250, status: 200, detail: 'localhost' }, { name: 'fabric 目录', ok: true, latency_ms: 0, status: 200, detail: '最近有产出' }, { name: 'Qdrant 同步', ok: true, latency_ms: 0, status: 200, detail: '最近记忆 1 小时前' }] });
@@ -145,6 +146,24 @@ try {
   await click('确认切换');
   await until("document.body.innerText.includes('已切换') && !document.querySelector('dialog[open]')");
   assert.equal(current, names[1]);
+  for (const [group, target, other] of [['ai-谷歌', names[1], 'AI-优选'], ['AI-优选', names[0], 'ai-谷歌']]) {
+    const previous = aiCurrent[group]; const otherBefore = aiCurrent[other];
+    const beforeSelect = calls.filter(path => path.endsWith('/proxy/select')).length;
+    const beforeObserve = calls.filter(path => path.endsWith('/proxy/failover/observe')).length;
+    await click(`切换节点 ${group}`);
+    await until("!!document.querySelector('dialog select:not(:disabled)')");
+    assert.equal(calls.filter(path => path.endsWith('/proxy/select')).length, beforeSelect, 'Opening node picker must not switch');
+    assert(await evaluate("Array.from(document.querySelectorAll('dialog button')).find(b=>b.textContent.trim()==='确认切换').disabled"));
+    await evaluate(`(() => { const select = document.querySelector('dialog select'); const option = Array.from(select.options).find(item=>item.value===${JSON.stringify(previous)}); if (!option?.disabled) throw new Error('Current node must be marked and disabled'); const setter = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set; setter.call(select, ${JSON.stringify(target)}); select.dispatchEvent(new Event('change', { bubbles: true })); })()`);
+    await screenshots(group === 'ai-谷歌' ? 'google-node-picker' : 'best-node-picker');
+    assert.equal(calls.filter(path => path.endsWith('/proxy/select')).length, beforeSelect, 'Picking a target must wait for confirmation');
+    await click('确认切换');
+    await until(`!document.querySelector('dialog[open]') && document.body.innerText.includes(${JSON.stringify(`已切换 ${group} → ${target}`)})`);
+    assert.equal(aiCurrent[group], target);
+    assert.equal(aiCurrent[other], otherBefore, 'Switching one AI pool must not affect the other');
+    assert.equal(calls.filter(path => path.endsWith('/proxy/failover/observe')).length, beforeObserve, 'Manual selection preserves watchdog mode');
+  }
+  assert.equal(watch['ai-谷歌'].observe_only, true); assert.equal(watch['AI-优选'].observe_only, false);
   await click('检测端口 7891 出口');
   await until("document.body.innerText.includes('203.0.113.10')");
   for (const [width, height, theme] of [[1440, 1000, 'light'], [1440, 1000, 'dark'], [375, 812, 'light']]) {
@@ -203,6 +222,7 @@ try {
   await fill('新订阅地址', 'https://new.example.test/fresh'); await click('导入节点');
   await until("!document.querySelector('dialog[open]') && document.body.innerText.includes('节点已导入并保存')");
   assert.equal(calls.filter(path => path.includes('subscription/update')).length, beforeImport + 1);
+  await until("document.querySelector('[aria-label=\"删除机场 一次性机场\"]:not(:disabled)')");
   await click('删除机场 一次性机场'); await click('确认操作');
   await until("!document.querySelector('dialog[open]') && !document.querySelector('.proxy-table tbody').innerText.includes('一次性机场')");
   await click('故障看护');
@@ -218,7 +238,7 @@ try {
   const clickWatch = label => evaluate(`(() => {const section=Array.from(document.querySelectorAll('.proxy-watch')).find(item=>item.querySelector('h3').textContent==='ai-谷歌');const button=Array.from(section.querySelectorAll('button')).find(item=>item.textContent.trim()===${JSON.stringify(label)});if(!button || button.disabled)throw new Error('Missing/disabled watch button');button.click();})()`);
   await clickWatch('采用建议'); await click('确认操作');
   await until("!document.querySelector('dialog[open]') && document.body.innerText.includes('已切换到')");
-  assert.equal(current, names[0]);
+  assert.equal(aiCurrent['ai-谷歌'], names[0]);
   await clickWatch('确认告警');
   await until("!document.body.innerText.includes('隔离测试告警')");
   tickFailure = true; await clickWatch('检查当前节点'); await click('确认操作');
