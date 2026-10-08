@@ -20,6 +20,21 @@ export function requestTokens(tokens = {}) {
   };
 }
 
+export function requestUsageSource(entry) {
+  const source = entry.usageSource || (entry.tokens?.estimated === true ? 'estimated' : '');
+  return { upstream: '上游实测', estimated: '估算（非上游计费值）', unavailable: '未提供' }[source] || '未记录';
+}
+
+export function requestErrorLabel(entry) {
+  if (!entry.error) return ['error', 'failed'].includes(entry.status) ? '未记录' : '—';
+  const error = entry.error;
+  const reason = {
+    channel_daily_success_limit_exceeded: '渠道当日成功次数已达上限',
+    stream_disconnected: '流式响应中断',
+  }[error.code] || error.message || error.code || '请求失败';
+  return reason + (Number.isInteger(error.status) ? `（HTTP ${error.status}）` : '');
+}
+
 export function responseModeLabel(mode) {
   return mode === 'streaming' ? '流式' : mode === 'non-streaming' ? '非流式' : mode || '—';
 }

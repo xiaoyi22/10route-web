@@ -6,7 +6,7 @@ import { providerInfo } from '../api/providers.js';
 import Icon from '../components/Icon.jsx';
 import ProviderIcon from '../components/ProviderIcon.jsx';
 import RequestEndpoint from '../components/RequestEndpoint.jsx';
-import { modelCatalog, requestTokens, requestSpeed, responseModeLabel } from '../api/data.js';
+import { modelCatalog, requestTokens, requestSpeed, responseModeLabel, requestUsageSource, requestErrorLabel } from '../api/data.js';
 import ModelEditor from '../components/ModelEditor.jsx';
 import UpstreamModels from '../components/UpstreamModels.jsx';
 import { ConfirmDelete, CopyButton, ErrorBlock, IconButton, Modal, PageHeading, formatDate, formatNumber, managementEnabled, useResource } from '../components/Controls.jsx';
@@ -245,6 +245,7 @@ function RequestDetail({ entry, connectionName, info, cost, showPrices, onClose 
     ['连接', connectionName || entry.connectionId], ['连接 ID', entry.connectionId],
     ['时间', formatDate(entry.timestamp)], ['状态', <Status value={log.statusTone} label={log.statusLabel}/>],
     ['响应模式', responseModeLabel(entry.responseMode)],
+    ['Token 来源', requestUsageSource(entry)], ['失败原因', requestErrorLabel(entry)],
     ...(showPrices ? [['费用 · USD', formatLogCost(cost)], ['费用来源', cost?.source === 'recorded' ? '后端记录' : cost ? '当前价目表估算' : '未提供匹配价格或完整 Token']] : []),
     ['记录来源', entry.imported ? '导入' : '网关请求'],
     ['输入 Token', formatNumber(tokens.input)], ['输出 Token', formatNumber(tokens.output)],
@@ -257,7 +258,7 @@ function RequestDetail({ entry, connectionName, info, cost, showPrices, onClose 
     ['请求内容', entry.request?.redacted ? '后端已脱敏' : '未提供'],
     ['响应内容', entry.response?.redacted ? '后端已脱敏' : '未提供'],
   ];
-  const metadata = { id: entry.id, model: entry.model, provider: entry.provider, connectionId: entry.connectionId, timestamp: entry.timestamp, status: entry.status, responseMode: entry.responseMode, imported: entry.imported === true, reasoningEffort: entry.reasoningEffort ?? entry.reasoning_effort ?? null, endpoint: entry.endpoint ?? null, upstreamEndpoint: entry.upstreamEndpoint ?? null, billingMode: entry.billingMode ?? entry.billing_mode ?? null, tokens: entry.tokens, latency: entry.latency };
+  const metadata = { id: entry.id, model: entry.model, provider: entry.provider, connectionId: entry.connectionId, timestamp: entry.timestamp, status: entry.status, responseMode: entry.responseMode, imported: entry.imported === true, reasoningEffort: entry.reasoningEffort ?? entry.reasoning_effort ?? null, endpoint: entry.endpoint ?? null, upstreamEndpoint: entry.upstreamEndpoint ?? null, billingMode: entry.billingMode ?? entry.billing_mode ?? null, usageSource: entry.usageSource ?? (entry.tokens?.estimated === true ? 'estimated' : null), error: entry.error ?? null, tokens: entry.tokens, latency: entry.latency };
   return <Modal title="请求详情" onClose={onClose}>
     <div className="period-tabs detail-tabs" aria-label="详情视图">{[['summary', '概况'], ['metadata', '元数据']].map(([value, name]) => <button key={value} type="button" className={tab === value ? 'selected' : ''} aria-pressed={tab === value} onClick={() => setTab(value)}>{name}</button>)}</div>
     {tab === 'summary' ? <dl className="request-details">{fields.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value ?? '—'}</dd></div>)}</dl> : <><div className="metadata-toolbar"><span>请求元数据</span><CopyButton value={JSON.stringify(metadata, null, 2)} label="复制请求元数据"/></div><pre className="request-metadata">{JSON.stringify(metadata, null, 2)}</pre></>}
@@ -300,12 +301,12 @@ export function LogsPage() {
   const pagination = resource.data?.pagination;
   const set = (key, value) => setFilters(previous => ({ ...previous, [key]: value }));
   function exportRows() {
-    const rows = [['请求 ID', '时间', '模型', '推理强度', '入口端点', '出口端点', '供应商', '状态', '类型', '计费模式', '连接', '连接 ID', '响应模式', '输入 Token', '输出 Token', '缓存读取 Token', '缓存写入 Token', '推理 Token', '首 Token ms', '耗时 ms', '输出 TPS（Token/s）', 'TPS 计算口径', ...(showPrices ? ['费用 · USD（当前价目表估算）'] : [])], ...details.map(entry => {
+    const rows = [['请求 ID', '时间', '模型', '推理强度', '入口端点', '出口端点', '供应商', '状态', '类型', '计费模式', '连接', '连接 ID', '响应模式', '输入 Token', '输出 Token', '缓存读取 Token', '缓存写入 Token', '推理 Token', '首 Token ms', '耗时 ms', '输出 TPS（Token/s）', 'TPS 计算口径', 'Token 来源', '失败原因', ...(showPrices ? ['费用 · USD（当前价目表估算）'] : [])], ...details.map(entry => {
       const tokens = requestTokens(entry.tokens);
       const speed = requestSpeed(entry);
       const info = infoFor(entry);
       const fields = requestLogFields(entry);
-      return [entry.id, entry.timestamp, entry.model, fields.reasoningEffort, fields.endpoint, entry.upstreamEndpoint, info.name, fields.statusLabel, fields.typeLabel, fields.billingMode, connectionNames.get(entry.connectionId), entry.connectionId, entry.responseMode, tokens.input, tokens.output, tokens.cached, tokens.created, tokens.reasoning, entry.imported ? null : entry.latency?.ttft, entry.imported ? null : entry.latency?.total, speed?.tps.toFixed(2), speed?.basis, ...(showPrices ? [formatLogCost(logCost(entry, pricing.data))] : [])];
+      return [entry.id, entry.timestamp, entry.model, fields.reasoningEffort, fields.endpoint, entry.upstreamEndpoint, info.name, fields.statusLabel, fields.typeLabel, fields.billingMode, connectionNames.get(entry.connectionId), entry.connectionId, entry.responseMode, tokens.input, tokens.output, tokens.cached, tokens.created, tokens.reasoning, entry.imported ? null : entry.latency?.ttft, entry.imported ? null : entry.latency?.total, speed?.tps.toFixed(2), speed?.basis, requestUsageSource(entry), requestErrorLabel(entry), ...(showPrices ? [formatLogCost(logCost(entry, pricing.data))] : [])];
     })];
     const csv = rows.map(row => row.map(value => `"${String(value ?? '').replace(/^[=+@-]/, "'$&").replaceAll('"', '""')}"`).join(',')).join('\r\n');
     const url = URL.createObjectURL(new Blob(['\uFEFF', csv], { type: 'text/csv;charset=utf-8' }));
