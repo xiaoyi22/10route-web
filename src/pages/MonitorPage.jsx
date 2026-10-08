@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import Icon from '../components/Icon.jsx';
 import ProviderIcon from '../components/ProviderIcon.jsx';
 import ProviderError from '../components/ProviderError.jsx';
 import { ErrorBlock, IconButton, Modal, PageHeading, formatDate, formatNumber, managementEnabled, useResource } from '../components/Controls.jsx';
 import { requestJson } from '../api/client.js';
 import { providerInfo } from '../api/providers.js';
-import { checkNames, resultNames, resultTone, explicitMonitorConfig, toggleMonitorModel, monitorTargets, recentChecks, checkLatency, manualCheckRow } from '../api/monitor.js';
+import { checkNames, thinkingNames, resultNames, resultTone, explicitMonitorConfig, toggleMonitorModel, monitorTargets, recentChecks, summarizeMonitorChecks, checkLatency, manualCheckRow, monitorThinkingOptions, saveMonitorConfig } from '../api/monitor.js';
 
 const duration = value => typeof value === 'number' ? `${(value / 1000).toFixed(2)} s` : '—';
 const percent = value => value === null ? '—' : `${value.toFixed(1)}%`;
@@ -14,31 +14,42 @@ function CheckStatus({ status = 'pending' }) {
   return <span className={`status ${resultTone(status)}`}><span className="dot"/>{resultNames[status] || (status === 'pending' ? '未检测' : status)}</span>;
 }
 
+function ThinkingSelect({ label, levels, value = '', onChange, disabled = false }) {
+  const available = monitorThinkingOptions(levels);
+  const hintId = useId();
+  const hint = levels == null ? '后端未提供档位列表，可手动选择通用档位；模型是否支持尚未确认，网关或上游可能忽略或拒绝。' : !available.length ? '此模型不支持思考设置' : '';
+  return <><select className="monitor-thinking-select" aria-label={label} aria-describedby={hint ? hintId : undefined} value={value} disabled={disabled || (!available.length && !value)} onChange={event => onChange(event.target.value)}><option value="">{thinkingNames['']}</option>{value && !available.includes(value) && <option value={value} disabled>{thinkingNames[value] || value}（当前不可用）</option>}{available.map(level => <option key={level} value={level}>{thinkingNames[level] || level}</option>)}</select>{hint && <small id={hintId} className="log-mode">{hint}</small>}</>;
+}
+
 function CheckDetail({ row, name, catalog, onClose }) {
   const provider = catalog.find(item => item.id === row.provider);
   const accountName = id => provider?.connections?.find(connection => connection.id === id)?.name || id || '后端未返回';
   return <Modal title={`${checkNames[row.check || 'iq']} · ${row.model}`} onClose={onClose}>
-    <dl className="request-details"><div><dt>供应商</dt><dd>{name(row.provider)}</dd></div><div><dt>检测时间</dt><dd>{formatDate(row.at)}</dd></div><div><dt>结果</dt><dd><CheckStatus status={row.status}/></dd></div><div><dt>本轮耗时</dt><dd>{duration(checkLatency(row))}</dd></div>{row.check !== 'availability' && <div><dt>题库正确率</dt><dd>{row.score == null ? '未评分' : `${row.score}%`}</dd></div>}<div><dt>记录来源</dt><dd>{row.manual ? '本页单次测试' : '后台检测记录'}</dd></div></dl>
+    <dl className="request-details"><div><dt>供应商</dt><dd>{name(row.provider)}</dd></div><div><dt>检测时间</dt><dd>{formatDate(row.at)}</dd></div><div><dt>结果</dt><dd><CheckStatus status={row.status}/></dd></div><div><dt>本轮耗时</dt><dd>{duration(checkLatency(row))}</dd></div>{row.check !== 'availability' && <><div><dt>思考强度</dt><dd>{Object.hasOwn(row, 'thinkingLevel') ? thinkingNames[row.thinkingLevel || ''] || row.thinkingLevel : '未记录（旧记录）'}</dd></div><div><dt>题库正确率</dt><dd>{row.score == null ? '未评分' : `${row.score}%`}</dd></div></>}<div><dt>记录来源</dt><dd>{row.manual ? '本页单次测试' : '后台检测记录'}</dd></div></dl>
     {(row.answers || []).map((answer, index) => <section className="monitor-answer" key={index}><h3>{row.check === 'availability' ? '模型回复' : `题目 ${index + 1}`}</h3>{answer.question && <p>{answer.question}</p>}<dl className="request-details">{row.check !== 'availability' && <><div><dt>标准答案</dt><dd>{answer.answer ?? answer.iq?.expected ?? '—'}</dd></div><div><dt>模型答案</dt><dd>{answer.iq?.modelAnswered || '—'}</dd></div></>}<div><dt>状态</dt><dd><CheckStatus status={answer.status}/></dd></div><div><dt>HTTP 状态</dt><dd>{answer.ok ? answer.statusCode ?? answer.httpStatus ?? '—' : answer.statusCode ?? answer.httpStatus ?? '—'}</dd></div><div><dt>耗时</dt><dd>{duration(answer.latencyMs)}</dd></div><div><dt>使用账号</dt><dd>{accountName(answer.connectionId)}</dd></div></dl>{answer.error ? <ProviderError error={{ message: answer.error, status: answer.statusCode ?? answer.httpStatus }} authType={provider?.connections?.find(connection => connection.id === answer.connectionId)?.authType}/> : <pre className="request-metadata">{answer.content || answer.iq?.modelAnswered || '后端未返回文本'}</pre>}</section>)}
   </Modal>;
 }
 
-function ManualTest({ target, check, routeId, onClose, onResult }) {
+function ManualTest({ target, check, routeId, thinkingLevels, initialThinkingLevel, onClose, onResult }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [thinkingLevel, setThinkingLevel] = useState(check === 'iq' ? initialThinkingLevel || '' : '');
   const settings = useResource(check === 'iq' ? '/api/settings' : null);
   async function run() {
+    if (check === 'iq' && thinkingLevel && !monitorThinkingOptions(thinkingLevels).includes(thinkingLevel)) { setError('请选择当前模型支持的思考强度，或沿用网关默认设置。'); return; }
     setBusy(true); setError('');
     try {
-      const result = await requestJson('/api/models/test', { method: 'POST', body: JSON.stringify({ model: routeId, kind: 'llm', ...(check === 'iq' && { probe: 'iq' }) }) });
-      onResult(manualCheckRow(result, target, check));
+      const model = check === 'iq' && thinkingLevel ? routeId + '(' + thinkingLevel + ')' : routeId;
+      const result = await requestJson('/api/models/test', { method: 'POST', body: JSON.stringify({ model, kind: 'llm', ...(check === 'iq' && { probe: 'iq' }) }) });
+      onResult(manualCheckRow(result, check === 'iq' ? { ...target, thinkingLevel: thinkingLevel || null } : target, check));
     } catch (failure) { setError(failure.message); }
     finally { setBusy(false); }
   }
   return <Modal title={`单次${checkNames[check]} · ${target.model}`} onClose={onClose} busy={busy}>
     <dl className="request-details"><div><dt>模型路由</dt><dd><code>{routeId}</code></dd></div><div><dt>账号选择</dt><dd>由后端路由选择可用账号</dd></div><div><dt>请求次数</dt><dd>1 次真实模型请求，按上游规则计费</dd></div><div><dt>记录范围</dt><dd>结果保留在当前页面；后台历史展示自动检测记录</dd></div></dl>
+    {check === 'iq' && <section className="monitor-answer"><label className="monitor-thinking-control">思考强度<ThinkingSelect label="单次智商检测思考强度" levels={thinkingLevels} value={thinkingLevel} onChange={setThinkingLevel} disabled={busy}/></label><p className="inline-note">仅用于本次智商检测，不修改自动检测计划。</p></section>}
     {check === 'iq' && <section className="monitor-answer"><h3>网关单次检测题目</h3>{settings.error ? <ErrorBlock message={settings.error} onRetry={settings.refresh}/> : settings.loading ? <p>正在读取题目…</p> : <><p>{settings.data?.iqProbe?.question || '后端未返回单题配置'}</p><span className="muted">标准答案：{settings.data?.iqProbe?.answer ?? '—'}</span></>}</section>}
-    {error && <ErrorBlock message={error}/>}<div className="dialog-actions"><button className="button" disabled={busy} onClick={onClose}>取消</button><button className="button primary" disabled={busy || (check === 'iq' && (!settings.data?.iqProbe?.question || !!settings.error))} onClick={run}><Icon name="play"/>{busy ? '正在检测…' : '开始检测'}</button></div>
+    {error && <ErrorBlock message={error}/>}<div className="dialog-actions"><button className="button" disabled={busy} onClick={onClose}>取消</button><button className="button primary" disabled={busy || (check === 'iq' && (!settings.data?.iqProbe?.question || !!settings.error || (thinkingLevel && !monitorThinkingOptions(thinkingLevels).includes(thinkingLevel))))} onClick={run}><Icon name="play"/>{busy ? '正在检测…' : '开始检测'}</button></div>
   </Modal>;
 }
 
@@ -59,7 +70,7 @@ function MonitorConfig({ data, onSaved }) {
     if (config.enabled && !targets.length) { setError('启用自动检测前，请选择至少一个可用检测模型。'); return; }
     setBusy(true);
     try {
-      const result = await requestJson('/api/iq-monitor', { method: 'PUT', body: JSON.stringify(config) });
+      const result = await saveMonitorConfig(config);
       setConfig(explicitMonitorConfig(result.config, data.catalog)); setDirty(false);
       setMessage(result.config.enabled ? '已保存，后台将在约 30 秒内检查检测计划。' : '已保存，自动检测已关闭。'); onSaved();
     } catch (failure) { setError(failure.message); }
@@ -67,8 +78,8 @@ function MonitorConfig({ data, onSaved }) {
   }
   return <form className="monitor-config" onSubmit={save}>
     <fieldset disabled={!managementEnabled || busy}>
-      <section className="monitor-config-band"><div className="panel-heading"><h2>自动检测计划</h2><span className="muted">{dirty ? '有未保存更改' : '已保存配置'}</span></div><div className="monitor-plan-controls"><label className="checkbox-filter"><input type="checkbox" aria-label="启用自动检测" checked={config.enabled} onChange={event => edit({ enabled: event.target.checked })}/>启用自动检测</label><label>间隔（分钟）<input aria-label="检测间隔" type="number" min="15" max="10080" step="1" required value={config.intervalMinutes} onChange={event => edit({ intervalMinutes: Number(event.target.value) })}/></label><span className="muted">{config.providers.length} 个供应商 · 每轮最多 {requests} 次请求</span></div><p className="inline-note">检测会产生上游用量。单次测试使用网关单题，自动智商检测执行下方题库。</p></section>
-      <section className="monitor-config-band"><div className="panel-heading"><h2>供应商与模型</h2></div><div className="filter-search"><Icon name="search"/><input aria-label="搜索检测配置供应商" placeholder="搜索供应商或模型…" value={query} onChange={event => setQuery(event.target.value)}/></div>
+      <section className="monitor-config-band"><div className="panel-heading"><h2>自动检测计划</h2><span className="muted">{dirty ? '有未保存更改' : '已保存配置'}</span></div><div className="monitor-plan-controls"><label className="checkbox-filter"><input type="checkbox" aria-label="启用自动检测" checked={config.enabled} onChange={event => edit({ enabled: event.target.checked })}/>启用自动检测</label><label>间隔（分钟）<input aria-label="检测间隔" aria-describedby="monitor-interval-hint" type="number" min="1" max="10080" step="1" required value={config.intervalMinutes} onChange={event => edit({ intervalMinutes: Number(event.target.value) })}/></label><span className="muted">{config.providers.length} 个供应商 · 每轮最多 {requests} 次请求</span></div><p className="inline-note" id="monitor-interval-hint">最小间隔 1 分钟，请输入整数。</p><p className="inline-note">检测会产生上游用量。单次测试使用网关单题，自动智商检测执行下方题库。</p></section>
+      <section className="monitor-config-band"><div className="panel-heading"><h2>供应商与模型</h2></div><p className="inline-note">思考强度按模型设置，仅用于智商检测，不影响模型测活。</p><div className="filter-search"><Icon name="search"/><input aria-label="搜索检测配置供应商" placeholder="搜索供应商或模型…" value={query} onChange={event => setQuery(event.target.value)}/></div>
         {config.providers.filter(selected => !data.catalog.some(provider => provider.id === selected.id)).map(selected => <div className="error-block" key={selected.id}>供应商已不存在：{selected.id}<IconButton icon="trash" label={`移除 ${selected.id}`} onClick={() => edit({ providers: config.providers.filter(item => item.id !== selected.id) })}/></div>)}
         {data.catalog.filter(provider => `${provider.name} ${provider.id} ${provider.models.join(' ')}`.toLowerCase().includes(query.toLowerCase())).map(provider => {
           const selected = config.providers.find(item => item.id === provider.id);
@@ -90,7 +101,7 @@ function ProviderModelChecks({ provider, selected, onChange }) {
   const models = [...new Set([...provider.models, ...selected.models])].filter(model => model.toLowerCase().includes(search.toLowerCase()));
   const pages = Math.max(1, Math.ceil(models.length / 20));
   const current = Math.min(page, pages);
-  return <div className="monitor-model-checks"><div className="filter-search"><Icon name="search"/><input aria-label={`搜索检测模型 ${provider.name}`} placeholder="搜索模型…" value={search} onChange={event => { setSearch(event.target.value); setPage(1); }}/></div><div className="table-shell"><table><thead><tr><th>模型</th><th>测活</th><th>智商检测</th></tr></thead><tbody>{models.slice((current - 1) * 20, current * 20).map(model => <tr key={model}><td className="log-model">{model}{!provider.models.includes(model) && <small>当前不可用</small>}</td>{['availability', 'iq'].map(check => <td key={check}><input type="checkbox" aria-label={`${provider.name} ${model} ${checkNames[check]}`} checked={selected.modelChecks?.[model]?.includes(check) || false} disabled={!provider.models.includes(model) && !selected.modelChecks?.[model]?.includes(check)} onChange={event => onChange(toggleMonitorModel(selected, model, check, event.target.checked))}/></td>)}</tr>)}</tbody></table></div><div className="table-footer"><span>{models.length} 个模型</span><div className="pagination"><IconButton icon="back" label={`上一页检测模型 ${provider.name}`} disabled={current <= 1} onClick={() => setPage(current - 1)}/><span>{current} / {pages}</span><IconButton icon="arrow" label={`下一页检测模型 ${provider.name}`} disabled={current >= pages} onClick={() => setPage(current + 1)}/></div></div></div>;
+  return <div className="monitor-model-checks"><div className="filter-search"><Icon name="search"/><input aria-label={`搜索检测模型 ${provider.name}`} placeholder="搜索模型…" value={search} onChange={event => { setSearch(event.target.value); setPage(1); }}/></div><div className="table-shell"><table><thead><tr><th>模型</th><th>测活</th><th>智商检测</th><th>思考强度</th></tr></thead><tbody>{models.slice((current - 1) * 20, current * 20).map(model => <tr key={model}><td className="log-model">{model}{!provider.models.includes(model) && <small>当前不可用</small>}</td>{['availability', 'iq'].map(check => <td key={check}><input type="checkbox" aria-label={`${provider.name} ${model} ${checkNames[check]}`} checked={selected.modelChecks?.[model]?.includes(check) || false} disabled={!provider.models.includes(model) && !selected.modelChecks?.[model]?.includes(check)} onChange={event => onChange(toggleMonitorModel(selected, model, check, event.target.checked))}/></td>)}<td><ThinkingSelect label={provider.name + ' ' + model + ' 智商检测思考强度'} levels={provider.thinkingLevels?.[model]} value={Object.hasOwn(selected.modelThinking || {}, model) ? selected.modelThinking[model] : ''} disabled={!selected.modelChecks?.[model]?.includes('iq') || !provider.models.includes(model)} onChange={value => { const modelThinking = { ...selected.modelThinking }; if (value) modelThinking[model] = value; else delete modelThinking[model]; onChange({ modelThinking }); }}/></td></tr>)}</tbody></table></div><div className="table-footer"><span>{models.length} 个模型</span><div className="pagination"><IconButton icon="back" label={`上一页检测模型 ${provider.name}`} disabled={current <= 1} onClick={() => setPage(current - 1)}/><span>{current} / {pages}</span><IconButton icon="arrow" label={`下一页检测模型 ${provider.name}`} disabled={current >= pages} onClick={() => setPage(current + 1)}/></div></div></div>;
 }
 
 export function MonitorPage() {
@@ -111,6 +122,7 @@ export function MonitorPage() {
   const catalog = data?.catalog || [];
   const history = data?.state?.history || [];
   const targets = data ? monitorTargets(data.config, catalog) : [];
+  const manualThinking = data?.config.providers.find(selected => selected.id === manual?.target.provider)?.modelThinking || {};
   const name = id => { const info = providerInfo(id, nodes.data?.nodes); return info.name === id || info.name.startsWith('自定义节点（') ? catalog.find(item => item.id === id)?.name || id : info.name; };
   const matches = row => (!provider || row.provider === provider) && `${row.model} ${name(row.provider)}`.toLowerCase().includes(query.toLowerCase());
   const statusRows = (scope === 'all' ? catalog.flatMap(item => item.models.map(model => ({ provider: item.id, model, check }))) : targets.filter(target => target.check === check)).filter(matches);
@@ -123,9 +135,7 @@ export function MonitorPage() {
     const manual = manualResults[JSON.stringify([target.provider, target.model, check])];
     return manual && (!automatic || manual.at > automatic.at) ? manual : automatic;
   };
-  const selectedLatest = statusRows.map(latestFor).filter(Boolean);
-  const passed = selectedLatest.filter(row => ['available', 'correct'].includes(row.status)).length;
-  const failed = selectedLatest.filter(row => ['incorrect', 'rate_limited', 'timeout', 'error'].includes(row.status)).length;
+  const summary = summarizeMonitorChecks(history, statusRows, check);
   const filter = (setter, value) => { setter(value); setPage(1); };
   const stateLabel = data?.running ? '检测中' : data?.config.enabled ? '等待下一轮' : '自动检测已关闭';
   return <>
@@ -136,7 +146,10 @@ export function MonitorPage() {
       <div className="monitor-runtime"><span className={`status ${data.running ? 'healthy' : 'unknown'}`}><span className="dot"/>{stateLabel}</span><span>上轮完成 {formatDate(data.state.completedAt)}</span><span>下轮 {data.config.enabled ? data.running ? '本轮完成后计算' : data.state.revision !== data.config.revision ? '等待后台检查' : formatDate(data.state.nextAt) : '—'}</span></div>
       {view === 'config' ? <MonitorConfig data={data} onSaved={resource.refresh}/> : <>
         <div className="section-toolbar"><div className="period-tabs" aria-label="检测类型">{Object.entries(checkNames).map(([value, title]) => <button type="button" key={value} aria-pressed={check === value} className={check === value ? 'selected' : ''} onClick={() => filter(setCheck, value)}>{title}</button>)}</div><span className="muted">{check === 'iq' ? '得分按题库正确率计算' : '测活按后端返回的有效回复判定'}</span></div>
-        {view === 'status' && <section className="metrics-grid monitor-metrics" aria-label="检测汇总">{[['匹配模型', statusRows.length], ['最近通过', passed], ['最近异常', failed], ['未检测 / 未评分', statusRows.length - passed - failed]].map(([title, count]) => <div className="metric" key={title}><div className="metric-label">{title}</div><div className="metric-value">{formatNumber(count)}</div></div>)}</section>}
+        {view === 'status' && <>
+          <section className="metrics-grid monitor-metrics" aria-label="检测汇总">{[['匹配模型', formatNumber(statusRows.length), '当前筛选范围 · 个模型'], ['近30次通过', formatNumber(summary.passed), '后台检测 · 次通过'], ['近30次异常', formatNumber(summary.failed), '答错 / 限流 / 超时 / 故障'], ['近期检测通过率', percent(summary.passRate), '通过次数 / 已判定次数']].map(([title, value, note]) => <div className="metric" key={title}><div className="metric-label">{title}</div><div className="metric-value">{value}</div><div className="metric-note">{note}</div></div>)}</section>
+          <p className="metric-note">当前筛选范围最近{summary.total}次后台检测，其中{summary.ungraded}次未评分；未评分不计入通过率。本页单次测试仅更新最新状态，不计入后台记录统计。</p>
+        </>}
         <div className="monitor-filters"><div className="filter-search"><Icon name="search"/><input aria-label="搜索检测模型" placeholder="搜索模型或供应商…" value={query} onChange={event => filter(setQuery, event.target.value)}/></div><label>供应商<select aria-label="检测供应商" value={provider} onChange={event => filter(setProvider, event.target.value)}><option value="">全部供应商</option>{[...new Set([...catalog.map(item => item.id), ...history.map(row => row.provider)])].map(id => <option key={id} value={id}>{name(id)}</option>)}</select></label>{view === 'status' && <label>模型范围<select aria-label="检测模型范围" value={scope} onChange={event => filter(setScope, event.target.value)}><option value="configured">已配置检测模型</option><option value="all">全部可检测模型</option></select></label>}</div>
         <div className="table-shell"><table className="monitor-table"><caption className="sr-only">{view === 'history' ? '真实后台检测历史' : '供应商模型检测状态'}</caption><thead><tr><th>模型 / 供应商</th><th>结果</th><th>{view === 'history' ? '检测时间' : '最近 30 轮'}</th><th>{check === 'iq' ? '题库正确率' : '最近通过率'}</th><th>本轮耗时</th><th>{view === 'history' ? '操作' : '最新检测 / 操作'}</th></tr></thead><tbody>{rows.slice((current - 1) * 20, current * 20).map((target, index) => {
           const previous = recentChecks(history, target.provider, target.model, check);
@@ -150,6 +163,6 @@ export function MonitorPage() {
       </>}
     </>}
     {detail && <CheckDetail row={detail} name={name} catalog={catalog} onClose={() => setDetail(null)}/>}
-    {manual && <ManualTest {...manual} routeId={`${providerInfo(manual.target.provider, nodes.data?.nodes).prefix || manual.target.provider}/${manual.target.model}`} onClose={() => setManual(null)} onResult={row => { setManualResults(previous => ({ ...previous, [JSON.stringify([row.provider, row.model, row.check])]: row })); setManual(null); setDetail(row); }}/>} 
+    {manual && <ManualTest {...manual} thinkingLevels={catalog.find(item => item.id === manual.target.provider)?.thinkingLevels?.[manual.target.model]} initialThinkingLevel={Object.hasOwn(manualThinking, manual.target.model) ? manualThinking[manual.target.model] : ''} routeId={`${providerInfo(manual.target.provider, nodes.data?.nodes).prefix || manual.target.provider}/${manual.target.model}`} onClose={() => setManual(null)} onResult={row => { setManualResults(previous => ({ ...previous, [JSON.stringify([row.provider, row.model, row.check])]: row })); setManual(null); setDetail(row); }}/>}
   </>;
 }

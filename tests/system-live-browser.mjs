@@ -1,0 +1,107 @@
+import assert from 'node:assert/strict';
+import { chromium } from 'playwright';
+import { readFile, mkdir, writeFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import { parseEnv } from 'node:util';
+
+const base = process.env.PREVIEW_URL || 'http://127.0.0.1:4317';
+const directory = resolve(process.env.USERPROFILE || process.env.HOME, '.codex/tmp/system-info', new Date().toISOString().replace(/[:.]/g, '-'));
+await mkdir(directory, { recursive: true });
+const env = parseEnv(await readFile(process.env.TENROUTER_TEST_LOGIN_ENV || resolve(process.env.USERPROFILE || process.env.HOME, '.codex/credentials/10router-web.env'), 'utf8'));
+assert(env.TENROUTER_TEST_PASSWORD, '真实登录凭据缺失');
+const browser = await chromium.launch({ channel: process.env.BROWSER_CHANNEL || 'msedge', headless: true, args: ['--no-proxy-server'] });
+const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
+const page = await context.newPage();
+page.setDefaultTimeout(15000);
+const report = { base, checks: [], errors: [], screenshots: [] };
+let systemRequests = 0;
+let businessRequests = 0;
+page.on('pageerror', error => report.errors.push(error.message));
+page.on('request', request => {
+  const path = new URL(request.url()).pathname;
+  if (path === '/api/system/info') systemRequests++;
+  if (/^\/api\/(usage\/|providers|provider-nodes)/.test(path)) businessRequests++;
+  if (path.startsWith('/api/') && !['GET', 'HEAD'].includes(request.method()) && path !== '/api/auth/login') report.errors.push('非只读请求：' + path);
+});
+try {
+  assert.equal((await context.request.get(base + '/api/system/info')).status(), 401);
+  assert.equal((await (await context.request.get(base + '/api/health')).json()).driver, 'better-sqlite3');
+  const login = await context.request.post(base + '/api/auth/login', { data: { password: env.TENROUTER_TEST_PASSWORD } });
+  assert.equal(login.status(), 200);
+  await page.goto(base + '/dashboard/system');
+  await page.getByRole('heading', { name: '系统信息', exact: true }).waitFor();
+  assert.equal(await page.getByRole('heading', { name: '系统信息', exact: true }).count(), 1, '系统信息必须有独立页面');
+  await page.getByTestId('system-hostname').filter({ hasText: /\S/ }).waitFor();
+  await page.waitForFunction(() => !document.querySelector('.refresh-button').disabled);
+  assert.equal(businessRequests, 0, '系统页不能加载网关用量与供应商数据');
+  const sample = await (await context.request.get(base + '/api/system/info')).json();
+  assert.equal(sample.platform, 'linux');
+  assert(sample.cpu.logicalCores > 0 && sample.memory.totalBytes > 0 && sample.disk.totalBytes > 0);
+  assert.equal(await page.getByTestId('system-hostname').innerText(), sample.hostname);
+  assert.equal(await page.getByRole('link', { name: '系统信息', exact: true }).getAttribute('aria-current'), 'page');
+  report.checks.push('独立系统页面、侧栏选中状态、真实 Linux 数据与登录保护通过');
+  const previousCpu = await page.getByTestId('system-cpu').innerText();
+  await page.route('**/api/system/info', route => route.fulfill({ status: 503, json: { error: '验收模拟连接中断' } }));
+  await page.getByRole('button', { name: '刷新', exact: true }).click();
+  await page.getByRole('alert').filter({ hasText: '验收模拟连接中断' }).waitFor();
+  assert.equal(await page.getByTestId('system-cpu').innerText(), previousCpu);
+  assert((await page.locator('.overview-system .last-updated').innerText()).includes('已过期'));
+  await page.unroute('**/api/system/info');
+  await page.getByRole('button', { name: '重试', exact: true }).click();
+  await page.waitForFunction(() => !document.querySelector('[role="alert"]') && !document.querySelector('.refresh-button').disabled);
+  report.checks.push('采集故障保留旧快照并标注过期，重试恢复通过');
+  await page.getByLabel('自动更新系统信息').uncheck();
+  await page.clock.install();
+  systemRequests = 0;
+  await page.clock.runFor(31000);
+  assert.equal(systemRequests, 0, '暂停后不能轮询系统');
+  await page.getByLabel('自动更新系统信息').check();
+  await page.waitForFunction(() => !document.querySelector('.refresh-button').disabled);
+  await page.evaluate(() => { Object.defineProperty(document, 'hidden', { configurable: true, get: () => true }); document.dispatchEvent(new Event('visibilitychange')); });
+  systemRequests = 0;
+  await page.clock.runFor(31000);
+  assert.equal(systemRequests, 0, '隐藏页面不能轮询系统');
+  await page.evaluate(() => { delete document.hidden; document.dispatchEvent(new Event('visibilitychange')); });
+  await page.waitForFunction(() => !document.querySelector('.refresh-button').disabled);
+  assert(systemRequests > 0, '返回系统页必须恢复刷新');
+  await page.route('**/api/system/info', async route => { await new Promise(resolveDelay => setTimeout(resolveDelay, 1000)); await route.continue().catch(() => {}); });
+  await page.getByRole('button', { name: '刷新', exact: true }).click();
+  await page.getByLabel('自动更新系统信息').uncheck();
+  await page.waitForFunction(() => !document.querySelector('.refresh-button').disabled);
+  await page.unroute('**/api/system/info');
+  await page.clock.setSystemTime(new Date());
+  await page.getByRole('button', { name: '刷新', exact: true }).click();
+  await page.waitForFunction(() => !document.querySelector('.refresh-button').disabled);
+  report.checks.push('暂停、加载中暂停、隐藏页面停止采集及返回刷新通过');
+  for (const width of [1440, 768, 375, 320]) {
+    await page.setViewportSize({ width, height: 1000 });
+    for (const theme of ['light', 'dark']) {
+      await page.getByLabel('主题模式').selectOption(theme);
+      await page.evaluate(() => document.fonts.ready);
+      await page.evaluate(() => Promise.all(document.getAnimations().filter(animation => animation.effect?.getComputedTiming().iterations !== Infinity).map(animation => animation.finished.catch(() => {}))));
+      assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), '系统页面横向溢出：' + width + ' ' + theme);
+      const file = resolve(directory, 'system-' + width + '-' + theme + '.png');
+      await page.screenshot({ path: file, fullPage: true, animations: 'disabled' });
+      report.screenshots.push(file);
+    }
+  }
+  report.checks.push('四种屏宽与深浅主题布局通过');
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.getByRole('link', { name: '概览', exact: true }).click();
+  await page.getByTestId('request-value').filter({ hasText: /\d/ }).waitFor();
+  assert.equal(await page.getByTestId('system-hostname').count(), 0, '概览不能显示系统信息');
+  systemRequests = 0;
+  await page.clock.runFor(31000);
+  assert.equal(systemRequests, 0, '离开系统页后必须停止系统采集');
+  await page.getByRole('link', { name: '系统信息', exact: true }).click();
+  await page.getByRole('heading', { name: '系统信息', exact: true }).waitFor();
+  await page.waitForFunction(() => !document.querySelector('.refresh-button').disabled);
+  await page.reload();
+  await page.getByRole('heading', { name: '系统信息', exact: true }).waitFor();
+  await page.getByTestId('system-hostname').filter({ hasText: sample.hostname }).waitFor();
+  report.checks.push('概览移除系统信息、离页停止采集及导航/刷新独立页面通过');
+  assert.equal(report.errors.length, 0, report.errors.join('\n'));
+  report.passed = true;
+  console.log('PASS: ' + report.checks.join('；'));
+} catch (error) { report.passed = false; report.failure = error.message; throw error; }
+finally { await writeFile(resolve(directory, 'acceptance.json'), JSON.stringify(report, null, 2)); await browser.close(); console.log('验收记录：' + directory); }

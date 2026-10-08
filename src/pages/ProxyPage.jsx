@@ -1,8 +1,9 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import Icon from '../components/Icon.jsx';
 import { ErrorBlock, IconButton, Modal, PageHeading, formatDate, managementEnabled, useResource } from '../components/Controls.jsx';
 import { requestJson } from '../api/client.js';
+import { useEgress } from '../components/useEgress.js';
 import { groupChain, nodeState, proxyEntries } from '../api/hermes.js';
 const ProxySubscriptions = lazy(() => import('../components/ProxySubscriptions.jsx'));
 const ProxyWatch = lazy(() => import('../components/ProxyWatch.jsx'));
@@ -10,24 +11,8 @@ const ProxyWatch = lazy(() => import('../components/ProxyWatch.jsx'));
 const watchedGroups = ['ai-谷歌', 'AI-优选'];
 
 function EgressRow({ entry, revision, onSwitch, switchDisabled }) {
-  const resource = useResource(`/api/hermes/egress-ip?port=${entry.port}`);
-  const [result, setResult] = useState(null);
-  const [error, setError] = useState('');
-  const [busy, setBusy] = useState(false);
-  const previousRevision = useRef(revision);
-  useEffect(() => {
-    if (previousRevision.current === revision) return;
-    previousRevision.current = revision;
-    setResult(null); setError(''); resource.refresh();
-  }, [revision, resource.refresh]);
-  async function probe() {
-    setBusy(true); setError(''); setResult(null);
-    try { setResult(await requestJson('/api/hermes/egress-ip', { method: 'POST', body: JSON.stringify({ port: entry.port }) })); }
-    catch (failure) { setError(failure.message); }
-    finally { setBusy(false); }
-  }
-  const data = result || resource.data;
-  return <tr><td><strong className="mono">:{entry.port}</strong><small className="cell-note">{entry.name}</small></td><td className="proxy-chain">{entry.chain.length ? entry.chain.join(' → ') : '按分流规则处理'}</td><td className="proxy-chain"><strong className="mono">{data?.ip || '—'}</strong><small className="cell-note">{[data?.country, data?.city, data?.org || data?.isp].filter(Boolean).join(' · ') || (data?.checked_at ? '未返回位置' : '未检测')}</small>{data?.chain?.length > 0 && <small className="cell-note">探测链：{data.chain.join(' → ')}</small>}{(error || resource.error) && <small className="error-message" role="alert">{error || resource.error}</small>}</td><td className="muted">{formatDate(data?.checked_at)}{data?.probe_url && <small className="cell-note" title={data.probe_url}>出口探测结果</small>}</td><td><div className="row-actions"><IconButton icon="globe" label={`检测端口 ${entry.port} 出口`} disabled={!managementEnabled || busy || switchDisabled} onClick={probe}/>{onSwitch && <button className="button" aria-label={`切换节点 ${entry.group}`} disabled={busy || switchDisabled} onClick={() => onSwitch(entry.group)}><Icon name="edit"/>切换节点</button>}</div>{busy && <small className="cell-note">检测中</small>}</td></tr>;
+  const { data, busy, error, stale, refresh } = useEgress(entry, managementEnabled && entry.probeSupported && !switchDisabled, revision);
+  return <tr><td><strong className="mono">:{entry.port}</strong><small className="cell-note">{entry.name}</small></td><td className="proxy-chain">{entry.chain.length ? entry.chain.join(' → ') : '按分流规则处理'}</td><td className="proxy-chain"><strong className="mono">{data?.ip || '—'}</strong><small className="cell-note">{[data?.country, data?.city, data?.org || data?.isp].filter(Boolean).join(' · ') || (data?.checked_at ? '未返回位置' : busy ? '自动检测中' : '等待检测')}</small>{data?.chain?.length > 0 && <small className="cell-note">探测链：{data.chain.join(' → ')}</small>}{error && <small className="error-message" role="alert">{data ? '更新失败，保留上次结果：' : '出口检测失败：'}{error}</small>}</td><td className="muted">{formatDate(data?.checked_at)}<small className="cell-note">{busy ? data ? '检测中，保留上次结果' : '自动检测中' : stale ? '上次结果 · 等待更新' : '自动检测 · 5分钟缓存'}</small></td><td><div className="row-actions"><IconButton icon="globe" label={`检测端口 ${entry.port} 出口`} disabled={!managementEnabled || !entry.probeSupported || busy || switchDisabled} onClick={refresh}/>{onSwitch && <button className="button" aria-label={`切换节点 ${entry.group}`} disabled={busy || switchDisabled} onClick={() => onSwitch(entry.group)}><Icon name="edit"/>切换节点</button>}</div></td></tr>;
 }
 
 export function ProxyPage() {
@@ -61,6 +46,16 @@ export function ProxyPage() {
     groups.refresh(); status.refresh(); setRevision(value => value + 1);
   }
   useEffect(() => { setMeasurements({}); setQuery(''); setError(''); setMessage(''); setSwitching(null); }, [selected]);
+  useEffect(() => {
+    if (view !== 'nodes') return;
+    function syncGroups() {
+      if (!document.hidden && navigator.onLine !== false && !groups.loading) groups.refresh();
+    }
+    const timer = setInterval(syncGroups, 30000);
+    document.addEventListener('visibilitychange', syncGroups);
+    window.addEventListener('online', syncGroups);
+    return () => { clearInterval(timer); document.removeEventListener('visibilitychange', syncGroups); window.removeEventListener('online', syncGroups); };
+  }, [view, groups.loading, groups.refresh]);
   async function test(node) {
     setBusy(node.name); setError(''); setMessage('');
     try {
@@ -91,7 +86,7 @@ export function ProxyPage() {
     <div role="tabpanel" id={`proxy-panel-${view}`} aria-labelledby={`proxy-tab-${view}`}>
     <Suspense fallback={<p className="empty-state" role="status" aria-busy="true">正在加载…</p>}>
     {view === 'nodes' && <>
-    <section className="requests-section"><div className="panel-heading"><div><h2>代理入口</h2><p>当前配置链 · 出口 IP 为最近一次探测结果</p></div><Icon name="globe"/></div><div className="table-shell"><table className="proxy-table"><caption className="sr-only">Mihomo 入口和出口检测</caption><thead><tr><th>入口端口</th><th>代理组 → 当前节点</th><th>出口 IP / 位置</th><th>检测时间</th><th>操作</th></tr></thead><tbody>{entries.map(entry => entry.probeSupported ? <EgressRow key={entry.port} entry={entry} revision={revision} switchDisabled={!!busy} onSwitch={managementEnabled && watchedGroups.includes(entry.group) && allGroups.find(group => group.name === entry.group)?.type === 'Selector' ? chooseNode : undefined}/> : <tr key={entry.port}><td className="mono">:{entry.port}</td><td className="proxy-chain">{entry.chain.join(' → ') || '按分流规则处理'}</td><td colSpan="3" className="muted">此入口暂不支持出口探测</td></tr>)}{!entries.length && <tr><td colSpan="5" className="table-empty">{groups.loading ? '正在读取代理入口…' : '暂无代理入口配置'}</td></tr>}</tbody></table></div></section>
+    <section className="requests-section"><div className="panel-heading"><div><h2>代理入口</h2><p>自动检测出口 IP / 位置 · 缓存5分钟，切换节点后更新</p></div><Icon name="globe"/></div><div className="table-shell"><table className="proxy-table"><caption className="sr-only">Mihomo 入口和出口检测</caption><thead><tr><th>入口端口</th><th>代理组 → 当前节点</th><th>出口 IP / 位置</th><th>检测时间</th><th>操作</th></tr></thead><tbody>{entries.map(entry => entry.probeSupported ? <EgressRow key={entry.port} entry={entry} revision={revision} switchDisabled={!!busy || groups.loading} onSwitch={managementEnabled && watchedGroups.includes(entry.group) && allGroups.find(group => group.name === entry.group)?.type === 'Selector' ? chooseNode : undefined}/> : <tr key={entry.port}><td className="mono">:{entry.port}</td><td className="proxy-chain">{entry.chain.join(' → ') || '按分流规则处理'}</td><td colSpan="3" className="muted">此入口暂不支持出口探测</td></tr>)}{!entries.length && <tr><td colSpan="5" className="table-empty">{groups.loading ? '正在读取代理入口…' : '暂无代理入口配置'}</td></tr>}</tbody></table></div></section>
     <section className="requests-section proxy-section"><div className="panel-heading"><div><h2>节点</h2><p className="proxy-chain">{chain.join(' → ') || '未选择代理组'}</p></div><span className="badge subdued">{group?.type || '—'}</span></div>
       <div className="proxy-filters"><label>代理组<select aria-label="代理组" value={selected} disabled={!!busy} onChange={event => setParams({ group: event.target.value })}>{!allGroups.length && <option value="">暂无代理组</option>}{allGroups.map(group => <option key={group.name} value={group.name}>{group.name} · {group.type}</option>)}</select></label><label>搜索节点<input type="search" aria-label="搜索节点" value={query} onChange={event => setQuery(event.target.value)} placeholder="节点名称"/></label></div>
       <div className="table-shell"><table className="proxy-table" aria-busy={status.loading}><caption className="sr-only">代理节点与历史探测状态</caption><thead><tr><th>节点名称</th><th>协议 / 类型</th><th>检测状态</th><th>延迟</th><th>操作</th></tr></thead><tbody>{filtered.map(node => {

@@ -151,17 +151,25 @@ export function createHermesBridge({ backendUrl, hermesUrl, token, tokenFile, ma
         const port = Number(write ? data.port : url.searchParams.get('port'));
         // The existing Hermes egress implementation supports these three ports only.
         if (![7890, 7891, 7892].includes(port)) return send(response, 400, { error: '出口检测当前支持 7890、7891、7892 端口' });
-        if (read) return send(response, 200, egress.get(port) || { port, checked_at: null });
+        const binding = write ? data.binding : url.searchParams.get('binding');
+        if (binding != null && (typeof binding !== 'string' || binding.length > 4096)) return send(response, 400, { error: '出口节点标识无效' });
+        const cached = egress.get(port);
+        if (read) return send(response, 200, cached && (binding == null || cached.cache_binding === binding) ? cached : { port, checked_at: null });
+        while (egressJobs.has(port) && egressJobs.get(port).binding !== binding) {
+          try { await egressJobs.get(port).promise; } catch {}
+        }
         if (!egressJobs.has(port)) {
           const generation = egressGeneration;
-          const job = call(`egress-ip?port=${port}&refresh=1`).then(result => {
+          const job = { binding, promise: null };
+          job.promise = call('egress-ip?port=' + port + '&refresh=1').then(result => {
             if (generation !== egressGeneration) throw Object.assign(new Error('检测期间节点已切换，请重新检测出口'), { status: 409 });
-            egress.set(port, result);
-            return result;
+            const data = { ...result, cache_binding: binding };
+            egress.set(port, data);
+            return data;
           }).finally(() => { if (egressJobs.get(port) === job) egressJobs.delete(port); });
           egressJobs.set(port, job);
         }
-        return send(response, 200, await egressJobs.get(port));
+        return send(response, 200, await egressJobs.get(port).promise);
       }
       if (route === 'proxy/select') {
         const data = await body(request);

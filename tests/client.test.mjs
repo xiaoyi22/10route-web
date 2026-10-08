@@ -80,6 +80,24 @@ test('malformed JSON responses produce a useful API error', async () => {
   await assert.rejects(requestJson('/api/models', {}, async () => new Response('{', { headers: { 'Content-Type': 'application/json' } })), /JSON 格式无效/);
 });
 
+test('logout and expired sessions clear stored egress without loading the proxy page', async () => {
+  const previousWindow = globalThis.window;
+  const events = [];
+  const removed = [];
+  globalThis.window = { dispatchEvent: event => events.push(event.type), sessionStorage: { removeItem: key => removed.push(key) } };
+  try {
+    await requestJson('/api/auth/logout', { method: 'POST' }, async () => new Response('{}', { headers: { 'Content-Type': 'application/json' } }));
+    assert.deepEqual(events, ['tenrouter:logout']);
+    assert.deepEqual(removed, ['tenrouter.egress.v1']);
+    await assert.rejects(requestJson('/api/providers', {}, async () => new Response('{"error":"Unauthorized"}', { status: 401, headers: { 'Content-Type': 'application/json' } })), /登录已失效/);
+    assert.deepEqual(events, ['tenrouter:logout', 'tenrouter:unauthorized']);
+    assert.equal(removed.length, 2);
+  } finally {
+    if (previousWindow === undefined) delete globalThis.window;
+    else globalThis.window = previousWindow;
+  }
+});
+
 test('upstream auth errors preserve the dashboard session; dashboard auth errors still expire it', async () => {
   const previousWindow = globalThis.window;
   const events = [];

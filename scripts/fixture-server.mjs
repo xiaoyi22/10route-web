@@ -54,7 +54,7 @@ export async function startFixtureServer() {
   let distributionMode = 'all';
   let distributionModels = [];
   const combos = [];
-  const monitorCatalog = [{ id: 'codex', name: 'OpenAI Codex', active: true, models: ['gpt'], connections: [{ id: 'demo-codex', name: 'Codex · 开发连接' }] }, { id: 'claude', name: 'Claude Code', active: true, models: ['claude-sonnet'], connections: [{ id: 'demo-claude', name: 'Claude · 工作连接' }] }];
+  const monitorCatalog = [{ id: 'codex', name: 'OpenAI Codex', active: true, models: ['gpt'], thinkingLevels: { gpt: ['none', 'minimal', 'low', 'medium', 'high', 'xhigh'] }, connections: [{ id: 'demo-codex', name: 'Codex · 开发连接' }] }, { id: 'claude', name: 'Claude Code', active: true, models: ['claude-sonnet'], thinkingLevels: { 'claude-sonnet': ['none', 'low', 'medium', 'high', 'max'] }, connections: [{ id: 'demo-claude', name: 'Claude · 工作连接' }] }];
   let monitorConfig = { enabled: false, intervalMinutes: 360, revision: 'demo-monitor', providers: monitorCatalog.map(provider => ({ id: provider.id, mode: 'selected', models: provider.models, modelChecks: { [provider.models[0]]: ['availability', 'iq'] }, excludedConnectionIds: [] })), questions: [{ question: '计算 17 + 6。', answer: '23' }] };
   const monitorHistory = Array.from({ length: 26 }, (_, index) => {
     const provider = monitorCatalog[index % 2];
@@ -141,11 +141,17 @@ export async function startFixtureServer() {
     if (url.pathname === '/api/usage/quotas') return send(200, { generatedAt: new Date().toISOString(), connections: [] });
     if (url.pathname === '/api/iq-monitor') {
       if (method === 'PUT') {
-        if (typeof body.enabled !== 'boolean' || !Number.isInteger(body.intervalMinutes) || body.intervalMinutes < 15 || body.intervalMinutes > 10080 || !Array.isArray(body.providers) || !body.questions?.length || body.questions.some(item => !item.question?.trim() || !/^-?\d+(?:\.\d+)?$/.test(item.answer))) return send(400, { error: 'Invalid monitor configuration' });
+        if (typeof body.enabled !== 'boolean' || !Number.isInteger(body.intervalMinutes) || body.intervalMinutes < 1 || body.intervalMinutes > 10080 || !Array.isArray(body.providers) || !body.questions?.length || body.questions.some(item => !item.question?.trim() || !/^-?\d+(?:\.\d+)?$/.test(item.answer))) return send(400, { error: 'Invalid monitor configuration' });
+        for (const selection of body.providers) {
+          if (selection.modelThinking === undefined) continue;
+          if (!selection.modelThinking || typeof selection.modelThinking !== 'object' || Array.isArray(selection.modelThinking) || Object.keys(selection.modelThinking).length > 2000) return send(400, { error: 'Invalid monitor thinking strengths' });
+          const provider = monitorCatalog.find(item => item.id === selection.id);
+          if (Object.entries(selection.modelThinking).some(([model, level]) => !Array.isArray(provider?.thinkingLevels?.[model]) || !provider.thinkingLevels[model].includes(level))) return send(400, { error: 'Unsupported thinking level' });
+        }
         monitorConfig = { ...structuredClone(body), revision: randomUUID() };
         return send(200, { config: monitorConfig });
       }
-      return send(200, { config: monitorConfig, catalog: monitorCatalog, state: { revision: monitorConfig.revision, completedAt: monitorHistory[0].at, nextAt: Date.now() + 3600000, history: monitorHistory, backoff: {} }, running: false });
+      return send(200, { config: monitorConfig, catalog: monitorCatalog, capabilities: { modelThinking: true }, state: { revision: monitorConfig.revision, completedAt: monitorHistory[0].at, nextAt: Date.now() + 3600000, history: monitorHistory, backoff: {} }, running: false });
     }
     if (url.pathname === '/api/models/test') {
       if (!body.model) return send(400, { error: 'Model required' });

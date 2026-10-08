@@ -5,8 +5,9 @@ import { mkdir } from 'node:fs/promises';
 const { chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const base = process.env.PREVIEW_URL || 'http://127.0.0.1:4318';
 const browser = await chromium.launch({ channel: 'msedge', headless: true });
+let page;
 try {
-  const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+  page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
   page.setDefaultNavigationTimeout(120000);
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
@@ -25,7 +26,7 @@ try {
   assert.equal(await page.locator('.monitor-metrics .metric-value').first().innerText(), '1');
   await page.getByLabel('搜索检测模型', { exact: true }).fill('missing-model');
   await page.getByText('暂无匹配的已配置模型').waitFor();
-  assert.deepEqual(await page.locator('.monitor-metrics .metric-value').allTextContents(), ['0', '0', '0', '0']);
+  assert.deepEqual(await page.locator('.monitor-metrics .metric-value').allTextContents(), ['0', '0', '0', '—']);
   await page.getByLabel('搜索检测模型', { exact: true }).fill('');
   await page.getByLabel('检测供应商', { exact: true }).selectOption('');
   await page.locator('.monitor-history-dots button').first().click();
@@ -76,16 +77,47 @@ try {
   await page.getByRole('dialog').getByText('未评分', { exact: true }).first().waitFor();
   await page.getByRole('button', { name: '关闭窗口' }).click();
   await page.getByLabel('检测供应商', { exact: true }).selectOption('codex');
-  assert.deepEqual(await page.locator('.monitor-metrics .metric-value').allTextContents(), ['1', '0', '0', '1']);
+  assert.deepEqual(await page.locator('.monitor-metrics .metric-value').allTextContents(), ['1', '4', '2', '66.7%']);
+  await page.locator('.monitor-table tbody').getByText('未评分', { exact: true }).waitFor();
   await page.getByLabel('检测供应商', { exact: true }).selectOption('');
   await page.unroute('**/api/models/test');
 
   // Persist settings through the isolated server and reread them after reload.
   await page.getByRole('tab', { name: '自动检测配置', exact: true }).click();
+  const interval = page.getByLabel('检测间隔', { exact: true });
+  assert.equal(await interval.getAttribute('min'), '1');
+  await page.getByText('最小间隔 1 分钟，请输入整数。', { exact: true }).waitFor();
+  for (const value of ['', '0', '-1', '0.5', '1.5', '10081']) {
+    await interval.fill(value);
+    assert.equal(await interval.evaluate(input => input.checkValidity()), false, value);
+  }
+  for (const value of ['1', '5', '15', '10080']) {
+    await interval.fill(value);
+    assert.equal(await interval.evaluate(input => input.checkValidity()), true, value);
+    const persisted = page.waitForResponse(response => response.url().endsWith('/api/iq-monitor') && response.request().method() === 'PUT');
+    await page.getByRole('button', { name: '保存检测配置', exact: true }).click();
+    const response = await persisted;
+    assert.equal(response.status(), 200);
+    assert.equal((await response.json()).config.intervalMinutes, Number(value));
+    await page.reload();
+    await page.getByRole('tab', { name: '自动检测配置', exact: true }).click();
+    assert.equal(await interval.inputValue(), value);
+    await page.getByLabel('自动刷新检测结果').uncheck();
+  }
   await page.getByLabel('检测间隔', { exact: true }).fill('45');
   await page.getByLabel('启用自动检测', { exact: true }).check();
   const codex = page.locator('.monitor-provider-config').filter({ has: page.locator('summary strong', { hasText: 'OpenAI Codex' }) });
   await codex.locator('summary').click();
+  const thinking = page.getByLabel('OpenAI Codex gpt 智商检测思考强度', { exact: true });
+  assert.deepEqual(await thinking.locator('option').evaluateAll(options => options.map(option => option.value)), ['', 'none', 'minimal', 'low', 'medium', 'high', 'xhigh']);
+  await thinking.selectOption('high');
+  await page.getByLabel('OpenAI Codex gpt 智商检测', { exact: true }).uncheck();
+  assert.equal(await thinking.isDisabled(), true);
+  await page.getByLabel('OpenAI Codex gpt 智商检测', { exact: true }).check();
+  assert.equal(await thinking.inputValue(), 'high');
+  const claude = page.locator('.monitor-provider-config').filter({ has: page.locator('summary strong', { hasText: 'Claude Code' }) });
+  await claude.locator('summary').click();
+  assert.deepEqual(await page.getByLabel('Claude Code claude-sonnet 智商检测思考强度', { exact: true }).locator('option').evaluateAll(options => options.map(option => option.value)), ['', 'none', 'low', 'medium', 'high', 'max']);
   await page.getByLabel('OpenAI Codex gpt 模型测活', { exact: true }).uncheck();
   await page.getByLabel('排除账号 Codex · 开发连接', { exact: true }).check();
   await page.getByLabel('标准答案 1', { exact: true }).fill('-2.5');
@@ -100,6 +132,7 @@ try {
   assert.equal(saved.enabled, true);
   assert.equal(saved.intervalMinutes, 45);
   assert.deepEqual(saved.providers.find(provider => provider.id === 'codex').modelChecks.gpt, ['iq']);
+  assert.deepEqual(saved.providers.find(provider => provider.id === 'codex').modelThinking, { gpt: 'high' });
   assert.deepEqual(saved.providers.find(provider => provider.id === 'codex').excludedConnectionIds, ['demo-codex']);
   assert.equal(saved.questions[0].answer, '-2.5');
   assert.equal(saved.questions.length, 2);
@@ -107,6 +140,28 @@ try {
   await page.getByRole('tab', { name: '自动检测配置', exact: true }).click();
   assert.equal(await page.getByLabel('检测间隔', { exact: true }).inputValue(), '45');
   assert.equal(await page.getByLabel('标准答案 2', { exact: true }).inputValue(), '5');
+  await codex.locator('summary').click();
+  assert.equal(await thinking.inputValue(), 'high');
+  await page.getByRole('tab', { name: '模型状态', exact: true }).click();
+  await page.getByRole('button', { name: '智商检测', exact: true }).click();
+  await page.getByRole('button', { name: '单次智商检测 gpt', exact: true }).click();
+  const manualThinking = page.getByRole('dialog').getByLabel('单次智商检测思考强度', { exact: true });
+  assert.equal(await manualThinking.inputValue(), 'high');
+  await manualThinking.selectOption('low');
+  const thinkingRequest = page.waitForRequest(request => request.url().endsWith('/api/models/test') && request.method() === 'POST');
+  await page.getByRole('button', { name: '开始检测', exact: true }).click();
+  assert.deepEqual((await thinkingRequest).postDataJSON(), { model: 'codex/gpt(low)', kind: 'llm', probe: 'iq' });
+  await page.getByRole('dialog').getByText('低（low）', { exact: true }).waitFor();
+  await page.getByRole('button', { name: '关闭窗口' }).click();
+  await page.getByRole('button', { name: '单次智商检测 gpt', exact: true }).click();
+  await manualThinking.selectOption('');
+  const defaultThinkingRequest = page.waitForRequest(request => request.url().endsWith('/api/models/test') && request.method() === 'POST');
+  await page.getByRole('button', { name: '开始检测', exact: true }).click();
+  assert.deepEqual((await defaultThinkingRequest).postDataJSON(), { model: 'codex/gpt', kind: 'llm', probe: 'iq' });
+  await page.getByRole('dialog').getByText('默认（沿用网关）', { exact: true }).waitFor();
+  await page.getByRole('button', { name: '关闭窗口' }).click();
+  assert.deepEqual((await (await page.request.get(base + '/api/iq-monitor')).json()).config.providers.find(provider => provider.id === 'codex').modelThinking, { gpt: 'high' });
+  await page.getByRole('tab', { name: '自动检测配置', exact: true }).click();
   await page.getByLabel('自动刷新检测结果').uncheck();
   await page.getByLabel('检测间隔', { exact: true }).fill('60');
   const refreshed = page.waitForResponse(response => response.url().endsWith('/api/iq-monitor'));
@@ -144,6 +199,9 @@ try {
   assert.equal(restored.status(), 200);
   assert.deepEqual(errors, []);
   console.log('PASS: detection navigation, history/details, filters, explicit single tests, error grading, persisted model/account/question configuration, failed saves, stale/failed reads, and four responsive widths.');
+} catch (error) {
+  console.error('Monitor browser state:', await page?.locator('body').innerText());
+  throw error;
 } finally {
   await browser.close();
 }

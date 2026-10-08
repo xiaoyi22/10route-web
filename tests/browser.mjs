@@ -41,13 +41,20 @@ try {
   await page.getByTestId('request-value').filter({ hasText: /\d/ }).waitFor();
   await page.locator('.connection-item').first().waitFor();
   assert.equal(await page.locator('.connection-item').count(), 6);
+  assert.equal(await page.locator('.overview-recent-list > div').count(), 3);
+  await page.getByRole('link', { name: '用量统计', exact: true }).click();
+  await page.getByTestId('request-value').filter({ hasText: /\d/ }).waitFor();
   assert.equal(await page.getByTestId('cache-rate').innerText(), '54.6%');
   assert.equal(await page.locator('.token-usage-section tbody tr').count(), 5);
   assert.equal(await page.locator('.requests-section tbody tr').count(), 3);
+  await page.getByRole('link', { name: '概览', exact: true }).click();
+  await page.getByTestId('request-value').filter({ hasText: /\d/ }).waitFor();
   const previous = await page.getByTestId('request-value').innerText();
   await page.getByRole('button', { name: '7 天', exact: true }).click();
   await page.waitForFunction(old => document.querySelector('[data-testid="request-value"]').textContent !== old, previous);
+  await page.getByRole('link', { name: '用量统计', exact: true }).click();
   await page.getByText('实时流已连接', { exact: true }).waitFor();
+  await page.getByRole('link', { name: '概览', exact: true }).click();
   await page.getByLabel('主题模式').selectOption('light');
   assert.equal(await page.locator('html').getAttribute('data-theme'), 'light');
   await page.getByLabel('主题模式').selectOption('dark');
@@ -79,7 +86,7 @@ try {
   if (screenshotDir) {
     await mkdir(screenshotDir, { recursive: true });
     await page.goto(`${url}/dashboard/overview`);
-    await page.getByText('实时流已连接', { exact: true }).waitFor();
+    await page.getByTestId('request-value').filter({ hasText: /\d/ }).waitFor();
     await page.waitForTimeout(500);
     await page.screenshot({ path: resolve(screenshotDir, 'desktop.png'), fullPage: true });
     await page.getByLabel('主题模式').selectOption('light');

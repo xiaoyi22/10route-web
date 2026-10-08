@@ -246,13 +246,13 @@ try {
   });
   await page.goto(`${url}/dashboard/overview`);
   await page.getByTestId('request-value').filter({ hasText: '100' }).waitFor();
-  assert.equal(await page.getByTestId('cache-rate').innerText(), '0.0%');
+  assert.equal(await page.getByTestId('overview-active').innerText(), '—');
   await page.getByRole('button', { name: '7 天', exact: true }).click();
   await page.getByTestId('request-value').filter({ hasText: '100' }).waitFor();
   requestTotal = 200;
   await page.getByTestId('request-value').filter({ hasText: '200' }).waitFor({ timeout: 35000 });
   assert(await page.getByRole('button', { name: '7 天', exact: true }).getAttribute('aria-pressed') === 'true');
-  await page.getByLabel('自动更新用量').uncheck();
+  await page.getByLabel('自动更新概览').uncheck();
   const pausedCount = requestCount;
   await page.waitForTimeout(1800);
   assert.equal(requestCount, pausedCount);

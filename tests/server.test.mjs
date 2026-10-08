@@ -9,8 +9,11 @@ import { startGatewayServer } from '../scripts/serve.mjs';
 test('production server serves deep links/assets and streams authenticated API requests without local privilege headers', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'tenrouter-server-'));
   await mkdir(join(directory, 'assets'));
+  await mkdir(join(directory, 'fonts'));
   await writeFile(join(directory, 'index.html'), '<html>gateway</html>');
   await writeFile(join(directory, 'assets', 'app.js'), 'window.gateway=true');
+  for (const name of ['SuperPingFangV1.woff2', 'SuperSFMonoV1.woff2']) await writeFile(join(directory, 'fonts', name), Buffer.from('wOF2-test'));
+  await writeFile(join(directory, 'fonts', 'private.txt'), 'not-public');
   let receivedHeaders;
   const backend = http.createServer(async (request, response) => {
     receivedHeaders = request.headers;
@@ -35,6 +38,19 @@ test('production server serves deep links/assets and streams authenticated API r
     assert.equal(asset.status, 200);
     assert.match(asset.headers.get('cache-control'), /immutable/);
     assert.equal((await fetch(`${url}/assets/missing.js`)).status, 404);
+    for (const name of ['SuperPingFangV1.woff2', 'SuperSFMonoV1.woff2']) {
+      const font = await fetch(`${url}/fonts/${name}`);
+      assert.equal(font.status, 200);
+      assert.equal(font.headers.get('content-type'), 'font/woff2');
+      assert.equal(font.headers.get('cache-control'), 'no-cache');
+      assert.equal(Buffer.from(await font.arrayBuffer()).toString(), 'wOF2-test');
+      const head = await fetch(`${url}/fonts/${name}`, { method: 'HEAD' });
+      assert.equal(head.status, 200);
+      assert.equal(head.headers.get('content-length'), '9');
+      assert.equal(await head.text(), '');
+    }
+    assert.equal((await fetch(`${url}/fonts/missing.woff2`)).status, 404);
+    assert.equal((await fetch(`${url}/fonts/private.txt`)).status, 404);
     assert.equal((await fetch(`${url}/package.json`)).status, 404);
     assert.equal((await fetch(`${url}/api/shutdown`, { method: 'POST' })).status, 405);
     assert.equal((await fetch(`${url}/api/auth/login`, { method: 'POST', headers: { Origin: 'https://foreign.invalid' }, body: '{}' })).status, 403);

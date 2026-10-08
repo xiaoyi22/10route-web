@@ -37,6 +37,47 @@ test('isolated fixture: login cookie, reads, live SSE, write protection, logout'
   } finally { await fixture.close(); }
 });
 
+test('monitor intervals accept whole minutes from one and reject invalid boundaries', async () => {
+  const fixture = await startFixtureServer();
+  try {
+    const login = await fetch(fixture.url + '/api/auth/login', { method: 'POST', body: JSON.stringify({ password: 'linear-demo' }) });
+    const headers = { Cookie: login.headers.get('set-cookie').split(';')[0], 'Content-Type': 'application/json' };
+    const { config } = await (await fetch(fixture.url + '/api/iq-monitor', { headers })).json();
+    for (const intervalMinutes of [1, 5, 15, 10080]) {
+      const response = await fetch(fixture.url + '/api/iq-monitor', { method: 'PUT', headers, body: JSON.stringify({ ...config, intervalMinutes }) });
+      assert.equal(response.status, 200, String(intervalMinutes));
+      assert.equal((await response.json()).config.intervalMinutes, intervalMinutes);
+      assert.equal((await (await fetch(fixture.url + '/api/iq-monitor', { headers })).json()).config.intervalMinutes, intervalMinutes);
+    }
+    for (const intervalMinutes of [null, '', '1', 0, -1, 0.5, 1.5, 10081]) {
+      const response = await fetch(fixture.url + '/api/iq-monitor', { method: 'PUT', headers, body: JSON.stringify({ ...config, intervalMinutes }) });
+      assert.equal(response.status, 400, String(intervalMinutes));
+      assert.equal((await (await fetch(fixture.url + '/api/iq-monitor', { headers })).json()).config.intervalMinutes, 10080);
+    }
+  } finally { await fixture.close(); }
+});
+
+test('monitor thinking strengths persist and unsupported selections never replace saved configuration', async () => {
+  const fixture = await startFixtureServer();
+  try {
+    const login = await fetch(fixture.url + '/api/auth/login', { method: 'POST', body: JSON.stringify({ password: 'linear-demo' }) });
+    const headers = { Cookie: login.headers.get('set-cookie').split(';')[0], 'Content-Type': 'application/json' };
+    const original = await (await fetch(fixture.url + '/api/iq-monitor', { headers })).json();
+    assert.equal(original.capabilities?.modelThinking, true);
+    assert(original.catalog.find(provider => provider.id === 'codex').thinkingLevels.gpt.includes('high'));
+    const config = { ...original.config, providers: original.config.providers.map(provider => provider.id === 'codex' ? { ...provider, modelThinking: { gpt: 'high' } } : provider) };
+    const saved = await fetch(fixture.url + '/api/iq-monitor', { method: 'PUT', headers, body: JSON.stringify(config) });
+    assert.equal(saved.status, 200);
+    const accepted = await saved.json();
+    assert.deepEqual(accepted.config.providers.find(provider => provider.id === 'codex').modelThinking, { gpt: 'high' });
+    for (const modelThinking of [null, [], { gpt: 42 }, { gpt: 'ultra' }, { missing: 'high' }]) {
+      const response = await fetch(fixture.url + '/api/iq-monitor', { method: 'PUT', headers, body: JSON.stringify({ ...config, providers: config.providers.map(provider => provider.id === 'codex' ? { ...provider, modelThinking } : provider) }) });
+      assert.equal(response.status, 400);
+      assert.deepEqual((await (await fetch(fixture.url + '/api/iq-monitor', { headers })).json()).config, accepted.config);
+    }
+  } finally { await fixture.close(); }
+});
+
 test('core API contracts: keys, provider lifecycle, model catalog, filtered log pagination', async () => {
   const fixture = await startFixtureServer();
   try {

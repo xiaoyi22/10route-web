@@ -4,10 +4,10 @@ import { cacheRate } from '../api/data.js';
 import { formatNumber } from './Controls.jsx';
 
 const series = [
-  { key: 'promptTokens', name: '输入', color: '#f29b73' },
-  { key: 'completionTokens', name: '输出', color: '#78aeda' },
-  { key: 'cachedTokens', name: '缓存读取', color: '#50bfad' },
-  { key: 'cacheCreationTokens', name: '缓存创建', color: '#b69bd4' },
+  { key: 'promptTokens', name: '输入', color: 'var(--token-input)' },
+  { key: 'completionTokens', name: '输出', color: 'var(--token-output)' },
+  { key: 'cachedTokens', name: '缓存读取', color: 'var(--token-cache)' },
+  { key: 'cacheCreationTokens', name: '缓存创建', color: 'var(--token-created)' },
 ];
 const rateLabel = rate => rate === null ? '—' : `${rate.toFixed(1)}%`;
 const compact = value => new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 }).format(value);

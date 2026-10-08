@@ -2,7 +2,7 @@ import { oauthProviders, tokenImports } from './oauth-catalog.js';
 import { cliTools } from './cli-tools.js';
 
 const reads = new Set([
-  '/api/auth/status', '/api/health', '/api/providers', '/api/provider-nodes',
+  '/api/auth/status', '/api/health', '/api/system/info', '/api/providers', '/api/provider-nodes',
   '/api/keys', '/api/models', '/api/models/custom', '/api/usage/stats',
   '/api/usage/chart', '/api/usage/stream', '/api/usage/request-details',
   '/api/proxy-pools', '/api/settings', '/api/pricing', '/api/iq-monitor',

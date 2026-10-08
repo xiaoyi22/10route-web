@@ -5,6 +5,65 @@ import { createHermesBridge } from '../scripts/hermes-bridge.mjs';
 import { componentLabel, groupChain, healthState, nodeState, proxyBinding, proxyEntries } from '../src/api/hermes.js';
 import { isAllowedRequest } from '../src/api/policy.js';
 
+test('egress cache is bound to the node chain rather than only the listener port', async () => {
+  const backend = await listen((request, response) => {
+    response.setHeader('Content-Type', 'application/json');
+    response.end('{"authenticated":true,"requireLogin":true}');
+  });
+  let probes = 0;
+  const hermes = await listen((request, response) => {
+    probes++;
+    response.setHeader('Content-Type', 'application/json');
+    response.end(JSON.stringify({ ip: '203.0.113.' + probes, checked_at: new Date().toISOString() }));
+  });
+  const app = await listen(createHermesBridge({ backendUrl: backend.url, hermesUrl: hermes.url, token: 'isolated-secret', management: true }));
+  const headers = { Cookie: 'auth_token=session', 'Content-Type': 'application/json' };
+  const probe = binding => fetch(app.url + '/api/hermes/egress-ip', { method: 'POST', headers, body: JSON.stringify({ port: 7891, binding }) }).then(response => response.json());
+  const read = binding => fetch(app.url + '/api/hermes/egress-ip?port=7891&binding=' + binding, { headers }).then(response => response.json());
+  try {
+    assert.equal((await probe('node-a')).cache_binding, 'node-a');
+    assert.equal((await read('node-a')).ip, '203.0.113.1');
+    assert.equal((await read('node-b')).checked_at, null);
+    assert.equal((await probe('node-b')).cache_binding, 'node-b');
+    assert.equal((await read('node-a')).checked_at, null);
+    assert.equal((await read('node-b')).ip, '203.0.113.2');
+    assert.equal(probes, 2);
+  } finally { await app.close(); await backend.close(); await hermes.close(); }
+});
+
+test('egress jobs deduplicate identical nodes and serialize different node bindings', async () => {
+  const waiting = [];
+  let probes = 0;
+  const bridge = createHermesBridge({ backendUrl: 'http://gateway.test', hermesUrl: 'http://hermes.test', token: 'isolated-secret', management: true, fetcher: async url => {
+    const json = data => new Response(JSON.stringify(data), { headers: { 'Content-Type': 'application/json' } });
+    if (url.startsWith('http://gateway.test')) return json({ authenticated: true, requireLogin: true });
+    probes++;
+    return new Promise(resolve => waiting.push(() => resolve(json({ ip: '203.0.113.1', checked_at: new Date().toISOString() }))));
+  } });
+  const app = await listen(bridge);
+  const probe = binding => fetch(app.url + '/api/hermes/egress-ip', { method: 'POST', headers: { Cookie: 'auth_token=session', 'Content-Type': 'application/json' }, body: JSON.stringify({ port: 7891, binding }) }).then(response => response.json());
+  try {
+    const first = probe('node-a');
+    for (let attempts = 0; !waiting.length && attempts < 100; attempts++) await new Promise(resolve => setTimeout(resolve, 10));
+    assert.equal(waiting.length, 1);
+    const duplicate = probe('node-a');
+    const next = probe('node-b');
+    await new Promise(resolve => setTimeout(resolve, 40));
+    assert.equal(probes, 1);
+    waiting.shift()();
+    assert.equal((await first).cache_binding, 'node-a');
+    assert.equal((await duplicate).cache_binding, 'node-a');
+    for (let attempts = 0; !waiting.length && attempts < 100; attempts++) await new Promise(resolve => setTimeout(resolve, 10));
+    assert.equal(waiting.length, 1);
+    waiting.shift()();
+    assert.equal((await next).cache_binding, 'node-b');
+    assert.equal(probes, 2);
+    const invalid = await probe({ unexpected: true });
+    assert.equal(invalid.error, '出口节点标识无效');
+    assert.equal(probes, 2);
+  } finally { waiting.forEach(release => release()); await app.close(); }
+});
+
 test('proxy mapping uses the configured host and listeners, resolves cycles, and preserves unknown health', () => {
   const data = { proxy_hosts: ['192.168.11.150'], groups: [{ name: 'GLOBAL', now: 'airport' }, { name: 'airport', now: 'node-a' }, { name: 'AI', now: 'node-b' }], entry_ports: { mixed: 7890, listeners: [{ port: 7891, proxy: 'AI' }, { port: 7900 }] } };
   assert.deepEqual(proxyEntries(data)[0].chain, ['GLOBAL', 'airport', 'node-a']);

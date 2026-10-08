@@ -11,6 +11,8 @@ import { ProxyPage } from './pages/ProxyPage.jsx';
 import './admin.css';
 
 const TokenCacheChart = lazy(() => import('./components/TokenCacheChart.jsx'));
+const OverviewPage = lazy(() => import('./pages/OverviewPage.jsx'));
+const SystemPage = lazy(() => import('./pages/SystemPage.jsx'));
 const ProvidersPage = lazy(() => import('./pages/ProvidersPage.jsx').then(module => ({ default: module.ProvidersPage })));
 const EndpointPage = lazy(() => import('./pages/CorePages.jsx').then(module => ({ default: module.EndpointPage })));
 const LogsPage = lazy(() => import('./pages/CorePages.jsx').then(module => ({ default: module.LogsPage })));
@@ -41,6 +43,7 @@ const navItems = [
   { path: '/dashboard/logs', title: '请求日志', icon: 'logs', group: '监控' },
   { path: '/dashboard/monitor', title: '模型检测', icon: 'activity', group: '监控' },
   { path: '/dashboard/chain-health', title: '链路健康', icon: 'shield', group: '监控' },
+  { path: '/dashboard/system', title: '系统信息', icon: 'server', group: '监控' },
   { path: '/dashboard/pricing', title: '模型价格', icon: 'coins', group: '管理' },
   { path: '/dashboard/proxy-pools', title: '代理池', icon: 'server', group: '管理' },
   { path: '/dashboard/settings', title: '系统设置', icon: 'shield', group: '管理' },
@@ -106,13 +109,14 @@ function Brand() {
 
 function SearchDialog({ open, onClose }) {
   const ref = useRef(null);
+  const inputRef = useRef(null);
   const [query, setQuery] = useState('');
   useEffect(() => {
-    if (open) { setQuery(''); ref.current.showModal(); }
+    if (open) { setQuery(''); ref.current.showModal(); inputRef.current.focus(); }
     else if (ref.current.open) ref.current.close();
   }, [open]);
   const matches = navItems.filter(item => item.title.includes(query));
-  return <dialog className="search-dialog" ref={ref} onClose={onClose} aria-labelledby="quick-search-title"><div className="dialog-top"><h2 id="quick-search-title">快速跳转</h2><button className="icon-button" onClick={onClose} aria-label="关闭搜索" title="关闭搜索"><Icon name="close"/></button></div><div className="search-input"><Icon name="search"/><input aria-label="搜索页面" autoFocus placeholder="搜索页面…" value={query} onChange={event => setQuery(event.target.value)}/></div><div className="search-results">{matches.map(item => <Link key={item.path} to={item.path} onClick={onClose}><Icon name={item.icon}/><span>{item.title}</span><Icon name="arrow"/></Link>)}{!matches.length && <p className="empty-state">没有匹配的页面</p>}</div></dialog>;
+  return <dialog className="search-dialog" ref={ref} onClose={onClose} aria-labelledby="quick-search-title"><div className="dialog-top"><h2 id="quick-search-title">快速跳转</h2><button className="icon-button" onClick={onClose} aria-label="关闭搜索" title="关闭搜索"><Icon name="close"/></button></div><div className="search-input"><Icon name="search"/><input ref={inputRef} aria-label="搜索页面" placeholder="搜索页面…" value={query} onChange={event => setQuery(event.target.value)}/></div><div className="search-results">{matches.map(item => <Link key={item.path} to={item.path} onClick={onClose}><Icon name={item.icon}/><span>{item.title}</span><Icon name="arrow"/></Link>)}{!matches.length && <p className="empty-state">没有匹配的页面</p>}</div></dialog>;
 }
 
 function Layout({ auth, onLogout }) {
@@ -142,7 +146,7 @@ function Layout({ auth, onLogout }) {
     <div className="app-content">
       <header className="topbar"><button className="icon-button mobile-menu" aria-label="打开导航" title="打开导航" onClick={() => setMobileOpen(true)}><Icon name="menu"/></button><span className="mobile-brand">10router</span><span>我的网关</span><span className="breadcrumb-slash">/</span><strong>{current.title}</strong><div className="topbar-right"><span className="mode-indicator"><span className="dot"/>{demo ? '演示数据' : managementEnabled ? '网关管理' : '网关只读'}</span><ThemeControl /></div></header>
       <Suspense fallback={<main id="main" className="main-content"><p className="empty-state" role="status" aria-busy="true">正在加载…</p></main>}>
-      <main id="main" className="main-content"><Routes><Route index element={<Navigate to="/dashboard/overview" replace/>}/><Route path="overview" element={<UsagePage overview/>}/><Route path="usage" element={<UsagePage/>}/><Route path="providers" element={<ProvidersPage/>}/><Route path="providers/:provider" element={<ProvidersPage/>}/><Route path="endpoint" element={<EndpointPage/>}/><Route path="models" element={<ModelsPage/>}/><Route path="logs" element={<LogsPage/>}/><Route path="monitor" element={<MonitorPage/>}/><Route path="combos" element={<CombosPage/>}/><Route path="distribution" element={<DistributionPage/>}/><Route path="balances" element={<BalancesPage/>}/><Route path="proxy" element={<ProxyPage/>}/><Route path="chain-health" element={<ChainHealthPage/>}/><Route path="pricing" element={<PricingPage/>}/><Route path="proxy-pools" element={<ProxyPoolsPage/>}/><Route path="settings" element={<SettingsPage/>}/><Route path="authorization" element={<AuthorizationPage/>}/><Route path="translator" element={<TranslatorPage/>}/><Route path="*" element={<NotFound/>}/></Routes><footer className="page-footer"><span><span className="dot"/>{demo ? '演示工作区 · 未连接真实网关' : `10router · ${managementEnabled ? '管理' : '只读'}工作区`}</span><span>YOUR MODELS. YOUR GATEWAY.</span></footer></main>
+      <main id="main" className="main-content"><Routes><Route index element={<Navigate to="/dashboard/overview" replace/>}/><Route path="overview" element={<OverviewPage/>}/><Route path="system" element={<SystemPage/>}/><Route path="usage" element={<UsagePage/>}/><Route path="providers" element={<ProvidersPage/>}/><Route path="providers/:provider" element={<ProvidersPage/>}/><Route path="endpoint" element={<EndpointPage/>}/><Route path="models" element={<ModelsPage/>}/><Route path="logs" element={<LogsPage/>}/><Route path="monitor" element={<MonitorPage/>}/><Route path="combos" element={<CombosPage/>}/><Route path="distribution" element={<DistributionPage/>}/><Route path="balances" element={<BalancesPage/>}/><Route path="proxy" element={<ProxyPage/>}/><Route path="chain-health" element={<ChainHealthPage/>}/><Route path="pricing" element={<PricingPage/>}/><Route path="proxy-pools" element={<ProxyPoolsPage/>}/><Route path="settings" element={<SettingsPage/>}/><Route path="authorization" element={<AuthorizationPage/>}/><Route path="translator" element={<TranslatorPage/>}/><Route path="*" element={<NotFound/>}/></Routes><footer className="page-footer"><span><span className="dot"/>{demo ? '演示工作区 · 未连接真实网关' : `10router · ${managementEnabled ? '管理' : '只读'}工作区`}</span><span>YOUR MODELS. YOUR GATEWAY.</span></footer></main>
     </Suspense>
     </div><SearchDialog open={searchOpen} onClose={() => setSearchOpen(false)}/>
   </div>;

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import http from 'node:http';
 import { fork, spawn } from 'node:child_process';
-import { mkdtemp, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { startFixtureServer } from '../scripts/fixture-server.mjs';
@@ -9,6 +9,7 @@ import { createHermesBridge } from '../scripts/hermes-bridge.mjs';
 
 const fixture = await startFixtureServer();
 const calls = [];
+const liveConfig = { hermesUrl: process.env.TENROUTER_HERMES_URL, token: process.env.TENROUTER_HERMES_TOKEN, tokenFile: process.env.TENROUTER_HERMES_TOKEN_FILE };
 let current = '美国 · VLESS · 住宅节点';
 const names = [current, '日本 · Hysteria2 · 高速节点', '未知 · 尚未检测节点'];
 const aiCurrent = { 'ai-谷歌': current, 'AI-优选': names[1] };
@@ -79,6 +80,8 @@ await new Promise((resolve, reject) => {
   vite.once('exit', code => { clearTimeout(timer); reject(new Error(`Vite worker exited: ${code}`)); });
 });
 const profile = await mkdtemp(join(tmpdir(), 'hermes-ui-'));
+const directory = process.env.SCREENSHOT_DIR || profile;
+await mkdir(directory, { recursive: true });
 const edge = spawn(process.env.HERMES_BROWSER_EXE || 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', ['--headless=new', '--disable-gpu', '--no-first-run', '--no-proxy-server', '--remote-debugging-port=4330', `--user-data-dir=${profile}`, 'about:blank'], { windowsHide: true, stdio: 'ignore' });
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 let socket;
@@ -98,7 +101,11 @@ try {
   });
   const evaluate = async expression => { const result = await send('Runtime.evaluate', { expression, awaitPromise: true, returnByValue: true }); if (result.exceptionDetails) throw new Error(JSON.stringify(result.exceptionDetails)); return result.result.value; };
   const until = async expression => { for (let i = 0; i < 120; i++) { if (await evaluate(`!!(${expression})`)) return; await delay(100); } throw new Error(`Timed out: ${expression}\n${await evaluate('document.body.innerText')}`); };
-  const click = label => evaluate(`(() => { const button=Array.from(document.querySelectorAll('button')).find(button=>button.textContent.trim()===${JSON.stringify(label)} || button.getAttribute('aria-label')===${JSON.stringify(label)}); if(!button || button.disabled) throw new Error('Missing/disabled button'); button.click(); })()`);
+  const click = async label => {
+    const match = "Array.from(document.querySelectorAll('button')).find(button=>!button.disabled && (button.textContent.trim()===" + JSON.stringify(label) + " || button.getAttribute('aria-label')===" + JSON.stringify(label) + "))";
+    await until(match);
+    await evaluate('(' + match + ').click()');
+  };
   const fill = async (label, value) => {
     await evaluate(`Array.from(document.querySelectorAll('.editor-form label')).find(item=>item.textContent.trim()===${JSON.stringify(label)}).querySelector('input').focus()`);
     await send('Input.insertText', { text: value });
@@ -110,7 +117,7 @@ try {
       assert(await evaluate('document.documentElement.scrollWidth <= innerWidth'), `${section} overflows viewport`);
       assert(await evaluate("Array.from(document.querySelectorAll('dialog[open]')).every(item=>{const r=item.getBoundingClientRect();return r.left>=0 && r.right<=innerWidth && r.top>=0 && r.bottom<=innerHeight;})"), `${section} dialog exceeds viewport`);
       const shot = await send('Page.captureScreenshot', { format: 'png' });
-      await writeFile(`C:/Users/20449/.codex/tmp/${section}-${width}-${theme}.png`, Buffer.from(shot.data, 'base64'));
+      await writeFile(`${directory}/${section}-${width}-${theme}.png`, Buffer.from(shot.data, 'base64'));
     }
   };
   const navigate = async path => {
@@ -136,7 +143,9 @@ try {
   await send('Input.insertText', { text: 'linear-demo' });
   await click('进入管理端');
   await until("document.querySelector('.proxy-table') && document.body.innerText.includes('尚未检测节点')");
-  assert.equal(calls.filter(path => path.includes('health') || path.includes('egress-ip')).length, 0, 'Opening proxy page must not start active probes');
+  await until("document.body.innerText.includes('203.0.113.10') && !document.body.innerText.includes('检测中')");
+  assert.equal(calls.filter(path => path.includes('health')).length, 0, 'Opening proxy page must never start model or health probes');
+  assert.equal(calls.filter(path => path.includes('egress-ip')).length, 3, 'Opening proxy page must detect each supported egress once');
   const proxyRequests = await evaluate("performance.getEntriesByType('resource').filter(item=>item.name.includes('/api/hermes/')).map(item=>new URL(item.name).pathname+new URL(item.name).search)");
   console.log('PROXY requests: ' + JSON.stringify(proxyRequests));
   await click(`测速 ${names[2]}`);
@@ -171,7 +180,7 @@ try {
     await evaluate(`document.documentElement.dataset.theme=${JSON.stringify(theme)}`); await delay(150);
     assert(await evaluate('document.documentElement.scrollWidth <= innerWidth'), 'Proxy page overflows viewport');
     const shot = await send('Page.captureScreenshot', { format: 'png' });
-    await writeFile(`C:/Users/20449/.codex/tmp/proxy-${width}-${theme}.png`, Buffer.from(shot.data, 'base64'));
+    await writeFile(`${directory}/proxy-${width}-${theme}.png`, Buffer.from(shot.data, 'base64'));
   }
   await click('机场与订阅');
   await until("document.body.innerText.includes('https://example.test/***')");
@@ -268,7 +277,7 @@ try {
     await evaluate(`document.documentElement.dataset.theme=${JSON.stringify(theme)}`); await delay(150);
     assert(await evaluate('document.documentElement.scrollWidth <= innerWidth'), 'Health page overflows viewport');
     const shot = await send('Page.captureScreenshot', { format: 'png' });
-    await writeFile(`C:/Users/20449/.codex/tmp/chain-health-${width}-${theme}.png`, Buffer.from(shot.data, 'base64'));
+    await writeFile(`${directory}/chain-health-${width}-${theme}.png`, Buffer.from(shot.data, 'base64'));
   }
   await evaluate("fetch('/api/auth/logout',{method:'POST'})");
   await click('刷新记录');
@@ -277,9 +286,11 @@ try {
   console.log('PASS browser: node probe, verified switch, egress probe, provider mapping, manual-only health, session expiry, desktop/mobile light/dark, no uncaught exceptions');
 
   // Exercise the existing live Hermes APIs through the adapter, with an isolated gateway session.
+  if (process.argv.includes('--live') || process.argv.includes('--live-health')) {
+  assert(liveConfig.hermesUrl && (liveConfig.token || liveConfig.tokenFile), 'Live adapter requires explicit server credentials; mapped drives are not used');
   const login = await fetch(`${fixture.url}/api/auth/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{"password":"linear-demo"}' });
   const cookie = login.headers.get('set-cookie').split(';')[0];
-  const liveBridge = createHermesBridge({ backendUrl: fixture.url, hermesUrl: 'http://192.168.11.150:8888', tokenFile: 'R:/.hermes/dashboard_token', management: true });
+  const liveBridge = createHermesBridge({ backendUrl: fixture.url, ...liveConfig, management: true });
   liveServer = http.createServer((request, response) => liveBridge(request, response));
   await new Promise(resolve => liveServer.listen(0, '127.0.0.1', resolve));
   const liveUrl = `http://127.0.0.1:${liveServer.address().port}`;
@@ -300,6 +311,7 @@ try {
     console.log('LIVE health: ' + JSON.stringify({ mem0: data.mem0.components.map(component => ({ name: component.name, ok: component.ok, status: component.status })), icarus: data.icarus.components.map(component => ({ name: component.name, ok: component.ok, status: component.status })) }));
   }
   console.log(`PASS live Hermes adapter: ${liveData.groups.length} groups, nonempty node list; production node selection unchanged`);
+  }
 } finally {
   socket?.close(); edge.kill();
   if (liveServer) { liveServer.closeAllConnections(); await new Promise(resolve => liveServer.close(resolve)); }

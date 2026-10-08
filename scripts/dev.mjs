@@ -7,7 +7,7 @@ const { createServer, loadEnv, preview } = await loadTool('vite');
 const root = fileURLToPath(new URL('..', import.meta.url));
 const env = { ...loadEnv('development', root, ''), ...process.env };
 const backend = process.argv.includes('--demo') ? '' : env.TENROUTER_BACKEND_URL;
-for (const key of ['TENROUTER_ENABLE_MANAGEMENT', 'TENROUTER_MODEL_BASE_URL', 'TENROUTER_PORT', 'TENROUTER_HERMES_URL', 'TENROUTER_HERMES_TOKEN', 'TENROUTER_HERMES_TOKEN_FILE']) {
+for (const key of ['TENROUTER_ENABLE_MANAGEMENT', 'TENROUTER_MODEL_BASE_URL', 'TENROUTER_PORT', 'TENROUTER_HERMES_URL', 'TENROUTER_HERMES_TOKEN', 'TENROUTER_HERMES_TOKEN_FILE', 'TENROUTER_SYSTEM_SSH_TARGET', 'TENROUTER_SYSTEM_SSH_IDENTITY']) {
   if (env[key]) process.env[key] = env[key];
 }
 let fixture;

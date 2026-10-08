@@ -1,0 +1,121 @@
+import assert from 'node:assert/strict';
+import { chromium } from 'playwright';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
+
+const base = process.env.PREVIEW_URL || 'http://127.0.0.1:4318';
+const directory = resolve(process.env.SCREENSHOT_DIR || 'screenshots/egress');
+const browser = await chromium.launch({ channel: 'msedge', headless: true, args: ['--no-proxy-server'] });
+const context = await browser.newContext({ viewport: { width: 1536, height: 864 }, deviceScaleFactor: 1.25 });
+const page = await context.newPage();
+const report = { passed: false, checks: [], errors: [] };
+const current = { GLOBAL: 'NODE-A', 'ai-谷歌': 'NODE-A', 'AI-优选': 'NODE-A' };
+const cache = new Map();
+const probes = [];
+const writes = [];
+let failing = false;
+let delayed;
+let delayNext = false;
+let mockNow = Date.now();
+await mkdir(directory, { recursive: true });
+page.on('pageerror', error => report.errors.push(error.message));
+const row = port => page.getByRole('row').filter({ has: page.getByText(':' + port, { exact: true }) });
+const ip = port => '203.0.113.' + (current[port === 7890 ? 'GLOBAL' : port === 7891 ? 'ai-谷歌' : 'AI-优选'] === 'NODE-B' ? 90 : 10 + port - 7890);
+await context.route('**/api/hermes/**', async route => {
+  const request = route.request();
+  const url = new URL(request.url());
+  const body = request.method() === 'POST' ? request.postDataJSON() : {};
+  const send = (data, status = 200) => route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(data) });
+  if (request.method() !== 'GET') writes.push(url.pathname);
+  if (url.pathname.endsWith('/proxy/groups')) return send({ groups: Object.keys(current).map(name => ({ name, type: 'Selector', now: current[name] })), entry_ports: { mixed: 7890, listeners: [{ port: 7891, proxy: 'ai-谷歌', name: 'ai-tw' }, { port: 7892, proxy: 'AI-优选', name: 'ai-best' }] } });
+  if (url.pathname.endsWith('/proxy/status')) {
+    const group = url.searchParams.get('group') || 'GLOBAL';
+    return send({ group, now: current[group], nodes: ['NODE-A', 'NODE-B'].map(name => ({ name, type: 'VLESS', alive: true, delay: 50 })) });
+  }
+  if (url.pathname.endsWith('/proxy/select')) { current[body.group] = body.name; cache.clear(); return send({ success: true, now: body.name }); }
+  if (url.pathname.endsWith('/egress-ip')) {
+    const port = Number(body.port || url.searchParams.get('port'));
+    if (request.method() === 'GET') return send(cache.get(port) || { port, checked_at: null });
+    probes.push(port);
+    if (failing) return send({ error: '测试探测超时' }, 502);
+    const data = { port, ip: ip(port), country: '测试位置', city: '测试城市', checked_at: new Date(mockNow).toISOString(), cache_binding: body.binding };
+    if (delayNext) { delayNext = false; await new Promise(resolveDelay => { delayed = resolveDelay; }); }
+    cache.set(port, data);
+    return send(data);
+  }
+  return send({ error: 'Unexpected Hermes request: ' + url.pathname }, 500);
+});
+try {
+  assert.equal((await (await context.request.get(base + '/api/auth/status')).json()).demo, true, 'This test must use an isolated demo gateway');
+  assert.equal((await context.request.post(base + '/api/auth/login', { data: { password: 'linear-demo' } })).status(), 200);
+  await page.clock.install({ time: mockNow });
+  await page.goto(base + '/dashboard/proxy');
+  for (const port of [7890, 7891, 7892]) await row(port).getByText(ip(port), { exact: true }).waitFor({ timeout: 6000 });
+  assert.equal(probes.length, 3, 'Every empty entry should probe once automatically');
+  report.checks.push('automatic first detection');
+  cache.clear();
+  await page.getByRole('link', { name: '概览', exact: true }).click();
+  await page.getByRole('link', { name: '代理控制', exact: true }).click();
+  for (const port of [7890, 7891, 7892]) await row(port).getByText(ip(port), { exact: true }).waitFor();
+  assert.equal(probes.length, 3, 'Navigation must restore browser cache even when server cache is empty');
+  await page.reload();
+  await row(7891).getByText(ip(7891), { exact: true }).waitFor();
+  assert.equal(probes.length, 3, 'Reload must restore the session cache without probing again');
+  report.checks.push('navigation, lost server cache and reload recovery');
+  failing = true;
+  await row(7891).getByRole('button', { name: '检测端口 7891 出口' }).click();
+  await row(7891).getByRole('alert').waitFor();
+  assert(await row(7891).getByText(ip(7891), { exact: true }).isVisible(), 'A failed refresh must keep the previous valid result');
+  failing = false;
+  report.checks.push('failed refresh preserves result');
+  const beforeSwitch = probes.length;
+  await page.getByRole('button', { name: '切换节点 ai-谷歌' }).click();
+  await page.getByLabel('目标节点').selectOption('NODE-B');
+  await page.getByRole('button', { name: '确认切换', exact: true }).click();
+  await row(7891).getByText(ip(7891), { exact: true }).waitFor();
+  assert.equal(probes.length, beforeSwitch + 1, 'Only the affected entry should probe after a node switch');
+  report.checks.push('affected-node invalidation');
+  const beforeExternalSwitch = probes.length;
+  current['AI-优选'] = 'NODE-B';
+  cache.delete(7892);
+  mockNow += 31000;
+  await page.clock.fastForward(31000);
+  await row(7892).getByText(ip(7892), { exact: true }).waitFor();
+  assert.equal(probes.length, beforeExternalSwitch + 1, 'External node changes must only refresh the affected entry');
+  report.checks.push('external node switch detected by read-only polling');
+  delayNext = true;
+  await row(7892).getByRole('button', { name: '检测端口 7892 出口' }).click();
+  await page.waitForFunction(() => document.body.innerText.includes('检测中'));
+  await page.getByRole('link', { name: '概览', exact: true }).click();
+  for (let attempts = 0; !delayed && attempts < 250; attempts++) await new Promise(resolveDelay => setTimeout(resolveDelay, 20));
+  assert(delayed, 'Delayed probe did not start');
+  delayed();
+  const beforeReturn = probes.length;
+  await page.getByRole('link', { name: '代理控制', exact: true }).click();
+  await row(7892).getByText(ip(7892), { exact: true }).waitFor();
+  assert.equal(probes.length, beforeReturn, 'A pending probe must finish into cache across navigation');
+  report.checks.push('in-flight navigation without duplicate probe');
+  await page.evaluate(() => { Object.defineProperty(document, 'hidden', { configurable: true, get: () => window.egressTestHidden === true }); window.egressTestHidden = true; document.dispatchEvent(new Event('visibilitychange')); });
+  const beforeHidden = probes.length;
+  mockNow += 301000;
+  await page.clock.fastForward(301000);
+  assert.equal(probes.length, beforeHidden, 'Hidden pages must not probe');
+  await page.evaluate(() => { window.egressTestHidden = false; document.dispatchEvent(new Event('visibilitychange')); });
+  for (const port of [7890, 7891, 7892]) await row(port).getByText('自动检测 · 5分钟缓存', { exact: true }).waitFor();
+  assert.equal(probes.length, beforeHidden + 3, 'Expired entries should refresh when visible again');
+  report.checks.push('TTL and hidden-page pause');
+  assert(writes.every(path => path.endsWith('/egress-ip') || path.endsWith('/proxy/select')), 'Automatic egress must never trigger model or health checks');
+  assert.deepEqual(report.errors, []);
+  await page.getByLabel('主题模式').selectOption('dark');
+  await page.waitForFunction(() => document.documentElement.dataset.theme === 'dark');
+  await page.screenshot({ path: resolve(directory, 'automatic-egress-dark.png'), fullPage: true });
+  await page.getByLabel('主题模式').selectOption('light');
+  await page.waitForFunction(() => document.documentElement.dataset.theme === 'light');
+  await page.screenshot({ path: resolve(directory, 'automatic-egress-light.png'), fullPage: true });
+  await page.setViewportSize({ width: 375, height: 812 });
+  assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'Egress rows must not overflow the mobile page');
+  await page.screenshot({ path: resolve(directory, 'automatic-egress-mobile.png'), fullPage: true });
+  report.passed = true;
+  console.log('PASS: automatic egress, session persistence, scoped invalidation, failed refresh, navigation races and visibility/TTL');
+} catch (error) { report.failure = error.message; throw error; }
+finally { report.probes = probes; await writeFile(resolve(directory, 'acceptance.json'), JSON.stringify(report, null, 2)); await browser.close(); }

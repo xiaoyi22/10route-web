@@ -11,7 +11,7 @@ try {
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
   assert.equal((await (await page.request.get(`${base}/api/auth/status`)).json()).demo, true);
-  await page.goto(`${base}/dashboard/overview`);
+  await page.goto(`${base}/dashboard/usage`);
   await page.getByLabel('登录密码').fill('linear-demo');
   await page.getByRole('button', { name: '进入管理端' }).click();
   await page.getByTestId('request-value').filter({ hasText: /\d/ }).waitFor();
@@ -29,18 +29,21 @@ try {
   await page.getByTestId('cache-rate').filter({ hasText: '20.0%' }).waitFor();
   await page.goto(`${base}/dashboard/logs`);
   await page.waitForFunction(() => document.querySelectorAll('tbody tr').length === 20);
+  for (const column of ['模型', '推理强度', '端点', '供应商', '状态', '类型', '计费模式', 'Token（入 / 出 / 缓存）', '延迟', '时间']) {
+    assert.equal(await page.getByRole('columnheader', { name: column, exact: true }).count(), 1, `缺少日志列 ${column}`);
+  }
   await page.clock.install();
   await page.clock.pauseAt(new Date());
   assert.equal(await page.getByLabel('自动刷新日志').isChecked(), true);
-  assert.equal(await page.getByRole('columnheader', { name: '估算费用 · USD' }).count(), 0);
+  assert.equal(await page.getByRole('columnheader', { name: '费用 · USD' }).count(), 0);
   await page.getByLabel('显示日志价格').check();
-  await page.getByRole('columnheader', { name: '估算费用 · USD' }).waitFor();
+  await page.getByRole('columnheader', { name: '费用 · USD' }).waitFor();
   await page.getByRole('cell', { name: '$0.007635', exact: true }).waitFor();
   await page.getByRole('button', { name: '查看请求 claude-sonnet', exact: true }).first().click();
   assert((await page.getByRole('dialog').innerText()).includes('当前价目表估算'));
   await page.getByRole('button', { name: '关闭窗口' }).click();
   await page.getByLabel('显示日志价格').uncheck();
-  assert.equal(await page.getByRole('columnheader', { name: '估算费用 · USD' }).count(), 0);
+  assert.equal(await page.getByRole('columnheader', { name: '费用 · USD' }).count(), 0);
   await page.getByLabel('日志连接').selectOption('demo-codex');
   await page.getByRole('button', { name: '筛选', exact: true }).click();
   await page.getByRole('button', { name: '下一页日志' }).click();
@@ -50,16 +53,24 @@ try {
     calls.push(new URL(route.request().url()));
     await route.continue();
   });
-  await page.clock.runFor(29999);
+  await page.clock.runFor(30000);
   assert.equal(calls.length, 0);
-  await page.clock.runFor(1);
-  await page.waitForResponse(response => response.url().includes('/api/usage/request-details?') && response.status() === 200);
+  const returning = page.waitForResponse(response => response.url().includes('/api/usage/request-details?') && response.status() === 200);
+  await page.getByRole('button', { name: '上一页日志' }).click();
+  await returning;
+  await page.waitForFunction(() => document.querySelectorAll('tbody tr').length === 20 && ![...document.querySelectorAll('button')].find(button => button.textContent.trim() === '刷新').disabled);
   assert.equal(calls.length, 1);
-  assert.equal(calls[0].searchParams.get('page'), '2');
-  assert.equal(calls[0].searchParams.get('connectionId'), 'demo-codex');
+  await page.clock.runFor(4999);
+  assert.equal(calls.length, 1);
+  const polling = page.waitForResponse(response => response.url().includes('/api/usage/request-details?') && response.status() === 200);
+  await page.clock.runFor(1);
+  await polling;
+  assert.equal(calls.length, 2);
+  assert.equal(calls[1].searchParams.get('page'), '1');
+  assert.equal(calls[1].searchParams.get('connectionId'), 'demo-codex');
   await page.getByLabel('自动刷新日志').uncheck();
   await page.clock.runFor(60000);
-  assert.equal(calls.length, 1);
+  assert.equal(calls.length, 2);
   await page.getByLabel('显示日志价格').check();
   await page.clock.resume();
   await page.reload();
@@ -82,7 +93,7 @@ try {
   await page.getByLabel('模型', { exact: true }).fill('no-such-model');
   await page.getByRole('button', { name: '筛选', exact: true }).click();
   await page.locator('.table-empty').filter({ hasText: '没有匹配的请求记录' }).waitFor();
-  assert.equal(await page.locator('.table-empty').getAttribute('colspan'), '10');
+  assert.equal(await page.locator('.table-empty').getAttribute('colspan'), '12');
   assert.deepEqual(errors, []);
-  console.log('PASS: scoped token/cache totals, pending period, prices, detail, 30-second polling, filters/page preserved, disabled polling, persisted switches, four viewport widths.');
+  console.log('PASS: scoped token/cache totals, pending period, prices, detail, request-log columns, five-second polling, filters/page preserved, disabled polling, persisted switches, four viewport widths.');
 } finally { await browser.close(); }

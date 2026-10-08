@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import http from 'node:http';
 import { fork, spawn } from 'node:child_process';
-import { mkdtemp, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { Readable } from 'node:stream';
@@ -9,6 +9,8 @@ import { pipeline } from 'node:stream/promises';
 import { startFixtureServer } from '../scripts/fixture-server.mjs';
 
 const fixture = await startFixtureServer();
+const screenshotDir = process.env.SCREENSHOT_DIR || join(tmpdir(), '10router-quota-cards');
+await mkdir(screenshotDir, { recursive: true });
 const at = '2026-10-03T08:00:00Z';
 const account = (id, name, extra) => ({ id, name, provider: 'codex', providerName: 'Codex', isActive: true, checkedAt: at, ...extra });
 const quotas = { connections: [
@@ -76,7 +78,7 @@ try {
   const loaded = new Promise(resolve => { const listener = event => { if (JSON.parse(event.data).method === 'Page.loadEventFired') { socket.removeEventListener('message', listener); resolve(); } }; socket.addEventListener('message', listener); });
   await send('Page.navigate', { url: 'http://127.0.0.1:4322/dashboard/balances' }); await loaded;
   await until("document.querySelector('#login-password')"); await fill('#login-password', 'linear-demo'); await click('进入管理端');
-  await until("document.querySelectorAll('.quota-card').length===11 && document.body.innerText.includes('0 USD')");
+  await until("document.querySelectorAll('.quota-card').length===11");
   assert.equal(await evaluate("document.querySelectorAll('.quota-provider-group').length"), 5);
   assert(await evaluate("[...document.querySelectorAll('.quota-provider-group')].every(group=>new Set([...group.querySelectorAll('.quota-provider')].map(item=>item.textContent)).size===1)"));
   assert.equal(await evaluate("document.querySelector('[aria-label=\"Antigravity配额账号\"]').querySelectorAll('.quota-card').length"), 2);
@@ -119,11 +121,13 @@ try {
     await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
     await until("!document.querySelector('dialog[open]')");
   }
-  assert(await evaluate("document.querySelector('.quota-grid').getBoundingClientRect().top < [...document.querySelectorAll('h2')].find(item=>item.textContent==='供应商余额').getBoundingClientRect().top"));
+  assert(await evaluate("document.getElementById('finance-panel-balances').hidden && !document.getElementById('finance-panel-quotas').hidden"));
+  await evaluate("document.getElementById('finance-tab-balances').click()"); await until("!document.getElementById('finance-panel-balances').hidden");
   await evaluate("document.querySelector('input[aria-label=\"查询余额 Zero Wallet\"]').click()"); await until("document.body.innerText.includes('余额查询已关闭')");
   await evaluate("document.querySelector('input[aria-label=\"查询余额 Zero Wallet\"]').click()"); await until("document.body.innerText.includes('0 USD')");
   await click('刷新余额与配额'); await until("document.querySelector('.quota-groups').getAttribute('aria-busy')==='false'");
   assert(calls.some(call => call.url.includes('/api/usage/quotas?force=1')));
+  await evaluate("document.getElementById('finance-tab-quotas').click()"); await until("!document.getElementById('finance-panel-quotas').hidden");
   for (const theme of ['light', 'dark']) {
     await evaluate(`document.documentElement.dataset.theme=${JSON.stringify(theme)}`);
     for (const width of [320, 375, 768, 1440]) {
@@ -143,20 +147,20 @@ try {
       assert(await evaluate("[...document.querySelectorAll('.quota-card')].every(card=>card.getBoundingClientRect().height===340)"), `${theme}/${width}: expansion must preserve card heights`);
       assert.deepEqual(await evaluate("[...document.querySelectorAll('.quota-provider-group')].map(group=>group.getBoundingClientRect().top)"), positions, `${theme}/${width}: expansion must not move other groups`);
       const layout = await evaluate("(() => {const dialog=document.querySelector('dialog[open]');const list=dialog.querySelector('.quota-details-scroll');const rect=dialog.getBoundingClientRect();const footer=dialog.querySelector('.quota-details-footer').getBoundingClientRect();list.scrollTop=list.scrollHeight;const row=list.querySelector('tbody tr:last-child').getBoundingClientRect();const area=list.getBoundingClientRect();return {bounds:rect.toJSON(),footer:footer.toJSON(),row:row.toJSON(),area:area.toJSON(),dialogWidth:[dialog.scrollWidth,dialog.clientWidth],listWidth:[list.scrollWidth,list.clientWidth],scroll:[list.scrollHeight,list.clientHeight,list.scrollTop],valid:rect.left>=0 && rect.right<=innerWidth && rect.top>=0 && rect.bottom<=innerHeight && dialog.scrollWidth<=dialog.clientWidth && list.scrollWidth<=list.clientWidth && list.scrollHeight>list.clientHeight && list.scrollTop>0 && row.bottom<=area.bottom+1 && footer.top>=area.bottom && footer.bottom<=rect.bottom};})()");
-      if (!layout.valid) { const shot = await send('Page.captureScreenshot', { format: 'png' }); await writeFile('C:/Users/20449/.codex/tmp/quota-dialog-failure.png', Buffer.from(shot.data, 'base64')); }
+      if (!layout.valid) { const shot = await send('Page.captureScreenshot', { format: 'png' }); await writeFile(join(screenshotDir, 'quota-dialog-failure.png'), Buffer.from(shot.data, 'base64')); }
       assert(layout.valid, `${theme}/${width}: dialog layout ${JSON.stringify(layout)}`);
       await evaluate("document.querySelector('.quota-details-scroll').scrollTop=0");
       await until("document.querySelector('.quota-details-account img')?.complete && document.querySelector('.quota-details-account img').naturalWidth>0");
       const expandedShot = await send('Page.captureScreenshot', { format: 'png' });
-      await writeFile(`C:/Users/20449/.codex/tmp/quota-cards-expanded-${width}-${theme}.png`, Buffer.from(expandedShot.data, 'base64'));
+      await writeFile(join(screenshotDir, `quota-cards-expanded-${width}-${theme}.png`), Buffer.from(expandedShot.data, 'base64'));
       await click('关闭'); await until("!document.querySelector('dialog[open]')");
       await evaluate('window.scrollTo(0,0)');
       const shot = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true });
-      await writeFile(`C:/Users/20449/.codex/tmp/quota-cards-${width}-${theme}.png`, Buffer.from(shot.data, 'base64'));
+      await writeFile(join(screenshotDir, `quota-cards-${width}-${theme}.png`), Buffer.from(shot.data, 'base64'));
     }
   }
-  await fill('input[aria-label="搜索余额账号"]', 'long-address'); await until("document.querySelectorAll('.quota-card').length===1");
-  await fill('input[aria-label="搜索余额账号"]', 'no-such-account'); await until("document.body.innerText.includes('没有匹配的配额账号')");
+  await fill('input[aria-label="搜索配额账号"]', 'long-address'); await until("document.querySelectorAll('.quota-card').length===1");
+  await fill('input[aria-label="搜索配额账号"]', 'no-such-account'); await until("document.body.innerText.includes('没有匹配的配额账号')");
   assert.deepEqual(errors, []);
   console.log('PASS fixture quota cards (simulated data): family windows, resource segments/totals/history, fixed height, 32-row dialog, unknown/unlimited, Escape/focus, four widths/light-dark, wallet/refresh/search');
   for (const [path, title] of [['endpoint', '端点与接入'], ['models', '模型'], ['logs', '请求日志'], ['monitor', '模型检测'], ['combos', '组合模型'], ['overview', '概览'], ['usage', '用量统计'], ['balances', '余额与配额']]) {

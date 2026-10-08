@@ -91,6 +91,7 @@ try {
 
   await page.goto(`${base}/dashboard/balances`);
   await page.getByRole('heading', { name: '余额与配额', exact: true }).waitFor();
+  await page.getByRole('tab', { name: '供应商余额', exact: true }).click();
   await page.getByText('该供应商尚未提供可查询的余额数据。', { exact: true }).first().waitFor();
   await page.getByLabel(`查询余额 ${name}`, { exact: true }).click();
   await page.getByText('余额查询已关闭', { exact: true }).first().waitFor();
