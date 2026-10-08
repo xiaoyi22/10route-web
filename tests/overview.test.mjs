@@ -3,6 +3,19 @@ import { test } from 'node:test';
 import { overviewSummary, formatBytes, formatUptime } from '../src/api/overview.js';
 import * as overview from '../src/api/overview.js';
 
+test('popular model labels use real provider names and preserve model qualifiers', () => {
+  assert.equal(overview.overviewModelLabel?.('gpt-6.1-sol(high) (openai-compatible-chat-node)', { rawModel: 'gpt-6.1-sol(high)', provider: 'NexaVlinks' }), 'gpt-6.1-sol(high) (NexaVlinks)');
+  assert.equal(overview.overviewModelLabel?.('kimi-k3 (openai-compatible-chat-node)', { rawModel: 'kimi-k3', provider: 'WindHub' }), 'kimi-k3 (WindHub)');
+  assert.equal(overview.overviewModelLabel?.('deepseek (openai-compatible-chat-node)', { rawModel: 'deepseek', provider: 'openai-compatible-chat-node' }, [{ id: 'openai-compatible-chat-node', name: 'Fengshao' }]), 'deepseek (Fengshao)');
+  assert.equal(overview.overviewModelLabel?.('model (openai-compatible-chat-node)', { rawModel: 'model', provider: 'openai-compatible-chat-node' }, [], [{ provider: 'openai-compatible-chat-node', nodeName: 'WindHub' }]), 'model (WindHub)');
+});
+
+test('popular model labels do not guess missing metadata or expose unloaded compatible IDs', () => {
+  assert.equal(overview.overviewModelLabel?.('legacy-model', {}), 'legacy-model');
+  assert.equal(overview.overviewModelLabel?.('model (openai-compatible-chat-node)', { rawModel: 'model', provider: 'openai-compatible-chat-node' }), 'model (自定义节点（名称未加载）)');
+  assert.equal(overview.overviewModelLabel?.('model', { rawModel: 'model', provider: 'openrouter' }), 'model (OpenRouter)');
+});
+
 test('overview counts in-flight requests rather than account groups and preserves missing values', () => {
   const summary = overviewSummary({ totalRequests: 12, totalPromptTokens: 100, totalCompletionTokens: 20, totalCost: 0, activeRequests: [{ model: 'a', count: 2 }, { model: 'b', count: 3 }], byProvider: { one: { requests: 9 }, two: { requests: 3 } } }, { connections: [{ isActive: true, testStatus: 'success' }, { isActive: false, lastError: 'expired' }, { isActive: true, lastError: 'failed' }] });
   assert.equal(summary.activeCount, 5);

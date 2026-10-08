@@ -14,7 +14,7 @@ test "$(uname -m)" = x86_64
 test -f "$source_dir/dist/index.html"
 curl --noproxy '*' -fsS --max-time 10 http://127.0.0.1:20128/api/health
 printf '\n'
-node --test "$source_dir/tests/server.test.mjs" "$source_dir/tests/hermes.test.mjs" "$source_dir/tests/system-info.test.mjs"
+node --test "$source_dir/tests/server.test.mjs" "$source_dir/tests/hermes.test.mjs" "$source_dir/tests/system-info.test.mjs" "$source_dir/tests/checkins.test.mjs" "$source_dir/tests/checkin-bridge.test.mjs"
 mkdir -p "$release/scripts" "$release/src/api" "$unit_dir" "$backup"
 
 # Freeze only the accepted compiled frontend and its dependency-free HTTP server.
@@ -22,6 +22,7 @@ cp -a "$source_dir/dist" "$release/"
 cp "$source_dir/scripts/serve.mjs" "$release/scripts/"
 cp "$source_dir/scripts/hermes-bridge.mjs" "$release/scripts/"
 cp "$source_dir/scripts/system-bridge.mjs" "$source_dir/scripts/system-info.mjs" "$release/scripts/"
+cp "$source_dir/scripts/checkin-bridge.mjs" "$source_dir/scripts/checkin-service.mjs" "$source_dir/scripts/checkin-client.mjs" "$release/scripts/"
 cp "$source_dir/src/api/policy.js" "$release/src/api/"
 cp "$source_dir/src/api/oauth-catalog.js" "$release/src/api/"
 cp "$source_dir/src/api/cli-tools.js" "$release/src/api/"
@@ -31,6 +32,9 @@ node --check "$release/scripts/serve.mjs"
 node --check "$release/scripts/hermes-bridge.mjs"
 node --check "$release/scripts/system-bridge.mjs"
 node --check "$release/scripts/system-info.mjs"
+node --check "$release/scripts/checkin-bridge.mjs"
+node --check "$release/scripts/checkin-service.mjs"
+node --check "$release/scripts/checkin-client.mjs"
 TENROUTER_RELEASE_SERVER="$release/scripts/serve.mjs" node --input-type=module -e 'await import(process.env.TENROUTER_RELEASE_SERVER)'
 if grep -Rl 'linear-demo' "$release/dist/assets" --include='*.js'; then
   printf 'Demo frontend cannot be deployed\n' >&2

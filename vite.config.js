@@ -2,6 +2,7 @@ import { loadTool, defaultToolchain } from './scripts/runtime-tools.mjs';
 import { isAllowedRequest } from './src/api/policy.js';
 import { createHermesBridge } from './scripts/hermes-bridge.mjs';
 import { createSystemBridge } from './scripts/system-bridge.mjs';
+import { createCheckinBridge } from './scripts/checkin-bridge.mjs';
 import { resolve } from 'node:path';
 import { readFile } from 'node:fs/promises';
 
@@ -20,6 +21,7 @@ export default async () => {
   const proxy = target ? { '/api': { target, changeOrigin: false, xfwd: true } } : undefined;
   const hermesBridge = target ? createHermesBridge({ backendUrl: target, hermesUrl: process.env.TENROUTER_HERMES_URL, token: process.env.TENROUTER_HERMES_TOKEN, tokenFile: process.env.TENROUTER_HERMES_TOKEN_FILE, management }) : null;
   const systemBridge = target && dataMode !== 'demo' ? createSystemBridge({ backendUrl: target, sshTarget: process.env.TENROUTER_SYSTEM_SSH_TARGET, sshIdentity: process.env.TENROUTER_SYSTEM_SSH_IDENTITY }) : null;
+  const checkinBridge = target ? createCheckinBridge({ backendUrl: target, management, directory: dataMode !== 'demo' ? process.env.TENROUTER_CHECKIN_DIR : undefined }) : null;
   const readOnlyGuard = (request, response, next) => {
     const pathname = new URL(request.url, 'http://localhost').pathname;
     if (!pathname.startsWith('/api')) return next();
@@ -75,8 +77,8 @@ export default async () => {
     resolve: { preserveSymlinks: true },
     plugins: [react(), tailwindcss(), {
       name: 'tenrouter-readonly-boundary',
-      configureServer(server) { installDashboardEntry(server); server.middlewares.use(stripForwardingHeaders); if (hermesBridge) server.middlewares.use(hermesBridge); if (systemBridge) server.middlewares.use(systemBridge); server.middlewares.use(readOnlyGuard); },
-      configurePreviewServer(server) { server.middlewares.use(stripForwardingHeaders); if (hermesBridge) server.middlewares.use(hermesBridge); if (systemBridge) server.middlewares.use(systemBridge); server.middlewares.use(readOnlyGuard); },
+      configureServer(server) { installDashboardEntry(server); server.middlewares.use(stripForwardingHeaders); if (hermesBridge) server.middlewares.use(hermesBridge); if (systemBridge) server.middlewares.use(systemBridge); if (checkinBridge) server.middlewares.use(checkinBridge); server.middlewares.use(readOnlyGuard); },
+      configurePreviewServer(server) { server.middlewares.use(stripForwardingHeaders); if (hermesBridge) server.middlewares.use(hermesBridge); if (systemBridge) server.middlewares.use(systemBridge); if (checkinBridge) server.middlewares.use(checkinBridge); server.middlewares.use(readOnlyGuard); },
     }],
     define: { __DATA_MODE__: JSON.stringify(dataMode), __MANAGEMENT_ENABLED__: JSON.stringify(management), __MODEL_BASE_URL__: JSON.stringify(modelBaseUrl) },
     server: {

@@ -6,7 +6,7 @@ import { ErrorBlock, PageHeading, formatNumber, formatDate } from '../components
 import { useOverviewResource } from '../components/useOverviewResource.js';
 import { useOverviewActivity } from '../components/useOverviewActivity.js';
 import { normalizeProviders } from '../api/client.js';
-import { overviewSummary, requestTrendPoints, recentThroughput } from '../api/overview.js';
+import { overviewSummary, overviewModelLabel, requestTrendPoints, recentThroughput } from '../api/overview.js';
 import { groupProviders, providerInfo } from '../api/providers.js';
 import { usePreferences } from '../store/preferences.js';
 import './overview.css';
@@ -47,7 +47,7 @@ function Throughput({ resource }) {
 
 function Ranking({ title, items, empty, providerName }) {
   const total = items.reduce((sum, item) => sum + (item.requests || 0), 0);
-  return <section className="overview-ranking"><h3>{title}</h3>{items.length ? items.slice(0, 4).map((item, index) => <div className="model-row" key={item.id}><div className="model-label"><span className={'model-dot model-color-' + index}/><strong title={providerName ? providerName(item.id) : item.id}>{providerName ? providerName(item.id) : item.id}</strong><span>{percent(item.share ?? (total ? item.requests / total * 100 : null))}</span></div><div className="model-track"><span className={'model-color-' + index} style={{ width: (item.share ?? (total ? item.requests / total * 100 : 0)) + '%' }}/></div><small>{formatNumber(item.requests)} 次请求</small></div>) : <p className="empty-state">{empty}</p>}</section>;
+  return <section className="overview-ranking"><h3>{title}</h3>{items.length ? items.slice(0, 4).map((item, index) => <div className="model-row" key={item.id}><div className="model-label"><span className={'model-dot model-color-' + index}/><strong title={providerName ? providerName(item.id) : item.label || item.id}>{providerName ? providerName(item.id) : item.label || item.id}</strong><span>{percent(item.share ?? (total ? item.requests / total * 100 : null))}</span></div><div className="model-track"><span className={'model-color-' + index} style={{ width: (item.share ?? (total ? item.requests / total * 100 : 0)) + '%' }}/></div><small>{formatNumber(item.requests)} 次请求</small></div>) : <p className="empty-state">{empty}</p>}</section>;
 }
 
 export default function OverviewPage() {
@@ -72,7 +72,7 @@ export default function OverviewPage() {
   const nodes = directory.data?.nodes || [];
   const providerName = id => providerInfo(id, nodes, connections.find(connection => connection.provider === id)).name;
   const groups = groupProviders(connections, nodes);
-  const models = Object.entries(stats.data?.byModel || {}).map(([id, data]) => ({ id, requests: data.requests })).sort((first, second) => (second.requests || 0) - (first.requests || 0));
+  const models = Object.entries(stats.data?.byModel || {}).map(([id, data]) => ({ id, label: overviewModelLabel(id, data, nodes, connections), requests: data.requests })).sort((first, second) => (second.requests || 0) - (first.requests || 0));
   const recent = Array.isArray(stats.data?.recentRequests) ? stats.data.recentRequests : [];
   const failures = recent.filter(failed).slice(0, 4);
   const abnormal = connections.filter(connection => connection.isActive && connection.status === 'error').slice(0, 4);

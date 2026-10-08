@@ -13,6 +13,7 @@ import './admin.css';
 const TokenCacheChart = lazy(() => import('./components/TokenCacheChart.jsx'));
 const OverviewPage = lazy(() => import('./pages/OverviewPage.jsx'));
 const SystemPage = lazy(() => import('./pages/SystemPage.jsx'));
+const CheckinsPage = lazy(() => import('./pages/CheckinsPage.jsx'));
 const ProvidersPage = lazy(() => import('./pages/ProvidersPage.jsx').then(module => ({ default: module.ProvidersPage })));
 const EndpointPage = lazy(() => import('./pages/CorePages.jsx').then(module => ({ default: module.EndpointPage })));
 const LogsPage = lazy(() => import('./pages/CorePages.jsx').then(module => ({ default: module.LogsPage })));
@@ -39,6 +40,7 @@ const navItems = [
   { path: '/dashboard/distribution', title: '下游分发', icon: 'globe', group: '工作区' },
   { path: '/dashboard/proxy', title: '代理控制', icon: 'globe', group: '工作区' },
   { path: '/dashboard/balances', title: '余额与配额', icon: 'coins', group: '监控' },
+  { path: '/dashboard/checkins', title: '每日签到', icon: 'check', group: '管理' },
   { path: '/dashboard/usage', title: '用量统计', icon: 'chart', group: '监控' },
   { path: '/dashboard/logs', title: '请求日志', icon: 'logs', group: '监控' },
   { path: '/dashboard/monitor', title: '模型检测', icon: 'activity', group: '监控' },
@@ -146,7 +148,7 @@ function Layout({ auth, onLogout }) {
     <div className="app-content">
       <header className="topbar"><button className="icon-button mobile-menu" aria-label="打开导航" title="打开导航" onClick={() => setMobileOpen(true)}><Icon name="menu"/></button><span className="mobile-brand">10router</span><span>我的网关</span><span className="breadcrumb-slash">/</span><strong>{current.title}</strong><div className="topbar-right"><span className="mode-indicator"><span className="dot"/>{demo ? '演示数据' : managementEnabled ? '网关管理' : '网关只读'}</span><ThemeControl /></div></header>
       <Suspense fallback={<main id="main" className="main-content"><p className="empty-state" role="status" aria-busy="true">正在加载…</p></main>}>
-      <main id="main" className="main-content"><Routes><Route index element={<Navigate to="/dashboard/overview" replace/>}/><Route path="overview" element={<OverviewPage/>}/><Route path="system" element={<SystemPage/>}/><Route path="usage" element={<UsagePage/>}/><Route path="providers" element={<ProvidersPage/>}/><Route path="providers/:provider" element={<ProvidersPage/>}/><Route path="endpoint" element={<EndpointPage/>}/><Route path="models" element={<ModelsPage/>}/><Route path="logs" element={<LogsPage/>}/><Route path="monitor" element={<MonitorPage/>}/><Route path="combos" element={<CombosPage/>}/><Route path="distribution" element={<DistributionPage/>}/><Route path="balances" element={<BalancesPage/>}/><Route path="proxy" element={<ProxyPage/>}/><Route path="chain-health" element={<ChainHealthPage/>}/><Route path="pricing" element={<PricingPage/>}/><Route path="proxy-pools" element={<ProxyPoolsPage/>}/><Route path="settings" element={<SettingsPage/>}/><Route path="authorization" element={<AuthorizationPage/>}/><Route path="translator" element={<TranslatorPage/>}/><Route path="*" element={<NotFound/>}/></Routes><footer className="page-footer"><span><span className="dot"/>{demo ? '演示工作区 · 未连接真实网关' : `10router · ${managementEnabled ? '管理' : '只读'}工作区`}</span><span>YOUR MODELS. YOUR GATEWAY.</span></footer></main>
+      <main id="main" className="main-content"><Routes><Route index element={<Navigate to="/dashboard/overview" replace/>}/><Route path="overview" element={<OverviewPage/>}/><Route path="system" element={<SystemPage/>}/><Route path="checkins" element={<CheckinsPage/>}/><Route path="usage" element={<UsagePage/>}/><Route path="providers" element={<ProvidersPage/>}/><Route path="providers/:provider" element={<ProvidersPage/>}/><Route path="endpoint" element={<EndpointPage/>}/><Route path="models" element={<ModelsPage/>}/><Route path="logs" element={<LogsPage/>}/><Route path="monitor" element={<MonitorPage/>}/><Route path="combos" element={<CombosPage/>}/><Route path="distribution" element={<DistributionPage/>}/><Route path="balances" element={<BalancesPage/>}/><Route path="proxy" element={<ProxyPage/>}/><Route path="chain-health" element={<ChainHealthPage/>}/><Route path="pricing" element={<PricingPage/>}/><Route path="proxy-pools" element={<ProxyPoolsPage/>}/><Route path="settings" element={<SettingsPage/>}/><Route path="authorization" element={<AuthorizationPage/>}/><Route path="translator" element={<TranslatorPage/>}/><Route path="*" element={<NotFound/>}/></Routes><footer className="page-footer"><span><span className="dot"/>{demo ? '演示工作区 · 未连接真实网关' : `10router · ${managementEnabled ? '管理' : '只读'}工作区`}</span><span>YOUR MODELS. YOUR GATEWAY.</span></footer></main>
     </Suspense>
     </div><SearchDialog open={searchOpen} onClose={() => setSearchOpen(false)}/>
   </div>;

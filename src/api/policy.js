@@ -21,6 +21,12 @@ export function isAllowedRequest(url, method = 'GET', management = false) {
   if (!url.startsWith('/api/')) return false;
   const pathname = new URL(url, 'http://localhost').pathname;
   method = method.toUpperCase();
+  if (pathname === '/api/checkins' || pathname.startsWith('/api/checkins/')) {
+    if (method === 'GET') return pathname === '/api/checkins';
+    if (!management) return false;
+    if (method === 'POST') return ['/api/checkins/accounts', '/api/checkins/jobs'].includes(pathname);
+    return /^\/api\/checkins\/accounts\/[a-zA-Z0-9-]+$/.test(pathname) && ['PATCH', 'DELETE'].includes(method);
+  }
   const cli = /^\/api\/cli-tools\/([a-z-]+)-(settings|profiles)$/.exec(pathname);
   if (cli) {
     const [, tool, type] = cli;

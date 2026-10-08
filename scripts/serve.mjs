@@ -7,12 +7,13 @@ import { fileURLToPath } from 'node:url';
 import { isAllowedRequest } from '../src/api/policy.js';
 import { createHermesBridge } from './hermes-bridge.mjs';
 import { createSystemBridge } from './system-bridge.mjs';
+import { createCheckinBridge } from './checkin-bridge.mjs';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const mime = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.png': 'image/png', '.svg': 'image/svg+xml', '.ico': 'image/x-icon', '.woff2': 'font/woff2' };
 const strippedHeaders = ['x-real-ip', 'x-forwarded-for', 'x-forwarded-host', 'x-forwarded-proto', 'x-10r-real-ip', 'x-10r-via-proxy', 'x-10r-peer-token', 'x-9r-cli-token', 'x-10r-cli-token', 'x-10r-iq-token'];
 
-export async function startGatewayServer({ backendUrl, distDir = resolve(root, 'dist'), host = '0.0.0.0', port = 4317, management = false, hermesUrl, hermesToken, hermesTokenFile, systemSshTarget, systemSshIdentity }) {
+export async function startGatewayServer({ backendUrl, distDir = resolve(root, 'dist'), host = '0.0.0.0', port = 4317, management = false, hermesUrl, hermesToken, hermesTokenFile, systemSshTarget, systemSshIdentity, checkinDir, checkinService }) {
   const backend = new URL(backendUrl);
   if (!['http:', 'https:'].includes(backend.protocol) || backend.username || backend.password || backend.pathname !== '/' || backend.search || backend.hash) throw new Error('Backend must be an HTTP(S) origin without credentials');
   distDir = resolve(distDir);
@@ -22,6 +23,7 @@ export async function startGatewayServer({ backendUrl, distDir = resolve(root, '
   const upstreams = new Set();
   const hermesBridge = createHermesBridge({ backendUrl, hermesUrl, token: hermesToken, tokenFile: hermesTokenFile, management });
   const systemBridge = createSystemBridge({ backendUrl, sshTarget: systemSshTarget, sshIdentity: systemSshIdentity });
+  const checkinBridge = createCheckinBridge({ backendUrl, management, directory: checkinDir, service: checkinService });
   function json(response, status, message) {
     if (response.headersSent) return response.destroy();
     response.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' });
@@ -30,6 +32,7 @@ export async function startGatewayServer({ backendUrl, distDir = resolve(root, '
   const server = http.createServer(async (request, response) => {
     try {
       const url = new URL(request.url, 'http://localhost');
+      if (url.pathname === '/api/checkins' || url.pathname.startsWith('/api/checkins/')) return await checkinBridge(request, response);
       if (url.pathname === '/api/system/info') return await systemBridge(request, response);
       if (url.pathname.startsWith('/api/hermes/')) return await hermesBridge(request, response);
       if (url.pathname === '/api' || url.pathname.startsWith('/api/')) {
@@ -104,6 +107,7 @@ if (process.argv[1] && realpathSync(process.argv[1]) === fileURLToPath(import.me
     hermesTokenFile: process.env.TENROUTER_HERMES_TOKEN_FILE,
     systemSshTarget: process.env.TENROUTER_SYSTEM_SSH_TARGET,
     systemSshIdentity: process.env.TENROUTER_SYSTEM_SSH_IDENTITY,
+    checkinDir: process.env.TENROUTER_CHECKIN_DIR,
   });
   console.log(`10router-web listening on ${process.env.TENROUTER_HOST || '0.0.0.0'}:${app.server.address().port}`);
   let stopping = false;

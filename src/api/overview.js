@@ -1,7 +1,15 @@
 import { normalizeProviders } from './client.js';
+import { providerInfo } from './providers.js';
 
 const numeric = value => typeof value === 'number' && Number.isFinite(value) && value >= 0 ? value : null;
 const sumCounters = values => values.every(value => numeric(value) !== null) ? values.reduce((sum, value) => sum + value, 0) : null;
+
+export function overviewModelLabel(id, model, nodes = [], connections = []) {
+  if (!model.rawModel) return id;
+  if (!model.provider) return model.rawModel;
+  const connection = connections.find(connection => connection.provider === model.provider);
+  return model.rawModel + ' (' + providerInfo(model.provider, nodes, connection).name + ')';
+}
 
 export function overviewSummary(stats = {}, accounts = null) {
   stats ||= {};

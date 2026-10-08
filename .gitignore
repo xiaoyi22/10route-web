@@ -5,3 +5,5 @@ dist/
 .tmp-*
 *.log
 screenshots/
+.checkins/
+checkin-data/
