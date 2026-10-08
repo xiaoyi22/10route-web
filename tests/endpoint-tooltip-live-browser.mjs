@@ -1,0 +1,55 @@
+import assert from 'node:assert/strict';
+import { mkdir, readFile } from 'node:fs/promises';
+import { parseEnv } from 'node:util';
+import { chromium } from 'playwright';
+
+const base = process.env.PREVIEW_URL || 'http://127.0.0.1:4317';
+const browser = await chromium.launch({ channel: 'msedge', headless: true, args: ['--no-proxy-server'] });
+const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, hasTouch: true });
+const errors = [];
+page.on('pageerror', error => errors.push(error.message));
+try {
+  const status = await page.request.get(base + '/api/auth/status');
+  assert.equal(status.status(), 200);
+  assert(!(await status.json()).demo);
+  const loginPath = process.env.TENROUTER_TEST_LOGIN_ENV || process.env.USERPROFILE + '/.codex/credentials/10router-web.env';
+  const credentials = parseEnv(await readFile(loginPath, 'utf8'));
+  const login = await page.request.post(base + '/api/auth/login', { data: { password: credentials.TENROUTER_TEST_PASSWORD } });
+  assert.equal(login.status(), 200, 'Login failed; no retry attempted');
+  const health = await page.request.get(base + '/api/health');
+  assert.equal((await health.json()).driver, 'better-sqlite3');
+  const providerResponse = await page.request.get(base + '/api/providers');
+  const provider = (await providerResponse.json()).connections.find(connection => connection.providerSpecificData?.nodeName === 'WindHub');
+  assert(provider, 'Real WindHub connection required');
+  await page.goto(base + '/dashboard/logs');
+  await page.getByLabel('自动刷新日志').uncheck();
+  await page.locator('.log-filters select').first().selectOption(provider.provider);
+  const filtered = page.waitForResponse(response => new URL(response.url()).pathname === '/api/usage/request-details' && new URL(response.url()).searchParams.get('provider') === provider.provider);
+  await page.getByRole('button', { name: '筛选', exact: true }).click();
+  const data = await (await filtered).json();
+  const entry = data.details.find(detail => detail.endpoint);
+  assert(entry, 'Real request metadata required');
+  const trigger = page.getByRole('button', { name: '查看请求端点 ' + entry.id, exact: true });
+  await trigger.hover();
+  const tooltip = page.getByRole('tooltip');
+  await tooltip.waitFor();
+  assert.equal(await tooltip.locator('dt').nth(0).innerText(), '入口端点');
+  assert.equal(await tooltip.locator('dt').nth(1).innerText(), '出口端点');
+  assert.equal(await tooltip.locator('dd').nth(0).innerText(), entry.endpoint);
+  assert.equal(await tooltip.locator('dd').nth(1).innerText(), entry.upstreamEndpoint || '未记录');
+  await page.evaluate(() => document.documentElement.dataset.theme = 'light');
+  await mkdir('screenshots', { recursive: true });
+  const bounds = await tooltip.boundingBox();
+  await page.screenshot({ path: 'screenshots/endpoint-tooltip-real.png', clip: { x: bounds.x - 6, y: bounds.y - 6, width: bounds.width + 12, height: bounds.height + 12 } });
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.keyboard.press('Escape');
+  await trigger.tap();
+  await tooltip.waitFor();
+  const mobileBounds = await tooltip.boundingBox();
+  assert(mobileBounds.x >= 0 && mobileBounds.x + mobileBounds.width <= 375);
+  assert(mobileBounds.y >= 0 && mobileBounds.y + mobileBounds.height <= 812);
+  assert.deepEqual(errors, []);
+  console.log('PASS: real WindHub metadata, correct entry/upstream distinction, desktop and touch tooltip, no upstream model probes');
+} finally {
+  await browser.close();
+}
