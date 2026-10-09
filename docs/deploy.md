@@ -3,34 +3,34 @@
 ## 一句话流程
 
 改完代码 → 跟我说「上线」→ 我在 KN10 上跑一条命令 → 60 秒内自动完成
-打版本、构建、测试、切流、验收；失败自动回滚，线上不动。
+同步已验收源码、构建、测试、切流、验收；切流后失败自动回滚，构建或测试失败不动线上。Git 提交、部署重启和真实签到分别授权，部署授权不默认包含 Git 提交或真实签到。
 
-## 上线命令（唯一入口）
+## 上线命令（不自动提交 Git）
 
 ```bash
-ssh -i C:/Users/20449/.ssh/id_ed25519_tscompany meet@192.168.11.150
-cd /home/meet/10router-web && bash scripts/publish.sh
+ssh -i C:/Users/Meet/.ssh/id_ed25519 meet@192.168.11.150
+cd /home/meet/10router-web && node scripts/build.mjs && bash scripts/deploy-kn10.sh
 ```
 
-`scripts/publish.sh` 依次做四件事，任何一步失败立刻停止：
+上线前先备份并同步已验收改动，核对源文件哈希。上述命令依次构建、测试、发布和验收，任何一步失败立刻停止：
 
-1. 把 `~/10router-web`（= Windows 共享盘 `R:\10router-web` 的镜像）的改动提交成一个带时间戳的 commit，上线永远可追溯到 sha。
+1. 将当前 Windows 工作目录的已验收改动同步到 `~/10router-web`，记录基线 commit、改动文件哈希及源码备份；没有单独确认时不提交 Git。2026-10-08 实测当前目录为 `E:\10reoute-web`，本机没有 `R:` 映射，不能假定共享盘自动同步。
 2. `node scripts/build.mjs` 构建前端；构建失败就停在这里，线上保持旧版本。
-3. `bash scripts/deploy-kn10.sh`：跑 `tests/server.test.mjs` 和 `tests/hermes.test.mjs`，生成新 release 目录，切 `current` 软链，重启服务，验收 `/api/health` 200、`/dashboard/overview` 200、`/api/providers` 401。
-4. 打印 `PUBLISHED commit=... release=... duration=...`。
+3. `bash scripts/deploy-kn10.sh`：运行服务、Hermes、系统信息及签到相关测试，生成新 release 目录，切 `current` 软链，仅重启前端服务，验收 `/api/health` 200、`/dashboard/overview` 200、`/api/providers` 401。
+4. 打印 `RELEASE=...` 和 `BACKUP=...`；上线后核对运行时代理配置、源码哈希、真实页面与只读接口。`scripts/publish.sh` 会自动提交 Git，只有 Git 提交已单独授权时才可使用。
 
 **没有任何定时任务或后台轮询**。不叫我，就不会有任何东西自己上线。
 
 ## 前置确认（我会先查这几项）
 
-- 共享盘 `R:\10router-web` 的改动是否已经同步到 KN10 的 `~/10router-web`。共享盘就是镜像源，KN10 那侧只读；如果某次改动没同步过去，得先补同步再上线。
+- 当前工作目录的改动是否已同步到 KN10 的 `~/10router-web`，远端是否存在其他未提交改动；以文件哈希实测为准，不依赖旧共享盘路径。KN10 源码只接收已验收文件，不在远端顺手改代码。
 - `curl http://127.0.0.1:20128/api/health`（10router 后端）是否为 200。
 
 ## 关键路径
 
 | 用途 | 路径 |
 | --- | --- |
-| 源码（唯一真相，agent 改这里） | `R:\10router-web` |
+| 当前 Windows 源码（agent 改这里） | `E:\10reoute-web`；换机后先实测，不假定共享盘映射 |
 | KN10 发布基线仓库 | `/home/meet/10router-web`（git 仓库） |
 | 当前线上版本 | `/home/meet/.local/share/10router-web/current`（软链） |
 | 历史 release | `/home/meet/.local/share/10router-web/releases/<时间戳>` |
@@ -66,7 +66,7 @@ curl --noproxy '*' -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:4317/api
 共享盘的 `node_modules` 装的是 Windows 原生依赖，本机直接 `node scripts/build.mjs` 会因为缺 `@rollup/rollup-win32-x64-msvc` 而失败。请用专用工具链目录：
 
 ```powershell
-$env:TENROUTER_TOOLCHAIN_DIR = 'C:\Users\20449\.codex\tmp\10router-web-runtime'
+$env:TENROUTER_TOOLCHAIN_DIR = 'C:\Users\Meet\.codex\tmp\10router-web-runtime'
 $env:CHOKIDAR_USEPOLLING = 'true'
 node scripts/build.mjs
 ```

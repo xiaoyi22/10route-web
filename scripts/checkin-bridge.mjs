@@ -1,9 +1,24 @@
 import { createCheckinService, CheckinError } from './checkin-service.mjs';
+import { createCheckinRunner } from './checkin-runner.mjs';
+import { selectAutomaticCheckinIds } from './checkin-schedule.mjs';
 import { isAllowedRequest } from '../src/api/policy.js';
 
-export function createCheckinBridge({ backendUrl, management = false, directory, service, fetcher = fetch }) {
+export function createCheckinBridge({ backendUrl, management = false, directory, proxyUrl, service, automatic = false, fetcher = fetch, hourlyInterval = setInterval }) {
   const backend = new URL(backendUrl);
-  const store = service || (directory ? createCheckinService({ directory }) : null);
+  const store = service || (directory ? createCheckinService({ directory, proxyUrl, runner: createCheckinRunner({ proxyUrl }) }) : null);
+  if (automatic && store) {
+    const tick = async () => {
+      try {
+        const ids = selectAutomaticCheckinIds(await store.snapshot());
+        if (!ids.length) return;
+        await store.startJob({ ids });
+        await store.waitForIdle();
+      } catch {}
+    };
+    const timer = hourlyInterval(tick, 3600000);
+    timer?.unref?.();
+    void tick();
+  }
   const send = (response, status, data) => {
     if (response.destroyed || response.writableEnded) return;
     response.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' });

@@ -13,6 +13,9 @@ Environment=TENROUTER_ENABLE_MANAGEMENT=1
 StateDirectory=10router-checkins
 StateDirectoryMode=0700
 Environment=TENROUTER_CHECKIN_DIR=%h/.local/state/10router-checkins
+Environment=TENROUTER_CHECKIN_PROXY_URL=http://127.0.0.1:7890
+Environment=TENROUTER_CHECKIN_AUTOMATIC=1
+Environment=PLAYWRIGHT_BROWSERS_PATH=/home/meet/.cache/ms-playwright
 Environment=TENROUTER_HERMES_URL=http://127.0.0.1:8888
 Environment=TENROUTER_HERMES_TOKEN_FILE=%h/.hermes/dashboard_token
 Restart=on-failure

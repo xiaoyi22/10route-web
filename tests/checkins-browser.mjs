@@ -30,6 +30,7 @@ try {
   }
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
+  page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
   await page.goto(base + '/dashboard/checkins');
   await page.getByLabel('登录密码').fill('linear-demo');
   await page.getByRole('button', { name: '进入管理端' }).click();
@@ -74,6 +75,31 @@ try {
   await page.getByRole('button', { name: '删除签到 新增账号', exact: true }).click();
   await page.getByRole('button', { name: '确认删除', exact: true }).click();
   await page.getByRole('heading', { name: '新增模拟站', exact: true }).waitFor({ state: 'hidden' });
+  await page.getByRole('button', { name: '添加账号', exact: true }).click();
+  await page.getByLabel('站点地址', { exact: true }).fill('https://anyrouter.top');
+  assert.equal(await page.getByLabel('签到协议').inputValue(), 'newapi');
+  await page.getByText('AnyRouter 不使用 /api/user/checkin', { exact: false }).waitFor({ timeout: 5000 });
+  await page.getByRole('button', { name: '应用 AnyRouter 推荐配置', exact: true }).click();
+  assert.equal(await page.getByLabel('签到协议').inputValue(), 'legacy');
+  assert.equal(await page.getByLabel('签到接口', { exact: true }).inputValue(), '/api/user/sign_in');
+  assert.equal(await page.getByLabel('站点名称', { exact: true }).inputValue(), 'AnyRouter');
+  await page.getByLabel('账号名称', { exact: true }).fill('接口适配测试');
+  await page.getByLabel('用户 ID', { exact: true }).fill('5');
+  await page.getByLabel('Cookie', { exact: true }).fill('session=preset-test-only');
+  await page.getByRole('button', { name: '保存账号', exact: true }).click();
+  await page.getByRole('heading', { name: 'AnyRouter', exact: true }).waitFor();
+  const configured = (await service.snapshot()).accounts.find(account => account.name === '接口适配测试');
+  assert.equal(configured.protocol, 'legacy');
+  assert.equal(configured.checkinPath, '/api/user/sign_in');
+  assert.equal(sent.length, 3);
+  await page.getByRole('button', { name: '编辑签到 接口适配测试', exact: true }).click();
+  assert.equal(await page.getByLabel('Cookie', { exact: true }).inputValue(), '');
+  await page.getByLabel('签到协议').selectOption('newapi');
+  await page.getByRole('button', { name: '保存账号', exact: true }).click();
+  assert.equal((await service.snapshot()).accounts.find(account => account.id === configured.id).checkinPath, '/api/user/sign_in');
+  await page.getByRole('button', { name: '应用 AnyRouter 推荐配置', exact: true }).click();
+  await page.getByRole('button', { name: '保存账号', exact: true }).click();
+  await page.getByRole('heading', { name: 'AnyRouter', exact: true }).waitFor();
   await mkdir('screenshots', { recursive: true });
   await page.screenshot({ path: 'screenshots/checkins-desktop.png', fullPage: true });
   await page.getByLabel('主题模式').selectOption('dark');
@@ -81,7 +107,7 @@ try {
   assert(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
   await page.screenshot({ path: 'screenshots/checkins-mobile.png', fullPage: true });
   assert.deepEqual(errors, []);
-  console.log('PASS: isolated checkin page CRUD, no credential disclosure, explicit confirmation, per-account batch failures, retry, records, themes and mobile. No real sites called.');
+  console.log('PASS: isolated checkin page CRUD, AnyRouter preset and interface validation, no credential disclosure, explicit confirmation, per-account batch failures, retry, records, themes and mobile. HTTP account=201, job=202; console errors=0; real checkin requests=0.');
 } finally {
   await browser.close();
   await service.waitForIdle();

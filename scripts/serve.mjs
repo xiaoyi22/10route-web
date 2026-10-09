@@ -13,7 +13,7 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const mime = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.png': 'image/png', '.svg': 'image/svg+xml', '.ico': 'image/x-icon', '.woff2': 'font/woff2' };
 const strippedHeaders = ['x-real-ip', 'x-forwarded-for', 'x-forwarded-host', 'x-forwarded-proto', 'x-10r-real-ip', 'x-10r-via-proxy', 'x-10r-peer-token', 'x-9r-cli-token', 'x-10r-cli-token', 'x-10r-iq-token'];
 
-export async function startGatewayServer({ backendUrl, distDir = resolve(root, 'dist'), host = '0.0.0.0', port = 4317, management = false, hermesUrl, hermesToken, hermesTokenFile, systemSshTarget, systemSshIdentity, checkinDir, checkinService }) {
+export async function startGatewayServer({ backendUrl, distDir = resolve(root, 'dist'), host = '0.0.0.0', port = 4317, management = false, hermesUrl, hermesToken, hermesTokenFile, systemSshTarget, systemSshIdentity, checkinDir, checkinProxyUrl, checkinService, checkinAutomatic = false }) {
   const backend = new URL(backendUrl);
   if (!['http:', 'https:'].includes(backend.protocol) || backend.username || backend.password || backend.pathname !== '/' || backend.search || backend.hash) throw new Error('Backend must be an HTTP(S) origin without credentials');
   distDir = resolve(distDir);
@@ -23,7 +23,7 @@ export async function startGatewayServer({ backendUrl, distDir = resolve(root, '
   const upstreams = new Set();
   const hermesBridge = createHermesBridge({ backendUrl, hermesUrl, token: hermesToken, tokenFile: hermesTokenFile, management });
   const systemBridge = createSystemBridge({ backendUrl, sshTarget: systemSshTarget, sshIdentity: systemSshIdentity });
-  const checkinBridge = createCheckinBridge({ backendUrl, management, directory: checkinDir, service: checkinService });
+  const checkinBridge = createCheckinBridge({ backendUrl, management, directory: checkinDir, proxyUrl: checkinProxyUrl, service: checkinService, automatic: checkinAutomatic });
   function json(response, status, message) {
     if (response.headersSent) return response.destroy();
     response.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' });
@@ -108,6 +108,8 @@ if (process.argv[1] && realpathSync(process.argv[1]) === fileURLToPath(import.me
     systemSshTarget: process.env.TENROUTER_SYSTEM_SSH_TARGET,
     systemSshIdentity: process.env.TENROUTER_SYSTEM_SSH_IDENTITY,
     checkinDir: process.env.TENROUTER_CHECKIN_DIR,
+    checkinProxyUrl: process.env.TENROUTER_CHECKIN_PROXY_URL,
+    checkinAutomatic: process.env.TENROUTER_CHECKIN_AUTOMATIC === '1',
   });
   console.log(`10router-web listening on ${process.env.TENROUTER_HOST || '0.0.0.0'}:${app.server.address().port}`);
   let stopping = false;

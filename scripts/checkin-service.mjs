@@ -2,7 +2,8 @@ import { createCipheriv, createDecipheriv, randomBytes, randomUUID } from 'node:
 import { mkdir, readFile, writeFile, rename, chmod } from 'node:fs/promises';
 import { join } from 'node:path';
 import { isIP } from 'node:net';
-import { isPublicAddress, sendCheckin } from './checkin-client.mjs';
+import { isPublicAddress, sendCheckin, rotateCookieValue, CheckinRequestError } from './checkin-client.mjs';
+import { getCheckinConfigurationIssue, getCheckinCookieIssue } from '../src/api/checkin-sites.js';
 
 export class CheckinError extends Error {
   constructor(message, status = 400) { super(message); this.status = status; }
@@ -25,13 +26,20 @@ export function validateCheckinAccount(input) {
   if (!['newapi', 'legacy'].includes(input.protocol)) reject('请选择签到协议');
   const checkinPath = input.checkinPath || (input.protocol === 'newapi' ? '/api/user/checkin' : '/api/user/sign_in');
   if (typeof checkinPath !== 'string' || !/^\/api\/user\/[a-zA-Z0-9_/-]{1,100}$/.test(checkinPath) || checkinPath.includes('//') || checkinPath.includes('..')) reject('签到路径须为 /api/user/ 下的接口，不含域名或查询参数');
-  if (!['cookie', 'bearer'].includes(input.authMode)) reject('请选择登录凭据类型');
+  const issue = getCheckinConfigurationIssue({ baseUrl: url.origin, checkinPath });
+  if (issue) reject(issue);
+  if (!['cookie', 'bearer', 'refresh'].includes(input.authMode)) reject('请选择登录凭据类型');
   const userId = input.userId || '';
   if (typeof userId !== 'string' || userId && !/^\d{1,20}$/.test(userId) || input.authMode === 'cookie' && !userId) reject('Cookie 登录需要数字用户 ID');
-  const credential = text(input.authMode === 'cookie' ? input.cookie : input.token, '登录凭据', 16384);
+  const credential = text(input.authMode === 'bearer' ? input.token : input.cookie, '登录凭据', 16384);
+  if (input.authMode === 'cookie') {
+    const cookieIssue = getCheckinCookieIssue(credential);
+    if (cookieIssue) reject(cookieIssue);
+  }
+  if (input.authMode === 'refresh' && !/(?:^|;)\s*new_api_refresh=[^;]+/.test(credential)) reject('刷新凭据须包含 new_api_refresh=… 的完整 Cookie 请求头');
   if (input.authMode === 'bearer' && (/^sk-/i.test(credential) || /\s/.test(credential) || /^Bearer\s/i.test(credential))) reject('请填写网站登录令牌，不是模型 sk- Key，也不要包含 Bearer 前缀');
   if (input.enabled !== undefined && typeof input.enabled !== 'boolean') reject('启停状态无效');
-  return { site, name, baseUrl: url.origin, protocol: input.protocol, checkinPath, authMode: input.authMode, userId, enabled: input.enabled !== false, ...(input.authMode === 'cookie' ? { cookie: credential } : { token: credential }) };
+  return { site, name, baseUrl: url.origin, protocol: input.protocol, checkinPath, authMode: input.authMode, userId, enabled: input.enabled !== false, ...(input.authMode === 'bearer' ? { token: credential } : { cookie: credential }) };
 }
 
 function publicAccount(value) {
@@ -39,7 +47,7 @@ function publicAccount(value) {
   return { ...safe, hasCookie: !!cookie, hasToken: !!token };
 }
 
-export function createCheckinService({ directory, runner = sendCheckin }) {
+export function createCheckinService({ directory, proxyUrl, runner = account => sendCheckin(account, { proxyUrl }) }) {
   if (!directory) throw new Error('Checkin directory required');
   let state;
   let key;
@@ -104,16 +112,24 @@ export function createCheckinService({ directory, runner = sendCheckin }) {
   const safeResult = outcome => {
     const status = ['success', 'already', 'expired', 'verification', 'unsupported', 'error'].includes(outcome?.status) ? outcome.status : 'error';
     const messages = { success: '签到成功', already: '今日已签到', expired: '登录已过期，请更新凭据', verification: '需要到站点完成人工验证', unsupported: '签到未启用或接口不兼容', error: '请求未成功，请检查网络、接口及凭据' };
-    return { status, message: messages[status], ...(Number.isInteger(outcome?.httpStatus) && outcome.httpStatus >= 100 && outcome.httpStatus <= 599 ? { httpStatus: outcome.httpStatus } : {}), ...(status === 'success' && typeof outcome?.reward === 'number' && Number.isFinite(outcome.reward) && outcome.reward >= 0 ? { reward: outcome.reward } : {}) };
+    const diagnostics = { dns: '站点域名解析失败，请检查签到代理与 DNS', proxy: '签到代理连接失败，请检查代理服务', tls: '站点 TLS 连接失败，请检查证书与签到代理', timeout: '签到请求超时，请到原站核对结果后再手动重试', network: '站点连接失败，请检查签到网络与代理', response: '签到响应中断或格式异常，请到原站核对结果后再重试', unsafe_address: '站点解析到非公网地址，已拒绝发送凭据', interface: 'AnyRouter 签到接口应为 /api/user/sign_in，请编辑账号并应用推荐配置', waf: '站点防护要求人工验证，请到原站验证后更新完整 Cookie', non_json: '接口未返回 JSON，请到原站检查登录、接口或人工验证状态', rate_limit: '站点限流，请稍后手动重试' };
+    const diagnostic = !['success', 'already'].includes(status) && Object.hasOwn(diagnostics, outcome?.diagnostic) ? outcome.diagnostic : null;
+    return { status, message: diagnostic ? diagnostics[diagnostic] : messages[status], ...(diagnostic ? { diagnostic } : {}), ...(Number.isInteger(outcome?.httpStatus) && outcome.httpStatus >= 100 && outcome.httpStatus <= 599 ? { httpStatus: outcome.httpStatus } : {}), ...(status === 'success' && typeof outcome?.reward === 'number' && Number.isFinite(outcome.reward) && outcome.reward >= 0 ? { reward: outcome.reward } : {}), ...(Array.isArray(outcome?.credentialPatch) ? { credentialPatch: outcome.credentialPatch.filter(entry => typeof entry?.name === 'string' && typeof entry?.value === 'string' && entry.name.length <= 100 && entry.value.length <= 8192) } : {}) };
   };
   async function execute(job, accounts) {
     for (const account of accounts) {
       let outcome;
-      try { outcome = safeResult(await runner(account)); } catch { outcome = safeResult(null); }
+      try { outcome = safeResult(getCheckinConfigurationIssue(account) ? { status: 'unsupported', diagnostic: 'interface' } : await runner(account)); }
+      catch (error) { outcome = safeResult(error instanceof CheckinRequestError ? { status: 'error', diagnostic: error.diagnostic } : null); }
       await transact(async () => {
         const next = structuredClone(state);
-        const result = { ...outcome, id: randomUUID(), jobId: job.id, accountId: account.id, site: account.site, name: account.name, timestamp: new Date().toISOString() };
-        next.accounts.find(value => value.id === account.id).lastResult = result;
+        const { credentialPatch, ...safeOutcome } = outcome;
+        const result = { ...safeOutcome, id: randomUUID(), jobId: job.id, accountId: account.id, site: account.site, name: account.name, timestamp: new Date().toISOString() };
+        const target = next.accounts.find(value => value.id === account.id);
+        if (Array.isArray(credentialPatch) && credentialPatch.length && target?.authMode === 'refresh' && typeof target.cookie === 'string') {
+          for (const entry of credentialPatch) if (typeof entry?.name === 'string' && typeof entry?.value === 'string') target.cookie = rotateCookieValue(target.cookie, entry.name, entry.value);
+        }
+        target.lastResult = result;
         next.history.unshift(result);
         next.history = next.history.slice(0, 500);
         next.job.completed.push(account.id);
@@ -137,7 +153,7 @@ export function createCheckinService({ directory, runner = sendCheckin }) {
       if (id && !existing) throw new CheckinError('账号不存在', 404);
       if (!id && state.accounts.length >= 100) reject('最多配置 100 个签到账号');
       const merged = { ...existing, ...input };
-      const credential = merged.authMode === 'cookie' ? 'cookie' : 'token';
+      const credential = merged.authMode === 'bearer' ? 'token' : 'cookie';
       if (existing && !input[credential]) {
         if (input.baseUrl !== undefined && new URL(input.baseUrl).origin !== existing.baseUrl || merged.authMode !== existing.authMode || merged.checkinPath !== existing.checkinPath || merged.protocol !== existing.protocol || merged.userId !== existing.userId) reject('更换站点、接口或身份时须重新填写凭据');
         merged[credential] = existing[credential];

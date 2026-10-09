@@ -21,7 +21,7 @@ export default async () => {
   const proxy = target ? { '/api': { target, changeOrigin: false, xfwd: true } } : undefined;
   const hermesBridge = target ? createHermesBridge({ backendUrl: target, hermesUrl: process.env.TENROUTER_HERMES_URL, token: process.env.TENROUTER_HERMES_TOKEN, tokenFile: process.env.TENROUTER_HERMES_TOKEN_FILE, management }) : null;
   const systemBridge = target && dataMode !== 'demo' ? createSystemBridge({ backendUrl: target, sshTarget: process.env.TENROUTER_SYSTEM_SSH_TARGET, sshIdentity: process.env.TENROUTER_SYSTEM_SSH_IDENTITY }) : null;
-  const checkinBridge = target ? createCheckinBridge({ backendUrl: target, management, directory: dataMode !== 'demo' ? process.env.TENROUTER_CHECKIN_DIR : undefined }) : null;
+  const checkinBridge = target ? createCheckinBridge({ backendUrl: target, management, directory: dataMode !== 'demo' ? process.env.TENROUTER_CHECKIN_DIR : undefined, proxyUrl: process.env.TENROUTER_CHECKIN_PROXY_URL }) : null;
   const readOnlyGuard = (request, response, next) => {
     const pathname = new URL(request.url, 'http://localhost').pathname;
     if (!pathname.startsWith('/api')) return next();

@@ -332,14 +332,15 @@ export function LogsPage() {
     {nodes.error && <ErrorBlock message={`供应商名称读取失败：${nodes.error}`} onRetry={nodes.refresh}/>}
     {providers.error && <ErrorBlock message={`连接名称读取失败：${providers.error}`} onRetry={providers.refresh}/>}
     {resource.error && <ErrorBlock message={`${resource.error}${resource.data ? ' · 保留上次记录' : ''}`} onRetry={resource.refresh}/>}
-    <div className="table-shell"><table><caption className="sr-only">请求元数据，筛选与分页由网关处理</caption><thead><tr><th>模型</th><th>推理强度</th><th>端点</th><th>供应商</th><th>状态</th><th>类型</th><th>计费模式</th><th>Token（入 / 出 / 缓存）</th>{showPrices && <th>费用 · USD</th>}<th>延迟</th><th>时间</th><th>详情</th></tr></thead>
+    <div className="period-tabs log-status-tabs" role="group" aria-label="按状态分开显示">{[['', '全部'], ['success', '成功'], ['error', '失败']].map(([value, name]) => { const selected = (applied.status || '') === value; return <button key={value || 'all'} type="button" className={selected ? 'selected' : ''} aria-pressed={selected} onClick={() => { setFilters(previous => ({ ...previous, status: value })); setApplied(previous => ({ ...previous, status: value })); setPage(1); resource.refresh(); }}>{name}</button>; })}</div>
+    <div className="table-shell"><table className="logs-table"><caption className="sr-only">请求元数据，筛选与分页由网关处理</caption><thead><tr><th>模型</th><th>推理强度</th><th>端点</th><th>供应商</th><th>状态</th><th>类型</th><th>计费模式</th><th>Token（入 / 出 / 缓存）</th>{showPrices && <th>费用 · USD</th>}<th>延迟</th><th>时间</th><th>详情</th></tr></thead>
       <tbody>{resource.loading && !resource.data ? <tr><td colSpan={showPrices ? 12 : 11} className="table-empty">正在加载日志…</td></tr> : details.length ? details.map((entry, index) => {
         const tokens = requestTokens(entry.tokens);
         const speed = requestSpeed(entry);
         const info = infoFor(entry);
         const fields = requestLogFields(entry);
         return <tr key={entry.id || `${entry.timestamp}-${index}`}>
-          <td><div className="log-model"><strong>{entry.model || UNRECORDED}</strong></div></td>
+          <td><div className="log-model" title={entry.model || UNRECORDED}><strong>{entry.model || UNRECORDED}</strong></div></td>
           <td className="mono muted">{fields.reasoningEffort}</td>
           <td><RequestEndpoint requestId={entry.id} entryEndpoint={fields.endpoint} upstreamEndpoint={entry.upstreamEndpoint}/></td>
           <td><Link className="provider-link" to={`/dashboard/providers/${encodeURIComponent(info.id)}`} title={`查看供应商 ${info.name}`}><ProviderIcon provider={info.id}/><div><strong>{info.name}</strong><small>{connectionNames.get(entry.connectionId) || '-'}</small></div></Link></td>

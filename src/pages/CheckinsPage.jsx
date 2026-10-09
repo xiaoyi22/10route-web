@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { requestJson } from '../api/client.js';
+import { getCheckinSitePreset, getCheckinConfigurationIssue } from '../api/checkin-sites.js';
 import Icon from '../components/Icon.jsx';
 import { ConfirmDelete, ErrorBlock, IconButton, Modal, PageHeading, formatDate, formatNumber, managementEnabled, useResource } from '../components/Controls.jsx';
 import './checkins.css';
@@ -15,6 +16,9 @@ function AccountEditor({ account, onClose, onSaved }) {
   const [values, setValues] = useState({ site: account?.site || '', name: account?.name || '', baseUrl: account?.baseUrl || '', protocol: account?.protocol || 'newapi', checkinPath: account?.checkinPath || '/api/user/checkin', authMode: account?.authMode || 'cookie', userId: account?.userId || '', enabled: account?.enabled !== false, cookie: '', token: '' });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const preset = getCheckinSitePreset(values.baseUrl);
+  const configurationIssue = getCheckinConfigurationIssue(values);
+  const requiresCredential = !account || values.baseUrl !== account.baseUrl || values.protocol !== account.protocol || values.checkinPath !== account.checkinPath || values.authMode !== account.authMode || values.userId !== account.userId;
   const update = (field, value) => setValues(previous => ({ ...previous, [field]: value }));
   async function save(event) {
     event.preventDefault();
@@ -32,9 +36,13 @@ function AccountEditor({ account, onClose, onSaved }) {
     <form className="editor-form" onSubmit={save} autoComplete="off">
       <div className="admin-form-grid"><label>站点名称<input required maxLength={100} value={values.site} onChange={event => update('site', event.target.value)} placeholder="例如 AnyRouter"/></label><label>账号名称<input required maxLength={100} value={values.name} onChange={event => update('name', event.target.value)} placeholder="便于识别，不必填写真实邮箱"/></label></div>
       <label>站点地址<input type="url" required value={values.baseUrl} onChange={event => update('baseUrl', event.target.value)} placeholder="https://example.com"/></label>
-      <div className="admin-form-grid"><label>签到协议<select value={values.protocol} onChange={event => setValues(previous => ({ ...previous, protocol: event.target.value, checkinPath: event.target.value === 'newapi' ? '/api/user/checkin' : '/api/user/sign_in' }))}><option value="newapi">New API</option><option value="legacy">旧版 Sign In（AnyRouter 等）</option></select></label><label>签到接口<input required value={values.checkinPath} onChange={event => update('checkinPath', event.target.value)} placeholder="/api/user/checkin"/></label></div>
-      <div className="admin-form-grid"><label>登录凭据类型<select value={values.authMode} onChange={event => setValues(previous => ({ ...previous, authMode: event.target.value, cookie: '', token: '' }))}><option value="cookie">Cookie + 用户 ID</option><option value="bearer">网站登录 Bearer 令牌</option></select></label><label>用户 ID<input required={values.authMode === 'cookie'} inputMode="numeric" pattern="[0-9]*" value={values.userId} onChange={event => update('userId', event.target.value)} placeholder="站点个人资料中的数字 ID"/></label></div>
-      <label>{values.authMode === 'cookie' ? 'Cookie' : '网站登录令牌'}<input type="password" autoComplete="new-password" maxLength={16384} required={!account} value={values[values.authMode === 'cookie' ? 'cookie' : 'token']} onChange={event => update(values.authMode === 'cookie' ? 'cookie' : 'token', event.target.value)} placeholder={account ? '留空保留原凭据；更换站点或身份须重新填写' : values.authMode === 'cookie' ? '完整 Cookie 请求头，不含 Cookie: 前缀' : '不含 Bearer 前缀，不是 sk- 模型 Key'}/></label>
+      {preset && <div><button type="button" className="button" disabled={busy} onClick={() => setValues(previous => ({ ...previous, site: previous.site || preset.name, protocol: preset.protocol, checkinPath: preset.checkinPath }))}>应用 AnyRouter 推荐配置</button><p className="admin-hint">使用旧版 Sign In 与 /api/user/sign_in；应用后仍需保存账号，不会立即发送签到请求。</p></div>}
+      <div className="admin-form-grid"><label>签到协议<select value={values.protocol} onChange={event => setValues(previous => ({ ...previous, protocol: event.target.value, checkinPath: event.target.value === 'newapi' ? '/api/user/checkin' : '/api/user/sign_in' }))}><option value="newapi">New API</option><option value="legacy">旧版 Sign In（AnyRouter 等）</option></select></label><label>签到接口<input required aria-invalid={!!configurationIssue} aria-describedby={configurationIssue ? 'checkin-interface-hint' : undefined} value={values.checkinPath} onChange={event => update('checkinPath', event.target.value)} placeholder="/api/user/checkin"/></label></div>
+      {configurationIssue && <p id="checkin-interface-hint" className="checkin-result" role="alert">{configurationIssue}</p>}
+      <div className="admin-form-grid"><label>登录凭据类型<select value={values.authMode} onChange={event => setValues(previous => ({ ...previous, authMode: event.target.value, cookie: '', token: '' }))}><option value="cookie">Cookie + 用户 ID</option><option value="bearer">网站登录 Bearer 令牌</option><option value="refresh">会话刷新 Cookie（短效令牌站点）</option></select></label><label>用户 ID<input required={values.authMode === 'cookie'} inputMode="numeric" pattern="[0-9]*" value={values.userId} onChange={event => update('userId', event.target.value)} placeholder="站点个人资料中的数字 ID"/></label></div>
+      <label>{values.authMode === 'bearer' ? '网站登录令牌' : 'Cookie'}<input type="password" autoComplete="new-password" maxLength={16384} required={requiresCredential} value={values[values.authMode === 'bearer' ? 'token' : 'cookie']} onChange={event => update(values.authMode === 'bearer' ? 'token' : 'cookie', event.target.value)} placeholder={account ? '留空保留原凭据；更换站点、接口或身份须重新填写' : values.authMode === 'bearer' ? '不含 Bearer 前缀，不是 sk- 模型 Key' : values.authMode === 'refresh' ? '完整 Cookie 请求头，须含 new_api_refresh=…' : '完整 Cookie 请求头，不含 Cookie: 前缀'}/></label>
+      {values.authMode === 'refresh' && <p className="admin-hint">执行时先用该 Cookie 换取短期访问令牌，再提交签到；Cookie 失效时记为登录已过期。</p>}
+      {account && requiresCredential && <p className="admin-hint">站点、接口或身份发生变化，请重新填写登录凭据后保存。原凭据不会回显或自动转发。</p>}
       <p className="admin-hint">只填写你自己的账号凭据。凭据仅加密保存在服务端，不回显、不放入浏览器存储。登录过期后需到原站点重新登录并更新；不自动刷新、不绕过验证码。</p>
       <label className="checkbox-filter"><input type="checkbox" checked={values.enabled} onChange={event => update('enabled', event.target.checked)}/>启用此账号</label>
       {error && <ErrorBlock message={error}/>}
@@ -56,7 +64,7 @@ export default function CheckinsPage() {
   const job = resource.data?.job;
   const running = job?.status === 'running';
   const writable = managementEnabled && resource.data?.configured && !busy && !running;
-  const enabled = accounts.filter(account => account.enabled);
+  const enabled = accounts.filter(account => account.enabled && !getCheckinConfigurationIssue(account));
   const retries = enabled.filter(account => account.lastResult && !positive(account.lastResult));
   const visible = accounts.filter(account => (account.site + ' ' + account.name + ' ' + account.baseUrl).toLowerCase().includes(query.toLowerCase()));
   const history = (resource.data?.history || []).filter(result => (result.site + ' ' + result.name).toLowerCase().includes(query.toLowerCase()));
@@ -81,8 +89,8 @@ export default function CheckinsPage() {
   }
   return <div className="checkins-page">
     <PageHeading title="每日签到" subtitle="多站点、多账号独立管理；不使用模型 Key，不影响网关模型请求。">
-      <button className="button" disabled={!writable || !retries.length} onClick={() => setConfirming({ body: { mode: 'retry' }, count: retries.length, label: '重试失败账号' })}>重试失败</button>
-      <button className="button" disabled={!writable || !enabled.length} onClick={() => setConfirming({ body: {}, count: enabled.length, label: '批量签到' })}><Icon name="play"/>批量签到</button>
+      <button className="button" disabled={!writable || !retries.length} onClick={() => setConfirming({ body: { mode: 'retry', ids: retries.map(account => account.id) }, count: retries.length, label: '重试失败账号' })}>重试失败</button>
+      <button className="button" disabled={!writable || !enabled.length} onClick={() => setConfirming({ body: { ids: enabled.map(account => account.id) }, count: enabled.length, label: '批量签到' })}><Icon name="play"/>批量签到</button>
       <button className="button primary" disabled={!writable} onClick={() => setEditor({})}><Icon name="plus"/>添加账号</button>
     </PageHeading>
     {resource.error && <ErrorBlock message={resource.error} onRetry={resource.refresh}/>}
@@ -98,8 +106,9 @@ export default function CheckinsPage() {
       <div className="checkin-account-top"><div><h2>{account.site}</h2><span className="muted">{account.name}</span></div><Status result={account.lastResult}/></div>
       <a className="checkin-site" href={account.baseUrl} target="_blank" rel="noopener noreferrer">{account.baseUrl}<Icon name="arrow"/></a>
       <dl><div><dt>协议</dt><dd>{account.protocol === 'newapi' ? 'New API' : '旧版 Sign In'}</dd></div><div><dt>接口</dt><dd>{account.checkinPath}</dd></div><div><dt>凭据</dt><dd>{account.authMode === 'cookie' ? 'Cookie' : '登录令牌'} · 已加密保存</dd></div><div><dt>最近执行</dt><dd>{formatDate(account.lastResult?.timestamp)}</dd></div></dl>
+      {getCheckinConfigurationIssue(account) && <p className="checkin-result" role="alert">{getCheckinConfigurationIssue(account)}</p>}
       {account.lastResult && <p className="checkin-result">{account.lastResult.message}{account.lastResult.httpStatus ? '（HTTP ' + account.lastResult.httpStatus + '）' : ''}{typeof account.lastResult.reward === 'number' ? ' · 奖励 ' + formatNumber(account.lastResult.reward) + ' 原始额度' : ''}</p>}
-      <div className="checkin-account-actions"><label className="checkbox-filter"><input type="checkbox" aria-label={'启用签到 ' + account.name} checked={account.enabled} disabled={!writable} onChange={() => toggle(account)}/>启用</label><button className="button" disabled={!writable || !account.enabled} onClick={() => setConfirming({ body: { ids: [account.id] }, count: 1, label: account.site + ' · ' + account.name })}><Icon name="play"/>签到</button><IconButton icon="edit" label={'编辑签到 ' + account.name} disabled={!writable} onClick={() => setEditor(account)}/><IconButton icon="trash" label={'删除签到 ' + account.name} disabled={!writable} onClick={() => setDeleting(account)}/></div>
+      <div className="checkin-account-actions"><label className="checkbox-filter"><input type="checkbox" aria-label={'启用签到 ' + account.name} checked={account.enabled} disabled={!writable} onChange={() => toggle(account)}/>启用</label><button className="button" disabled={!writable || !account.enabled || !!getCheckinConfigurationIssue(account)} onClick={() => setConfirming({ body: { ids: [account.id] }, count: 1, label: account.site + ' · ' + account.name })}><Icon name="play"/>签到</button><IconButton icon="edit" label={'编辑签到 ' + account.name} disabled={!writable} onClick={() => setEditor(account)}/><IconButton icon="trash" label={'删除签到 ' + account.name} disabled={!writable} onClick={() => setDeleting(account)}/></div>
     </section>)}{!visible.length && resource.data && <p className="empty-state">{query ? '没有匹配的签到账号。' : '还没有签到账号。添加站点与登录凭据后，可单独或批量执行。'}</p>}</div> : <div className="checkin-history">{history.map(result => <div className="checkin-history-row" key={result.id}><div><strong>{result.site} · {result.name}</strong><small>{formatDate(result.timestamp)}</small></div><Status result={result}/><p>{result.message}{result.httpStatus ? '（HTTP ' + result.httpStatus + '）' : ''}{typeof result.reward === 'number' ? ' · ' + formatNumber(result.reward) + ' 原始额度' : ''}</p></div>)}{!history.length && <p className="empty-state">暂无执行记录。</p>}</div>}
     {editor && <AccountEditor account={editor.id ? editor : null} onClose={() => setEditor(null)} onSaved={resource.refresh}/>}
     {deleting && <ConfirmDelete title="删除签到账号" name={deleting.site + ' · ' + deleting.name} url={'/api/checkins/accounts/' + deleting.id} onClose={() => setDeleting(null)} onDeleted={resource.refresh}/>}

@@ -4,19 +4,100 @@ import { mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { EventEmitter } from 'node:events';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { gzipSync } from 'node:zlib';
+import { createCipheriv, createDecipheriv, randomBytes } from 'node:crypto';
 import { createCheckinService, validateCheckinAccount } from '../scripts/checkin-service.mjs';
-import { classifyCheckinResponse, isPublicAddress, sendCheckin } from '../scripts/checkin-client.mjs';
+import { classifyCheckinResponse, isPublicAddress, sendCheckin, rotateCookieValue } from '../scripts/checkin-client.mjs';
+import { createCheckinRunner } from '../scripts/checkin-runner.mjs';
+import { parseBrowserCheckinResult } from '../scripts/anyrouter-browser-checkin.mjs';
+import { selectAutomaticCheckinIds } from '../scripts/checkin-schedule.mjs';
 
 const account = { site: '测试站', name: '账号一', baseUrl: 'https://site.example', protocol: 'newapi', authMode: 'cookie', userId: '42', cookie: 'session=unit-test-private-value' };
 
 test('account validation rejects internal origins, credential forwarding and malformed inputs', () => {
   assert.equal(validateCheckinAccount(account).checkinPath, '/api/user/checkin');
   assert.equal(validateCheckinAccount({ ...account, protocol: 'legacy' }).checkinPath, '/api/user/sign_in');
+  for (const cookie of ['raw-session-value', 'Cookie: session=test', 'session=test; invalid-fragment', '=test']) assert.throws(() => validateCheckinAccount({ ...account, cookie }), /Cookie/);
+  assert.equal(validateCheckinAccount({ ...account, cookie: 'session=abc==; acw_tc=test' }).cookie, 'session=abc==; acw_tc=test');
   for (const baseUrl of ['http://site.example', 'https://localhost', 'https://127.0.0.1', 'https://[::1]', 'https://169.254.169.254', 'https://user:pass@site.example', 'https://site.example/path', 'https://site.example?key=secret']) assert.throws(() => validateCheckinAccount({ ...account, baseUrl }));
   assert.throws(() => validateCheckinAccount({ ...account, cookie: 'session=x\r\nOther: y' }));
   assert.throws(() => validateCheckinAccount({ ...account, checkinPath: '//other.example/api/user/checkin' }));
   assert.throws(() => validateCheckinAccount({ ...account, authMode: 'bearer', token: 'sk-model-api-key' }));
   assert.throws(() => validateCheckinAccount({ ...account, enabled: 'false' }));
+});
+
+test('refresh-token accounts exchange the session cookie for a bearer token before checkin', async () => {
+  const refreshAccount = validateCheckinAccount({ ...account, authMode: 'refresh', userId: '', cookie: 'cf_clearance=abc; new_api_refresh=sid-value.hashvalue' });
+  const seen = [];
+  const requester = (url, options, callback) => {
+    const request = new EventEmitter();
+    request.end = () => queueMicrotask(() => {
+      seen.push({ path: url.pathname, auth: options.headers.Authorization, cookie: options.headers.Cookie, sid: options.headers['X-Auth-Session'] });
+      const response = new EventEmitter();
+      response.statusCode = 200;
+      response.headers = { 'content-type': 'application/json' };
+      callback(response);
+      response.emit('data', Buffer.from(url.pathname === '/api/user/auth/refresh' ? '{"success":true,"data":{"access_token":"jwt-token"}}' : '{"success":true,"data":{"quota_awarded":20}}'));
+      response.emit('end');
+      request.emit('close');
+    });
+    return request;
+  };
+  const result = await sendCheckin(refreshAccount, { lookup: async () => [{ address: '8.8.8.8', family: 4 }], requester });
+  assert.equal(result.status, 'success');
+  assert.equal(result.reward, 20);
+  assert.deepEqual(seen.map(entry => entry.path), ['/api/user/auth/refresh', '/api/user/checkin']);
+  assert.equal(seen[0].sid, 'sid-value');
+  assert.equal(seen[0].auth, undefined);
+  assert.equal(seen[1].auth, 'Bearer jwt-token');
+  assert(!JSON.stringify(result).includes('hashvalue'));
+});
+
+test('refresh accounts require a refresh cookie entry and stop without checkin when refresh fails', async () => {
+  assert.throws(() => validateCheckinAccount({ ...account, authMode: 'refresh', userId: '', cookie: 'session=only' }), /new_api_refresh/);
+  let checkins = 0;
+  const requester = (url, options, callback) => {
+    const request = new EventEmitter();
+    request.end = () => queueMicrotask(() => {
+      if (url.pathname === '/api/user/checkin') checkins++;
+      const response = new EventEmitter();
+      response.statusCode = 401;
+      response.headers = {};
+      callback(response);
+      response.emit('data', Buffer.from('{"success":false,"message":"Unauthorized, invalid access token"}'));
+      response.emit('end');
+      request.emit('close');
+    });
+    return request;
+  };
+  const result = await sendCheckin(validateCheckinAccount({ ...account, authMode: 'refresh', userId: '', cookie: 'new_api_refresh=sid.hash' }), { lookup: async () => [{ address: '8.8.8.8', family: 4 }], requester });
+  assert.equal(result.status, 'expired');
+  assert.equal(checkins, 0);
+});
+
+test('refresh rotation persists the server-issued cookie replacement into the vault', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'kn10-rotate-'));
+  try {
+    const refreshAccount = { site: '刷新站', name: '轮换账号', baseUrl: 'https://site.example', protocol: 'newapi', authMode: 'refresh', cookie: 'cf_clearance=abc; new_api_refresh=sid.oldhash; new_api_has_session=1' };
+    const service = createCheckinService({ directory, runner: async () => ({ status: 'success', message: '签到成功', credentialPatch: [{ name: 'new_api_refresh', value: 'sid.newhash' }] }) });
+    const saved = await service.saveAccount(refreshAccount);
+    await service.startJob({ ids: [saved.id] });
+    await service.waitForIdle();
+    const key = await readFile(join(directory, 'vault.key'));
+    const saved0 = JSON.parse(await readFile(join(directory, 'vault.json'), 'utf8'));
+    const decipher = createDecipheriv('aes-256-gcm', key, Buffer.from(saved0.nonce, 'base64'));
+    decipher.setAuthTag(Buffer.from(saved0.tag, 'base64'));
+    const vault = JSON.parse(Buffer.concat([decipher.update(Buffer.from(saved0.data, 'base64')), decipher.final()]).toString('utf8'));
+    assert.equal(vault.accounts[0].cookie, 'cf_clearance=abc; new_api_refresh=sid.newhash; new_api_has_session=1');
+    assert.equal(vault.history[0].credentialPatch, undefined);
+    assert(!JSON.stringify(vault.history).includes('newhash'));
+  } finally { await rm(directory, { recursive: true, force: true }); }
+});
+
+test('rotateCookieValue replaces in place and appends missing names', () => {
+  assert.equal(rotateCookieValue('a=1; new_api_refresh=old; b=2', 'new_api_refresh', 'new'), 'a=1; new_api_refresh=new; b=2');
+  assert.equal(rotateCookieValue('a=1', 'new_api_refresh', 'new'), 'a=1; new_api_refresh=new');
+  assert.equal(rotateCookieValue('a=1', 'x', ''), 'a=1');
 });
 
 test('response classification preserves genuine failures and raw quota units', () => {
@@ -29,6 +110,153 @@ test('response classification preserves genuine failures and raw quota units', (
   assert.equal(classifyCheckinResponse(200, '<html>Login</html>').status, 'verification');
   assert.equal(classifyCheckinResponse(200, '{"success":false,"message":"签到功能未启用"}').status, 'unsupported');
   assert.equal(classifyCheckinResponse(200, '{"success":false,"message":"false failure"}').status, 'error');
+});
+
+test('AnyRouter presets use sign_in without matching unrelated origins', async () => {
+  const { getCheckinSitePreset, getCheckinConfigurationIssue } = await import('../src/api/checkin-sites.js');
+  assert.equal(getCheckinSitePreset('https://anyrouter.top/').checkinPath, '/api/user/sign_in');
+  assert.equal(getCheckinSitePreset('https://anyrouter.top').protocol, 'legacy');
+  for (const baseUrl of ['https://anyrouter.top.evil.example', 'https://evil.example/anyrouter.top', 'http://anyrouter.top', 'https://anyrouter.top:444', 'not a URL']) assert.equal(getCheckinSitePreset(baseUrl), null);
+  assert(getCheckinConfigurationIssue({ baseUrl: 'https://anyrouter.top', checkinPath: '/api/user/checkin' }));
+  assert.equal(getCheckinConfigurationIssue({ baseUrl: 'https://anyrouter.top', checkinPath: '/api/user/sign_in' }), null);
+  assert.throws(() => validateCheckinAccount({ ...account, baseUrl: 'https://anyrouter.top' }), /sign_in/);
+  assert.equal(validateCheckinAccount({ ...account, baseUrl: 'https://anyrouter.top', protocol: 'legacy' }).checkinPath, '/api/user/sign_in');
+});
+
+test('AnyRouter runner uses the browser adapter while other sites keep HTTP adapter', async () => {
+  const calls = [];
+  const browserRunner = async value => { calls.push(['browser', value.baseUrl]); return { status: 'success' }; };
+  const httpRunner = async value => { calls.push(['http', value.baseUrl]); return { status: 'already' }; };
+  const runner = createCheckinRunner({ proxyUrl: 'http://127.0.0.1:7890', browserRunner, httpRunner });
+  const anyrouter = validateCheckinAccount({ ...account, site: 'AnyRouter', name: 'AnyRouter 账号', baseUrl: 'https://anyrouter.top', protocol: 'legacy', checkinPath: '/api/user/sign_in' });
+  await runner(anyrouter);
+  await runner(validateCheckinAccount(account));
+  assert.deepEqual(calls, [['browser', 'https://anyrouter.top'], ['http', 'https://site.example']]);
+});
+
+test('browser result parser accepts only a whitelisted result line', () => {
+  assert.deepEqual(parseBrowserCheckinResult('debug\nRESULT {status:success,message:签到成功,reward:100}\n'), { status: 'success', message: '签到成功', reward: 100 });
+  assert.equal(parseBrowserCheckinResult('RESULT {status:error,message:secret-cookie}').message, '浏览器签到失败');
+  assert.equal(parseBrowserCheckinResult('no result').diagnostic, 'browser');
+});
+
+test('automatic schedule waits until eight and skips accounts already confirmed today', () => {
+  const snapshot = { accounts: [
+    { id: 'success', enabled: true, lastResult: { status: 'success', timestamp: '2026-10-09T00:01:00.000Z' } },
+    { id: 'failed', enabled: true, lastResult: { status: 'verification', timestamp: '2026-10-09T00:02:00.000Z' } },
+    { id: 'disabled', enabled: false },
+    { id: 'old', enabled: true, lastResult: { status: 'already', timestamp: '2026-10-08T16:01:00.000Z' } },
+  ] };
+  assert.deepEqual(selectAutomaticCheckinIds(snapshot, new Date('2026-10-09T00:30:00.000Z')), []);
+  assert.deepEqual(selectAutomaticCheckinIds(snapshot, new Date('2026-10-09T01:30:00.000Z')), ['failed', 'old']);
+});
+
+test('WAF HTML and login failures have safe actionable diagnostics', () => {
+  const waf = classifyCheckinResponse(200, '<html><script>document.cookie="acw_sc__v2=private"</script></html>', { 'set-cookie': ['acw_tc=private', 'cdn_sec_tc=private'] });
+  assert.equal(waf.status, 'verification');
+  assert.equal(waf.diagnostic, 'waf');
+  assert(!JSON.stringify(waf).includes('private'));
+  assert.equal(classifyCheckinResponse(200, JSON.stringify({ success: false, message: '无权进行此操作，未登录或登录已过期' })).status, 'expired');
+  assert.equal(classifyCheckinResponse(429, JSON.stringify({ success: false })).diagnostic, 'rate_limit');
+  assert.equal(classifyCheckinResponse(200, '<html>Login</html>').diagnostic, 'non_json');
+});
+
+test('DNS and TLS failures keep diagnostics without persisting exception text', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'kn10-checkins-'));
+  try {
+    const service = createCheckinService({ directory, runner: value => sendCheckin(value, { lookup: async () => { throw Object.assign(new Error(account.cookie), { code: 'ENOTFOUND' }); } }) });
+    const saved = await service.saveAccount(account);
+    await service.startJob({ ids: [saved.id] });
+    await service.waitForIdle();
+    const snapshot = await service.snapshot();
+    assert.equal(snapshot.history[0].diagnostic, 'dns');
+    assert.match(snapshot.history[0].message, /解析/);
+    assert(!JSON.stringify(snapshot).includes(account.cookie));
+    const requester = () => {
+      const request = new EventEmitter();
+      request.end = () => queueMicrotask(() => { request.emit('error', Object.assign(new Error(account.cookie), { code: 'CERT_HAS_EXPIRED' })); request.emit('close'); });
+      return request;
+    };
+    await assert.rejects(sendCheckin(validateCheckinAccount(account), { lookup: async () => [{ address: '8.8.8.8', family: 4 }], requester }), error => error.diagnostic === 'tls' && !error.message.includes(account.cookie));
+  } finally { await rm(directory, { recursive: true, force: true }); }
+});
+
+test('compressed WAF responses do not turn HTTP 200 into success', async () => {
+  const requester = (url, options, callback) => {
+    assert.equal(options.headers['Accept-Encoding'], 'identity');
+    const request = new EventEmitter();
+    request.end = () => queueMicrotask(() => {
+      const response = new EventEmitter();
+      response.statusCode = 200;
+      response.headers = { 'content-encoding': 'gzip', 'content-type': 'text/html', 'set-cookie': ['acw_tc=private'] };
+      callback(response);
+      response.emit('data', gzipSync('<html><script>document.cookie="cdn_sec_tc=private"</script></html>'));
+      response.emit('end');
+      request.emit('close');
+    });
+    return request;
+  };
+  const result = await sendCheckin(validateCheckinAccount(account), { lookup: async () => [{ address: '8.8.8.8', family: 4 }], requester });
+  assert.equal(result.status, 'verification');
+  assert.equal(result.diagnostic, 'waf');
+  assert.equal(result.httpStatus, 200);
+  assert(!JSON.stringify(result).includes('private'));
+});
+
+test('AnyRouter wrong endpoints are refused before DNS or credential transmission', async () => {
+  let lookups = 0;
+  let requests = 0;
+  const result = await sendCheckin({ ...account, baseUrl: 'https://anyrouter.top', checkinPath: '/api/user/checkin' }, { lookup: async () => { lookups++; return [{ address: '8.8.8.8', family: 4 }]; }, requester: () => { requests++; } });
+  assert.equal(result.status, 'unsupported');
+  assert.equal(result.diagnostic, 'interface');
+  assert.equal(lookups, 0);
+  assert.equal(requests, 0);
+});
+
+test('existing wrong AnyRouter accounts remain readable but never reach the runner', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'kn10-checkins-'));
+  try {
+    const key = randomBytes(32);
+    const nonce = randomBytes(12);
+    const cipher = createCipheriv('aes-256-gcm', key, nonce);
+    const oldAccount = { ...account, id: 'old-anyrouter', baseUrl: 'https://anyrouter.top', checkinPath: '/api/user/checkin', enabled: true };
+    const encrypted = Buffer.concat([cipher.update(JSON.stringify({ accounts: [oldAccount], history: [], job: null })), cipher.final()]);
+    await writeFile(join(directory, 'vault.key'), key);
+    await writeFile(join(directory, 'vault.json'), JSON.stringify({ version: 1, nonce: nonce.toString('base64'), tag: cipher.getAuthTag().toString('base64'), data: encrypted.toString('base64') }));
+    let runs = 0;
+    const service = createCheckinService({ directory, runner: async () => { runs++; return { status: 'success' }; } });
+    assert.equal((await service.snapshot()).accounts[0].checkinPath, '/api/user/checkin');
+    await service.startJob({ ids: [oldAccount.id] });
+    await service.waitForIdle();
+    const snapshot = await service.snapshot();
+    assert.equal(runs, 0);
+    assert.equal(snapshot.job.status, 'failed');
+    assert.equal(snapshot.history[0].diagnostic, 'interface');
+    await assert.rejects(service.saveAccount({ protocol: 'legacy', checkinPath: '/api/user/sign_in', cookie: '' }, oldAccount.id));
+    await service.saveAccount({ protocol: 'legacy', checkinPath: '/api/user/sign_in', cookie: account.cookie }, oldAccount.id);
+    assert.equal((await service.snapshot()).accounts[0].checkinPath, '/api/user/sign_in');
+    assert.equal(runs, 0);
+  } finally { await rm(directory, { recursive: true, force: true }); }
+});
+
+test('invalid and oversized compressed responses fail safely', async () => {
+  for (const payload of [Buffer.from('not gzip'), gzipSync('x'.repeat(262145))]) {
+    const requester = (url, options, callback) => {
+      const request = new EventEmitter();
+      request.end = () => queueMicrotask(() => {
+        const response = new EventEmitter();
+        response.statusCode = 200;
+        response.headers = { 'content-encoding': 'gzip' };
+        callback(response);
+        response.emit('data', payload);
+        response.emit('end');
+        request.emit('close');
+      });
+      return request;
+    };
+    const result = await sendCheckin(validateCheckinAccount(account), { lookup: async () => [{ address: '8.8.8.8', family: 4 }], requester });
+    assert.deepEqual(result, { status: 'error', diagnostic: 'response', httpStatus: 200 });
+  }
 });
 
 test('outbound checks block private and mapped addresses before any request', async () => {
