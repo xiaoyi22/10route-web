@@ -29,9 +29,17 @@ try {
   await page.getByTestId('cache-rate').filter({ hasText: '20.0%' }).waitFor();
   await page.goto(`${base}/dashboard/logs`);
   await page.waitForFunction(() => document.querySelectorAll('tbody tr').length === 20);
-  for (const column of ['模型', '推理强度', '端点', '供应商', '状态', '类型', '计费模式', 'Token（入 / 出 / 缓存）', '延迟', '时间']) {
+  for (const column of ['模型', '推理强度', '端点', '供应商', '状态', '类型', '计费模式', 'Token', '延迟', '时间']) {
     assert.equal(await page.getByRole('columnheader', { name: column, exact: true }).count(), 1, `缺少日志列 ${column}`);
   }
+  await page.getByRole('button', { name: /查看 Token 明细/ }).first().hover();
+  const tokenTooltip = page.getByRole('tooltip');
+  await tokenTooltip.waitFor();
+  for (const line of ['输入 Token', '输出 Token', '缓存读取 Token', '总 Token']) {
+    assert((await tokenTooltip.innerText()).includes(line), `Token 明细缺少 ${line}`);
+  }
+  await page.keyboard.press('Escape');
+  await tokenTooltip.waitFor({ state: 'detached' });
   await page.clock.install();
   await page.clock.pauseAt(new Date());
   assert.equal(await page.getByLabel('自动刷新日志').isChecked(), true);
@@ -81,6 +89,17 @@ try {
   await mkdir('screenshots', { recursive: true });
   await page.waitForFunction(() => [...document.querySelectorAll('.provider-mark img')].every(image => image.complete && image.naturalWidth > 0));
   await page.screenshot({ path: 'screenshots/log-prices-refresh.png', fullPage: true });
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.waitForTimeout(300);
+  await page.evaluate(() => {
+    const model = document.querySelector('.log-model strong');
+    if (model) model.textContent = 'gemini-3.8-flash-high-preview-very-long-model-name-that-overflows-123456789';
+  });
+  await page.waitForTimeout(300);
+  assert(await page.evaluate(() => {
+    const shell = document.querySelector('.table-shell');
+    return shell.scrollWidth <= shell.clientWidth + 1;
+  }), '日志表格被超长模型名撑出横向滚动条');
   for (const width of [320, 375, 768, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     await page.waitForTimeout(500);
