@@ -9,6 +9,7 @@ import { CopyButton, ErrorBlock, PageHeading, managementEnabled, useResource } f
 import { groupProviders, providerInfo } from './api/providers.js';
 import { ProxyPage } from './pages/ProxyPage.jsx';
 import './admin.css';
+import avatarUrl from './assets/avatar.jpg';
 
 const TokenCacheChart = lazy(() => import('./components/TokenCacheChart.jsx'));
 const OverviewPage = lazy(() => import('./pages/OverviewPage.jsx'));
@@ -95,18 +96,18 @@ function Login({ auth, onLogin }) {
     <main className="login-card">
       <div className="login-symbol"><Icon name="radio"/></div>
       <span className="eyebrow">MY AI GATEWAY</span>
-      <h1>连接你的工作空间</h1><p className="subtitle">登录 10router，查看你的网关。</p>
+      <h1>连接你的工作空间</h1><p className="subtitle">登录 KN10 网关，查看你的网关。</p>
       <div className="mode-banner"><Icon name="shield"/><div><strong>{demo ? '演示工作区' : '网关登录'}</strong><span>{demo ? '演示数据 · 未连接真实网关' : '使用网关管理密码登录'}</span></div></div>
       {passwordEnabled && <form onSubmit={submit}><label htmlFor="login-password">登录密码</label><input id="login-password" type="password" autoComplete="current-password" value={password} onChange={event => setPassword(event.target.value)} required autoFocus placeholder="输入管理密码"/>{error && <p className="error-message" role="alert">{error}</p>}<button className="button primary full" disabled={busy} type="submit">{busy ? '正在登录…' : '进入管理端'}<Icon name="arrow"/></button></form>}
       {ssoEnabled && (ssoConfigured ? <a className="button full" href={`/api/auth/${saml ? 'saml' : 'oidc'}/start`}><Icon name="shield"/>{(saml ? auth.samlLoginLabel : auth.oidcLoginLabel) || '使用统一账号登录'}</a> : <p className="error-message" role="alert">统一登录尚未配置完整，请联系网关管理员。</p>)}
       {callbackError && <p className="error-message" role="alert">统一登录未完成：{callbackError}</p>}
       {demo && <p className="demo-password">演示密码 <code>linear-demo</code><button type="button" className="text-button" onClick={() => setPassword('linear-demo')}>填入</button></p>}
-    </main><div className="login-footer">10router / 网关控制台</div>
+    </main><div className="login-footer">KN10 网关 / 网关控制台</div>
   </div>;
 }
 
 function Brand() {
-  return <div className="brand"><span className="brand-mark">10</span><span>10router<span className="brand-dot">.</span></span></div>;
+  return <div className="brand"><span className="brand-mark">KN10</span><span>网关</span></div>;
 }
 
 function SearchDialog({ open, onClose }) {
@@ -123,10 +124,20 @@ function SearchDialog({ open, onClose }) {
 
 function Layout({ auth, onLogout }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [operationMessage, setOperationMessage] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
   const location = useLocation();
   const current = navItems.find(item => item.path === location.pathname || location.pathname.startsWith(`${item.path}/`)) || navItems[2];
   useEffect(() => { setMobileOpen(false); }, [location.pathname]);
+  useEffect(() => {
+    const handle = event => {
+      setOperationMessage(event.detail?.label || '操作已完成');
+      window.clearTimeout(handle.timeout);
+      handle.timeout = window.setTimeout(() => setOperationMessage(''), 4500);
+    };
+    window.addEventListener('tenrouter:operation-complete', handle);
+    return () => { window.removeEventListener('tenrouter:operation-complete', handle); window.clearTimeout(handle.timeout); };
+  }, []);
   useEffect(() => {
     const handle = event => {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); setSearchOpen(value => !value); }
@@ -140,15 +151,16 @@ function Layout({ auth, onLogout }) {
     {mobileOpen && <button className="nav-backdrop" aria-label="关闭导航" onClick={() => setMobileOpen(false)}/>}
     <aside className={`sidebar ${mobileOpen ? 'is-open' : ''}`}>
       <Brand/>
-      <div className="workspace"><span className="workspace-mark"><Icon name="radio"/></span><div><strong>我的网关</strong><small>{demo ? '演示工作区' : '10router 工作区'}</small></div></div>
+      <div className="workspace"><span className="workspace-mark"><Icon name="radio"/></span><div><strong>我的网关</strong><small>{demo ? '演示工作区' : 'KN10 工作区'}</small></div></div>
       <button type="button" className="sidebar-search" onClick={() => setSearchOpen(true)}><Icon name="search"/><span>搜索页面</span><Icon name="arrow"/></button>
       <nav aria-label="主导航">{['工作区', '监控', '管理'].map(group => <div key={group}><p className="nav-group">{group}</p>{navItems.filter(item => item.group === group).map(item => <NavLink key={item.path} to={item.path} className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}><Icon name={item.icon}/><span>{item.title}</span></NavLink>)}</div>)}</nav>
-      <div className="sidebar-bottom"><div className="sidebar-caption"><Icon name="shield"/><span>{managementEnabled ? '网关管理访问' : '网关只读访问'}</span></div><div className="profile"><span className="avatar">{demo ? 'D' : 'R'}</span><div><strong>{auth.displayName || '管理用户'}</strong><small>{demo ? '演示访客' : '网关管理员'}</small></div><button className="icon-button" aria-label="退出登录" title="退出登录" onClick={onLogout}><Icon name="logout"/></button></div></div>
+      <div className="sidebar-bottom"><div className="sidebar-caption"><Icon name="shield"/><span>{managementEnabled ? '网关管理访问' : '网关只读访问'}</span></div><div className="profile"><span className="avatar"><img src={avatarUrl} alt=""/></span><div><strong>{auth.displayName || '管理用户'}</strong><small>{demo ? '演示访客' : '网关管理员'}</small></div><button className="icon-button" aria-label="退出登录" title="退出登录" onClick={onLogout}><Icon name="logout"/></button></div></div>
     </aside>
     <div className="app-content">
-      <header className="topbar"><button className="icon-button mobile-menu" aria-label="打开导航" title="打开导航" onClick={() => setMobileOpen(true)}><Icon name="menu"/></button><span className="mobile-brand">10router</span><span>我的网关</span><span className="breadcrumb-slash">/</span><strong>{current.title}</strong><div className="topbar-right"><span className="mode-indicator"><span className="dot"/>{demo ? '演示数据' : managementEnabled ? '网关管理' : '网关只读'}</span><ThemeControl /></div></header>
+      {operationMessage && <div className="operation-toast" role="status" aria-live="polite"><Icon name="check"/>{operationMessage}</div>}
+      <header className="topbar"><button className="icon-button mobile-menu" aria-label="打开导航" title="打开导航" onClick={() => setMobileOpen(true)}><Icon name="menu"/></button><span className="mobile-brand">KN10 网关</span><span>我的网关</span><span className="breadcrumb-slash">/</span><strong>{current.title}</strong><div className="topbar-right"><span className="mode-indicator"><span className="dot"/>{demo ? '演示数据' : managementEnabled ? '网关管理' : '网关只读'}</span><ThemeControl /></div></header>
       <Suspense fallback={<main id="main" className="main-content"><p className="empty-state" role="status" aria-busy="true">正在加载…</p></main>}>
-      <main id="main" className="main-content"><Routes><Route index element={<Navigate to="/dashboard/overview" replace/>}/><Route path="overview" element={<OverviewPage/>}/><Route path="system" element={<SystemPage/>}/><Route path="checkins" element={<CheckinsPage/>}/><Route path="usage" element={<UsagePage/>}/><Route path="providers" element={<ProvidersPage/>}/><Route path="providers/:provider" element={<ProvidersPage/>}/><Route path="endpoint" element={<EndpointPage/>}/><Route path="models" element={<ModelsPage/>}/><Route path="logs" element={<LogsPage/>}/><Route path="monitor" element={<MonitorPage/>}/><Route path="combos" element={<CombosPage/>}/><Route path="distribution" element={<DistributionPage/>}/><Route path="balances" element={<BalancesPage/>}/><Route path="proxy" element={<ProxyPage/>}/><Route path="chain-health" element={<ChainHealthPage/>}/><Route path="pricing" element={<PricingPage/>}/><Route path="proxy-pools" element={<ProxyPoolsPage/>}/><Route path="settings" element={<SettingsPage/>}/><Route path="authorization" element={<AuthorizationPage/>}/><Route path="translator" element={<TranslatorPage/>}/><Route path="*" element={<NotFound/>}/></Routes><footer className="page-footer"><span><span className="dot"/>{demo ? '演示工作区 · 未连接真实网关' : `10router · ${managementEnabled ? '管理' : '只读'}工作区`}</span><span>YOUR MODELS. YOUR GATEWAY.</span></footer></main>
+      <main id="main" className="main-content"><Routes><Route index element={<Navigate to="/dashboard/overview" replace/>}/><Route path="overview" element={<OverviewPage/>}/><Route path="system" element={<SystemPage/>}/><Route path="checkins" element={<CheckinsPage/>}/><Route path="usage" element={<UsagePage/>}/><Route path="providers" element={<ProvidersPage/>}/><Route path="providers/:provider" element={<ProvidersPage/>}/><Route path="endpoint" element={<EndpointPage/>}/><Route path="models" element={<ModelsPage/>}/><Route path="logs" element={<LogsPage/>}/><Route path="monitor" element={<MonitorPage/>}/><Route path="combos" element={<CombosPage/>}/><Route path="distribution" element={<DistributionPage/>}/><Route path="balances" element={<BalancesPage/>}/><Route path="proxy" element={<ProxyPage/>}/><Route path="chain-health" element={<ChainHealthPage/>}/><Route path="pricing" element={<PricingPage/>}/><Route path="proxy-pools" element={<ProxyPoolsPage/>}/><Route path="settings" element={<SettingsPage/>}/><Route path="authorization" element={<AuthorizationPage/>}/><Route path="translator" element={<TranslatorPage/>}/><Route path="*" element={<NotFound/>}/></Routes><footer className="page-footer"><span><span className="dot"/>{demo ? '演示工作区 · 未连接真实网关' : `KN10 网关 · ${managementEnabled ? '管理' : '只读'}工作区`}</span><span>YOUR MODELS. YOUR GATEWAY.</span></footer></main>
     </Suspense>
     </div><SearchDialog open={searchOpen} onClose={() => setSearchOpen(false)}/>
   </div>;
@@ -270,7 +282,7 @@ export default function App() {
   }, []);
   useEffect(() => {
     let active = true;
-    requestJson('/api/auth/status').then(status => { if (active) setAuth(status); }).catch(failure => { if (active) setError(failure.message); });
+    requestJson('/api/auth/status').then(status => { if (active) setAuth(status); }).catch(failure => { if (active && !auth) setError(failure.message); });
     return () => { active = false; };
   }, [location.pathname]);
   useEffect(() => {
@@ -280,7 +292,7 @@ export default function App() {
   }, []);
   async function logout() {
     try { await requestJson('/api/auth/logout', { method: 'POST' }); setAuth(null); navigate('/login'); }
-    catch (failure) { setError(failure.message); }
+    catch (failure) { if (failure.status === 401) { setAuth(null); navigate('/login'); } else setError(failure.message); }
   }
   const accessible = auth && (auth.authenticated || auth.requireLogin === false || auth.bootstrapLocal);
   if (location.pathname === '/callback') return <div className="login-page"><div className="login-card"><Brand/><h1>授权页面已返回</h1><p className="subtitle">复制当前回调地址，返回账号授权窗口粘贴并完成接入。</p><div className="dialog-actions"><CopyButton value={window.location.href} label="复制回调地址"/><a className="button" href="/dashboard/authorization">返回账号授权</a></div></div></div>;

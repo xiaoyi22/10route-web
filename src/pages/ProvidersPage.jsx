@@ -132,7 +132,7 @@ export function ProvidersPage() {
   }
   const activeDetail = detail ? connections.find(connection => connection.id === detail.id) : null;
   return <>
-    {managementEnabled && <div className="section-toolbar"><button className="button primary" onClick={() => setNodeEditor({})}><Icon name="plus"/>添加供应商</button>{selected?.custom && <div className="row-actions"><button className="button" onClick={() => setNodeEditor(nodes.data.nodes.find(node => node.id === selected.id))}>编辑供应商</button><button className="button danger" onClick={() => setRemovingNode(selected)}>删除供应商</button></div>}</div>}
+    {managementEnabled && <div className="section-toolbar"><button className="button primary" onClick={() => setNodeEditor({})}><Icon name="plus"/>添加供应商</button>{selected?.custom && nodes.data?.nodes && <div className="row-actions"><button className="button" onClick={() => setNodeEditor(nodes.data.nodes.find(node => node.id === selected.id))}>编辑供应商</button><button className="button danger" onClick={() => setRemovingNode(selected)}>删除供应商</button></div>}</div>}
     {nodeEditor && <ProviderNodeEditor node={nodeEditor.id ? nodeEditor : null} onClose={() => { setNodeEditor(null); refresh(); }} onSaved={id => { refresh(); navigate(`/dashboard/providers/${encodeURIComponent(id)}`); }}/>} 
     {removingNode && <ConfirmDelete title="删除供应商及全部账号、模型" name={removingNode.name} url={`/api/provider-nodes/${encodeURIComponent(removingNode.id)}`} onClose={() => setRemovingNode(null)} onDeleted={() => { refresh(); navigate('/dashboard/providers'); }}/>} 
     {selectedId && <Link className="text-button provider-back" to="/dashboard/providers" onClick={() => setQuery('')}><Icon name="back"/>全部供应商</Link>}

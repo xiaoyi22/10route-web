@@ -53,7 +53,7 @@ try {
       assert.equal(await page.evaluate(() => document.characterSet), 'UTF-8');
       assert(!(await dialog.innerText()).includes('�'), 'Search contains replacement characters');
       assert.equal(await page.getByLabel('搜索页面').getAttribute('placeholder'), '搜索页面…');
-      assert.equal(await dialog.locator('.search-results a').count(), 17);
+      assert.equal(await dialog.locator('.search-results a').count(), 19);
       assert.equal(await page.getByLabel('搜索页面').evaluate(element => element === document.activeElement), true);
       const bounds = await dialog.boundingBox();
       assert(bounds.y >= 16 && bounds.y + bounds.height <= screen.height - 16 + 1, screen.name + ': search dialog leaves the viewport');
@@ -94,7 +94,7 @@ try {
           await input.fill('');
         }
         if (path === 'logs') {
-          await page.getByRole('button', { name: /查看请求/ }).first().click();
+          await page.getByRole('button', { name: /^查看请求 / }).first().click();
           const detail = page.getByRole('dialog', { name: '请求详情' });
           await detail.waitFor();
           const detailBounds = await detail.boundingBox();

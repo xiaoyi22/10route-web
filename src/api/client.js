@@ -43,6 +43,22 @@ export async function requestJson(url, options = {}, fetcher = globalThis.fetch)
     throw new ApiError((passwordRejected && '管理员密码验证失败，请检查后重试') || ((upstreamModels || oauthFailure) && data.error) || messages[response.status] || data.error || `请求失败 (${response.status})`, response.status, data);
   }
   if (method === 'POST' && new URL(url, 'http://localhost').pathname === '/api/auth/logout') endEgressSession('tenrouter:logout');
+  if (!['GET', 'HEAD', 'OPTIONS'].includes(method) && !['/api/auth/logout', '/api/translator/translate'].includes(new URL(url, 'http://localhost').pathname) && typeof window !== 'undefined') {
+    const pathname = new URL(url, 'http://localhost').pathname;
+    const labels = {
+      '/api/providers': '供应商账号已保存', '/api/provider-nodes': '供应商配置已保存',
+      '/api/models/custom': '模型设置已保存', '/api/models/caps': '模型能力设置已保存',
+      '/api/models/alias': '模型别名已保存', '/api/models/disabled': '模型状态已更新',
+      '/api/models/distribution': '模型分发设置已保存', '/api/combos': '组合模型已保存',
+      '/api/keys': '密钥设置已更新', '/api/pricing': '价格设置已更新',
+      '/api/proxy-pools': '代理池设置已保存', '/api/settings': '网关设置已保存',
+      '/api/iq-monitor': '检测计划已保存', '/api/channel-balances': '额度信息已更新',
+      '/api/checkins/accounts': '签到账号已保存', '/api/checkins/jobs': '签到任务已创建',
+    };
+    const label = (method === 'DELETE' && '已删除') || Object.entries(labels).find(([path]) => pathname === path || pathname.startsWith(`${path}/`))?.[1]
+      || (pathname.includes('/test') ? '检测完成' : '操作已完成');
+    window.dispatchEvent(new CustomEvent('tenrouter:operation-complete', { detail: { method, pathname, label } }));
+  }
   return data;
 }
 

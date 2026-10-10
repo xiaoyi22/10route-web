@@ -12,8 +12,9 @@ try {
   assert.equal((await (await page.request.get(`${base}/api/auth/status`)).json()).demo, true);
   await page.goto(`${base}/dashboard/overview`);
   await page.getByLabel('登录密码').fill('linear-demo');
-  await page.getByRole('button', { name: '进入管理端' }).click();
-  await page.getByTestId('chart-cache-rate').filter({ hasText: '54.6%' }).waitFor();
+ await page.getByRole('button', { name: '进入管理端' }).click();
+  await page.getByRole('button', { name: 'Token 趋势', exact: true }).click();
+ await page.getByTestId('chart-cache-rate').filter({ hasText: '54.6%' }).waitFor();
   await page.locator('.token-cache-chart .recharts-area-curve').first().waitFor();
   assert.equal(await page.locator('.token-cache-chart .recharts-area-curve').count(), 4);
   assert.equal(await page.locator('.token-series-legend > button').count(), 4);

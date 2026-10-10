@@ -9,5 +9,6 @@ export async function openApiResponse(url, options) {
     const error = typeof body.error === 'object' ? body.error.message : body.error;
     throw new ApiError(error || body.message || `请求失败（HTTP ${response.status}）`, response.status);
   }
+  if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('tenrouter:operation-complete', { detail: { method: (options.method || 'POST').toUpperCase(), pathname: new URL(url, window.location.origin).pathname, label: '请求已提交' } }));
   return response;
 }

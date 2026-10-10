@@ -61,7 +61,7 @@ function download(data, name) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-function DatabaseSettings() {
+function DatabaseSettings({ onSaved }) {
   const [action, setAction] = useState('');
   const [password, setPassword] = useState('');
   const [file, setFile] = useState(null);
@@ -87,6 +87,7 @@ function DatabaseSettings() {
       if (action === 'import') {
         await requestJson('/api/settings/database', { method: 'POST', body: JSON.stringify({ ...payload, password }) });
         setMessage('当前配置已导出备份，所选备份已恢复。若备份的管理员密码不同，请使用备份中的密码重新登录。');
+        onSaved();
       } else setMessage('网关备份已下载');
       close();
     } catch (failure) { setError(failure.message); }
@@ -124,7 +125,7 @@ export function SettingsPage() {
       {tab === 'proxy' && <><SettingsPanel key="proxy" title="全局出站代理" description="没有绑定代理池或专用代理的账号继承此配置。" settings={settings} onSaved={resource.refresh} fields={[{ key: 'outboundProxyEnabled', label: '启用全局代理', type: 'checkbox', hint: '保存后立即应用到网关出站请求。' }, { key: 'outboundProxyUrl', label: '代理地址', secret: true, hint: `当前：${safeProxyUrl(settings.outboundProxyUrl) || '未配置'}` }, { key: 'outboundNoProxy', label: '绕过代理规则', placeholder: 'localhost,127.0.0.1,.example.com' }]}/><div className="admin-toolbar"><span className="muted">检测网关已保存的代理地址</span><button className="button" disabled={!managementEnabled || busy || !settings.outboundProxyUrl} onClick={() => test('proxy')}><Icon name="activity"/>{busy ? '正在检测…' : '检测已保存的代理'}</button></div></>}
       {tab === 'security' && <><SettingsPanel key="access" title="访问保护" description="管理页面和模型接口分别控制访问权限。" settings={settings} fields={accessFields} onSaved={resource.refresh}/><PasswordSettings/></>}
       {tab === 'sso' && <><p className="admin-hint admin-note">普通管理使用管理员密码即可。企业身份平台配置完成后，可选择增加统一登录。</p><SettingsPanel key="sso" title="登录入口" description="选择密码登录或身份平台登录。" settings={settings} fields={ssoFields} onSaved={resource.refresh}/><SettingsPanel key="oidc" title="OIDC 身份服务" description={settings.oidcConfigured ? '已配置身份服务；密钥不回显。' : '尚未配置身份服务。'} settings={settings} fields={oidcFields} onSaved={resource.refresh}/><div className="admin-callback"><span>OIDC 回调地址</span><code>{location.origin}/api/auth/oidc/callback</code><CopyButton value={`${location.origin}/api/auth/oidc/callback`}/><button className="button" disabled={!managementEnabled || busy || !settings.oidcConfigured} onClick={() => test('oidc')}>检测 OIDC</button></div><SettingsPanel key="saml" title="SAML 身份服务" description="填写身份平台的登录地址和签名证书。" settings={settings} fields={samlFields} onSaved={resource.refresh}/><div className="admin-callback"><span>SAML 回调地址</span><code>{location.origin}/api/auth/saml/acs</code><CopyButton value={`${location.origin}/api/auth/saml/acs`}/><button className="button" disabled={!managementEnabled || busy || !settings.samlEntryPoint || !settings.samlCert} onClick={() => test('saml')}>检查 SAML 配置</button></div></>}
-      {tab === 'database' && <DatabaseSettings/>}
+      {tab === 'database' && <DatabaseSettings onSaved={resource.refresh}/>}
     </div>}
   </>;
 }

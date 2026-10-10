@@ -117,7 +117,7 @@ export function MonitorPage() {
   const [manual, setManual] = useState(null);
   const [manualResults, setManualResults] = useState({});
   const [autoRefresh, setAutoRefresh] = useState(true);
-  useEffect(() => { if (!autoRefresh) return; const timer = setInterval(() => { if (!document.hidden) resource.refresh(); }, 15000); return () => clearInterval(timer); }, [autoRefresh, resource.refresh]);
+  useEffect(() => { if (!autoRefresh) return; const timer = setInterval(() => { if (!document.hidden && !resource.loading) resource.refresh(); }, 15000); return () => clearInterval(timer); }, [autoRefresh, resource.loading, resource.refresh]);
   const data = resource.data;
   const catalog = data?.catalog || [];
   const history = data?.state?.history || [];

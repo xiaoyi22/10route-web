@@ -154,7 +154,7 @@ try {
     assert.equal(await page.getByRole('button', { name: '7 天', exact: true }).getAttribute('aria-pressed'), 'true');
     assert.equal(await page.getByLabel('自动更新概览').isChecked(), false);
     await page.goto(base + '/dashboard/logs');
-    await page.getByRole('button', { name: /查看请求/ }).first().click();
+    await page.getByRole('button', { name: /^查看请求 / }).first().click();
     const detail = page.getByRole('dialog', { name: '请求详情' });
     await detail.waitFor();
     for (const value of ['light', 'dark']) {

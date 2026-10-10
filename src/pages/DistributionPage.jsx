@@ -2,7 +2,7 @@ import { useDeferredValue, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '../components/Icon.jsx';
 import ProviderIcon from '../components/ProviderIcon.jsx';
-import { CopyButton, ErrorBlock, PageHeading, managementEnabled, useResource, IconButton } from '../components/Controls.jsx';
+import { CopyButton, ErrorBlock, Modal, PageHeading, managementEnabled, useResource, IconButton } from '../components/Controls.jsx';
 import { requestJson, normalizeProviders } from '../api/client.js';
 import { modelCatalog } from '../api/data.js';
 import { providerInfo } from '../api/providers.js';
@@ -20,6 +20,7 @@ export function DistributionPage() {
 
   const [mode, setMode] = useState(null);
   const [selected, setSelected] = useState(new Set());
+  const [confirmEmpty, setConfirmEmpty] = useState(false);
   const [query, setQuery] = useState('');
   const [provider, setProvider] = useState('');
   const [page, setPage] = useState(1);
@@ -110,6 +111,7 @@ export function DistributionPage() {
   }
   async function save() {
     if (locked || !dirty) return;
+    setConfirmEmpty(false);
     setBusy(true);
     setActionError('');
     try {
@@ -170,7 +172,8 @@ export function DistributionPage() {
         <p className="distribution-combo-note">组合模型独立发布；成员用于内部路由，需单独发布后才能被下游调用。</p>
       </aside>
     </div>
-    <div className="distribution-savebar"><div><strong>{dirty ? `保存后发布 ${publishedCount} 个模型` : `当前发布 ${initialLoading || !distribution.data ? '—' : savedCount} 个模型`}</strong><span className={dirty ? 'distribution-draft' : 'muted'}>{dirty ? `新增 ${added} · 取消 ${removed}${missingIds.length ? ` · 待核对 ${missingIds.length}` : ''}` : loading ? '正在读取…' : loadError ? '读取失败' : '配置已同步'}</span></div>{managementEnabled && <div className="distribution-save-actions"><button type="button" className="button" disabled={busy || !dirty} onClick={discard}>撤销更改</button><button type="button" className="button primary" disabled={locked || !dirty} onClick={save}><Icon name="check"/>{busy ? '正在保存…' : '保存分发设置'}</button></div>}</div>
+    <div className="distribution-savebar"><div><strong>{dirty ? `保存后发布 ${publishedCount} 个模型` : `当前发布 ${initialLoading || !distribution.data ? '—' : savedCount} 个模型`}</strong><span className={dirty ? 'distribution-draft' : 'muted'}>{dirty ? `新增 ${added} · 取消 ${removed}${missingIds.length ? ` · 待核对 ${missingIds.length}` : ''}` : loading ? '正在读取…' : loadError ? '读取失败' : '配置已同步'}</span></div>{managementEnabled && <div className="distribution-save-actions"><button type="button" className="button" disabled={busy || !dirty} onClick={discard}>撤销更改</button><button type="button" className="button primary" disabled={locked || !dirty} onClick={() => mode === 'allowlist' && !selected.size ? setConfirmEmpty(true) : save()}><Icon name="check"/>{busy ? '正在保存…' : '保存分发设置'}</button></div>}</div>
+    {confirmEmpty && <Modal title="发布空清单" onClose={() => setConfirmEmpty(false)}><p className="delete-message">当前为指定模型模式且清单为空，保存后下游将无法调用任何模型。确定保存？</p><div className="dialog-actions"><button className="button" onClick={() => setConfirmEmpty(false)}>取消</button><button className="button danger" onClick={save}>确认保存</button></div></Modal>}
   </>;
 }
 

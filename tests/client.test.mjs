@@ -1,4 +1,4 @@
-import assert from 'node:assert/strict';
+﻿import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { ApiError, requestJson, normalizeStats, normalizeProviders } from '../src/api/client.js';
 import { isAllowedRequest } from '../src/api/policy.js';
@@ -111,5 +111,45 @@ test('upstream auth errors preserve the dashboard session; dashboard auth errors
   } finally {
     if (previousWindow === undefined) delete globalThis.window;
     else globalThis.window = previousWindow;
+  }
+});
+
+test('successful mutating JSON requests publish an operation-complete event', async () => {
+  const previousWindow = globalThis.window;
+  const previousManagement = globalThis.__MANAGEMENT_ENABLED__;
+  const events = [];
+  globalThis.__MANAGEMENT_ENABLED__ = true;
+  globalThis.window = { dispatchEvent: event => events.push(event) };
+  try {
+    await requestJson('/api/provider-nodes/a', { method: 'PUT', body: '{}' }, async () => new Response('{"ok":true}', { headers: { 'Content-Type': 'application/json' } }));
+    assert.equal(events.length, 1);
+    assert.equal(events[0].type, 'tenrouter:operation-complete');
+    assert.equal(events[0].detail.method, 'PUT');
+    await requestJson('/api/providers/a', { method: 'DELETE' }, async () => new Response('{"ok":true}', { headers: { 'Content-Type': 'application/json' } }));
+    assert.equal(events[1].detail.label, '已删除');
+    await requestJson('/api/translator/translate', { method: 'POST', body: '{}' }, async () => new Response('{"ok":true}', { headers: { 'Content-Type': 'application/json' } }));
+    assert.equal(events.length, 2);
+  } finally {
+    if (previousWindow === undefined) delete globalThis.window;
+    else globalThis.window = previousWindow;
+    if (previousManagement === undefined) delete globalThis.__MANAGEMENT_ENABLED__;
+    else globalThis.__MANAGEMENT_ENABLED__ = previousManagement;
+  }
+});
+
+test('failed mutating JSON requests do not publish success events', async () => {
+  const previousWindow = globalThis.window;
+  const previousManagement = globalThis.__MANAGEMENT_ENABLED__;
+  const events = [];
+  globalThis.__MANAGEMENT_ENABLED__ = true;
+  globalThis.window = { dispatchEvent: event => events.push(event) };
+  try {
+    await assert.rejects(requestJson('/api/provider-nodes/a', { method: 'DELETE' }, async () => new Response('{"error":"failed"}', { status: 500, headers: { 'Content-Type': 'application/json' } })), ApiError);
+    assert.equal(events.length, 0);
+  } finally {
+    if (previousWindow === undefined) delete globalThis.window;
+    else globalThis.window = previousWindow;
+    if (previousManagement === undefined) delete globalThis.__MANAGEMENT_ENABLED__;
+    else globalThis.__MANAGEMENT_ENABLED__ = previousManagement;
   }
 });

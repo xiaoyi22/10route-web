@@ -54,7 +54,7 @@ try {
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
   }
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto(`${base}/dashboard/overview`);
+  await page.goto(`${base}/dashboard/usage`);
   await page.locator('.usage-total-row').waitFor();
   const cells = await page.locator('.usage-total-row td').allTextContents();
   assert.deepEqual(cells.slice(2, 6), ['3,922,080', '1,824,240', '5,746,320', '2,141,040']);
@@ -70,9 +70,9 @@ try {
   await page.screenshot({ path: 'screenshots/mobile-token-table.png', fullPage: true });
   await page.setViewportSize({ width: 1440, height: 1000 });
   const byModel = Object.fromEntries(Array.from({ length: 45 }, (_, index) => [`model-${index}`, { rawModel: `model-${index}`, provider: 'codex', requests: index + 1, promptTokens: 100, completionTokens: 20, cachedTokens: index % 2 ? 0 : 25 }]));
-  await page.route('**/api/usage/stats?**', route => route.fulfill({ json: { totalRequests: 1035, totalPromptTokens: 4500, totalCompletionTokens: 900, totalCachedTokens: 575, totalCost: 0, byModel, recentRequests: [] } }));
-  await page.goto(`${base}/dashboard/overview`);
-  await page.waitForFunction(() => document.querySelectorAll('.token-usage-section tbody tr').length === 21);
+ await page.route('**/api/usage/stats?**', route => route.fulfill({ json: { totalRequests: 1035, totalPromptTokens: 4500, totalCompletionTokens: 900, totalCachedTokens: 575, totalCost: 0, byModel, recentRequests: [] } }));
+  await page.goto(`${base}/dashboard/usage`);
+ await page.waitForFunction(() => document.querySelectorAll('.token-usage-section tbody tr').length === 21);
   await page.getByRole('button', { name: '下一页用量模型' }).click();
   await page.getByRole('button', { name: '下一页用量模型' }).click();
   assert.equal(await page.locator('.token-usage-section tbody tr').count(), 6);

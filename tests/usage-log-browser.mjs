@@ -29,6 +29,9 @@ try {
   await page.getByTestId('cache-rate').filter({ hasText: '20.0%' }).waitFor();
   await page.goto(`${base}/dashboard/logs`);
   await page.waitForFunction(() => document.querySelectorAll('tbody tr').length === 20);
+  const tokenInfoIcon = page.locator('.log-token-trigger .log-token-info').first();
+  await tokenInfoIcon.waitFor();
+  assert(await tokenInfoIcon.isVisible(), '请求日志缺少 Token 详情图标');
   for (const column of ['模型', '推理强度', '端点', '供应商', '状态', '类型', '计费模式', 'Token', '延迟', '时间']) {
     assert.equal(await page.getByRole('columnheader', { name: column, exact: true }).count(), 1, `缺少日志列 ${column}`);
   }

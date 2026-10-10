@@ -165,8 +165,9 @@ try {
   console.log('PASS fixture quota cards (simulated data): family windows, resource segments/totals/history, fixed height, 32-row dialog, unknown/unlimited, Escape/focus, four widths/light-dark, wallet/refresh/search');
   for (const [path, title] of [['endpoint', '端点与接入'], ['models', '模型'], ['logs', '请求日志'], ['monitor', '模型检测'], ['combos', '组合模型'], ['overview', '概览'], ['usage', '用量统计'], ['balances', '余额与配额']]) {
     await evaluate(`document.querySelector('.nav-item[href="/dashboard/${path}"]').click()`);
-    await until(`document.querySelector('main h1')?.textContent===${JSON.stringify(title)}`);
-    await until("[...document.querySelectorAll('.heading-actions button')].some(item=>!item.disabled)");
+   await until(`document.querySelector('main h1')?.textContent===${JSON.stringify(title)}`);
+   await until("[...document.querySelectorAll('.heading-actions button')].some(item=>!item.disabled)");
+    if (path === 'overview') await evaluate("[...document.querySelectorAll('.overview-trend-switch button')].find(item=>item.textContent.trim()==='Token 趋势').click()");
     if (path === 'overview' || path === 'usage') await until("document.querySelectorAll('.token-cache-chart .recharts-area-curve').length===4");
     if (path === 'monitor') await until("document.querySelector('.monitor-runtime')");
     if (path === 'balances') await until("document.querySelectorAll('.quota-card').length===11");

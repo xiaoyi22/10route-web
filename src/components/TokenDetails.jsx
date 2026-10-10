@@ -74,12 +74,13 @@ export default function TokenDetails({ requestId, tokens }) {
   }, [open]);
 
   return <>
-    <button ref={triggerRef} type="button" className="log-token-trigger" aria-label={`查看 Token 明细 ${requestId}`} aria-describedby={open ? tooltipId : undefined} onMouseEnter={hover} onMouseMove={show} onMouseLeave={leave} onFocus={show} onBlur={() => setOpen(false)} onClick={show}>
+    <button ref={triggerRef} type="button" className="log-token-trigger" title="查看 Token 明细" aria-label={`查看 Token 明细 ${requestId}`} aria-describedby={open ? tooltipId : undefined} onMouseEnter={hover} onMouseMove={show} onMouseLeave={leave} onFocus={show} onBlur={() => setOpen(false)} onClick={show}>
       <span className="log-token-lines">
         <span><Icon name="input"/><b className="value-input">{value('input')}</b></span>
         <span><Icon name="output"/><b className="value-output">{value('output')}</b></span>
       </span>
       <span className="log-token-cache"><Icon name="cache"/>{value('cached')}</span>
+      <span className="log-token-info" aria-hidden="true"><Icon name="info"/></span>
     </button>
     {open && createPortal(<div ref={tooltipRef} id={tooltipId} role="tooltip" className="token-details-tooltip" style={{ ...position, visibility: position ? 'visible' : 'hidden' }} onMouseEnter={hover} onMouseLeave={leave}>
       <strong>Token 明细</strong>

@@ -45,11 +45,12 @@ export function ProxyPoolsPage() {
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [results, setResults] = useState({});
+  const [disabling, setDisabling] = useState(null);
   const pools = resource.data?.proxyPools || [];
   const visible = pools.filter(pool => `${pool.name} ${safeProxyUrl(pool.proxyUrl)}`.toLowerCase().includes(query.toLowerCase()));
   function saved(text) { setMessage(text); setError(''); resource.refresh(); }
   async function toggle(pool) {
-    setBusy(pool.id); setError('');
+    setDisabling(null); setBusy(pool.id); setError('');
     try { await requestJson(`/api/proxy-pools/${encodeURIComponent(pool.id)}`, { method: 'PUT', body: JSON.stringify({ isActive: !pool.isActive }) }); saved(pool.isActive ? '代理池已停用' : '代理池已启用'); }
     catch (failure) { setError(failure.message); }
     finally { setBusy(''); }
@@ -75,8 +76,9 @@ export function ProxyPoolsPage() {
       <p className="admin-pool-address mono">{safeProxyUrl(pool.proxyUrl)}</p>
       <dl className="admin-facts"><div><dt>绑定账号</dt><dd>{pool.boundConnectionCount ?? '—'}</dd></div><div><dt>失败处理</dt><dd>{pool.strictProxy ? '阻止直连' : '允许回退'}</dd></div><div><dt>最近检测</dt><dd>{formatDate(pool.lastTestedAt)}</dd></div><div><dt>绕过规则</dt><dd>{pool.noProxy || '未配置'}</dd></div></dl>
       {pool.lastError && <p className="error-message">{pool.lastError}</p>}{results[pool.id]?.ok && <p className="admin-success">检测通过 · {results[pool.id].elapsedMs} ms</p>}
-      {managementEnabled && <div className="admin-card-actions"><button className="button" disabled={!!busy} onClick={() => { setError(''); setTesting(pool); }}><Icon name="activity"/>检测</button><button className="button" disabled={!!busy} onClick={() => setEditor(pool)}><Icon name="edit"/>编辑</button><IconButton icon={pool.isActive ? 'hide' : 'eye'} label={`${pool.isActive ? '停用' : '启用'}代理池 ${pool.name}`} disabled={!!busy} onClick={() => toggle(pool)}/><IconButton icon="trash" label={`删除代理池 ${pool.name}`} disabled={!!busy || pool.boundConnectionCount > 0} onClick={() => setRemoving(pool)}/></div>}
+      {managementEnabled && <div className="admin-card-actions"><button className="button" disabled={!!busy} onClick={() => { setError(''); setTesting(pool); }}><Icon name="activity"/>检测</button><button className="button" disabled={!!busy} onClick={() => setEditor(pool)}><Icon name="edit"/>编辑</button><IconButton icon={pool.isActive ? 'hide' : 'eye'} label={`${pool.isActive ? '停用' : '启用'}代理池 ${pool.name}`} disabled={!!busy} onClick={() => pool.isActive && pool.boundConnectionCount > 0 ? setDisabling(pool) : toggle(pool)}/><IconButton icon="trash" label={`删除代理池 ${pool.name}`} disabled={!!busy || pool.boundConnectionCount > 0} onClick={() => setRemoving(pool)}/></div>}
     </article>)}</div>
+    {disabling && <Modal title="停用代理池" onClose={() => setDisabling(null)}><p className="delete-message">确定停用 <strong>{disabling.name}</strong>？已绑定的 {disabling.boundConnectionCount} 个账号将不再使用此代理池{disabling.strictProxy ? '，且因阻止直连会立即请求失败' : ''}。</p><div className="dialog-actions"><button className="button" onClick={() => setDisabling(null)}>取消</button><button className="button danger" onClick={() => toggle(disabling)}>确认停用</button></div></Modal>}
     {!visible.length && <p className="empty-state">{resource.loading ? '正在读取代理池…' : resource.error ? '代理池读取失败' : '暂无匹配的代理池'}</p>}
     {editor && <PoolEditor pool={editor.id ? editor : null} onClose={() => setEditor(null)} onSaved={saved}/>}
     {removing && <ConfirmDelete title="删除代理池" name={removing.name} url={`/api/proxy-pools/${encodeURIComponent(removing.id)}`} onClose={() => setRemoving(null)} onDeleted={() => saved('代理池已删除')}/>}

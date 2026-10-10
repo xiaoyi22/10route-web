@@ -7,6 +7,7 @@ import Icon from '../components/Icon.jsx';
 import ProviderIcon from '../components/ProviderIcon.jsx';
 import RequestEndpoint from '../components/RequestEndpoint.jsx';
 import TokenDetails from '../components/TokenDetails.jsx';
+import RequestLatency, { RequestTime } from '../components/RequestLatency.jsx';
 import { modelCatalog, requestTokens, requestSpeed, responseModeLabel, requestUsageSource, requestErrorLabel } from '../api/data.js';
 import ModelEditor from '../components/ModelEditor.jsx';
 import UpstreamModels from '../components/UpstreamModels.jsx';
@@ -152,6 +153,12 @@ export function ModelsPage({ providerId = '' }) {
 }
 
 const UNRECORDED = '-';
+const MODEL_LEVEL_SUFFIXES = ['extra-low', 'minimal', 'xhigh', 'low', 'medium', 'high'];
+
+function modelNameEffort(model) {
+  const tail = String(model || '').split('/').pop().toLowerCase();
+  return MODEL_LEVEL_SUFFIXES.find(suffix => tail.endsWith('-' + suffix)) || '';
+}
 
 function requestContainers(entry) {
   return [
@@ -185,8 +192,8 @@ function requestField(entry, names) {
 }
 
 function requestEffort(entry) {
-  const value = requestField(entry, ['reasoningEffort', 'reasoning_effort', 'reasoning.effort', 'reasoning.level', 'thinkingLevel', 'thinking_level', 'reasoningLevel', 'reasoning_level', 'effort', 'level']);
-  return value || UNRECORDED;
+  const value = requestField(entry, ['reasoningEffort', 'reasoning_effort', 'reasoning.effort', 'reasoning.level', 'thinkingLevel', 'thinking_level', 'reasoningLevel', 'reasoning_level', 'effort']);
+  return value || modelNameEffort(entry.model) || UNRECORDED;
 }
 
 function requestEndpoint(entry) {
@@ -334,7 +341,7 @@ export function LogsPage() {
     {providers.error && <ErrorBlock message={`连接名称读取失败：${providers.error}`} onRetry={providers.refresh}/>}
     {resource.error && <ErrorBlock message={`${resource.error}${resource.data ? ' · 保留上次记录' : ''}`} onRetry={resource.refresh}/>}
     <div className="period-tabs log-status-tabs" role="group" aria-label="按状态分开显示">{[['', '全部'], ['success', '成功'], ['error', '失败']].map(([value, name]) => { const selected = (applied.status || '') === value; return <button key={value || 'all'} type="button" className={selected ? 'selected' : ''} aria-pressed={selected} onClick={() => { setFilters(previous => ({ ...previous, status: value })); setApplied(previous => ({ ...previous, status: value })); setPage(1); resource.refresh(); }}>{name}</button>; })}</div>
-    <div className="table-shell"><table className="logs-table"><caption className="sr-only">请求元数据，筛选与分页由网关处理</caption><thead><tr><th>模型</th><th>推理强度</th><th>端点</th><th>供应商</th><th>状态</th><th>类型</th><th>计费模式</th><th>Token</th>{showPrices && <th>费用 · USD</th>}<th>延迟</th><th>时间</th><th>详情</th></tr></thead>
+    <div className="table-shell"><table className="logs-table"><caption className="sr-only">请求元数据，筛选与分页由网关处理</caption><colgroup><col className="log-col-model"/><col className="log-col-effort"/><col className="log-col-endpoint"/><col className="log-col-provider"/><col className="log-col-status"/><col className="log-col-type"/><col className="log-col-billing"/><col className="log-col-tokens"/>{showPrices && <col className="log-col-cost"/>}<col className="log-col-latency"/><col className="log-col-time"/><col className="log-col-details"/></colgroup><thead><tr><th>模型</th><th>推理强度</th><th>端点</th><th>供应商</th><th>状态</th><th>类型</th><th>计费模式</th><th>Token</th>{showPrices && <th>费用 · USD</th>}<th>延迟</th><th>时间</th><th>详情</th></tr></thead>
       <tbody>{resource.loading && !resource.data ? <tr><td colSpan={showPrices ? 12 : 11} className="table-empty">正在加载日志…</td></tr> : details.length ? details.map((entry, index) => {
         const tokens = requestTokens(entry.tokens);
         const speed = requestSpeed(entry);
@@ -349,9 +356,9 @@ export function LogsPage() {
           <td><span className="status unknown"><span className="dot"/>{fields.typeLabel}</span></td>
           <td className="mono muted">{fields.billingMode}</td>
           <td className="mono"><TokenDetails requestId={entry.id} tokens={tokens}/></td>
-          {showPrices && <td className="mono" title={logCost(entry, pricing.data) ? '当前后端价目表估算' : '后端未提供匹配价格或完整 Token'}>{formatLogCost(logCost(entry, pricing.data))}</td>}
-          <td className="mono muted" title={speed?.basis || '无有效输出 Token 或实测耗时'}>{fields.latencyLabel}</td>
-          <td className="mono muted">{formatDate(entry.timestamp)}</td>
+          {showPrices && <td className="mono log-cost" title={logCost(entry, pricing.data) ? '当前后端价目表估算' : '后端未提供匹配价格或完整 Token'}>{formatLogCost(logCost(entry, pricing.data))}</td>}
+          <td><RequestLatency entry={entry} speed={speed}/></td>
+          <td className="mono muted"><RequestTime timestamp={entry.timestamp}/></td>
           <td><IconButton icon="eye" label={`查看请求 ${entry.model}`} onClick={() => setSelected(entry)}/></td>
         </tr>;
       }) : <tr><td colSpan={showPrices ? 12 : 11} className="table-empty">{resource.error ? '日志读取失败' : '没有匹配的请求记录'}</td></tr>}</tbody></table></div>
