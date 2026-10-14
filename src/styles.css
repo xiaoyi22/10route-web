@@ -646,6 +646,7 @@ input::placeholder, textarea::placeholder { color: var(--dim); opacity: 1; }
 .key-value { display: flex; align-items: center; gap: 5px; }
 .key-value code { max-width: 220px; overflow: hidden; text-overflow: ellipsis; }
 .model-name { max-width: 330px; white-space: normal; overflow-wrap: anywhere; }
+.model-test-status { margin-top: 6px; }
 .model-name strong { display: block; font-size: 12px; font-weight: 500; }
 .model-name code { display: block; color: var(--dim); font-size: 10px; margin-top: 3px; }
 .capabilities { display: flex; gap: 5px; }

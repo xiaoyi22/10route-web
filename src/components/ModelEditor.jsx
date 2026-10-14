@@ -1,18 +1,23 @@
 import { useState } from 'react';
 import { ErrorBlock, Modal } from './Controls.jsx';
 import { requestJson } from '../api/client.js';
+import { modelCatalog } from '../api/data.js';
 
 export default function ModelEditor({ model, suppliers, onClose, onSaved }) {
   const [form, setForm] = useState({ provider: model?.provider || suppliers[0]?.id || '', id: model?.upstreamId || '', name: model?.name || '', contextWindow: model?.caps.contextWindow || '', maxOutput: model?.caps.maxOutput || '', vision: model?.caps.vision || false, reasoning: model?.caps.reasoning || false, enabled: model?.enabled !== false });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const set = (key, value) => setForm(previous => ({ ...previous, [key]: value }));
+  const supplier = suppliers.find(item => item.id === form.provider);
+  const canTest = (model?.type || 'llm') === 'llm' && form.enabled && (model ? model.connected : supplier?.connected);
   async function save(event) {
     event.preventDefault(); setBusy(true); setError('');
+    const testAfterSave = event.nativeEvent.submitter?.value === 'test';
     try {
       if (!model || model.custom) await requestJson('/api/models/custom', { method: 'POST', body: JSON.stringify({ providerAlias: form.provider, id: form.id.trim(), type: model?.type || 'llm', name: form.name.trim() || form.id.trim(), contextWindow: Number(form.contextWindow) || null, maxOutput: Number(form.maxOutput) || null, vision: form.vision, reasoning: form.reasoning, enabled: form.enabled }) });
       if (model) await requestJson('/api/models/caps', { method: 'PUT', body: JSON.stringify({ provider: form.provider, modelId: form.id, contextWindow: Number(form.contextWindow) || null, maxOutput: Number(form.maxOutput) || null }) });
-      onSaved(); onClose();
+      const savedModel = modelCatalog([], [{ ...form, id: form.id.trim(), providerAlias: form.provider, type: model?.type || 'llm' }], [], suppliers)[0];
+      onClose(); onSaved(testAfterSave ? { ...savedModel, id: model?.id || savedModel.id } : null);
     } catch (failure) { setError(failure.message); }
     finally { setBusy(false); }
   }
@@ -23,6 +28,7 @@ export default function ModelEditor({ model, suppliers, onClose, onSaved }) {
     <div className="form-columns"><label>上下文 Token<input type="number" min="1" step="1" value={form.contextWindow} onChange={event => set('contextWindow', event.target.value)} placeholder="使用默认值"/></label><label>最大输出 Token<input type="number" min="1" step="1" value={form.maxOutput} onChange={event => set('maxOutput', event.target.value)} placeholder="使用默认值"/></label></div>
     {(!model || model.custom) && <div className="row-actions"><label className="checkbox-filter"><input type="checkbox" checked={form.vision} onChange={event => set('vision', event.target.checked)}/>视觉</label><label className="checkbox-filter"><input type="checkbox" checked={form.reasoning} onChange={event => set('reasoning', event.target.checked)}/>推理</label></div>}
     <p className="inline-note">已启用模型会出现在下游 /v1/models。上下文设置是网关声明与限制，不能扩大上游模型本身的能力；如需自定义下游调用名称，可创建同名组合模型。</p>
-    {error && <ErrorBlock message={error}/>}<div className="dialog-actions"><button className="button" type="button" disabled={busy} onClick={onClose}>取消</button><button className="button primary" type="submit" disabled={busy || !form.provider}>{busy ? '正在保存…' : '保存模型'}</button></div>
+    <p className="inline-note">保存并测试会通过网关发送一次真实文本调用。{!canTest && '测试需要启用模型及供应商账号；当前仅支持文本模型。'}</p>
+    {error && <ErrorBlock message={error}/>}<div className="dialog-actions"><button className="button" type="button" disabled={busy} onClick={onClose}>取消</button><button className="button" type="submit" disabled={busy || !form.provider}>{busy ? '正在保存…' : '保存模型'}</button><button className="button primary" type="submit" value="test" disabled={busy || !canTest}>保存并测试</button></div>
   </form></Modal>;
 }

@@ -70,7 +70,7 @@ try {
   await page.getByRole('button', { name: '开始检测', exact: true }).click();
   await page.getByRole('dialog').getByText('本页单次测试', { exact: true }).waitFor();
   await page.getByRole('button', { name: '关闭窗口' }).click();
-  await metrics(['1', '24', '6', '80.0%']);
+  await metrics(['1', '23', '7', '76.7%']);
   await page.locator('.monitor-table tbody').getByText('限流', { exact: true }).waitFor();
   await page.reload();
   await page.getByRole('button', { name: '智商检测', exact: true }).click();
@@ -79,7 +79,7 @@ try {
   report.checks.push('manual snapshot does not invent persisted checks; reload is stable');
   await page.getByLabel('检测供应商', { exact: true }).selectOption('claude');
   await metrics(['1', '1', '1', '50.0%']);
-  await page.getByText('当前筛选范围最近3次后台检测，其中1次未评分', { exact: false }).waitFor();
+  await page.getByText('当前筛选范围最近3次检测，其中1次未评分', { exact: false }).waitFor();
   await page.getByLabel('搜索检测模型', { exact: true }).fill('missing');
   await metrics(['0', '0', '0', '—']);
   await page.getByLabel('搜索检测模型', { exact: true }).fill('');

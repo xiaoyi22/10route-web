@@ -47,8 +47,8 @@ try {
   await start.waitFor();
   const testRequest = page.waitForRequest(request => request.url().endsWith('/api/models/test') && request.method() === 'POST');
   await start.click();
-  assert.deepEqual((await testRequest).postDataJSON(), { model: 'codex/gpt', kind: 'llm', probe: 'iq' });
-  await page.getByRole('dialog').getByText('本页单次测试', { exact: true }).waitFor();
+  assert.deepEqual((await testRequest).postDataJSON(), { model: 'codex/gpt', kind: 'llm', probe: 'iq', monitorTarget: { provider: 'codex', model: 'gpt' } });
+  await page.getByRole('dialog').getByText('手动检测记录', { exact: true }).waitFor();
   assert((await page.getByRole('dialog').innerText()).includes('100%'));
   await page.getByRole('button', { name: '关闭窗口' }).click();
   await page.route('**/api/models/test', route => route.fulfill({ json: { ok: false, status: 429, error: 'HTTP 429', latencyMs: 72 } }));
@@ -77,7 +77,7 @@ try {
   await page.getByRole('dialog').getByText('未评分', { exact: true }).first().waitFor();
   await page.getByRole('button', { name: '关闭窗口' }).click();
   await page.getByLabel('检测供应商', { exact: true }).selectOption('codex');
-  assert.deepEqual(await page.locator('.monitor-metrics .metric-value').allTextContents(), ['1', '4', '2', '66.7%']);
+  assert.deepEqual(await page.locator('.monitor-metrics .metric-value').allTextContents(), ['1', '5', '2', '71.4%']);
   await page.locator('.monitor-table tbody').getByText('未评分', { exact: true }).waitFor();
   await page.getByLabel('检测供应商', { exact: true }).selectOption('');
   await page.unroute('**/api/models/test');
@@ -150,14 +150,14 @@ try {
   await manualThinking.selectOption('low');
   const thinkingRequest = page.waitForRequest(request => request.url().endsWith('/api/models/test') && request.method() === 'POST');
   await page.getByRole('button', { name: '开始检测', exact: true }).click();
-  assert.deepEqual((await thinkingRequest).postDataJSON(), { model: 'codex/gpt(low)', kind: 'llm', probe: 'iq' });
+  assert.deepEqual((await thinkingRequest).postDataJSON(), { model: 'codex/gpt', kind: 'llm', probe: 'iq', monitorTarget: { provider: 'codex', model: 'gpt' }, thinkingLevel: 'low' });
   await page.getByRole('dialog').getByText('低（low）', { exact: true }).waitFor();
   await page.getByRole('button', { name: '关闭窗口' }).click();
   await page.getByRole('button', { name: '单次智商检测 gpt', exact: true }).click();
   await manualThinking.selectOption('');
   const defaultThinkingRequest = page.waitForRequest(request => request.url().endsWith('/api/models/test') && request.method() === 'POST');
   await page.getByRole('button', { name: '开始检测', exact: true }).click();
-  assert.deepEqual((await defaultThinkingRequest).postDataJSON(), { model: 'codex/gpt', kind: 'llm', probe: 'iq' });
+  assert.deepEqual((await defaultThinkingRequest).postDataJSON(), { model: 'codex/gpt', kind: 'llm', probe: 'iq', monitorTarget: { provider: 'codex', model: 'gpt' } });
   await page.getByRole('dialog').getByText('默认（沿用网关）', { exact: true }).waitFor();
   await page.getByRole('button', { name: '关闭窗口' }).click();
   assert.deepEqual((await (await page.request.get(base + '/api/iq-monitor')).json()).config.providers.find(provider => provider.id === 'codex').modelThinking, { gpt: 'high' });

@@ -151,11 +151,18 @@ export async function startFixtureServer() {
         monitorConfig = { ...structuredClone(body), revision: randomUUID() };
         return send(200, { config: monitorConfig });
       }
-      return send(200, { config: monitorConfig, catalog: monitorCatalog, capabilities: { modelThinking: true }, state: { revision: monitorConfig.revision, completedAt: monitorHistory[0].at, nextAt: Date.now() + 3600000, history: monitorHistory, backoff: {} }, running: false });
+      return send(200, { config: monitorConfig, catalog: monitorCatalog, capabilities: { modelThinking: true, manualTests: true }, state: { revision: monitorConfig.revision, completedAt: monitorHistory[0].at, nextAt: Date.now() + 3600000, history: monitorHistory, backoff: {} }, running: false });
     }
     if (url.pathname === '/api/models/test') {
       if (!body.model) return send(400, { error: 'Model required' });
-      return send(200, { ok: true, status: 200, latencyMs: 1250, ...(body.probe === 'iq' && { iq: { expected: '23', modelAnswered: '23', correct: true }, content: 'IQ-ANSWER: 23' }) });
+      const result = { ok: true, status: 200, latencyMs: 1250, ...(body.probe === 'iq' && { iq: { expected: '23', modelAnswered: '23', correct: true }, content: 'IQ-ANSWER: 23' }) };
+      if (body.monitorTarget) {
+        const check = body.probe === 'iq' ? 'iq' : 'availability';
+        const row = { ...body.monitorTarget, check, manual: true, persisted: true, at: Date.now(), status: check === 'iq' ? 'correct' : 'available', score: check === 'iq' ? 100 : null, ...(check === 'iq' && { thinkingLevel: body.thinkingLevel || null }), answers: [{ ...result, httpStatus: 200, status: check === 'iq' ? 'correct' : 'available' }] };
+        monitorHistory.unshift(row);
+        result.monitorRow = row;
+      }
+      return send(200, result);
     }
     if (url.pathname === '/api/provider-nodes') {
       if (method === 'GET') return send(200, { nodes });

@@ -64,7 +64,7 @@ try {
   });
   await page.getByRole('button', { name: '开始检测', exact: true }).click();
   await page.getByRole('dialog').getByText('100%', { exact: true }).waitFor();
-  assert.deepEqual(modelRequest, { model: 'codex/gpt(low)', kind: 'llm', probe: 'iq' });
+  assert.deepEqual(modelRequest, { model: 'codex/gpt', kind: 'llm', probe: 'iq', monitorTarget: { provider: 'codex', model: 'gpt' }, thinkingLevel: 'low' });
   await page.getByRole('button', { name: '关闭窗口' }).click();
   assert.deepEqual((await (await page.request.get(base + '/api/iq-monitor')).json()).config, automatic);
   knownLevels = [];

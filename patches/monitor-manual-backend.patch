@@ -1,0 +1,1177 @@
+diff --git a/custom-server.js b/custom-server.js
+index cf3517f8..572136a7 100644
+--- a/custom-server.js
++++ b/custom-server.js
+@@ -12,6 +12,29 @@ const origCreate = http.createServer.bind(http);
+ // so the request-detail header sanitizer redacts it too.
+ const PEER_TOKEN = crypto.randomBytes(24).toString("hex");
+ process.env.TENROUTER_PEER_TOKEN = PEER_TOKEN;
++process.env.TENROUTER_IQ_TOKEN = crypto.randomBytes(32).toString("hex");
++let iqMonitorStarted = false;
++
++function startIqMonitor(server) {
++  if (iqMonitorStarted) return;
++  const address = server.address();
++  if (!address || typeof address === "string") return;
++  iqMonitorStarted = true;
++  let busy = false;
++  const tick = async () => {
++    if (busy) return;
++    busy = true;
++    try {
++      const response = await fetch(`http://127.0.0.1:${address.port}/api/iq-monitor/tick`, { method: "POST", headers: { "x-10r-iq-token": process.env.TENROUTER_IQ_TOKEN } });
++      await response.text();
++      if (!response.ok) console.error(`[IQ monitor] scheduler HTTP ${response.status}`);
++    } catch (error) { console.error("[IQ monitor] scheduler", error.message); }
++    finally { busy = false; }
++  };
++  const timer = setInterval(tick, 30000);
++  timer.unref();
++  server.once("close", () => clearInterval(timer));
++}
+ 
+ // Long-term console archive: tee server console output into a per-day file under
+ // the data dir (logs/app-YYYY-MM-DD.log, append-only, no cap — the durable record
+@@ -157,6 +180,7 @@ http.createServer = (...args) => {
+   server.once("listening", () => {
+     startBackgroundTokenRefreshFromCustomServer();
+     startOutboundProxyFromCustomServer();
++    startIqMonitor(server);
+   });
+   const origEmit = server.emit;
+   // JBR 25 sends h2c upgrades that the HTTP/1.1 server would otherwise close.
+diff --git a/src/app/api/models/test/ping.js b/src/app/api/models/test/ping.js
+index a2141816..910b27ce 100644
+--- a/src/app/api/models/test/ping.js
++++ b/src/app/api/models/test/ping.js
+@@ -5,6 +5,73 @@ import { CLI_TOKEN_HEADER } from "@/lib/auth/authHeaders";
+ 
+ const CLI_TOKEN_SALT = "9r-cli-auth";
+ 
++// Pull the model's own answer out of a free-form reply.
++//   1. the `IQ-ANSWER: <number>` marker. The shipped question asks for that
++//      line, and it is the only reading that is right for BOTH common reply
++//      shapes — "答案是 23…验证 22 不够" (answer first) and "7+6+4=17…所以
++//      23" (reasoning first). No positional rule handles both;
++//   2. failing the marker, the LAST number in the text. Best effort for an
++//      operator who edited the question without the marker line: models
++//      usually restate the conclusion at the end, so the tail beats the head
++//      ("7+6+4=17，所以最少 23 颗" would read 17 if scanned forward).
++// Returns "" when the reply carries no number at all.
++function extractIqAnswer(content) {
++  const text = String(content || "");
++  if (!text) return "";
++  const marked = text.match(/IQ-ANSWER\s*[:：]\s*(-?\d+(?:\.\d+)?)/i);
++  if (marked) return marked[1];
++  const all = text.match(/-?\d+(?:\.\d+)?/g);
++  return all ? all[all.length - 1] : "";
++}
++
++// Grade a model's reply against the configured answer. Numerals only: the
++// puzzle expects a count, so "二十三" is not accepted.
++function gradeIq(content, expected) {
++  const got = extractIqAnswer(content);
++  if (!got) return false;
++  const want = Number(String(expected).trim());
++  const has = Number(got);
++  if (!Number.isFinite(want) || !Number.isFinite(has)) return false;
++  return Math.abs(has - want) < 1e-9;
++}
++
++// Judge one reply end to end and attach the grading fields the UI renders.
++// A wrong answer is a SUCCESSFUL probe: `ok`/`error` describe the round-trip,
++// `iq.correct` describes the answer — conflating them would paint a red
++// connection failure on a healthy account that simply got the puzzle wrong.
++// `content` is kept so the client can show what the model actually said.
++export function judgeIqReply(content, expected, base = {}) {
++  const modelAnswered = extractIqAnswer(content);
++  const correct = gradeIq(content, expected);
++  return {
++    ...base,
++    iq: { expected: String(expected), modelAnswered, correct },
++    ok: true,
++    error: null,
++    content: String(content || "").slice(0, 2000),
++  };
++}
++
++// Read the content string out of whichever shape the upstream answered in:
++// chat completions (choices[0].message), Responses-style (output_text) or a
++// Completions-style text field.
++export function extractCompletionText(parsed) {
++  const direct = parsed?.choices?.[0]?.message?.content;
++  if (typeof direct === "string" && direct.trim()) return direct;
++  if (typeof parsed?.output_text === "string" && parsed.output_text.trim()) return parsed.output_text;
++  if (Array.isArray(parsed?.output)) {
++    const messages = parsed.output.filter(item => item?.type === "message" && item.role === "assistant");
++    for (const message of messages.reverse()) {
++      const text = (Array.isArray(message.content) ? message.content : [])
++        .filter(part => part?.type === "output_text" && typeof part.text === "string")
++        .map(part => part.text).join("");
++      if (text.trim()) return text;
++    }
++  }
++  if (typeof parsed?.choices?.[0]?.text === "string") return parsed.choices[0].text;
++  return "";
++}
++
+ function createSilentWavFile() {
+   const sampleRate = 16000;
+   const channels = 1;
+@@ -239,3 +306,71 @@ export async function pingModelByKind(model, kind, baseUrl = `http://127.0.0.1:$
+ 
+   return { ok: true, latencyMs, error: null, status: res.status };
+ }
++
++/**
++ * IQ probe: ask the configured puzzle and grade the reply against the
++ * configured answer. Kept separate from pingModelByKind on purpose — that
++ * function's job is "is this model reachable", and every reasoning-model
++ * soft-pass in it (finish_reason:"length" with empty content, issue #3010)
++ * would happily pass a model that never answered the question at all.
++ *
++ * `question`/`answer` come from the caller (the route reads them from
++ * settings) so a probe stays graded against the answer that was live when the
++ * request started. Billing is the operator's: each call is one full model
++ * round-trip, which is why nothing batches or schedules it.
++ */
++export async function pingIqModel(model, question, answer, baseUrl = `http://127.0.0.1:${process.env.PORT || UPDATER_CONFIG.appPort}`) {
++  const headers = await getInternalHeaders();
++  const start = Date.now();
++
++  const res = await fetch(`${baseUrl}/api/v1/chat/completions`, {
++    method: "POST",
++    headers,
++    body: JSON.stringify({
++      model,
++      // Same reasoning-model budget as the liveness probe: chain-of-thought
++      // models spend this before stating the answer.
++      max_tokens: 1024,
++      stream: false,
++      messages: [{ role: "user", content: String(question || "") }],
++    }),
++    signal: AbortSignal.timeout(60000),
++  });
++  const latencyMs = Date.now() - start;
++
++  const rawText = await res.text().catch(() => "");
++  let parsed = null;
++  try { parsed = rawText ? JSON.parse(rawText) : null; } catch {}
++
++  if (!res.ok) {
++    const detail = parsed?.error?.message || parsed?.msg || parsed?.message || parsed?.error || rawText;
++    return { ok: false, latencyMs, error: `HTTP ${res.status}${detail ? `: ${String(detail).slice(0, 240)}` : ""}`, status: res.status };
++  }
++
++  const providerStatus = parsed?.status;
++  const providerMsg = parsed?.msg || parsed?.message;
++  const hasProviderErrorStatus = providerStatus !== undefined
++    && providerStatus !== null
++    && String(providerStatus) !== "200"
++    && String(providerStatus) !== "0";
++  if (hasProviderErrorStatus && providerMsg) {
++    return {
++      ok: false,
++      latencyMs,
++      status: res.status,
++      error: `Provider status ${providerStatus}: ${String(providerMsg).slice(0, 240)}`,
++    };
++  }
++
++  if (parsed?.error) {
++    const providerError = parsed?.error?.message || parsed?.error || "Provider returned an error";
++    return {
++      ok: false,
++      latencyMs,
++      status: res.status,
++      error: String(providerError).slice(0, 240),
++    };
++  }
++
++  return judgeIqReply(extractCompletionText(parsed), answer, { latencyMs, status: res.status });
++}
+diff --git a/src/app/api/models/test/route.js b/src/app/api/models/test/route.js
+index 0b35c9f3..e8cf108a 100644
+--- a/src/app/api/models/test/route.js
++++ b/src/app/api/models/test/route.js
+@@ -1,11 +1,34 @@
+ import { NextResponse } from "next/server";
+-import { pingModelByKind } from "./ping";
++import { getSettings } from "@/lib/localDb";
++import { pingModelByKind, pingIqModel } from "./ping";
+ 
+ // POST /api/models/test - Ping a single model via internal completions or embeddings
++//
++// `probe: "iq"` swaps the liveness ping for the IQ puzzle configured in
++// settings (question + expected answer), graded server-side. Still one model
++// per request and one upstream round-trip: some providers ban accounts that
++// get probed in bulk or on a schedule, so batching stays the caller's problem.
+ export async function POST(request) {
+   try {
+-    const { model, kind } = await request.json();
++    const { model, kind, probe, monitorTarget, thinkingLevel } = await request.json();
+     if (!model) return NextResponse.json({ error: "Model required" }, { status: 400 });
++
++    if (monitorTarget) {
++      const { getModelInfo } = await import("@/sse/services/model");
++      const { runManualMonitorTest } = await import("@/lib/iqMonitor/service");
++      const info = await getModelInfo(model, { inferFallback: false });
++      if (info?.provider !== monitorTarget.provider || info?.model !== monitorTarget.model) return NextResponse.json({ error: "Monitor target does not match model route" }, { status: 400 });
++      try { return NextResponse.json(await runManualMonitorTest(monitorTarget, probe === "iq" ? "iq" : "availability", thinkingLevel)); }
++      catch (error) { return NextResponse.json({ ok: false, error: error.message }, { status: 400 }); }
++    }
++
++    if (probe === "iq") {
++      const settings = await getSettings();
++      const iq = settings.iqProbe || {};
++      const result = await pingIqModel(model, iq.question, iq.answer);
++      return NextResponse.json(result);
++    }
++
+     const result = await pingModelByKind(model, kind || "llm");
+     return NextResponse.json(result);
+   } catch (err) {
+diff --git a/src/dashboardGuard.js b/src/dashboardGuard.js
+index a935bd67..a1991444 100644
+--- a/src/dashboardGuard.js
++++ b/src/dashboardGuard.js
+@@ -252,6 +252,9 @@ export const __test__ = {
+ 
+ export async function proxy(request) {
+   const { pathname } = request.nextUrl;
++  if (pathname === "/api/iq-monitor/tick" && process.env.TENROUTER_IQ_TOKEN && request.headers.get("x-10r-iq-token") === process.env.TENROUTER_IQ_TOKEN) {
++    return NextResponse.next();
++  }
+ 
+   // "Dashboard: local-only" (Settings → Experimental → Security, off by default).
+   // Refuses non-loopback traffic to the management surface — dashboard HTML,
+diff --git a/src/lib/db/repos/settingsRepo.js b/src/lib/db/repos/settingsRepo.js
+index ad55b990..985836ba 100644
+--- a/src/lib/db/repos/settingsRepo.js
++++ b/src/lib/db/repos/settingsRepo.js
+@@ -105,6 +105,10 @@ const DEFAULT_SETTINGS = {
+   // account of that provider is paused together instead of being walked one by
+   // one (that burst is itself the signal the upstream policy reacts to).
+   channelBlocks: {},
++  iqProbe: {
++    question: "在一个黑色的袋子里放有三种口味的糖果，每种糖果有两种不同的形状(圆形和五角星形，不同的形状靠手感可以分辨)。现已知不同口味的糖和不同形状的数量统计如下表。参赛者需要在活动前决定摸出的糖果数目，那么，最少取出多少个糖果才能保证手中同时拥有不同形状的苹果味和桃子味的糖?(同时手中有圆形苹果味匹配五角星桃子味糖果，或者有圆形桃子味匹配五角星苹果味糖果都满足要求)\n苹果味 桃子味 西瓜味\n圆形 7 9 8\n五角星形 7 6 4\n最后一行只输出：IQ-ANSWER: <你的答案数字>",
++    answer: "23",
++  },
+ };
+ 
+ async function readRaw() {
+@@ -129,6 +133,12 @@ export function mergeWithDefaults(raw) {
+       }
+     }
+   }
++  const asFilled = (value, fallback) => (typeof value === "string" && value.trim() ? value : fallback);
++  const storedProbe = raw?.iqProbe;
++  merged.iqProbe = {
++    question: asFilled(storedProbe?.question, DEFAULT_SETTINGS.iqProbe.question),
++    answer: asFilled(storedProbe?.answer, DEFAULT_SETTINGS.iqProbe.answer),
++  };
+   return merged;
+ }
+ 
+diff --git a/src/lib/iqMonitor/core.js b/src/lib/iqMonitor/core.js
+new file mode 100644
+index 00000000..5ac5e8e8
+--- /dev/null
++++ b/src/lib/iqMonitor/core.js
+@@ -0,0 +1,96 @@
++export function validateConfig(input) {
++  if (!input || typeof input.enabled !== "boolean") throw new Error("Invalid enabled flag");
++  if (!Number.isInteger(input.intervalMinutes) || input.intervalMinutes < 1 || input.intervalMinutes > 10080) throw new Error("Interval must be 1-10080 whole minutes");
++  if (!Array.isArray(input.providers) || input.providers.length > 200) throw new Error("Invalid providers");
++  const providers = input.providers.map(item => {
++    if (!item || typeof item.id !== "string" || !item.id || !["all", "selected"].includes(item.mode)) throw new Error("Invalid provider selection");
++    if (!Array.isArray(item.models) || item.models.some(model => typeof model !== "string" || !model || model.length > 300)) throw new Error("Invalid models");
++    if (item.mode === "selected" && !item.models.length) throw new Error("Select at least one model");
++    if (item.excludedConnectionIds !== undefined && (!Array.isArray(item.excludedConnectionIds) || item.excludedConnectionIds.length > 500 || item.excludedConnectionIds.some(id => typeof id !== "string" || !id || id.length > 300))) throw new Error("Invalid excluded accounts");
++    if (item.checks !== undefined && (!Array.isArray(item.checks) || !item.checks.length || item.checks.some(check => !["iq", "availability"].includes(check)))) throw new Error("Select IQ or availability check");
++    let modelChecks;
++    if (item.modelChecks !== undefined) {
++      if (!item.modelChecks || typeof item.modelChecks !== "object" || Array.isArray(item.modelChecks) || Object.keys(item.modelChecks).length > 2000) throw new Error("Invalid model bindings");
++      modelChecks = Object.fromEntries(Object.entries(item.modelChecks).map(([model, checks]) => {
++        if (!model || model.length > 300 || !Array.isArray(checks) || checks.some(check => !["iq", "availability"].includes(check))) throw new Error("Invalid model checks");
++        return [model, [...new Set(checks)]];
++      }));
++    }
++    let modelThinking;
++    if (item.modelThinking !== undefined) {
++      if (!item.modelThinking || typeof item.modelThinking !== "object" || Array.isArray(item.modelThinking) || Object.keys(item.modelThinking).length > 2000) throw new Error("Invalid model thinking strengths");
++      modelThinking = Object.fromEntries(Object.entries(item.modelThinking).map(([model, level]) => {
++        if (!model || model.length > 300 || typeof level !== "string" || !/^[a-z]{1,20}$/.test(level)) throw new Error("Invalid model thinking strength");
++        return [model, level];
++      }));
++    }
++    return { id: item.id, mode: item.mode, models: [...new Set(item.models)], ...(modelChecks !== undefined && { modelChecks }), ...(modelThinking !== undefined && { modelThinking }), ...(item.excludedConnectionIds !== undefined && { excludedConnectionIds: [...new Set(item.excludedConnectionIds)] }), ...(item.checks !== undefined && { checks: [...new Set(item.checks)] }) };
++  });
++  if (new Set(providers.map(item => item.id)).size !== providers.length) throw new Error("Duplicate provider");
++  if (input.enabled && !providers.length) throw new Error("Select at least one provider");
++  if (!Array.isArray(input.questions) || !input.questions.length || input.questions.length > 20) throw new Error("Configure 1?20 questions");
++  const questions = input.questions.map(item => {
++    if (typeof item?.question !== "string" || !item.question.trim() || item.question.length > 10000) throw new Error("Invalid question");
++    const answer = String(item.answer ?? "").trim();
++    if (!/^-?\d+(?:\.\d+)?$/.test(answer) || !Number.isFinite(Number(answer))) throw new Error("Expected answer must be a number");
++    return { question: item.question.trim(), answer };
++  });
++  return { enabled: input.enabled, intervalMinutes: input.intervalMinutes, providers, questions };
++}
++
++export function selectTargets(config, catalog) {
++  return config.providers.flatMap(selection => {
++    const provider = catalog.find(item => item.id === selection.id);
++    return (provider?.models || []).filter(model => selection.mode === "all" || selection.models.includes(model)).flatMap(model => {
++      const checks = Object.hasOwn(selection.modelChecks || {}, model) ? selection.modelChecks[model] : selection.checks;
++      if (checks?.length === 0) return [];
++      const thinkingLevel = Object.hasOwn(selection.modelThinking || {}, model) ? selection.modelThinking[model] : undefined;
++      return [{ provider: selection.id, model, ...(thinkingLevel && { thinkingLevel }), ...(selection.excludedConnectionIds !== undefined && { excludedConnectionIds: selection.excludedConnectionIds }), ...(checks !== undefined && { checks }) }];
++    });
++  });
++}
++
++export function classifyResult(result, check = "iq") {
++  if (result.ok) return check === "availability" ? "available" : result.iq?.correct ? "correct" : "incorrect";
++  if (result.status === 429) return "rate_limited";
++  if (/timeout|timed out|aborted/i.test(result.error || "")) return "timeout";
++  return "error";
++}
++
++export async function runTick({ config, catalog, state, now = Date.now(), probe, save, isCurrent = async () => true, pause = async () => {}, clock = () => now }) {
++  if (!config.enabled || (state.nextAt || 0) > now) return state;
++  const next = { ...state, history: [...(state.history || [])], backoff: { ...state.backoff }, startedAt: now, nextAt: now + config.intervalMinutes * 60000 };
++  await save(next);
++  for (const target of selectTargets(config, catalog)) {
++    if ((next.backoff[target.provider] || 0) > clock()) continue;
++    const { thinkingLevel, ...withoutThinking } = target;
++    for (const check of target.checks || ["iq"]) {
++      if ((next.backoff[target.provider] || 0) > clock()) break;
++      const checkTarget = check === "iq" ? target : withoutThinking;
++      const answers = [];
++      for (const question of check === "iq" ? config.questions : [null]) {
++        if (!await isCurrent()) return next;
++        let result;
++        try { result = await probe(checkTarget, question, check); }
++        catch (error) { result = { ok: false, error: error.name + ": " + error.message }; }
++        const status = classifyResult(result, check);
++        answers.push({ ...(question || {}), ...result, status });
++        if (status === "rate_limited") {
++          next.backoff[target.provider] = clock() + Math.max(config.intervalMinutes * 120000, 3600000);
++          break;
++        }
++        await pause();
++      }
++      const failure = answers.find(answer => !answer.ok);
++      const score = check === "availability" || failure ? null : Math.round(answers.filter(answer => answer.iq?.correct).length / config.questions.length * 100);
++      const previous = check === "iq" && next.history.find(row => row.provider === target.provider && row.model === target.model && (row.check || "iq") === "iq" && (row.thinkingLevel ?? null) === (thinkingLevel ?? null) && row.score !== null && JSON.stringify(row.answers.map(({ question, answer }) => ({ question, answer }))) === JSON.stringify(config.questions));
++      next.history.unshift({ ...checkTarget, ...(check === "iq" && { thinkingLevel: thinkingLevel ?? null }), check, at: clock(), score, change: score !== null && previous ? score - previous.score : null, status: failure?.status || (check === "availability" ? "available" : score === 100 ? "correct" : "incorrect"), answers });
++      next.history = next.history.slice(0, 500);
++      await save(next);
++    }
++  }
++  next.completedAt = clock();
++  next.nextAt = clock() + config.intervalMinutes * 60000;
++  await save(next);
++  return next;
++}
+diff --git a/src/lib/iqMonitor/probe.js b/src/lib/iqMonitor/probe.js
+new file mode 100644
+index 00000000..fff75977
+--- /dev/null
++++ b/src/lib/iqMonitor/probe.js
+@@ -0,0 +1,48 @@
++import "open-sse/index.js";
++import { getExecutor } from "open-sse/executors/index.js";
++import { handleChatCore } from "open-sse/handlers/chatCore.js";
++import { getProviderCredentials } from "@/sse/services/auth";
++import { checkAndRefreshToken, updateProviderCredentials } from "@/sse/services/tokenRefresh";
++import { getSettings } from "@/lib/localDb";
++import { getThinkingLevels } from "open-sse/providers/thinkingLevels.js";
++import { judgeIqReply, extractCompletionText } from "@/app/api/models/test/ping";
++import * as log from "@/sse/utils/logger";
++
++export async function probeTarget({ provider, model, thinkingLevel, excludedConnectionIds = [] }, question, check = "iq") {
++  const started = Date.now();
++  if (check === "iq" && thinkingLevel && !getThinkingLevels(provider, model)?.includes(thinkingLevel)) throw new Error("Unsupported thinking level: " + provider + "/" + model + " (" + thinkingLevel + ")");
++  const requestedModel = check === "iq" && thinkingLevel ? model + "(" + thinkingLevel + ")" : model;
++  const excluded = new Set(excludedConnectionIds);
++  const credentials = await getProviderCredentials(provider, excluded.size ? excluded : null, model);
++  if (!credentials || credentials.allRateLimited) return { ok: false, status: credentials?.allRateLimited ? 429 : 503, error: "No available account for selected provider" };
++  if (excluded.has(credentials.connectionId || credentials.id)) return { ok: false, status: 503, error: "Selected account is excluded from IQ monitoring" };
++  const refreshed = await checkAndRefreshToken(provider, credentials);
++  const executor = getExecutor(provider);
++  const limitedExecutor = Object.create(executor);
++  const deadline = AbortSignal.timeout(60000);
++  limitedExecutor.execute = options => executor.execute({ ...options, signal: AbortSignal.any([options.signal, deadline].filter(Boolean)) });
++  const settings = await getSettings();
++  const prompt = check === "availability" ? "Reply with PONG." : question.question + "\nReturn the final answer as: IQ-ANSWER: <number>";
++  const responses = provider.startsWith("openai-compatible-responses-");
++  const maxTokens = check === "availability" ? 256 : 4096;
++  const body = { model: provider + "/" + requestedModel, stream: false, ...(responses
++    ? { max_output_tokens: maxTokens, input: prompt }
++    : { max_tokens: maxTokens, messages: [{ role: "user", content: prompt }] }) };
++  const result = await handleChatCore({ body, modelInfo: { provider, model: requestedModel }, credentials: refreshed, connectionId: credentials.connectionId,
++    sourceFormatOverride: responses ? "openai-responses" : "openai", userAgent: "10router-iq-monitor", log, _executorOverride: limitedExecutor,
++    providerThinking: settings.providerThinking?.[provider] || null,
++    clientRawRequest: { endpoint: "/api/iq-monitor", body, headers: {} },
++    onCredentialsRefreshed: newCredentials => updateProviderCredentials(credentials.connectionId, { ...newCredentials, existingProviderSpecificData: credentials.providerSpecificData }),
++  });
++  const response = result.response;
++  const latencyMs = Date.now() - started;
++  if (!response) return { ok: false, status: result.status || 500, error: String(result.error || "No response"), latencyMs };
++  if (!response.ok) { await response.body?.cancel(); return { ok: false, status: response.status, error: `HTTP ${response.status}`, latencyMs }; }
++  const parsed = await response.json();
++  if (parsed.error) return { ok: false, status: 502, error: "Upstream returned an error", latencyMs };
++  const content = extractCompletionText(parsed);
++  if (check === "availability") return content.trim()
++    ? { ok: true, status: response.status, latencyMs, connectionId: credentials.connectionId, content: content.slice(0, 2000) }
++    : { ok: false, status: 502, latencyMs, connectionId: credentials.connectionId, error: "Empty model reply" };
++  return judgeIqReply(content, question.answer, { status: response.status, latencyMs, connectionId: credentials.connectionId });
++}
+diff --git a/src/lib/iqMonitor/service.js b/src/lib/iqMonitor/service.js
+new file mode 100644
+index 00000000..e3d7ac8a
+--- /dev/null
++++ b/src/lib/iqMonitor/service.js
+@@ -0,0 +1,100 @@
++import { randomUUID } from "node:crypto";
++import { getSettings, getProviderConnections, getProviderNodes, getCustomModels, getModelAliases } from "@/lib/localDb";
++import { getDisabledModels } from "@/lib/disabledModelsDb";
++import { makeKv } from "@/lib/db/helpers/kvStore";
++import { getModelsByProviderId } from "@/shared/constants/models";
++import { AI_PROVIDERS, getProviderAlias } from "@/shared/constants/providers";
++import { getProviderCustomModelRows } from "@/shared/utils/providerCustomModels";
++import { validateConfig, runTick, classifyResult } from "./core";
++import { getThinkingLevels } from "open-sse/providers/thinkingLevels.js";
++import { probeTarget as probeManualTarget } from "./probe";
++
++const store = makeKv("iqMonitor");
++const runtime = globalThis.__iqMonitorRuntime ||= { running: false };
++
++export async function getConfig() {
++  const stored = await store.get("config");
++  if (stored) return stored;
++  const settings = await getSettings();
++  return { enabled: false, intervalMinutes: 360, providers: [], questions: [{ question: settings.iqProbe.question, answer: settings.iqProbe.answer }] };
++}
++
++export async function getCatalog() {
++  const [connections, nodes, customModels, modelAliases, disabled] = await Promise.all([getProviderConnections(), getProviderNodes(), getCustomModels(), getModelAliases(), getDisabledModels()]);
++  return [...new Set(connections.map(connection => connection.provider))].map(id => {
++    const alias = getProviderAlias(id);
++    const names = new Set([id, alias]);
++    const builtIns = (getModelsByProviderId(id) || []).filter(model => (!model.kind || model.kind === "llm") && (!model.type || model.type === "llm")).map(model => model.id);
++    const custom = [...names].flatMap(providerAlias => getProviderCustomModelRows({ customModels, modelAliases, providerAlias, builtInModels: [] })).filter(model => model.enabled !== false).map(model => model.id);
++    const blocked = new Set([...disabled[id] || [], ...disabled[alias] || [], ...customModels.filter(model => names.has(model.providerAlias) && model.enabled === false).map(model => model.id)]);
++    const active = connections.some(connection => connection.provider === id && connection.isActive !== false);
++    const models = active ? [...new Set([...builtIns, ...custom])].filter(model => model && !blocked.has(model)).sort() : [];
++    return { id, name: nodes.find(node => node.id === id)?.name || AI_PROVIDERS[id]?.name || id, active, connections: connections.filter(connection => connection.provider === id).map(connection => ({ id: connection.id, name: connection.displayName || connection.name || connection.email || connection.id })), models, thinkingLevels: Object.fromEntries(models.map(model => [model, getThinkingLevels(id, model) || []])) };
++  }).sort((left, right) => left.name.localeCompare(right.name));
++}
++
++export async function saveConfig(input) {
++  const config = validateConfig(input);
++  const catalog = await getCatalog();
++  for (const selected of config.providers) {
++    const provider = catalog.find(item => item.id === selected.id);
++    if (!provider) throw new Error(`Unknown provider: ${selected.id}`);
++    if (config.enabled && (!provider.active || !provider.models.length)) throw new Error(`No enabled models: ${provider.name}`);
++    if (selected.mode === "selected" && selected.models.some(model => !provider.models.includes(model))) throw new Error(`Unavailable model: ${provider.name}`);
++    for (const [model, level] of Object.entries(selected.modelThinking || {})) {
++      const levels = provider.thinkingLevels[model];
++      if (!Array.isArray(levels) || !levels.includes(level)) throw new Error("Unsupported thinking level: " + selected.id + "/" + model + " (" + level + ")");
++    }
++  }
++  const saved = { ...config, revision: randomUUID() };
++  await store.set("config", saved);
++  return saved;
++}
++
++export async function getMonitor() {
++  const [config, catalog, state, manualHistory] = await Promise.all([getConfig(), getCatalog(), store.get("state", {}), store.get("manualHistory", [])]);
++  const history = [...manualHistory, ...(state.history || [])].sort((a, b) => b.at - a.at).slice(0, 500);
++  return { config, catalog, state: { ...state, history }, running: runtime.running, capabilities: { modelThinking: true, manualTests: true } };
++}
++
++export async function runManualMonitorTest(target, check, thinkingLevel) {
++  const catalog = await getCatalog();
++  const provider = catalog.find(item => item.id === target?.provider);
++  if (!provider?.models.includes(target?.model)) throw new Error("Unavailable monitor model");
++  if (check === "iq" && thinkingLevel && !provider.thinkingLevels[target.model]?.includes(thinkingLevel)) throw new Error("Unsupported thinking level");
++  const config = await getConfig();
++  const selection = config.providers.find(item => item.id === target.provider);
++  const question = check === "iq" ? (await getSettings()).iqProbe : null;
++  const probeTargetInfo = { provider: target.provider, model: target.model, excludedConnectionIds: selection?.excludedConnectionIds || [], ...(check === "iq" && { thinkingLevel: thinkingLevel || null }) };
++  let result;
++  try { result = await probeManualTarget(probeTargetInfo, question, check); }
++  catch (error) { result = { ok: false, error: error.name + ": " + error.message }; }
++  const status = result.ok && check === "iq" && typeof result.iq?.correct !== "boolean" ? "ungraded" : classifyResult(result, check);
++  const row = { ...probeTargetInfo, check, at: Date.now(), manual: true, persisted: true, status, score: status === "correct" ? 100 : status === "incorrect" ? 0 : null, answers: [{ ...(question || {}), ...result, httpStatus: result.status, status }] };
++  // Keep manual records separate so a running scheduled tick cannot overwrite them.
++  const write = (runtime.manualWrite || Promise.resolve()).then(async () => {
++    const history = await store.get("manualHistory", []);
++    await store.set("manualHistory", [row, ...history].slice(0, 500));
++  });
++  runtime.manualWrite = write.catch(() => {});
++  await write;
++  return { ...result, monitorRow: row };
++}
++
++export async function tickMonitor() {
++  if (runtime.running) return { skipped: "running" };
++  runtime.running = true;
++  try {
++    const current = await getConfig();
++    const config = validateConfig(current);
++    const state = await store.get("state", {});
++    if (state.revision !== current.revision) state.nextAt = 0;
++    state.revision = current.revision;
++    const { probeTarget } = await import("./probe");
++    return await runTick({ config, catalog: await getCatalog(), state, probe: probeTarget,
++      save: value => store.set("state", value), clock: Date.now,
++      pause: () => new Promise(resolve => setTimeout(resolve, 2000)),
++      isCurrent: async () => { const latest = await getConfig(); return latest.enabled && latest.revision === current.revision; },
++    });
++  } finally { runtime.running = false; }
++}
+diff --git a/src/app/api/iq-monitor/route.js b/src/app/api/iq-monitor/route.js
+new file mode 100644
+index 00000000..d336b61c
+--- /dev/null
++++ b/src/app/api/iq-monitor/route.js
+@@ -0,0 +1,14 @@
++import { NextResponse } from "next/server";
++import { getMonitor, saveConfig } from "@/lib/iqMonitor/service";
++
++export const dynamic = "force-dynamic";
++
++export async function GET() {
++  try { return NextResponse.json(await getMonitor(), { headers: { "Cache-Control": "no-store" } }); }
++  catch (error) { return NextResponse.json({ error: error.message }, { status: 500 }); }
++}
++
++export async function PUT(request) {
++  try { return NextResponse.json({ config: await saveConfig(await request.json()) }); }
++  catch (error) { return NextResponse.json({ error: error.message }, { status: 400 }); }
++}
+diff --git a/src/app/api/iq-monitor/tick/route.js b/src/app/api/iq-monitor/tick/route.js
+new file mode 100644
+index 00000000..373dc070
+--- /dev/null
++++ b/src/app/api/iq-monitor/tick/route.js
+@@ -0,0 +1,11 @@
++import { NextResponse } from "next/server";
++import { tickMonitor } from "@/lib/iqMonitor/service";
++
++export const dynamic = "force-dynamic";
++
++export async function POST(request) {
++  const token = process.env.TENROUTER_IQ_TOKEN;
++  if (!token || request.headers.get("x-10r-iq-token") !== token) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
++  try { await tickMonitor(); return NextResponse.json({ ok: true }); }
++  catch (error) { console.error("[IQ monitor]", error); return NextResponse.json({ error: "IQ monitor failed" }, { status: 500 }); }
++}
+diff --git a/tests/unit/iq-monitor.test.js b/tests/unit/iq-monitor.test.js
+new file mode 100644
+index 00000000..e713aa0f
+--- /dev/null
++++ b/tests/unit/iq-monitor.test.js
+@@ -0,0 +1,104 @@
++import { describe, it, expect, vi } from "vitest";
++import { validateConfig, selectTargets, classifyResult, runTick } from "../../src/lib/iqMonitor/core.js";
++const config = { enabled: true, intervalMinutes: 60, providers: [{ id: "one", mode: "all", models: [] }], questions: [{ question: "1+1?", answer: "2" }] };
++const catalog = [{ id: "one", models: ["a", "b"] }, { id: "two", models: ["a"] }];
++describe("automatic IQ monitor", () => {
++  it("preserves per-model thinking strengths and ignores malformed maps", () => {
++    const provider = { ...config.providers[0], modelThinking: { a: "high" } };
++    expect(validateConfig({ ...config, providers: [provider] }).providers[0].modelThinking).toEqual({ a: "high" });
++    expect(selectTargets({ ...config, providers: [provider] }, catalog)[0]).toEqual({ provider: "one", model: "a", thinkingLevel: "high" });
++    for (const modelThinking of [null, [], { a: 42 }, { a: "" }, { a: "high)" }]) {
++      expect(() => validateConfig({ ...config, providers: [{ ...provider, modelThinking }] })).toThrow();
++    }
++  });
++  it("keeps thinking strengths out of availability checks and separates IQ score comparisons", async () => {
++    const selected = { ...config, providers: [{ id: "one", mode: "selected", models: ["a"], checks: ["availability", "iq"], modelThinking: { a: "high" } }] };
++    const probe = vi.fn(async () => ({ ok: true, iq: { correct: true } }));
++    const state = { history: [{ provider: "one", model: "a", check: "iq", score: 0, thinkingLevel: "low", answers: [{ ...config.questions[0] }] }] };
++    const stored = await runTick({ config: selected, catalog, state, now: 100, probe, save: async () => {} });
++    expect(probe.mock.calls[0][0]).toEqual({ provider: "one", model: "a", checks: ["availability", "iq"] });
++    expect(probe.mock.calls[1][0].thinkingLevel).toBe("high");
++    expect(stored.history[0].thinkingLevel).toBe("high");
++    expect(stored.history[0].change).toBeNull();
++    expect(stored.history[1].thinkingLevel).toBeUndefined();
++  });
++  it("accepts whole-minute intervals from one to 10080", () => {
++    for (const intervalMinutes of [1, 5, 15, 10080]) {
++      expect(validateConfig({ ...config, intervalMinutes }).intervalMinutes).toBe(intervalMinutes);
++    }
++    for (const intervalMinutes of [undefined, null, "1", 0, -1, 0.5, 1.5, 10081]) {
++      expect(() => validateConfig({ ...config, intervalMinutes })).toThrow();
++    }
++  });
++  it("validates frequency and whitelist", () => {
++    expect(() => validateConfig({ ...config, intervalMinutes: 0 })).toThrow();
++    expect(() => validateConfig({ ...config, providers: [] })).toThrow();
++    expect(() => validateConfig({ ...config, questions: [{ question: "?", answer: "abc" }] })).toThrow();
++    expect(validateConfig(config)).toEqual(config);
++  });
++  it("selects only opted-in providers and live enabled models", () => {
++    expect(selectTargets(config, catalog)).toEqual([{ provider: "one", model: "a" }, { provider: "one", model: "b" }]);
++    expect(selectTargets({ ...config, providers: [{ id: "one", mode: "selected", models: ["b", "deleted"] }] }, catalog)).toEqual([{ provider: "one", model: "b" }]);
++  });
++  it("passes excluded account IDs to every selected model", () => {
++    const selected = { ...config, providers: [{ id: "one", mode: "selected", models: ["a"], excludedConnectionIds: ["public-account"] }] };
++    expect(validateConfig(selected).providers[0].excludedConnectionIds).toEqual(["public-account"]);
++    expect(selectTargets(selected, catalog)).toEqual([{ provider: "one", model: "a", excludedConnectionIds: ["public-account"] }]);
++    expect(() => validateConfig({ ...selected, providers: [{ ...selected.providers[0], excludedConnectionIds: [42] }] })).toThrow();
++  });
++  it("validates selectable checks while preserving legacy IQ behavior", () => {
++    const provider = { ...config.providers[0], checks: ["availability", "iq"] };
++    expect(validateConfig({ ...config, providers: [provider] }).providers[0].checks).toEqual(["availability", "iq"]);
++    expect(() => validateConfig({ ...config, providers: [{ ...provider, checks: [] }] })).toThrow();
++    expect(() => validateConfig({ ...config, providers: [{ ...provider, checks: ["account"] }] })).toThrow();
++    expect(selectTargets({ ...config, providers: [provider] }, catalog)[0].checks).toEqual(["availability", "iq"]);
++  });
++  it("checks availability once without grading and records it independently from IQ", async () => {
++    const both = { ...config, providers: [{ ...config.providers[0], mode: "selected", models: ["a"], checks: ["availability", "iq"] }] };
++    const probe = vi.fn(async (_target, question, check) => check === "availability" ? { ok: true, content: "pong" } : { ok: true, iq: { correct: true } });
++    let stored;
++    await runTick({ config: both, catalog, state: {}, now: 100, probe, save: async state => { stored = structuredClone(state); } });
++    expect(probe).toHaveBeenCalledTimes(2);
++    expect(probe.mock.calls[0][1]).toBeNull();
++    expect(probe.mock.calls[0][2]).toBe("availability");
++    expect(stored.history.map(row => [row.check, row.status, row.score])).toEqual([["iq", "correct", 100], ["availability", "available", null]]);
++  });
++  it("distinguishes answers from transport failures", () => {
++    expect(classifyResult({ ok: true, iq: { correct: false } })).toBe("incorrect");
++    expect(classifyResult({ ok: false, status: 429 })).toBe("rate_limited");
++    expect(classifyResult({ ok: false, error: "TimeoutError" })).toBe("timeout");
++    expect(classifyResult({ ok: false, status: 500 })).toBe("error");
++  });
++  it("skips disabled and not-due runs", async () => {
++    const probe = vi.fn();
++    const save = vi.fn();
++    await runTick({ config: { ...config, enabled: false }, catalog, state: {}, now: 100, probe, save });
++    await runTick({ config, catalog, state: { nextAt: 200 }, now: 100, probe, save });
++    expect(probe).not.toHaveBeenCalled();
++  });
++  it("persists provider identity and backs off on rate limits", async () => {
++    const probe = vi.fn(async () => ({ ok: false, status: 429 }));
++    let stored;
++    await runTick({ config, catalog, state: {}, now: 100, probe, save: async state => { stored = structuredClone(state); } });
++    expect(probe).toHaveBeenCalledTimes(1);
++    expect(probe.mock.calls[0][0]).toEqual({ provider: "one", model: "a" });
++    expect(stored.history[0].provider).toBe("one");
++    expect(stored.history[0].score).toBeNull();
++    expect(stored.backoff.one).toBeGreaterThan(100);
++  });
++  it("stops after configuration changes", async () => {
++    const probe = vi.fn(async () => ({ ok: true, iq: { correct: true } }));
++    const isCurrent = vi.fn().mockResolvedValueOnce(true).mockResolvedValue(false);
++    await runTick({ config, catalog, state: {}, now: 100, probe, save: async () => {}, isCurrent });
++    expect(probe).toHaveBeenCalledTimes(1);
++  });
++  it("scores multiple questions with snapshots", async () => {
++    let stored;
++    await runTick({ config: { ...config, questions: [...config.questions, { question: "2+2?", answer: "4" }] }, catalog, state: {}, now: 100,
++      probe: async (_target, question) => ({ ok: true, iq: { correct: question.answer === "2" }, content: "answer" }),
++      save: async state => { stored = structuredClone(state); } });
++    expect(stored.history).toHaveLength(2);
++    expect(stored.history[0].score).toBe(50);
++    expect(stored.history[0].answers[0].question).toBe("1+1?");
++  });
++});
+diff --git a/tests/unit/iq-monitor-probe.test.js b/tests/unit/iq-monitor-probe.test.js
+new file mode 100644
+index 00000000..e4d08f02
+--- /dev/null
++++ b/tests/unit/iq-monitor-probe.test.js
+@@ -0,0 +1,97 @@
++import { beforeEach, describe, expect, it, vi } from "vitest";
++const mocks = vi.hoisted(() => ({ core: vi.fn(), credentials: vi.fn(), refresh: vi.fn(), execute: vi.fn() }));
++vi.mock("open-sse/index.js", () => ({}));
++vi.mock("open-sse/executors/index.js", () => ({ getExecutor: () => ({ execute: mocks.execute }) }));
++vi.mock("open-sse/handlers/chatCore.js", () => ({ handleChatCore: mocks.core }));
++vi.mock("open-sse/providers/thinkingLevels.js", () => ({ getThinkingLevels: () => ["none", "low", "high"] }));
++vi.mock("@/sse/services/auth", () => ({ getProviderCredentials: mocks.credentials }));
++vi.mock("@/sse/services/tokenRefresh", () => ({ checkAndRefreshToken: mocks.refresh, updateProviderCredentials: vi.fn() }));
++vi.mock("@/lib/localDb", () => ({ getSettings: async () => ({}), getApiKeys: async () => [] }));
++vi.mock("@/shared/utils/machineId", () => ({ getConsistentMachineId: async () => "test" }));
++import { probeTarget } from "../../src/lib/iqMonitor/probe";
++describe("provider-bound IQ execution", () => {
++  it("sends IQ thinking through the existing model suffix without changing account selection", async () => {
++    await probeTarget({ provider: "codex", model: "gpt", thinkingLevel: "high" }, { question: "1+1?", answer: "2" });
++    expect(mocks.credentials).toHaveBeenCalledWith("codex", null, "gpt");
++    expect(mocks.core.mock.calls[0][0].modelInfo).toEqual({ provider: "codex", model: "gpt(high)" });
++    expect(mocks.core.mock.calls[0][0].body.model).toBe("codex/gpt(high)");
++  });
++  it("uses the same thinking suffix for Responses IQ and leaves liveness unchanged", async () => {
++    mocks.core.mockResolvedValue({ response: Response.json({ output_text: "IQ-ANSWER: 2" }) });
++    const target = { provider: "openai-compatible-responses-test", model: "gpt", thinkingLevel: "none" };
++    await probeTarget(target, { question: "1+1?", answer: "2" });
++    expect(mocks.core.mock.calls[0][0].body.model).toBe("openai-compatible-responses-test/gpt(none)");
++    mocks.core.mockClear();
++    mocks.core.mockResolvedValue({ response: Response.json({ output_text: "PONG" }) });
++    await probeTarget(target, null, "availability");
++    expect(mocks.core.mock.calls[0][0].body.model).toBe("openai-compatible-responses-test/gpt");
++  });
++  it("rejects unsupported IQ strengths before sending an upstream request", async () => {
++    await expect(probeTarget({ provider: "codex", model: "gpt", thinkingLevel: "ultra" }, { question: "?", answer: "2" })).rejects.toThrow("Unsupported thinking level");
++    expect(mocks.credentials).not.toHaveBeenCalled();
++    expect(mocks.core).not.toHaveBeenCalled();
++  });
++  it("uses native Responses requests and reads message output", async () => {
++    mocks.core.mockResolvedValue({ response: Response.json({ object: "response", status: "completed", output: [
++      { type: "reasoning", summary: [{ type: "summary_text", text: "thinking" }] },
++      { type: "message", role: "assistant", content: [{ type: "output_text", text: "PONG" }] },
++    ] }) });
++    const result = await probeTarget({ provider: "openai-compatible-responses-test", model: "gpt-6-sol" }, null, "availability");
++    expect(result.ok).toBe(true);
++    expect(result.content).toBe("PONG");
++    const options = mocks.core.mock.calls[0][0];
++    expect(options.sourceFormatOverride).toBe("openai-responses");
++    expect(options.body.input).toBe("Reply with PONG.");
++    expect(options.body.max_output_tokens).toBe(256);
++    expect(options.body.messages).toBeUndefined();
++  });
++  it("does not treat reasoning-only Responses output as a successful reply", async () => {
++    mocks.core.mockResolvedValue({ response: Response.json({ output: [{ type: "reasoning", summary: [{ text: "thinking" }] }] }) });
++    expect((await probeTarget({ provider: "openai-compatible-responses-test", model: "gpt-6-sol" }, null, "availability")).ok).toBe(false);
++  });
++  beforeEach(() => {
++    vi.clearAllMocks();
++    mocks.credentials.mockResolvedValue({ connectionId: "account-a" });
++    mocks.refresh.mockImplementation(async (_provider, credentials) => credentials);
++    mocks.core.mockResolvedValue({ response: Response.json({ choices: [{ message: { content: "IQ-ANSWER: 2" } }] }) });
++  });
++  it("calls the exact provider directly without combo routing and grades its answer", async () => {
++    const result = await probeTarget({ provider: "openai-compatible-nexa", model: "gpt-test" }, { question: "1+1?", answer: "2" });
++    expect(mocks.credentials).toHaveBeenCalledWith("openai-compatible-nexa", null, "gpt-test");
++    expect(mocks.core.mock.calls[0][0].modelInfo).toEqual({ provider: "openai-compatible-nexa", model: "gpt-test" });
++    expect(mocks.core.mock.calls[0][0].onRequestSuccess).toBeUndefined();
++    expect(result.iq.correct).toBe(true);
++    expect(result.connectionId).toBe("account-a");
++  });
++  it("does not fail over or mutate account health on HTTP failure", async () => {
++    mocks.core.mockResolvedValue({ response: new Response("limited", { status: 429 }) });
++    expect((await probeTarget({ provider: "one", model: "a" }, { question: "?", answer: "2" })).status).toBe(429);
++    expect(mocks.core).toHaveBeenCalledTimes(1);
++    expect(mocks.credentials).toHaveBeenCalledTimes(1);
++  });
++  it("does not invoke the upstream when no accounts are available", async () => {
++    mocks.credentials.mockResolvedValue(null);
++    expect((await probeTarget({ provider: "one", model: "a" }, { question: "?", answer: "2" })).ok).toBe(false);
++    expect(mocks.core).not.toHaveBeenCalled();
++  });
++  it("excludes public accounts and refuses to probe one even if credentials return it", async () => {
++    const target = { provider: "one", model: "a", excludedConnectionIds: ["account-a"] };
++    expect((await probeTarget(target, { question: "?", answer: "2" })).ok).toBe(false);
++    expect(mocks.credentials).toHaveBeenCalledWith("one", new Set(["account-a"]), "a");
++    expect(mocks.core).not.toHaveBeenCalled();
++  });
++  it("supplies an abort deadline to the provider executor", async () => {
++    await probeTarget({ provider: "one", model: "a" }, { question: "?", answer: "2" });
++    await mocks.core.mock.calls[0][0]._executorOverride.execute({ signal: new AbortController().signal });
++    expect(mocks.execute.mock.calls[0][0].signal).toBeInstanceOf(AbortSignal);
++  });
++  it("checks a short real model reply without IQ grading or accepting empty HTTP 200", async () => {
++    const target = { provider: "one", model: "a" };
++    const result = await probeTarget(target, null, "availability");
++    expect(result.ok).toBe(true);
++    expect(result.iq).toBeUndefined();
++    expect(mocks.core.mock.calls[0][0].body.max_tokens).toBeLessThan(4096);
++    mocks.core.mockResolvedValue({ response: Response.json({ choices: [{ message: { content: "" } }] }) });
++    expect((await probeTarget(target, null, "availability")).ok).toBe(false);
++  });
++});
+diff --git a/tests/unit/iq-monitor-service.test.js b/tests/unit/iq-monitor-service.test.js
+new file mode 100644
+index 00000000..fd9f58be
+--- /dev/null
++++ b/tests/unit/iq-monitor-service.test.js
+@@ -0,0 +1,84 @@
++import { beforeEach, describe, expect, it, vi } from "vitest";
++const mocks = vi.hoisted(() => ({ values: new Map(), probe: vi.fn() }));
++vi.mock("@/lib/localDb", () => ({
++  getSettings: async () => ({ iqProbe: { question: "1+1?", answer: "2" } }),
++  getProviderConnections: async () => [{ id: "safe", name: "Safe account", provider: "one", isActive: true }, { id: "public", name: "Public account", provider: "one", isActive: true }, { provider: "two", isActive: false }],
++  getProviderNodes: async () => [{ id: "one", name: "First" }],
++  getCustomModels: async () => [{ providerAlias: "one", id: "custom", type: "llm" }, { providerAlias: "one", id: "off", enabled: false }, { providerAlias: "one", id: "embed", type: "embedding" }],
++  getModelAliases: async () => ({}),
++}));
++vi.mock("@/lib/disabledModelsDb", () => ({ getDisabledModels: async () => ({ one: ["blocked"] }) }));
++vi.mock("@/lib/db/helpers/kvStore", () => ({ makeKv: () => ({ get: async (key, fallback) => mocks.values.get(key) ?? fallback, set: async (key, value) => mocks.values.set(key, structuredClone(value)) }) }));
++vi.mock("@/shared/constants/config", () => ({ AI_MODELS: [{ provider: "one", model: "chat" }, { provider: "one", model: "blocked" }, { provider: "one", model: "embedding" }] }));
++vi.mock("@/shared/constants/models", () => ({ getModelsByProviderId: () => [{ id: "chat" }, { id: "blocked" }, { id: "embedding", type: "embedding" }] }));
++vi.mock("@/shared/constants/providers", () => ({ AI_PROVIDERS: {}, getProviderAlias: id => id }));
++vi.mock("@/lib/iqMonitor/probe", () => ({ probeTarget: mocks.probe }));
++vi.mock("open-sse/providers/thinkingLevels.js", () => ({ getThinkingLevels: (_provider, model) => model === "chat" ? ["none", "low", "high"] : null }));
++import { getCatalog, getConfig, getMonitor, saveConfig, tickMonitor, runManualMonitorTest } from "../../src/lib/iqMonitor/service";
++describe("IQ monitor storage and provider catalog", () => {
++  it("advertises persisted thinking configuration support", async () => {
++    expect((await getMonitor()).capabilities).toEqual({ modelThinking: true, manualTests: true });
++  });
++  it("exposes supported strengths and rejects unsupported choices before writing", async () => {
++    const catalog = await getCatalog();
++    expect(catalog.find(provider => provider.id === "one").thinkingLevels).toEqual({ chat: ["none", "low", "high"], custom: [] });
++    const config = { enabled: true, intervalMinutes: 1, questions: [{ question: "1+1?", answer: "2" }], providers: [{ id: "one", mode: "selected", models: ["chat"], modelThinking: { chat: "high" } }] };
++    const saved = await saveConfig(config);
++    expect(saved.providers[0].modelThinking).toEqual({ chat: "high" });
++    for (const modelThinking of [{ chat: "ultra" }, { custom: "high" }, { missing: "high" }]) {
++      await expect(saveConfig({ ...config, providers: [{ ...config.providers[0], modelThinking }] })).rejects.toThrow("Unsupported thinking level");
++      expect(await getConfig()).toEqual(saved);
++    }
++  });
++  beforeEach(() => { mocks.values.clear(); mocks.probe.mockReset(); });
++  it("persists manual strengths and account exclusions without altering the schedule", async () => {
++    const config = { enabled: false, providers: [{ id: "one", excludedConnectionIds: ["public"] }] };
++    mocks.values.set("config", config);
++    mocks.values.set("state", { nextAt: 123, history: [{ provider: "one", model: "chat", at: 1, check: "iq", status: "error" }] });
++    mocks.probe.mockResolvedValue({ ok: true, status: 200, latencyMs: 10, iq: { correct: true } });
++    const result = await runManualMonitorTest({ provider: "one", model: "chat" }, "iq", "high");
++    expect(mocks.probe).toHaveBeenCalledWith({ provider: "one", model: "chat", excludedConnectionIds: ["public"], thinkingLevel: "high" }, { question: "1+1?", answer: "2" }, "iq");
++    expect(result.monitorRow).toMatchObject({ manual: true, persisted: true, status: "correct", score: 100, thinkingLevel: "high" });
++    const monitor = await getMonitor();
++    expect(monitor.state.history).toHaveLength(2);
++    expect(monitor.state.history[0]).toEqual(result.monitorRow);
++    expect(monitor.state.nextAt).toBe(123);
++    expect(await getConfig()).toEqual(config);
++    mocks.values.set("state", { nextAt: 456, history: [] });
++    expect((await getMonitor()).state.history).toEqual([result.monitorRow]);
++  });
++  it("rejects invalid models and strengths before probing", async () => {
++    await expect(runManualMonitorTest({ provider: "one", model: "missing" }, "iq", "high")).rejects.toThrow("Unavailable monitor model");
++    await expect(runManualMonitorTest({ provider: "one", model: "chat" }, "iq", "ultra")).rejects.toThrow("Unsupported thinking level");
++    expect(mocks.probe).not.toHaveBeenCalled();
++  });
++  it("records failures and concurrent manual checks without losing either result", async () => {
++    mocks.probe.mockResolvedValue({ ok: false, status: 429, error: "limited" });
++    const results = await Promise.all([runManualMonitorTest({ provider: "one", model: "chat" }, "availability", "high"), runManualMonitorTest({ provider: "one", model: "custom" }, "iq")]);
++    expect(results[0].monitorRow.status).toBe("rate_limited");
++    expect(results[0].monitorRow).not.toHaveProperty("thinkingLevel");
++    expect(results[1].monitorRow.status).toBe("rate_limited");
++    expect((await getMonitor()).state.history).toHaveLength(2);
++    mocks.probe.mockImplementation(async () => { throw new Error("timed out"); });
++    const timeout = await runManualMonitorTest({ provider: "one", model: "chat" }, "iq");
++    expect(timeout.monitorRow.status).toBe("timeout");
++  });
++  it("defaults to disabled with an empty whitelist", async () => {
++    expect(await getConfig()).toMatchObject({ enabled: false, providers: [] });
++    await tickMonitor();
++    expect(mocks.probe).not.toHaveBeenCalled();
++  });
++  it("excludes disabled models, inactive providers and non-chat models", async () => {
++    const catalog = await getCatalog();
++    expect(catalog.find(provider => provider.id === "one").models).toEqual(["chat", "custom"]);
++    expect(catalog.find(provider => provider.id === "one").connections).toEqual([{ id: "safe", name: "Safe account" }, { id: "public", name: "Public account" }]);
++    expect(catalog.find(provider => provider.id === "two").models).toEqual([]);
++  });
++  it("validates provider identity before persisting and stamps a revision", async () => {
++    const config = { enabled: true, intervalMinutes: 60, questions: [{ question: "1+1?", answer: "2" }], providers: [{ id: "missing", mode: "all", models: [] }] };
++    await expect(saveConfig(config)).rejects.toThrow("Unknown provider");
++    const saved = await saveConfig({ ...config, providers: [{ id: "one", mode: "selected", models: ["custom"] }] });
++    expect(saved.revision).toBeTruthy();
++    expect((await getConfig()).providers[0].id).toBe("one");
++  });
++});
+diff --git a/tests/unit/iq-probe.test.js b/tests/unit/iq-probe.test.js
+new file mode 100644
+index 00000000..8bea5237
+--- /dev/null
++++ b/tests/unit/iq-probe.test.js
+@@ -0,0 +1,188 @@
++// IQ probe: the operator-configured puzzle (settings.iqProbe) sent to one
++// model at a time and graded server-side.
++//
++// Two things these tests are here to hold down:
++//   * the grader reads the FIRST number in the reply, not the last. A model
++//     that reasons "…so at least 23, the answer is 23" is right, and so is one
++//     that never restates the number at the end. Scanning from the end instead
++//     flips correct answers to wrong whenever the closing sentence happens to
++//     carry a different number ("需要 23 个" vs "最多 41 个").
++//   * a wrong answer is a SUCCESSFUL probe with `correct:false` — never an
++//     error. If it came back ok:false the row would show a red connection
++//     failure and the operator would go debug an account that is fine.
++
++import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
++
++vi.mock("@/lib/localDb", () => ({
++  getApiKeys: vi.fn(async () => [{ key: "test-key", isActive: true }]),
++  getSettings: vi.fn(async () => ({})),
++}));
++vi.mock("@/shared/constants/config", () => ({ UPDATER_CONFIG: { appPort: 20127 } }));
++vi.mock("@/shared/utils/machineId", () => ({ getConsistentMachineId: vi.fn(async () => "cli-token") }));
++
++const { pingIqModel } = await import("../../src/app/api/models/test/ping.js");
++const { mergeWithDefaults } = await import("../../src/lib/db/repos/settingsRepo.js");
++
++const CANDY_QUESTION = "最少取出多少个糖果…";
++const CANDY_ANSWER = "23";
++
++describe("pingIqModel", () => {
++  let fetchMock;
++
++  beforeEach(() => {
++    fetchMock = vi.fn();
++    vi.stubGlobal("fetch", fetchMock);
++  });
++
++  afterEach(() => {
++    vi.unstubAllGlobals();
++  });
++
++  function reply(content) {
++    return {
++      ok: true,
++      status: 200,
++      text: async () => JSON.stringify({ choices: [{ message: { content } }] }),
++    };
++  }
++
++  const run = (content) => {
++    fetchMock.mockResolvedValue(reply(content));
++    return pingIqModel("openai/gpt-4o", CANDY_QUESTION, CANDY_ANSWER, "http://127.0.0.1:20127");
++  };
++
++  it("sends the configured question, not a fixed ping", async () => {
++    await run("23");
++
++    const body = JSON.parse(fetchMock.mock.calls[0][1].body);
++    expect(body.messages[0].content).toBe(CANDY_QUESTION);
++    expect(body.stream).toBe(false);
++    // Reasoning models burn the budget before answering — same 1024 as the
++    // liveness probe.
++    expect(body.max_tokens).toBe(1024);
++  });
++
++  it("passes a model that answers the expected number", async () => {
++    const result = await run("23");
++    expect(result.ok).toBe(true);
++    expect(result.error).toBeNull();
++    expect(result.iq.correct).toBe(true);
++    expect(result.iq.modelAnswered).toBe("23");
++    expect(result.iq.expected).toBe("23");
++  });
++
++  it("reads the concluding number, not the arithmetic on the way there", async () => {
++    const result = await run("7+6+4=17，所以最少 23 个。");
++    expect(result.iq.modelAnswered).toBe("23");
++    expect(result.iq.correct).toBe(true);
++  });
++
++  it("honours an explicit IQ-ANSWER marker over the trailing text", async () => {
++    const result = await run("最少 23 个，若只按形状算则 18 个。\nIQ-ANSWER: 23");
++    expect(result.iq.modelAnswered).toBe("23");
++    expect(result.iq.correct).toBe(true);
++  });
++
++  it("marker wins even when the reply ends on a different number", async () => {
++    const result = await run("IQ-ANSWER: 23\n（最多需要 41 个）");
++    expect(result.iq.modelAnswered).toBe("23");
++    expect(result.iq.correct).toBe(true);
++  });
++
++  it("does not grade the verification number of an answer-first reply", async () => {
++    // The shape that forced the marker: answer up front, then the counter-
++    // example. A positional read (last number = 22) marks this correct answer
++    // wrong.
++    const result = await run("答案是 23 颗。验证：若只取 22 颗，可能刚好避开。\nIQ-ANSWER: 23");
++    expect(result.iq.modelAnswered).toBe("23");
++    expect(result.iq.correct).toBe(true);
++  });
++
++  it("marks a wrong answer as ok:true with correct:false", async () => {
++    const result = await run("41");
++    expect(result.ok).toBe(true);
++    expect(result.error).toBeNull();
++    expect(result.iq.correct).toBe(false);
++    expect(result.iq.modelAnswered).toBe("41");
++  });
++
++  it("reports what the model said even when no number is present", async () => {
++    const result = await run("这是一个经典的抽屉原理问题。");
++    expect(result.ok).toBe(true);
++    expect(result.iq.correct).toBe(false);
++    expect(result.iq.modelAnswered).toBe("");
++    expect(result.content).toBe("这是一个经典的抽屉原理问题。");
++  });
++
++  it("fails the probe when the upstream returns an HTTP error", async () => {
++    fetchMock.mockResolvedValue({
++      ok: false,
++      status: 429,
++      text: async () => JSON.stringify({ error: { message: "rate limited" } }),
++    });
++    const result = await pingIqModel("openai/gpt-4o", CANDY_QUESTION, CANDY_ANSWER, "http://127.0.0.1:20127");
++    expect(result.ok).toBe(false);
++    expect(result.error).toMatch(/429/);
++    expect(result.iq).toBeUndefined();
++  });
++
++  it("grades against a non-numeric answer by never matching", async () => {
++    fetchMock.mockResolvedValue(reply("二十三"));
++    const result = await pingIqModel("openai/gpt-4o", CANDY_QUESTION, "23", "http://127.0.0.1:20127");
++    expect(result.ok).toBe(true);
++    expect(result.iq.correct).toBe(false);
++  });
++
++  it("reads Responses-style output_text as well as chat choices", async () => {
++    fetchMock.mockResolvedValue({
++      ok: true,
++      status: 200,
++      text: async () => JSON.stringify({ output_text: "The answer is 23." }),
++    });
++    const result = await pingIqModel("openai/gpt-4o", CANDY_QUESTION, CANDY_ANSWER, "http://127.0.0.1:20127");
++    expect(result.iq.correct).toBe(true);
++  });
++});
++
++describe("iqProbe settings", () => {
++  it("ships the candy puzzle as the built-in default", () => {
++    const settings = mergeWithDefaults({});
++    expect(settings.iqProbe.answer).toBe("23");
++    expect(settings.iqProbe.question).toMatch(/糖果/);
++    // The shipped question has to ask for the marker: without it the grader
++    // falls back to the last number, which mis-reads answer-first replies.
++    expect(settings.iqProbe.question).toContain("IQ-ANSWER:");
++  });
++
++  it("keeps an operator-edited question and answer", () => {
++    const settings = mergeWithDefaults({ iqProbe: { question: "1+1?", answer: "2" } });
++    expect(settings.iqProbe).toEqual({ question: "1+1?", answer: "2" });
++  });
++
++  it("treats a stored null as reset, not as a probe with no answer", () => {
++    // The editor's "Reset to default" writes null. The shallow merge only
++    // substitutes for `undefined`, so null used to survive and leave the
++    // grader comparing against undefined — every model then failed.
++    const settings = mergeWithDefaults({ iqProbe: null });
++    expect(settings.iqProbe.answer).toBe("23");
++    expect(settings.iqProbe.question).toMatch(/糖果/);
++  });
++
++  it("backfills a missing sub-field from the default", () => {
++    const settings = mergeWithDefaults({ iqProbe: { question: "custom" } });
++    expect(settings.iqProbe.question).toBe("custom");
++    expect(settings.iqProbe.answer).toBe("23");
++  });
++
++  it("treats a blank answer as absent, not as the number 0", () => {
++    // Clearing the answer in the editor used to store "": Number("") is 0, so
++    // the grader would have accepted only a model that answered "0".
++    const settings = mergeWithDefaults({ iqProbe: { question: "custom", answer: "   " } });
++    expect(settings.iqProbe.answer).toBe("23");
++  });
++
++  it("keeps an operator's non-numeric answer rather than rewriting it", () => {
++    const settings = mergeWithDefaults({ iqProbe: { question: "q", answer: "0" } });
++    expect(settings.iqProbe.answer).toBe("0");
++  });
++});
+diff --git a/tests/unit/monitor-manual-route.test.js b/tests/unit/monitor-manual-route.test.js
+new file mode 100644
+index 00000000..1a38b6a9
+--- /dev/null
++++ b/tests/unit/monitor-manual-route.test.js
+@@ -0,0 +1,33 @@
++import { beforeEach, expect, it, vi } from "vitest";
++const mocks = vi.hoisted(() => ({ manual: vi.fn(), resolve: vi.fn(), ping: vi.fn(), iq: vi.fn() }));
++vi.mock("@/lib/localDb", () => ({ getSettings: async () => ({ iqProbe: { question: "1+1?", answer: "2" } }) }));
++vi.mock("@/lib/iqMonitor/service", () => ({ runManualMonitorTest: mocks.manual }));
++vi.mock("@/sse/services/model", () => ({ getModelInfo: mocks.resolve }));
++vi.mock("@/app/api/models/test/ping", () => ({ pingModelByKind: mocks.ping, pingIqModel: mocks.iq }));
++import { POST } from "../../src/app/api/models/test/route.js";
++const target = { provider: "openai-compatible-nexa", model: "gpt-6.1-sol" };
++const request = body => new Request("http://localhost/api/models/test", { method: "POST", body: JSON.stringify(body), headers: { "content-type": "application/json" } });
++beforeEach(() => { vi.clearAllMocks(); mocks.resolve.mockResolvedValue(target); mocks.manual.mockResolvedValue({ ok: true, monitorRow: { ...target, persisted: true } }); mocks.ping.mockResolvedValue({ ok: true }); });
++it("keeps high thinking separate from the published route and returns saved monitor state", async () => {
++  const response = await POST(request({ model: "nexa/gpt-6.1-sol", monitorTarget: target, probe: "iq", thinkingLevel: "high" }));
++  expect(response.status).toBe(200);
++  expect(mocks.resolve).toHaveBeenCalledWith("nexa/gpt-6.1-sol", { inferFallback: false });
++  expect(mocks.manual).toHaveBeenCalledWith(target, "iq", "high");
++  expect((await response.json()).monitorRow.persisted).toBe(true);
++  expect(mocks.iq).not.toHaveBeenCalled();
++});
++it("refuses mismatched provider targets before executing", async () => {
++  expect((await POST(request({ model: "nexa/gpt-6.1-sol", monitorTarget: { ...target, provider: "other" } }))).status).toBe(400);
++  expect(mocks.manual).not.toHaveBeenCalled();
++});
++it("does not claim unavailable models or unsupported strengths were tested", async () => {
++  mocks.manual.mockRejectedValue(new Error("Unsupported thinking level"));
++  const response = await POST(request({ model: "nexa/gpt-6.1-sol", monitorTarget: target, thinkingLevel: "invalid" }));
++  expect(response.status).toBe(400);
++  expect((await response.json()).ok).toBe(false);
++});
++it("preserves ordinary single-model testing", async () => {
++  expect((await POST(request({ model: "nexa/gpt-6.1-sol", kind: "llm" }))).status).toBe(200);
++  expect(mocks.ping).toHaveBeenCalledWith("nexa/gpt-6.1-sol", "llm");
++  expect(mocks.manual).not.toHaveBeenCalled();
++});
+diff --git a/tests/unit/monitor-manual-live.test.js b/tests/unit/monitor-manual-live.test.js
+new file mode 100644
+index 00000000..06a66aaa
+--- /dev/null
++++ b/tests/unit/monitor-manual-live.test.js
+@@ -0,0 +1,42 @@
++import { it, expect } from "vitest";
++import { createServer } from "node:http";
++import { writeFile } from "node:fs/promises";
++
++it.skipIf(process.env.TENROUTER_RUN_MONITOR_LIVE !== "1")("checks high thinking on the real provider and retains history over HTTP", async () => {
++  delete process.env.ALL_PROXY;
++  const { POST } = await import("../../src/app/api/models/test/route.js");
++  const { GET } = await import("../../src/app/api/iq-monitor/route.js");
++  const { getConfig, getCatalog } = await import("../../src/lib/iqMonitor/service.js");
++  const { getProviderNodes } = await import("../../src/lib/localDb.js");
++  const [config, catalog, nodes] = await Promise.all([getConfig(), getCatalog(), getProviderNodes()]);
++  const node = nodes.find(node => node.prefix === "nexa");
++  expect(node).toBeTruthy();
++  const target = { provider: node.id, model: "gpt-6.1-sol" };
++  expect(catalog.find(provider => provider.id === node.id)?.models).toContain(target.model);
++  const server = createServer(async (req, res) => {
++    let body = ""; for await (const chunk of req) body += chunk;
++    const request = new Request("http://127.0.0.1" + req.url, { method: req.method, ...(body && { body, headers: { "content-type": "application/json" } }) });
++    try {
++      const response = req.method === "POST" ? await POST(request) : await GET();
++      res.writeHead(response.status, Object.fromEntries(response.headers)); res.end(await response.text());
++    } catch (error) { res.writeHead(500); res.end(JSON.stringify({ error: error.message })); }
++  });
++  await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
++  const base = "http://127.0.0.1:" + server.address().port;
++  const report = { model: "nexa/gpt-6.1-sol", thinkingLevel: "high", data: "isolated snapshot of real gateway", assertions: [] };
++  try {
++    const response = await fetch(base + "/api/models/test", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ model: report.model, kind: "llm", probe: "iq", thinkingLevel: "high", monitorTarget: target }) });
++    report.http = response.status; report.result = await response.json();
++    expect(response.status).toBe(200);
++    expect(report.result.error || "").not.toContain("restricted model list");
++    expect(report.result.monitorRow).toMatchObject({ ...target, thinkingLevel: "high", persisted: true, manual: true });
++    const snapshot = await (await fetch(base + "/api/iq-monitor")).json();
++    expect(snapshot.state.history).toContainEqual(report.result.monitorRow);
++    expect(await getConfig()).toEqual(config);
++    report.assertions.push("HTTP 200; high thinking bypasses model-name allowlist mismatch; history persists; schedule unchanged");
++    console.log(JSON.stringify({ http: report.http, ok: report.result.ok, status: report.result.monitorRow.status, latencyMs: report.result.latencyMs, error: report.result.error, assertions: report.assertions }));
++  } finally {
++    await writeFile("/home/meet/.codex/tmp/monitor-manual-20261014/live-result.json", JSON.stringify(report, null, 2));
++    await new Promise(resolve => server.close(resolve));
++  }
++}, 90000);
+--- a/deploy.sh
++++ b/deploy.sh
+@@ -48,6 +48,16 @@
+ # 本批次补丁存活检查项（P1.5），按需增删。格式: "文件名:grep词:最少命中数"
+ # 注意: grep 词含引号/括号时用 grep -F 固定字符串匹配，避免正则解析
+ PATCH_CHECKS=(
++  "src/lib/iqMonitor/service.js:runManualMonitorTest:1"
++  "src/app/api/models/test/route.js:monitorTarget:3"
++  "custom-server.js:startIqMonitor:2"
++  "src/app/api/models/test/ping.js:extractIqAnswer:2"
++  "src/dashboardGuard.js:/api/iq-monitor/tick:1"
++  "src/lib/db/repos/settingsRepo.js:iqProbe:3"
++  "src/app/api/iq-monitor/route.js:saveConfig:2"
++  "src/app/api/iq-monitor/tick/route.js:tickMonitor:2"
++  "src/lib/iqMonitor/core.js:runTick:1"
++  "src/lib/iqMonitor/probe.js:probeTarget:1"
+   "src/lib/db/repos/usageRepo.js:outputSpeedDurationMs:3"
+   "open-sse/utils/stream.js:captureResponseModel:3"
+   "open-sse/handlers/chatCore/streamingHandler.js:contentObj?.responseModel:1"

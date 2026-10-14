@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { providerInfo } from '../api/providers.js';
 import Icon from '../components/Icon.jsx';
 import ProviderIcon from '../components/ProviderIcon.jsx';
+import ProviderError from '../components/ProviderError.jsx';
 import RequestEndpoint from '../components/RequestEndpoint.jsx';
 import TokenDetails from '../components/TokenDetails.jsx';
 import RequestLatency, { RequestTime } from '../components/RequestLatency.jsx';
@@ -93,6 +94,8 @@ export function ModelsPage({ providerId = '' }) {
   const [actionError, setActionError] = useState('');
   const [busyModel, setBusyModel] = useState(null);
   const [upstream, setUpstream] = useState(false);
+  const [testModel, setTestModel] = useState(null);
+  const [modelTests, setModelTests] = useState({});
   const refreshModels = () => { builtIn.refresh(); custom.refresh(); providers.refresh(); nodes.refresh(); caps.refresh(); disabled.refresh(); };
   const [query, setQuery] = useState('');
   const deferredQuery = useDeferredValue(query);
@@ -118,8 +121,22 @@ export function ModelsPage({ providerId = '' }) {
   const loading = builtIn.loading || custom.loading || providers.loading || nodes.loading || caps.loading || disabled.loading;
   const initialLoading = [builtIn, custom, providers, nodes, caps, disabled].some(resource => resource.loading && !resource.data);
   const failed = builtIn.error || custom.error || providers.error || nodes.error;
-  const suppliers = [...new Map([...(nodes.data?.nodes || []), ...(providers.data?.connections || []).map(connection => providerInfo(connection.provider, nodes.data?.nodes))].map(info => [info.id, { id: info.id, name: info.name }])).values()].filter(info => !providerId || info.id === providerId);
+  const suppliers = [...new Map([...(nodes.data?.nodes || []), ...(providers.data?.connections || []).map(connection => providerInfo(connection.provider, nodes.data?.nodes))].map(info => [info.id, { id: info.id, name: info.name, prefix: info.prefix, connected: normalizeProviders(providers.data || {}).some(connection => connection.isActive && providerInfo(connection.provider, nodes.data?.nodes, connection).id === info.id) }])).values()].filter(info => !providerId || info.id === providerId);
   const upstreamConnections = normalizeProviders(providers.data || {}).filter(connection => connection.isActive && providerInfo(connection.provider, nodes.data?.nodes).id === providerId);
+  async function runModelTest(model) {
+    setTestModel(model);
+    setModelTests(previous => ({ ...previous, [model.id]: { running: true } }));
+    const started = performance.now();
+    let result;
+    try {
+      result = await requestJson('/api/models/test', { method: 'POST', body: JSON.stringify({ model: model.id, kind: model.type || 'llm' }), signal: AbortSignal.timeout(25000) });
+      result = { ...result, ok: result.ok === true, error: result.ok === true ? '' : result.error || '网关未确认模型调用成功' };
+    } catch (failure) {
+      result = { ok: false, status: failure.status, error: failure.name === 'TimeoutError' ? '测试请求超时（25 秒），未确认调用结果' : failure.details?.error || failure.message };
+    }
+    setModelTests(previous => ({ ...previous, [model.id]: { ...result, latencyMs: result.latencyMs ?? Math.round(performance.now() - started), at: new Date().toISOString() } }));
+  }
+  const testResult = testModel && modelTests[testModel.id];
   async function toggleModel(model) {
     setBusyModel(model.id); setActionError('');
     try {
@@ -134,7 +151,14 @@ export function ModelsPage({ providerId = '' }) {
   return <>
     {providerId ? <><div className="panel-heading"><h2>供应商模型</h2></div><div className="section-toolbar">{actions}</div></> : <PageHeading title="模型" subtitle="我的网关 / 模型目录">{actions}</PageHeading>}
     {actionError && <ErrorBlock message={actionError}/>} {[caps, disabled].map((item, index) => item.error && <ErrorBlock key={index} message={item.error} onRetry={item.refresh}/>)}
-    {editor && <ModelEditor model={editor.id ? editor : null} suppliers={suppliers} onClose={() => setEditor(null)} onSaved={refreshModels}/>}
+    {editor && <ModelEditor model={editor.id ? editor : null} suppliers={suppliers} onClose={() => setEditor(null)} onSaved={savedModel => { refreshModels(); if (savedModel) runModelTest(savedModel); }}/>}
+    {testModel && <Modal title="模型调用测试" busy={testResult?.running} onClose={() => setTestModel(null)}>
+      <div className="model-name"><strong>{testModel.name}</strong><code>{testModel.id}</code></div>
+      <p className="inline-note">按网关路由测试，使用该供应商当前可用账号。结果仅代表本次调用，刷新页面后清除。</p>
+      <div role="status" aria-live="polite"><Status value={testResult?.running ? 'unknown' : testResult?.ok ? 'healthy' : 'error'} label={testResult?.running ? '测试中…' : testResult?.ok ? '调用成功' : '调用失败'}/></div>
+      {testResult && !testResult.running && <><p className="inline-note">耗时 {formatNumber(testResult.latencyMs)} ms · {formatDate(testResult.at)}{testResult.status ? ` · HTTP ${testResult.status}` : ''}</p>{testResult.note && <p className="inline-note">{testResult.note}</p>}{!testResult.ok && <ProviderError error={{ message: typeof testResult.error === 'string' ? testResult.error : JSON.stringify(testResult.error), status: testResult.status }}/>}</>}
+      <div className="dialog-actions"><button className="button" disabled={testResult?.running} onClick={() => setTestModel(null)}>关闭</button><button className="button primary" disabled={testResult?.running} onClick={() => runModelTest(testModel)}>{testResult?.running ? '正在测试…' : '重新测试'}</button></div>
+    </Modal>}
     {upstream && <UpstreamModels supplier={providerInfo(providerId, nodes.data?.nodes)} connections={upstreamConnections} existing={scoped} onClose={() => setUpstream(false)} onSaved={refreshModels}/>}
     {removingModel && <ConfirmDelete title="删除自定义模型" name={removingModel.id} url={`/api/models/custom?${new URLSearchParams({ providerAlias: removingModel.provider, id: removingModel.upstreamId, type: removingModel.type || 'llm' })}`} onClose={() => setRemovingModel(null)} onDeleted={refreshModels}/>}
     <div className="section-toolbar">
@@ -146,7 +170,7 @@ export function ModelsPage({ providerId = '' }) {
       {custom.error && <ErrorBlock message={`自定义模型：${custom.error}`} onRetry={custom.refresh}/>}
       {providers.error && <ErrorBlock message={`连接列表：${providers.error}`} onRetry={providers.refresh}/>}
       {nodes.error && <ErrorBlock message={`自定义节点：${nodes.error}`} onRetry={nodes.refresh}/>}
-      <div className="table-shell"><table><caption className="sr-only">已登记的模型目录，不代表上游实时可用性</caption><thead><tr><th>模型 / 路由 ID</th><th>供应商</th><th>能力</th><th>上下文</th><th>状态</th><th>复制</th></tr></thead><tbody>{initialLoading ? <tr><td colSpan="6" className="table-empty">正在加载模型…</td></tr> : filtered.length ? filtered.slice((currentPage - 1) * 20, currentPage * 20).map(model => <tr key={model.id}><td><div className="model-name"><strong>{model.name}</strong><code>{model.id}</code></div></td><td><div className="provider-link"><ProviderIcon provider={model.supplier.id}/><div>{model.hasConnections ? <Link to={`/dashboard/providers/${encodeURIComponent(model.supplier.id)}`}><strong>{model.supplier.name}</strong></Link> : <strong>{model.supplier.name}</strong>}<small>{model.supplier.custom ? '自定义节点' : '内置供应商'} · {model.supplier.prefix || model.provider}</small></div></div></td><td><div className="capabilities">{model.caps.vision && <span className="badge">视觉</span>}{model.caps.reasoning && <span className="badge">推理</span>}{model.caps.search && <span className="badge">搜索</span>}{!model.caps.vision && !model.caps.reasoning && !model.caps.search && <span className="muted">—</span>}</div></td><td className="mono muted">{formatNumber(model.caps.contextWindow)}</td><td><Status value={!model.enabled ? 'disabled' : model.connected ? 'healthy' : 'unknown'} label={!model.enabled ? '已停用' : model.connected ? '已接入' : '未接入'}/></td><td><div className="row-actions"><CopyButton value={model.id} label={`复制模型 ${model.id}`}/>{managementEnabled && <><IconButton icon="edit" label={`编辑模型 ${model.id}`} onClick={() => setEditor(model)}/><IconButton icon={model.enabled ? "hide" : "eye"} label={`${model.enabled ? "停用" : "启用"}模型 ${model.id}`} disabled={!!busyModel} onClick={() => toggleModel(model)}/>{model.custom && <IconButton icon="trash" label={`删除模型 ${model.id}`} onClick={() => setRemovingModel(model)}/>}</>}</div></td></tr>) : <tr><td colSpan="6" className="table-empty">{failed ? '模型数据未完整加载' : scope === 'connected' && !scoped.length ? '暂无已接入的模型' : '没有匹配的模型'}</td></tr>}</tbody></table></div>
+      <div className="table-shell"><table><caption className="sr-only">已登记的模型目录，不代表上游实时可用性</caption><thead><tr><th>模型 / 路由 ID</th><th>供应商</th><th>能力</th><th>上下文</th><th>状态 / 本次测试</th><th>操作</th></tr></thead><tbody>{initialLoading ? <tr><td colSpan="6" className="table-empty">正在加载模型…</td></tr> : filtered.length ? filtered.slice((currentPage - 1) * 20, currentPage * 20).map(model => <tr key={model.id}><td><div className="model-name"><strong>{model.name}</strong><code>{model.id}</code></div></td><td><div className="provider-link"><ProviderIcon provider={model.supplier.id}/><div>{model.hasConnections ? <Link to={`/dashboard/providers/${encodeURIComponent(model.supplier.id)}`}><strong>{model.supplier.name}</strong></Link> : <strong>{model.supplier.name}</strong>}<small>{model.supplier.custom ? '自定义节点' : '内置供应商'} · {model.supplier.prefix || model.provider}</small></div></div></td><td><div className="capabilities">{model.caps.vision && <span className="badge">视觉</span>}{model.caps.reasoning && <span className="badge">推理</span>}{model.caps.search && <span className="badge">搜索</span>}{!model.caps.vision && !model.caps.reasoning && !model.caps.search && <span className="muted">—</span>}</div></td><td className="mono muted">{formatNumber(model.caps.contextWindow)}</td><td><Status value={!model.enabled ? 'disabled' : model.connected ? 'healthy' : 'unknown'} label={!model.enabled ? '已停用' : model.connected ? '已接入' : '未接入'}/><div className="model-test-status"><Status value={modelTests[model.id]?.running ? 'unknown' : modelTests[model.id] ? modelTests[model.id].ok ? 'healthy' : 'error' : 'unknown'} label={modelTests[model.id]?.running ? '测试中…' : modelTests[model.id] ? modelTests[model.id].ok ? '调用成功' : '调用失败' : '未测试'}/></div></td><td><div className="row-actions"><CopyButton value={model.id} label={`复制模型 ${model.id}`}/>{managementEnabled && <><button type="button" className="button" aria-label={`测试模型 ${model.id}`} title={!model.enabled ? '请先启用模型' : !model.connected ? '请先启用供应商账号' : (model.type || 'llm') !== 'llm' ? '当前仅支持文本模型测试' : '发送一次真实模型调用'} disabled={loading || !!testResult?.running || !model.enabled || !model.connected || (model.type || 'llm') !== 'llm'} onClick={() => runModelTest(model)}>测试</button><IconButton icon="edit" label={`编辑模型 ${model.id}`} onClick={() => setEditor(model)}/><IconButton icon={model.enabled ? "hide" : "eye"} label={`${model.enabled ? "停用" : "启用"}模型 ${model.id}`} disabled={!!busyModel} onClick={() => toggleModel(model)}/>{model.custom && <IconButton icon="trash" label={`删除模型 ${model.id}`} onClick={() => setRemovingModel(model)}/>}</>}</div></td></tr>) : <tr><td colSpan="6" className="table-empty">{failed ? '模型数据未完整加载' : scope === 'connected' && !scoped.length ? '暂无已接入的模型' : '没有匹配的模型'}</td></tr>}</tbody></table></div>
       <div className="table-footer"><span>{filtered.length} 个模型</span><div className="pagination"><IconButton icon="back" label="上一页模型" disabled={currentPage <= 1} onClick={() => setPage(currentPage - 1)}/><span>{currentPage} / {pages}</span><IconButton icon="arrow" label="下一页模型" disabled={currentPage >= pages} onClick={() => setPage(currentPage + 1)}/></div></div>
     </section>
   </>;
