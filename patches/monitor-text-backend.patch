@@ -1,0 +1,174 @@
+diff --git a/open-sse/handlers/chatCore.js b/open-sse/handlers/chatCore.js
+index 2716c5b..f80c56a 100644
+--- a/open-sse/handlers/chatCore.js
++++ b/open-sse/handlers/chatCore.js
+@@ -62,7 +62,7 @@ export function stripContinuityFields(body) {
+   return body;
+ }
+ 
+-export async function handleChatCore({ body, modelInfo, credentials, log, onCredentialsRefreshed, onCredentialsRefreshFailed, onRequestSuccess, onDisconnect, clientRawRequest, connectionId, userAgent, apiKey, ccFilterNaming, rtkEnabled, headroomEnabled, headroomUrl, headroomCompressUserMessages, cavemanEnabled, cavemanLevel, ponytailEnabled, ponytailLevel, pxpipeEnabled, pxpipeMinChars, pxpipeTimeoutMs, pxpipeTransform, onPxpipeEvent, sourceFormatOverride, providerThinking }) {
++export async function handleChatCore({ body, modelInfo, credentials, log, onCredentialsRefreshed, onCredentialsRefreshFailed, onRequestSuccess, onDisconnect, clientRawRequest, connectionId, userAgent, apiKey, ccFilterNaming, rtkEnabled, headroomEnabled, headroomUrl, headroomCompressUserMessages, cavemanEnabled, cavemanLevel, ponytailEnabled, ponytailLevel, pxpipeEnabled, pxpipeMinChars, pxpipeTimeoutMs, pxpipeTransform, onPxpipeEvent, sourceFormatOverride, providerThinking, _executorOverride }) {
+   const { provider, model } = modelInfo;
+   // Executors and credential helpers (e.g. qoderModels.js) branch on
+   // credentials.provider to pick the right upstream deployment (cn vs global).
+@@ -342,7 +342,7 @@ export async function handleChatCore({ body, modelInfo, credentials, log, onCred
+   // system/tools/messages, and a stale anchor costs a full prefix rewrite.
+   if (passthrough && clientTool === "claude") anchorClaudeCache(translatedBody);
+ 
+-  const executor = getExecutor(provider);
++  const executor = _executorOverride || getExecutor(provider);
+   trackPendingRequest(model, provider, connectionId, true);
+   appendRequestLog({ model, provider, connectionId, status: "PENDING" }).catch(() => { });
+ 
+@@ -575,8 +575,9 @@ export async function handleChatCore({ body, modelInfo, credentials, log, onCred
+   const appendLog = (extra) => appendRequestLog({ model, provider, connectionId, ...extra }).catch(() => { });
+   const trackDone = () => trackPendingRequest(model, provider, connectionId, false);
+ 
+-  // Provider forced streaming but client wants JSON
+-  if (!clientRequestedStreaming && providerRequiresStreaming) {
++  // Some compatible upstreams return SSE even when stream:false was requested.
++  const upstreamReturnedSSE = (providerResponse.headers.get("content-type") || "").includes("text/event-stream");
++  if (!clientRequestedStreaming && (providerRequiresStreaming || (!stream && upstreamReturnedSSE))) {
+     const result = await handleForcedSSEToJson({ ...sharedCtx, providerResponse, sourceFormat, targetFormat: providerResponseFormat, customToolNames, toolNameMap, translateToClientFormat, trackDone, appendLog });
+     if (result) { streamController.handleComplete(); return result; }
+   }
+diff --git a/src/app/api/models/test/ping.js b/src/app/api/models/test/ping.js
+index 910b27c..1ca2041 100644
+--- a/src/app/api/models/test/ping.js
++++ b/src/app/api/models/test/ping.js
+@@ -41,6 +41,13 @@ function gradeIq(content, expected) {
+ // connection failure on a healthy account that simply got the puzzle wrong.
+ // `content` is kept so the client can show what the model actually said.
+ export function judgeIqReply(content, expected, base = {}) {
++  if (!String(content || "").trim()) return {
++    ...base,
++    ok: false,
++    replyIssue: "empty_final_text",
++    error: "模型未返回最终文本，无法判定答案",
++    content: "",
++  };
+   const modelAnswered = extractIqAnswer(content);
+   const correct = gradeIq(content, expected);
+   return {
+diff --git a/deploy.sh b/deploy.sh
+index 83becf4..555147b 100644
+--- a/deploy.sh
++++ b/deploy.sh
+@@ -48,6 +48,8 @@ PROXY_UNSET="env -u http_proxy -u https_proxy -u HTTP_PROXY -u HTTPS_PROXY -u al
+ # 本批次补丁存活检查项（P1.5），按需增删。格式: "文件名:grep词:最少命中数"
+ # 注意: grep 词含引号/括号时用 grep -F 固定字符串匹配，避免正则解析
+ PATCH_CHECKS=(
++  "open-sse/handlers/chatCore.js:upstreamReturnedSSE:2"
++  "src/app/api/models/test/ping.js:empty_final_text:1"
+   "src/lib/iqMonitor/service.js:runManualMonitorTest:1"
+   "src/app/api/models/test/route.js:monitorTarget:3"
+   "custom-server.js:startIqMonitor:2"
+diff --git a/tests/unit/iq-probe.test.js b/tests/unit/iq-probe.test.js
+index 8bea523..076c034 100644
+--- a/tests/unit/iq-probe.test.js
++++ b/tests/unit/iq-probe.test.js
+@@ -106,6 +106,24 @@ describe("pingIqModel", () => {
+     expect(result.iq.modelAnswered).toBe("41");
+   });
+ 
++  it("does not grade an empty final reply as an incorrect answer", async () => {
++    const result = await run("   ");
++    expect(result.ok).toBe(false);
++    expect(result.status).toBe(200);
++    expect(result.replyIssue).toBe("empty_final_text");
++    expect(result.error).toBeTruthy();
++    expect(result.iq).toBeUndefined();
++  });
++
++  it("does not grade reasoning-only content as a final answer", async () => {
++    fetchMock.mockResolvedValue({ ok: true, status: 200, text: async () => JSON.stringify({
++      choices: [{ message: { content: "", reasoning_content: "IQ-ANSWER: 23" }, finish_reason: "length" }],
++    }) });
++    const result = await pingIqModel("openai/gpt-4o", CANDY_QUESTION, CANDY_ANSWER, "http://127.0.0.1:20127");
++    expect(result.ok).toBe(false);
++    expect(result.iq).toBeUndefined();
++  });
++
+   it("reports what the model said even when no number is present", async () => {
+     const result = await run("这是一个经典的抽屉原理问题。");
+     expect(result.ok).toBe(true);
+diff --git a/tests/unit/monitor-manual-live.test.js b/tests/unit/monitor-manual-live.test.js
+index 06a66aa..91b3919 100644
+--- a/tests/unit/monitor-manual-live.test.js
++++ b/tests/unit/monitor-manual-live.test.js
+@@ -29,6 +29,10 @@ it.skipIf(process.env.TENROUTER_RUN_MONITOR_LIVE !== "1")("checks high thinking
+     report.http = response.status; report.result = await response.json();
+     expect(response.status).toBe(200);
+     expect(report.result.error || "").not.toContain("restricted model list");
++    expect(report.result.ok).toBe(true);
++    expect(report.result.content.trim().length).toBeGreaterThan(0);
++    expect(report.result.iq.modelAnswered).not.toBe("");
++    expect(report.result.monitorRow.answers[0].content).toBe(report.result.content);
+     expect(report.result.monitorRow).toMatchObject({ ...target, thinkingLevel: "high", persisted: true, manual: true });
+     const snapshot = await (await fetch(base + "/api/iq-monitor")).json();
+     expect(snapshot.state.history).toContainEqual(report.result.monitorRow);
+diff --git a/tests/unit/monitor-sse-nonstream.test.js b/tests/unit/monitor-sse-nonstream.test.js
+new file mode 100644
+index 0000000..b5ccac9
+--- /dev/null
++++ b/tests/unit/monitor-sse-nonstream.test.js
+@@ -0,0 +1,59 @@
++import { describe, it, expect, vi } from "vitest";
++
++const { execute } = vi.hoisted(() => ({ execute: vi.fn() }));
++vi.mock("../../open-sse/executors/index.js", () => ({ getExecutor: () => ({ noAuth: true, execute }) }));
++vi.mock("../../open-sse/utils/requestLogger.js", () => ({ createRequestLogger: async () => ({
++  logClientRawRequest() {}, logRawRequest() {}, logTargetRequest() {}, logProviderResponse() {}, logConvertedResponse() {}, logError() {},
++}) }));
++vi.mock("@/lib/usageDb.js", () => ({
++  trackPendingRequest: vi.fn(), appendRequestLog: vi.fn(async () => {}), saveRequestDetail: vi.fn(async () => {}), saveRequestUsage: vi.fn(async () => {}),
++}));
++import "../../open-sse/index.js";
++import { handleChatCore } from "../../open-sse/handlers/chatCore.js";
++
++describe("non-stream monitor receiving upstream SSE", () => {
++  it("uses the monitor executor that enforces its deadline", async () => {
++    const abort = new AbortController();
++    abort.abort();
++    const limited = vi.fn(async options => {
++      expect(options.signal.aborted).toBe(true);
++      throw new DOMException("Monitor deadline aborted", "AbortError");
++    });
++    execute.mockClear();
++    const result = await handleChatCore({
++      body: { model: "gpt-4o", stream: false, messages: [{ role: "user", content: "puzzle" }] },
++      modelInfo: { provider: "openai", model: "gpt-4o" }, credentials: { apiKey: "test" },
++      _executorOverride: { execute: options => limited({ ...options, signal: AbortSignal.any([options.signal, abort.signal]) }) },
++    });
++    expect(limited).toHaveBeenCalledOnce();
++    expect(limited.mock.calls[0][0].signal.aborted).toBe(true);
++    expect(execute).not.toHaveBeenCalled();
++    expect(result.success).toBe(false);
++  });
++  for (const sourceFormat of ["openai", "openai-responses"]) {
++    it(`retains Responses final text for a ${sourceFormat} client`, async () => {
++      const response = { id: "resp_monitor", object: "response", status: "completed", model: "gpt-6.1-sol", output: [
++        { type: "reasoning", summary: [] },
++        { type: "message", role: "assistant", status: "completed", content: [{ type: "output_text", text: "IQ-ANSWER: 21" }] },
++      ], usage: { input_tokens: 209, output_tokens: 599, total_tokens: 808 } };
++      const events = [
++        { type: "response.created", response: { ...response, status: "in_progress", output: [] } },
++        ...response.output.map((item, output_index) => ({ type: "response.output_item.done", item, output_index })),
++        { type: "response.completed", response },
++      ];
++      const raw = ': keepalive\n\n' + events.map(event => 'event: ' + event.type + '\ndata: ' + JSON.stringify(event) + '\n\n').join('');
++      execute.mockResolvedValue({ response: new Response(raw, { headers: { "content-type": "text/event-stream" } }), headers: {}, url: "https://example.test/v1/responses" });
++      const result = await handleChatCore({
++        body: { model: "gpt-6.1-sol(high)", stream: false, ...(sourceFormat === "openai" ? { messages: [{ role: "user", content: "puzzle" }] } : { input: "puzzle" }) },
++        modelInfo: { provider: "openai-compatible-chat-monitor", model: "gpt-6.1-sol(high)" },
++        credentials: { apiKey: "test", providerSpecificData: { apiType: "responses" } },
++        sourceFormatOverride: sourceFormat, connectionId: "test", rtkEnabled: false,
++      });
++      expect(result.success).toBe(true);
++      const parsed = await result.response.json();
++      const content = sourceFormat === "openai" ? parsed.choices[0].message.content : parsed.output.find(item => item.type === "message")?.content[0].text;
++      expect(content).toBe("IQ-ANSWER: 21");
++      expect(sourceFormat === "openai" ? parsed.usage.completion_tokens : parsed.usage.output_tokens).toBe(599);
++    });
++  }
++});

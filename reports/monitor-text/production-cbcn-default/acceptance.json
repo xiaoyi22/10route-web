@@ -1,0 +1,32 @@
+{
+  "base": "http://192.168.11.150:4317",
+  "http": {
+    "login": 200,
+    "page": 200,
+    "test": 200
+  },
+  "errors": [],
+  "writes": [
+    "/api/models/test"
+  ],
+  "checks": [
+    "Base model and independent effort; persisted history, status and summary updated; automatic config preserved",
+    "Nonempty final text is visible in single detection details and retained after reload",
+    "Status and manual history retained after reload"
+  ],
+  "result": {
+    "ok": true,
+    "error": null,
+    "status": "incorrect",
+    "thinkingLevel": null,
+    "latencyMs": 8760,
+    "at": 1791963249992,
+    "content": "IQ-ANSWER: 26",
+    "iq": {
+      "expected": "21",
+      "modelAnswered": "26",
+      "correct": false
+    }
+  },
+  "passed": true
+}
