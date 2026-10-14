@@ -1,0 +1,16 @@
+{
+  "base": "http://192.168.11.150:4317",
+  "statuses": {
+    "login": 200,
+    "invalidCount": 400,
+    "comboSave": 200,
+    "settingsSave": 200
+  },
+  "checks": [
+    "生产真实保存9次并刷新保持，主备保留次数，次数和策略分别继承通过",
+    "生产桌面和手机页面无溢出，复选框尺寸正常，无未捕获异常"
+  ],
+  "errors": [],
+  "temporaryComboRemoved": true,
+  "passed": true
+}

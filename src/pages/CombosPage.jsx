@@ -4,11 +4,28 @@ import { ConfirmDelete, CopyButton, ErrorBlock, IconButton, Modal, PageHeading, 
 import { requestJson } from '../api/client.js';
 import { modelCatalog } from '../api/data.js';
 
+function formatComboStrategy(comboName, settingsData) {
+  const override = settingsData?.comboStrategies?.[comboName];
+  const isInheritedStrategy = !override?.fallbackStrategy;
+  const effectiveStrategy = override?.fallbackStrategy || settingsData?.comboStrategy || 'fallback';
+  const strategyName = ({ fallback: '主备优先', 'round-robin': '粘性轮询', fusion: '融合' })[effectiveStrategy] || effectiveStrategy;
+  const label = isInheritedStrategy ? `${strategyName}（策略继承）` : strategyName;
+  if (effectiveStrategy === 'round-robin') {
+    const effectiveLimit = override?.comboStickyRoundRobinLimit ?? settingsData?.comboStickyRoundRobinLimit ?? 1;
+    return `${label} · ${effectiveLimit} 次${override?.comboStickyRoundRobinLimit == null ? '（次数继承）' : ''}`;
+  }
+  return label;
+}
+
 function ComboEditor({ combo, choices, settings, onClose, onSaved }) {
   const [name, setName] = useState(combo?.name || '');
   const [models, setModels] = useState(combo?.models || []);
   const [selected, setSelected] = useState('');
-  const [strategy, setStrategy] = useState(settings.comboStrategies?.[combo?.name]?.fallbackStrategy || settings.comboStrategy || 'fallback');
+  const currentOverride = settings.comboStrategies?.[combo?.name] || {};
+  const [strategy, setStrategy] = useState(currentOverride.fallbackStrategy || '');
+  const effectiveStrategy = strategy || settings.comboStrategy || 'fallback';
+  const [overrideSticky, setOverrideSticky] = useState(currentOverride.comboStickyRoundRobinLimit != null);
+  const [stickyLimit, setStickyLimit] = useState(String(currentOverride.comboStickyRoundRobinLimit ?? settings.comboStickyRoundRobinLimit ?? 1));
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(null);
   const [error, setError] = useState('');
@@ -17,6 +34,9 @@ function ComboEditor({ combo, choices, settings, onClose, onSaved }) {
     event.preventDefault(); setBusy(true); setError('');
     let persisted = saved;
     try {
+      if (effectiveStrategy === 'round-robin' && overrideSticky && (!Number.isSafeInteger(Number(stickyLimit)) || Number(stickyLimit) < 1)) {
+        throw new Error('粘性轮询次数必须是大于等于 1 的安全整数。');
+      }
       if (!models.length || models.includes(name.trim())) throw new Error('请选择至少一个模型，组合不能包含自身。');
       if (!persisted) {
         persisted = await requestJson(combo?.id ? `/api/combos/${encodeURIComponent(combo.id)}` : '/api/combos', { method: combo?.id ? 'PUT' : 'POST', body: JSON.stringify({ name: name.trim(), models, kind: combo?.kind || null }) });
@@ -26,7 +46,14 @@ function ComboEditor({ combo, choices, settings, onClose, onSaved }) {
       const strategies = { ...latest.comboStrategies };
       const previous = strategies[combo?.name] || strategies[name.trim()] || {};
       if (combo?.name && combo.name !== name.trim()) delete strategies[combo.name];
-      strategies[name.trim()] = { ...previous, fallbackStrategy: strategy };
+      const nextOverride = { ...previous };
+      if (strategy) nextOverride.fallbackStrategy = strategy;
+      else delete nextOverride.fallbackStrategy;
+      if (effectiveStrategy === 'round-robin') {
+        if (overrideSticky) nextOverride.comboStickyRoundRobinLimit = Number(stickyLimit);
+        else delete nextOverride.comboStickyRoundRobinLimit;
+      }
+      strategies[name.trim()] = nextOverride;
       await requestJson('/api/settings', { method: 'PATCH', body: JSON.stringify({ comboStrategies: strategies }) });
       onSaved(); onClose();
     } catch (failure) { setError(failure.message); if (persisted) onSaved(); }
@@ -35,7 +62,14 @@ function ComboEditor({ combo, choices, settings, onClose, onSaved }) {
   return <Modal title={combo ? '编辑组合模型' : '创建组合模型'} busy={busy} onClose={onClose}><form className="editor-form" onSubmit={save}>
     <fieldset disabled={busy || !!saved} className="plain-fieldset">
     <label>下游模型名称<input required pattern="[a-zA-Z0-9_.\-]+" value={name} onChange={event => setName(event.target.value)} placeholder="例如 my-assistant"/></label>
-    <label>调度方式<select aria-label="调度方式" value={strategy} onChange={event => setStrategy(event.target.value)}><option value="fallback">顺序回退：前一个失败再用下一个</option><option value="round-robin">轮询：轮流选择起始模型</option>{!['fallback', 'round-robin'].includes(strategy) && <option value={strategy}>保留当前策略：{strategy}</option>}</select></label>
+    <label>调度方式<select aria-label="调度方式" value={strategy} onChange={event => setStrategy(event.target.value)}><option value="">继承全局策略（当前：{({ fallback: '主备优先', 'round-robin': '粘性轮询', fusion: '融合' })[settings.comboStrategy || 'fallback'] || settings.comboStrategy}）</option><option value="fallback">主备优先</option><option value="round-robin">粘性轮询</option>{strategy && !['fallback', 'round-robin'].includes(strategy) && <option value={strategy}>保留当前策略：{strategy}</option>}</select></label>
+    {effectiveStrategy === 'round-robin' && <>
+      <div className="model-editor"><label className="checkbox-filter"><input type="checkbox" checked={overrideSticky} onChange={event => {
+        setOverrideSticky(event.target.checked);
+        if (event.target.checked && !stickyLimit) setStickyLimit(String(currentOverride.comboStickyRoundRobinLimit ?? settings.comboStickyRoundRobinLimit ?? 1));
+      }}/> 自定义粘性轮询次数</label></div>
+      {overrideSticky && <label>粘性轮询次数<input type="number" min="1" max={Number.MAX_SAFE_INTEGER} step="1" required value={stickyLimit} onChange={event => setStickyLimit(event.target.value)}/></label>}
+    </>}
     <div className="form-columns"><label>选择成员模型<select aria-label="选择成员模型" value={selected} onChange={event => setSelected(event.target.value)}><option value="">选择模型</option>{choices.filter(model => !models.includes(model.id)).map(model => <option key={model.id} value={model.id}>{model.name} · {model.id}</option>)}</select></label><button className="button" type="button" disabled={!selected} onClick={() => { setModels(previous => [...previous, selected]); setSelected(''); }}>添加成员</button></div>
     <ol className="combo-members">{models.map((model, index) => <li key={model}><code>{model}</code><div className="row-actions"><IconButton icon="back" label={`上移 ${model}`} disabled={!index} onClick={() => move(index, -1)}/><IconButton icon="arrow" label={`下移 ${model}`} disabled={index === models.length - 1} onClick={() => move(index, 1)}/><IconButton icon="trash" label={`移除成员 ${model}`} onClick={() => setModels(previous => previous.filter(item => item !== model))}/></div></li>)}</ol>
     </fieldset>
@@ -63,7 +97,7 @@ export function CombosPage() {
   return <><PageHeading title="组合模型" subtitle="自定义下游名称 / 多模型回退"><button className="button" onClick={refresh}>刷新</button>{managementEnabled && <button className="button primary" disabled={!ready} onClick={() => setEditor({})}><Icon name="plus"/>创建组合模型</button>}</PageHeading>
     {resources.map((item, index) => item.error && <ErrorBlock key={index} message={item.error} onRetry={item.refresh}/>)}
     <div className="filter-search"><Icon name="search"/><input aria-label="搜索组合模型" placeholder="搜索名称或成员模型…" value={query} onChange={event => setQuery(event.target.value)}/></div>
-    <div className="table-shell"><table><thead><tr><th>下游模型名称</th><th>成员顺序</th><th>调度方式</th><th>操作</th></tr></thead><tbody>{combos.map(combo => <tr key={combo.id}><td><strong>{combo.name}</strong></td><td className="combo-model-list">{combo.models.map((model, index) => <div key={index}>{index + 1}. <code>{model}</code></div>)}</td><td>{({ fallback: '顺序回退', 'round-robin': '轮询', fusion: '融合' })[settings.data?.comboStrategies?.[combo.name]?.fallbackStrategy || settings.data?.comboStrategy || 'fallback'] || '自定义'}</td><td><div className="row-actions"><CopyButton value={combo.name} label={`复制组合 ${combo.name}`}/>{managementEnabled && <><IconButton icon="edit" label={`编辑组合 ${combo.name}`} disabled={!ready} onClick={() => setEditor(combo)}/><IconButton icon="trash" label={`删除组合 ${combo.name}`} onClick={() => setRemoving(combo)}/></>}</div></td></tr>)}{!combos.length && <tr><td colSpan="4" className="table-empty">{resource.loading ? '正在读取…' : '暂无匹配的组合模型'}</td></tr>}</tbody></table></div>
+    <div className="table-shell"><table><thead><tr><th>下游模型名称</th><th>成员顺序</th><th>调度方式</th><th>操作</th></tr></thead><tbody>{combos.map(combo => <tr key={combo.id}><td><strong>{combo.name}</strong></td><td className="combo-model-list">{combo.models.map((model, index) => <div key={index}>{index + 1}. <code>{model}</code></div>)}</td><td>{formatComboStrategy(combo.name, settings.data)}</td><td><div className="row-actions"><CopyButton value={combo.name} label={`复制组合 ${combo.name}`}/>{managementEnabled && <><IconButton icon="edit" label={`编辑组合 ${combo.name}`} disabled={!ready} onClick={() => setEditor(combo)}/><IconButton icon="trash" label={`删除组合 ${combo.name}`} onClick={() => setRemoving(combo)}/></>}</div></td></tr>)}{!combos.length && <tr><td colSpan="4" className="table-empty">{resource.loading ? '正在读取…' : '暂无匹配的组合模型'}</td></tr>}</tbody></table></div>
     {editor && <ComboEditor combo={editor.id ? editor : null} choices={choices} settings={settings.data} onClose={() => setEditor(null)} onSaved={refresh}/>}
     {removing && <ConfirmDelete title="删除组合模型" name={removing.name} url={`/api/combos/${encodeURIComponent(removing.id)}`} onClose={() => setRemoving(null)} onDeleted={refresh}/>}
   </>;

@@ -1,0 +1,249 @@
+diff --git a/src/sse/handlers/chat.js b/src/sse/handlers/chat.js
+index 30aa13a..f7a812a 100644
+--- a/src/sse/handlers/chat.js
++++ b/src/sse/handlers/chat.js
+@@ -149,7 +149,7 @@ export async function handleChat(request, clientRawRequest = null) {
+       });
+     }
+ 
+-    const comboStickyLimit = settings.comboStickyRoundRobinLimit;
++    const comboStickyLimit = comboStrategies[modelStr]?.comboStickyRoundRobinLimit ?? settings.comboStickyRoundRobinLimit ?? 1;
+     const retryOnEmpty = comboStrategies[modelStr]?.retryOnEmpty ?? settings.comboRetryOnEmpty ?? false;
+     const retryOnEmptyLimit = comboStrategies[modelStr]?.retryOnEmptyLimit ?? settings.comboRetryOnEmptyLimit;
+     log.info("CHAT", `Combo "${modelStr}" with ${augmentedModels.length} models (strategy: ${comboStrategy}, sticky: ${comboStickyLimit})`);
+@@ -242,7 +242,7 @@ async function handleSingleModelChat(body, modelStr, clientRawRequest = null, re
+         });
+       }
+ 
+-      const comboStickyLimit = chatSettings.comboStickyRoundRobinLimit;
++      const comboStickyLimit = comboStrategies[modelStr]?.comboStickyRoundRobinLimit ?? chatSettings.comboStickyRoundRobinLimit ?? 1;
+       const retryOnEmpty = comboStrategies[modelStr]?.retryOnEmpty ?? chatSettings.comboRetryOnEmpty ?? false;
+       const retryOnEmptyLimit = comboStrategies[modelStr]?.retryOnEmptyLimit ?? chatSettings.comboRetryOnEmptyLimit;
+       log.info("CHAT", `Combo "${modelStr}" with ${augmentedModels.length} models (strategy: ${comboStrategy}, sticky: ${comboStickyLimit})`);
+diff --git a/src/sse/handlers/imageGeneration.js b/src/sse/handlers/imageGeneration.js
+index f648ed1..0818e53 100644
+--- a/src/sse/handlers/imageGeneration.js
++++ b/src/sse/handlers/imageGeneration.js
+@@ -55,7 +55,7 @@ export async function handleImageGeneration(request) {
+   if (comboModels) {
+     const comboStrategies = settings.comboStrategies || {};
+     const comboStrategy = comboStrategies[modelStr]?.fallbackStrategy || settings.comboStrategy || "fallback";
+-    const comboStickyLimit = settings.comboStickyRoundRobinLimit;
++    const comboStickyLimit = comboStrategies[modelStr]?.comboStickyRoundRobinLimit ?? settings.comboStickyRoundRobinLimit ?? 1;
+     log.info("IMAGE", `Combo "${modelStr}" with ${comboModels.length} models (strategy: ${comboStrategy}, sticky: ${comboStickyLimit})`);
+     return handleComboChat({
+       body,
+diff --git a/src/sse/handlers/tts.js b/src/sse/handlers/tts.js
+index e940f1f..4d3e109 100644
+--- a/src/sse/handlers/tts.js
++++ b/src/sse/handlers/tts.js
+@@ -55,7 +55,7 @@ export async function handleTts(request) {
+   if (comboModels) {
+     const comboStrategies = settings.comboStrategies || {};
+     const comboStrategy = comboStrategies[modelStr]?.fallbackStrategy || settings.comboStrategy || "fallback";
+-    const comboStickyLimit = settings.comboStickyRoundRobinLimit;
++    const comboStickyLimit = comboStrategies[modelStr]?.comboStickyRoundRobinLimit ?? settings.comboStickyRoundRobinLimit ?? 1;
+     log.info("TTS", `Combo "${modelStr}" with ${comboModels.length} models (strategy: ${comboStrategy}, sticky: ${comboStickyLimit})`);
+     return handleComboChat({
+       body,
+diff --git a/src/sse/handlers/search.js b/src/sse/handlers/search.js
+index 508583f..ed26263 100644
+--- a/src/sse/handlers/search.js
++++ b/src/sse/handlers/search.js
+@@ -78,7 +78,7 @@ export async function handleSearch(request) {
+   if (comboModels) {
+     const comboStrategies = settings.comboStrategies || {};
+     const comboStrategy = comboStrategies[providerInput]?.fallbackStrategy || settings.comboStrategy || "fallback";
+-    const comboStickyLimit = settings.comboStickyRoundRobinLimit;
++    const comboStickyLimit = comboStrategies[providerInput]?.comboStickyRoundRobinLimit ?? settings.comboStickyRoundRobinLimit ?? 1;
+     log.info("SEARCH", `Combo "${providerInput}" with ${comboModels.length} providers (strategy: ${comboStrategy}, sticky: ${comboStickyLimit})`);
+     return handleComboChat({
+       body,
+diff --git a/src/sse/handlers/fetch.js b/src/sse/handlers/fetch.js
+index 47d430e..9c5bdaf 100644
+--- a/src/sse/handlers/fetch.js
++++ b/src/sse/handlers/fetch.js
+@@ -97,7 +97,7 @@ export async function handleFetch(request) {
+   if (comboModels) {
+     const comboStrategies = settings.comboStrategies || {};
+     const comboStrategy = comboStrategies[providerInput]?.fallbackStrategy || settings.comboStrategy || "fallback";
+-    const comboStickyLimit = settings.comboStickyRoundRobinLimit;
++    const comboStickyLimit = comboStrategies[providerInput]?.comboStickyRoundRobinLimit ?? settings.comboStickyRoundRobinLimit ?? 1;
+     log.info("FETCH", `Combo "${providerInput}" with ${comboModels.length} providers (strategy: ${comboStrategy}, sticky: ${comboStickyLimit})`);
+     return handleComboChat({
+       body,
+diff --git a/src/app/api/settings/route.js b/src/app/api/settings/route.js
+index 59abef4..52abd81 100644
+--- a/src/app/api/settings/route.js
++++ b/src/app/api/settings/route.js
+@@ -42,6 +42,30 @@ export async function PATCH(request) {
+   try {
+     const body = await request.json();
+ 
++    const validComboStickyLimit = value => Number.isSafeInteger(value) && value >= 1;
++    if (
++      Object.prototype.hasOwnProperty.call(body, "comboStickyRoundRobinLimit") &&
++      !validComboStickyLimit(body.comboStickyRoundRobinLimit)
++    ) {
++      return NextResponse.json({ error: "Combo sticky limit must be a positive integer", code: "COMBO_STICKY_LIMIT_INVALID" }, { status: 400 });
++    }
++    if (Object.prototype.hasOwnProperty.call(body, "comboStrategies")) {
++      if (!body.comboStrategies || typeof body.comboStrategies !== "object" || Array.isArray(body.comboStrategies)) {
++        return NextResponse.json({ error: "Combo strategies must be an object", code: "COMBO_STRATEGIES_INVALID" }, { status: 400 });
++      }
++      for (const override of Object.values(body.comboStrategies)) {
++        if (!override || typeof override !== "object" || Array.isArray(override)) {
++          return NextResponse.json({ error: "Combo strategy must be an object", code: "COMBO_STRATEGIES_INVALID" }, { status: 400 });
++        }
++        if (
++          Object.prototype.hasOwnProperty.call(override, "comboStickyRoundRobinLimit") &&
++          !validComboStickyLimit(override.comboStickyRoundRobinLimit)
++        ) {
++          return NextResponse.json({ error: "Combo sticky limit must be a positive integer", code: "COMBO_STICKY_LIMIT_INVALID" }, { status: 400 });
++        }
++      }
++    }
++
+     // Strip protected secrets before any internal handling sets them
+     for (const key of PROTECTED_SETTING_KEYS) delete body[key];
+ 
+diff --git a/deploy.sh b/deploy.sh
+index 555147b..92027ec 100644
+--- a/deploy.sh
++++ b/deploy.sh
+@@ -48,6 +48,12 @@ PROXY_UNSET="env -u http_proxy -u https_proxy -u HTTP_PROXY -u HTTPS_PROXY -u al
+ # 本批次补丁存活检查项（P1.5），按需增删。格式: "文件名:grep词:最少命中数"
+ # 注意: grep 词含引号/括号时用 grep -F 固定字符串匹配，避免正则解析
+ PATCH_CHECKS=(
++  "src/app/api/settings/route.js:COMBO_STICKY_LIMIT_INVALID:2"
++  "src/sse/handlers/fetch.js:comboStrategies[providerInput]?.comboStickyRoundRobinLimit:1"
++  "src/sse/handlers/search.js:comboStrategies[providerInput]?.comboStickyRoundRobinLimit:1"
++  "src/sse/handlers/tts.js:comboStrategies[modelStr]?.comboStickyRoundRobinLimit:1"
++  "src/sse/handlers/imageGeneration.js:comboStrategies[modelStr]?.comboStickyRoundRobinLimit:1"
++  "src/sse/handlers/chat.js:comboStrategies[modelStr]?.comboStickyRoundRobinLimit:2"
+   "open-sse/handlers/chatCore.js:upstreamReturnedSSE:2"
+   "src/app/api/models/test/ping.js:empty_final_text:1"
+   "src/lib/iqMonitor/service.js:runManualMonitorTest:1"
+diff --git a/tests/unit/combo-sticky-settings.test.js b/tests/unit/combo-sticky-settings.test.js
+new file mode 100644
+--- /dev/null
++++ b/tests/unit/combo-sticky-settings.test.js
+@@ -0,0 +1,40 @@
++import { beforeEach, describe, expect, it, vi } from "vitest";
++const mocks = vi.hoisted(() => ({ update: vi.fn(), reset: vi.fn() }));
++vi.mock("@/lib/localDb", () => ({ getSettings: async () => ({}), updateSettings: mocks.update }));
++vi.mock("open-sse/services/combo.js", () => ({ resetComboRotation: mocks.reset }));
++import { PATCH } from "../../src/app/api/settings/route.js";
++const request = body => new Request("http://localhost/api/settings", { method: "PATCH", body: JSON.stringify(body) });
++beforeEach(() => {
++  vi.clearAllMocks();
++  mocks.update.mockImplementation(async body => body);
++});
++describe("per-combo sticky settings", () => {
++  it.each([0, -1, 1.5, "9", null, true, 9007199254740992])("rejects invalid count %s before updating settings", async value => {
++    for (const body of [{ comboStickyRoundRobinLimit: value }, { comboStrategies: { code: { comboStickyRoundRobinLimit: value } } }]) {
++      const response = await PATCH(request(body));
++      expect(response.status).toBe(400);
++      expect((await response.json()).code).toBe("COMBO_STICKY_LIMIT_INVALID");
++    }
++    expect(mocks.update).not.toHaveBeenCalled();
++    expect(mocks.reset).not.toHaveBeenCalled();
++  });
++  it.each([null, [], 9, { code: null }, { code: [] }])("rejects malformed strategy map %s", async comboStrategies => {
++    expect((await PATCH(request({ comboStrategies }))).status).toBe(400);
++    expect(mocks.update).not.toHaveBeenCalled();
++  });
++  it("preserves independent overrides and other fields, and resets rotation", async () => {
++    const body = { comboStrategies: { code: { fallbackStrategy: "round-robin", comboStickyRoundRobinLimit: 9, retryOnEmpty: true }, standby: { fallbackStrategy: "fallback", comboStickyRoundRobinLimit: 3 }, inherited: {}, fusion: { fallbackStrategy: "fusion", judgeModel: "p/judge" } } };
++    const response = await PATCH(request(body));
++    expect(response.status).toBe(200);
++    expect(await response.json()).toMatchObject(body);
++    expect(mocks.update).toHaveBeenCalledWith(body);
++    expect(mocks.reset).toHaveBeenCalledTimes(1);
++  });
++  it("accepts removal of overrides to inherit and leaves unrelated changes alone", async () => {
++    expect((await PATCH(request({ comboStrategies: {} }))).status).toBe(200);
++    expect(mocks.reset).toHaveBeenCalledTimes(1);
++    mocks.reset.mockClear();
++    expect((await PATCH(request({ theme: "dark" }))).status).toBe(200);
++    expect(mocks.reset).not.toHaveBeenCalled();
++  });
++});
+diff --git a/tests/unit/combo-sticky-handlers.test.js b/tests/unit/combo-sticky-handlers.test.js
+new file mode 100644
+--- /dev/null
++++ b/tests/unit/combo-sticky-handlers.test.js
+@@ -0,0 +1,56 @@
++import { beforeEach, describe, expect, it, vi } from "vitest";
++const mocks = vi.hoisted(() => ({ settings: {}, combo: vi.fn(), getModels: vi.fn() }));
++vi.mock("open-sse/index.js", () => ({}));
++vi.mock("@/lib/localDb", () => ({
++  getSettings: async () => mocks.settings,
++  getCombos: async () => [{ name: "code", models: ["p/a", "p/b"] }],
++  getChannelBlock: vi.fn(), setChannelBlock: vi.fn(), clearChannelBlock: vi.fn(),
++}));
++vi.mock("../../src/sse/services/auth.js", () => ({
++  extractApiKey: () => null, isValidApiKey: async () => true, checkApiKeyDailyLimit: async () => null,
++  getProviderCredentials: vi.fn(), markAccountUnavailable: vi.fn(), clearAccountError: vi.fn(), invalidateQuotaCache: vi.fn(),
++}));
++vi.mock("../../src/sse/services/model.js", () => ({
++  getModelInfo: async () => ({}), getComboModels: mocks.getModels,
++}));
++vi.mock("../../src/sse/services/autoCompact.js", () => ({ maybeCompactChatBody: async () => {} }));
++vi.mock("open-sse/services/combo.js", async importOriginal => ({
++  ...await importOriginal(), handleComboChat: mocks.combo,
++}));
++import { handleChat } from "../../src/sse/handlers/chat.js";
++import { handleImageGeneration } from "../../src/sse/handlers/imageGeneration.js";
++import { handleTts } from "../../src/sse/handlers/tts.js";
++import { handleSearch } from "../../src/sse/handlers/search.js";
++import { handleFetch } from "../../src/sse/handlers/fetch.js";
++const entries = [handleChat, handleImageGeneration, handleTts, handleSearch, handleFetch];
++const request = () => new Request("http://localhost/api/v1/test", { method: "POST", body: JSON.stringify({ model: "code", prompt: "OK", input: "OK", query: "OK", url: "https://example.com", messages: [{ role: "user", content: "OK" }] }) });
++beforeEach(() => {
++  vi.clearAllMocks();
++  mocks.settings = { comboStrategy: "round-robin", comboStickyRoundRobinLimit: 3, stickyRoundRobinLimit: 77, comboStrategies: { code: { comboStickyRoundRobinLimit: 9 }, other: { comboStickyRoundRobinLimit: 5 } } };
++  mocks.getModels.mockResolvedValue(["p/a", "p/b"]);
++  mocks.combo.mockResolvedValue(new Response("OK"));
++});
++describe("per-combo sticky entry points", () => {
++  it.each(entries)("uses only this combo override in %s", async handler => {
++    await handler(request());
++    expect(mocks.combo).toHaveBeenCalledWith(expect.objectContaining({ comboName: "code", comboStrategy: "round-robin", comboStickyLimit: 9 }));
++  });
++  it.each(entries)("inherits the global count in %s", async handler => {
++    delete mocks.settings.comboStrategies.code.comboStickyRoundRobinLimit;
++    await handler(request());
++    expect(mocks.combo).toHaveBeenCalledWith(expect.objectContaining({ comboStickyLimit: 3 }));
++  });
++  it.each(entries)("defaults to one when both settings are absent in %s", async handler => {
++    delete mocks.settings.comboStrategies.code.comboStickyRoundRobinLimit;
++    delete mocks.settings.comboStickyRoundRobinLimit;
++    await handler(request());
++    expect(mocks.combo).toHaveBeenCalledWith(expect.objectContaining({ comboStickyLimit: 1 }));
++  });
++  it("also uses the override in the nested chat combo dispatch", async () => {
++    await handleChat(request());
++    const outer = mocks.combo.mock.calls[0][0];
++    await outer.handleSingleModel({ model: "code", messages: [{ role: "user", content: "OK" }] }, "code");
++    expect(mocks.combo).toHaveBeenCalledTimes(2);
++    expect(mocks.combo.mock.calls[1][0]).toMatchObject({ comboName: "code", comboStickyLimit: 9 });
++  });
++});
+diff --git a/tests/unit/combo-sticky-nine.test.js b/tests/unit/combo-sticky-nine.test.js
+new file mode 100644
+--- /dev/null
++++ b/tests/unit/combo-sticky-nine.test.js
+@@ -0,0 +1,12 @@
++import { beforeEach, expect, it } from "vitest";
++import { getRotatedModels, resetComboRotation } from "../../open-sse/services/combo.js";
++beforeEach(resetComboRotation);
++it("keeps each member first for nine requests and rotates independently", () => {
++  const models = ["p/a", "p/b"];
++  const selected = Array.from({ length: 19 }, () => getRotatedModels(models, "code", "round-robin", 9)[0]);
++  expect(selected).toEqual([...Array(9).fill("p/a"), ...Array(9).fill("p/b"), "p/a"]);
++  expect(getRotatedModels(models, "other", "round-robin", 3)[0]).toBe("p/a");
++  expect(getRotatedModels(models, "primary", "fallback", 9)).toEqual(models);
++  resetComboRotation();
++  expect(getRotatedModels(models, "code", "round-robin", 9)[0]).toBe("p/a");
++});

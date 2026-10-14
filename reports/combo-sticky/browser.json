@@ -1,0 +1,15 @@
+{
+  "data": "real-gateway-readonly-with-browser-local-save-tests",
+  "checks": [
+    "真实认证、组合与设置接口均返回 HTTP 200，无 demo 标记",
+    "保存9次并刷新、改名迁移、主备保留次数、分别继承、保留其他字段与并发新增配置、非法小数不保存均通过",
+    "两阶段失败重试只保存策略，已有融合策略与非活动次数完整保留",
+    "桌面1440和手机375无页面溢出，页面无未捕获异常，生产配置零写入"
+  ],
+  "screenshots": [
+    "reports/combo-sticky/editor-1440.png",
+    "reports/combo-sticky/editor-375.png"
+  ],
+  "errors": [],
+  "passed": true
+}
