@@ -1,0 +1,3 @@
+.model-credit { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; margin-top: 7px; min-width: 220px; max-width: 360px; }
+.model-credit small { color: var(--muted); font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; white-space: normal; }
+.model-credit .model-credit-free { color: var(--green); background: color-mix(in srgb, var(--green) 12%, transparent); }

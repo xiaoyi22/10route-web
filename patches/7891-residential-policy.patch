@@ -1,0 +1,483 @@
+--- a/proxy_policy.py
++++ b/proxy_policy.py
+@@ -1,16 +1,22 @@
+ import copy
+ 
+ 
+-# 7891 住宅优先池（2026-10-01）：住宅两种协议在前，原四个 VLESS 节点作备用。
++# 7891 仅使用 H1P2M3 住宅节点，排除香港与台湾；有效选择保持不变。
+ AI_POOL_ORDER = [
+-    '🏝️ [su16][2.6x][住宅] 美国 · VLESS · VLESS Reality',
+-    '🏝️ [su16][2.6x][住宅] 美国 · Hysteria2 · Hysteria 2',
+-    '✨ [su07][2x][顶级] 美国 · VLESS · VLESS Reality',
+-    '✨ [su10][2x][顶级] 美国 · VLESS · VLESS Reality',
+-    '✨ [su09][2x][顶级] 美国 · VLESS · VLESS Reality',
+-    '✨ [su08][2x][顶级] 美国 · VLESS · VLESS Reality',
++    '日本 JP2 住宅',
++    '日本 JP2 住宅 hy2',
++    '美国 US2 住宅',
++    '美国 US2 住宅 hy2',
++    '韩国 KR2 住宅',
++    '韩国 KR2 住宅 hy2',
++    '泰国 TH1 住宅',
++    '泰国 TH1 住宅 hy2',
++    '越南 VN1 住宅',
++    '越南 VN1 住宅 hy2',
++    '马来西亚 MY1 住宅',
++    '马来西亚 MY1 住宅 hy2',
+ ]
+-US_PINNED_NODE = '🏝️ [su16][2.6x][住宅] 美国 · VLESS · VLESS Reality'
++US_PINNED_NODE = '日本 JP2 住宅'
+ 
+ 
+ # AI-优选 地域规则（2026-09-22 用户定调：只亚太+欧洲）：成员=全部可用节点 −
+@@ -56,11 +62,11 @@
+ 
+ 
+ def google_ai_pool(config, blacklist=()):
+-    """从素心和 H1P2M3 实际成员选取美国出口，住宅优先。"""
++    """仅从 H1P2M3 实际成员选取住宅出口，排除香港与台湾。"""
+     groups = config.get('proxy-groups') or []
+-    airports = [group for group in groups if group.get('name') in ('素心机场', 'H1P2M3 机场')]
++    airports = [group for group in groups if group.get('name') == 'H1P2M3 机场']
+     if not airports:
+-        raise ValueError('出口筛选失败：缺少素心或 H1P2M3 机场组，配置未更新')
++        raise ValueError('出口筛选失败：缺少 H1P2M3 机场组，配置未更新')
+     existing = {proxy.get('name'): proxy for proxy in config.get('proxies', [])}
+     groups_by_name = {group.get('name'): group for group in groups}
+     blocked = set(blacklist)
+@@ -68,42 +74,41 @@
+     for airport in airports:
+         pending = list(airport.get('proxies') or [])
+         visited = set()
+-        suxin = airport.get('name') == '素心机场'
+         while pending:
+             name = pending.pop()
+             if name in visited:
+                 continue
+             visited.add(name)
+             if name not in existing:
+-                if name in groups_by_name:
++                if name in groups_by_name and name != '素心机场':
+                     pending.extend(groups_by_name[name].get('proxies') or [])
+                 continue
+             protocol = str(existing[name].get('type', '')).lower()
+             if name in blocked or any(marker in name for marker in ('剩余', '到期', '重置', '官网', '每天更新', '备用')):
+                 continue
+-            if not any(marker in name for marker in ('美国', '🇺🇸')):
++            if '住宅' not in name:
+                 continue
+-            eligible = (protocol == 'vless' or (protocol == 'hysteria2' and '住宅' in name)) if suxin else protocol in ('anytls', 'hysteria2', 'vless')
+-            if eligible:
+-                candidates[name] = min(candidates.get(name, 1), 0 if suxin else 1)
++            if any(marker in name.casefold() for marker in ('香港', '台湾', '台灣', 'hong kong', 'hongkong', 'taiwan', '🇭🇰', '🇹🇼')) or any(part.startswith(('HK', 'TW')) for part in name.upper().split()):
++                continue
++            if protocol in ('anytls', 'hysteria2', 'vless'):
++                candidates[name] = True
+ 
+     def priority(name):
+-        residential = 0 if '住宅' in name else 1
+         protocol = {'vless': 0, 'anytls': 1, 'hysteria2': 2}[existing[name]['type'].lower()]
+         previous = AI_POOL_ORDER.index(name) if name in AI_POOL_ORDER else len(AI_POOL_ORDER)
+-        return residential, candidates[name], protocol, previous, name
++        return previous, protocol, name
+ 
+     return sorted(candidates, key=priority)
+ 
+ 
+ def enforce_us_egress(config, blacklist=()):
+-    """规范 ai-谷歌：素心和 H1P2M3 美国节点，住宅优先，保留有效选择。"""
++    """规范 ai-谷歌：仅 H1P2M3 住宅节点，排除香港与台湾，保留有效选择。"""
+     target = next((group for group in config.get('proxy-groups', []) if group.get('name') == 'ai-谷歌'), None)
+     if target is None:
+         return False
+     ordered = google_ai_pool(config, blacklist)
+     if not ordered:
+-        raise ValueError('出口筛选失败：素心和 H1P2M3 订阅没有符合规则的美国节点，配置未更新')
++        raise ValueError('出口筛选失败：H1P2M3 订阅没有符合规则的住宅节点，配置未更新')
+     original = copy.deepcopy(target)
+     target['type'] = 'select'
+     target['proxies'] = ordered
+--- a/tests/test_proxy_policy.py
++++ b/tests/test_proxy_policy.py
+@@ -8,179 +8,116 @@
+ 
+ 
+ def _pool_cfg(extra_pool_members=(), now=None, airport_extra=()):
+-    """素心机场含全部 6 池成员 + 可选杂项；ai-谷歌初始态可定制。"""
++    """H1P2M3 机场含住宅池成员 + 可选杂项；ai-谷歌初始态可定制。"""
+     airport = list(AI_POOL_ORDER) + list(airport_extra)
+-    proxies = [{'name': n, 'type': 'hysteria2' if 'Hysteria2' in n else 'vless'} for n in airport]
++    proxies = [{'name': n, 'type': 'hysteria2' if 'hy2' in n else 'anytls'} for n in airport]
+     ai = {'name': 'ai-谷歌', 'type': 'select',
+           'proxies': list(extra_pool_members) or list(AI_POOL_ORDER)}
+     if now is not None:
+         ai['now'] = now
+     return {'proxies': proxies, 'proxy-groups': [
+-        {'name': '素心机场', 'proxies': airport},
++        {'name': 'H1P2M3 机场', 'proxies': airport},
+         ai,
+     ]}
+ 
+ 
+ class ProxyPolicyTests(unittest.TestCase):
+-    def test_full_pool_order_and_preferred_now(self):
+-        cfg = _pool_cfg(now='Singapore')
++    def test_full_residential_pool_and_preferred_now(self):
++        cfg = _pool_cfg(now='素心美国')
+         self.assertTrue(enforce_us_egress(cfg))
+         ai = cfg['proxy-groups'][1]
+         self.assertEqual(ai['proxies'], AI_POOL_ORDER)
+-        self.assertEqual(ai['now'], US_PINNED_NODE)  # 缺省回实钉首选（09-22 起=素心04，非 pool[0]）
+-        self.assertEqual(ai['type'], 'select')
+-        for k in ('url', 'interval', 'tolerance'):
+-            self.assertNotIn(k, ai)
++        self.assertEqual(len(ai['proxies']), 12)
++        self.assertEqual(ai['now'], US_PINNED_NODE)
++        self.assertFalse(enforce_us_egress(cfg))
+ 
+-    def test_idempotent_when_already_normalized(self):
+-        cfg = _pool_cfg()  # 无 now：首轮规范化成员+回首选 now
+-        self.assertTrue(enforce_us_egress(cfg))
+-        self.assertEqual(cfg['proxy-groups'][1]['now'], US_PINNED_NODE)
+-        self.assertFalse(enforce_us_egress(cfg))  # 次轮无改动
++    def test_keeps_valid_existing_non_us_selection(self):
++        cfg = _pool_cfg(now='越南 VN1 住宅 hy2')
++        enforce_us_egress(cfg)
++        self.assertEqual(cfg['proxy-groups'][1]['now'], '越南 VN1 住宅 hy2')
+ 
+-    def test_keeps_valid_existing_now(self):
+-        cfg = _pool_cfg(now=AI_POOL_ORDER[-1])  # 看护此前切到的节点不被洗回
+-        enforce_us_egress(cfg)
+-        self.assertEqual(cfg['proxy-groups'][1]['now'], AI_POOL_ORDER[-1])
+-        self.assertEqual(cfg['proxy-groups'][1]['proxies'], AI_POOL_ORDER)
++    def test_subscription_update_never_restores_suxin_or_non_residential(self):
++        cfg = _pool_cfg(now=US_PINNED_NODE, airport_extra=['美国 US1', '香港 HK5 住宅', '台湾 TW2 住宅'])
++        cfg['proxies'] += [{'name': n, 'type': 'vless'} for n in ['素心美国住宅', '✨ [su01] 美国']]
++        cfg['proxy-groups'].append({'name': '素心机场', 'proxies': ['素心美国住宅', '✨ [su01] 美国']})
++        for _ in range(2):
++            cfg['proxy-groups'][1]['proxies'] += ['素心美国住宅', '美国 US1', '香港 HK5 住宅']
++            enforce_us_egress(cfg)
++            self.assertEqual(cfg['proxy-groups'][1]['proxies'], AI_POOL_ORDER)
++            self.assertEqual(cfg['proxy-groups'][1]['now'], US_PINNED_NODE)
+ 
+-    def test_strips_non_pool_members(self):
+-        cfg = _pool_cfg(extra_pool_members=[
+-            '✨ [顶级][2X]龙泉 美国 04 · Hysteria2 · Hysteria 2',  # 已死 04
+-            '🐳 [中级][1X]龙泉 美国 02 · VLESS · 备用（不保障速度） · VLESS Reality',  # 备用
+-            AI_POOL_ORDER[1],
+-        ], now='✨ [顶级][2X]龙泉 美国 04 · Hysteria2 · Hysteria 2',
+-            airport_extra=['✨ [顶级][2X]龙泉 美国 04 · Hysteria2 · Hysteria 2',
+-                           '🐳 [中级][1X]龙泉 美国 02 · VLESS · 备用（不保障速度） · VLESS Reality'])
+-        cfg['proxies'] += [{'name': '✨ [顶级][2X]龙泉 美国 04 · Hysteria2 · Hysteria 2'},
+-                           {'name': '🐳 [中级][1X]龙泉 美国 02 · VLESS · 备用（不保障速度） · VLESS Reality'}]
+-        self.assertTrue(enforce_us_egress(cfg))
+-        ai = cfg['proxy-groups'][1]
+-        self.assertEqual(ai['proxies'], AI_POOL_ORDER)
+-        self.assertEqual(ai['now'], US_PINNED_NODE)  # 旧 now 已死→回实钉首选
+-
+-    def test_pool_empty_refuses_without_mutation(self):
+-        cfg = {'proxies': [{'name': 'Singapore'}], 'proxy-groups': [
+-            {'name': '素心机场', 'proxies': ['Singapore']},
+-            {'name': 'ai-谷歌', 'type': 'select', 'now': 'Singapore', 'proxies': ['Singapore']},
+-        ]}
++    def test_only_suxin_refuses_without_mutation(self):
++        cfg = _pool_cfg()
++        cfg['proxy-groups'][0]['name'] = '素心机场'
+         before = copy.deepcopy(cfg)
+         with self.assertRaises(ValueError):
+             enforce_us_egress(cfg)
+         self.assertEqual(cfg, before)
+ 
+-    def test_missing_groups(self):
++    def test_empty_or_blacklisted_pool_refuses_without_mutation(self):
++        for blacklist in [AI_POOL_ORDER]:
++            cfg = _pool_cfg()
++            before = copy.deepcopy(cfg)
++            with self.assertRaises(ValueError):
++                enforce_us_egress(cfg, blacklist)
++            self.assertEqual(cfg, before)
++
++    def test_missing_ai_group_is_unchanged(self):
+         self.assertFalse(enforce_us_egress({'proxy-groups': []}))
+-        with self.assertRaises(ValueError):
+-            enforce_us_egress({'proxies': [], 'proxy-groups': [
+-                {'name': 'ai-谷歌', 'type': 'select', 'proxies': []}]})
+ 
+-    def test_subscription_replaces_all_old_candidates(self):
+-        names = ['✨ [su19][2x] 美国 · VLESS', '✨ [su01][1x] 美国 · VLESS']
+-        cfg = {'proxies': [{'name': n, 'type': 'vless'} for n in names], 'proxy-groups': [
+-            {'name': '素心机场', 'proxies': names},
+-            {'name': 'ai-谷歌', 'type': 'select', 'proxies': list(AI_POOL_ORDER), 'now': US_PINNED_NODE},
+-        ]}
+-        self.assertTrue(enforce_us_egress(cfg))
+-        ai = cfg['proxy-groups'][1]
+-        self.assertEqual(set(ai['proxies']), set(names))
+-        self.assertIn(ai['now'], names)
+-        self.assertFalse(enforce_us_egress(cfg))
++    def test_region_aliases_are_excluded(self):
++        names = ['香港 HK5 住宅', '台湾 TW2 住宅', '台灣 住宅', 'Hong Kong 住宅',
++                 'HongKong 住宅', 'Taiwan 住宅', '🇭🇰 住宅', '🇹🇼 住宅', 'HK5 住宅', 'TW2 住宅']
++        cfg = _pool_cfg(airport_extra=names)
++        enforce_us_egress(cfg)
++        self.assertEqual(cfg['proxy-groups'][1]['proxies'], AI_POOL_ORDER)
+ 
+-    def test_renamed_residential_nodes_keep_priority(self):
+-        names = ['🇺🇸 美国普通 VLESS', '🏝️ [su16][3x][住宅] 美国 VLESS 新名称',
+-                 '🏝️ [su16][3x][住宅] 美国 Hysteria2 新名称']
+-        cfg = {'proxies': [{'name': n, 'type': 'hysteria2' if 'Hysteria2' in n else 'vless'} for n in names],
+-               'proxy-groups': [{'name': '素心机场', 'proxies': names},
+-                                {'name': 'ai-谷歌', 'type': 'select', 'proxies': names, 'now': 'deleted'}]}
++    def test_new_residential_names_are_supported_without_us_restriction(self):
++        names = ['德国 新住宅', '新加坡 新住宅 hy2']
++        cfg = _pool_cfg(airport_extra=names)
+         enforce_us_egress(cfg)
+-        self.assertEqual(cfg['proxy-groups'][1]['proxies'], [names[1], names[2], names[0]])
+-        self.assertEqual(cfg['proxy-groups'][1]['now'], names[1])
+-        cfg['proxy-groups'][1]['now'] = names[0]
+-        enforce_us_egress(cfg)
+-        self.assertEqual(cfg['proxy-groups'][1]['now'], names[0])
++        self.assertTrue(set(names).issubset(cfg['proxy-groups'][1]['proxies']))
+ 
+-    def test_filters_airport_protocol_region_and_blacklist(self):
+-        nodes = [{'name': '素心美国可用', 'type': 'vless'},
+-                 {'name': '素心美国拉黑', 'type': 'vless'},
+-                 {'name': '素心美国普通 H2', 'type': 'hysteria2'},
+-                 {'name': '素心美国 Trojan', 'type': 'trojan'},
+-                 {'name': '素心加拿大', 'type': 'vless'},
+-                 {'name': '三毛美国', 'type': 'vless'}]
+-        cfg = {'proxies': nodes, 'proxy-groups': [
+-            {'name': '素心机场', 'proxies': [n['name'] for n in nodes[:-1]]},
+-            {'name': '三毛机场', 'proxies': [nodes[-1]['name']]},
+-            {'name': 'ai-谷歌', 'type': 'select', 'proxies': []},
+-        ]}
+-        enforce_us_egress(cfg, ['素心美国拉黑'])
+-        self.assertEqual(cfg['proxy-groups'][2]['proxies'], ['素心美国可用'])
++    def test_blacklist_protocol_and_info_filter(self):
++        cfg = _pool_cfg(airport_extra=['美国 US1', '日本 住宅 到期', '日本住宅 blocked', '日本住宅 unsupported'])
++        cfg['proxies'][-1]['type'] = 'trojan'
++        enforce_us_egress(cfg, ['日本住宅 blocked'])
++        self.assertEqual(cfg['proxy-groups'][1]['proxies'], AI_POOL_ORDER)
+ 
+-    def test_blacklisted_pool_refuses_without_mutation(self):
+-        cfg = _pool_cfg()
+-        before = copy.deepcopy(cfg)
+-        with self.assertRaises(ValueError):
+-            enforce_us_egress(cfg, AI_POOL_ORDER)
+-        self.assertEqual(cfg, before)
+-
+-    def test_whitelisted_name_does_not_bypass_protocol_check(self):
++    def test_all_unsupported_protocols_refuse_without_mutation(self):
+         cfg = _pool_cfg()
+         for node in cfg['proxies']:
+             node['type'] = 'trojan'
++        before = copy.deepcopy(cfg)
+         with self.assertRaises(ValueError):
+             enforce_us_egress(cfg)
++        self.assertEqual(cfg, before)
+ 
+-    def test_nested_airport_groups_with_cycle(self):
++    def test_nested_airport_groups_do_not_import_suxin(self):
+         cfg = _pool_cfg()
+-        cfg['proxy-groups'][0]['proxies'] = ['素心自动']
+-        cfg['proxy-groups'].append({'name': '素心自动', 'proxies': ['素心机场'] + list(AI_POOL_ORDER)})
++        cfg['proxy-groups'][0]['proxies'] = ['H1自动', '素心机场']
++        cfg['proxy-groups'] += [
++            {'name': 'H1自动', 'proxies': ['H1P2M3 机场'] + AI_POOL_ORDER},
++            {'name': '素心机场', 'proxies': ['素心美国住宅']},
++        ]
++        cfg['proxies'].append({'name': '素心美国住宅', 'type': 'vless'})
+         enforce_us_egress(cfg)
+         self.assertEqual(cfg['proxy-groups'][1]['proxies'], AI_POOL_ORDER)
+ 
+-    def test_h1p2m3_us_nodes_join_pool_with_residential_priority(self):
+-        cfg = _pool_cfg(now=AI_POOL_ORDER[-1])
+-        nodes = [{'name': '美国 US1', 'type': 'anytls'},
+-                 {'name': '美国 US1 hy2', 'type': 'hysteria2'},
+-                 {'name': '美国 US2 住宅', 'type': 'anytls'},
+-                 {'name': '美国 US2 住宅 hy2', 'type': 'hysteria2'}]
+-        cfg['proxies'].extend(nodes)
+-        cfg['proxy-groups'].append({'name': 'H1P2M3 机场', 'proxies': [n['name'] for n in nodes]})
+-        self.assertTrue(enforce_us_egress(cfg))
+-        ai = cfg['proxy-groups'][1]
+-        self.assertEqual(ai['proxies'], AI_POOL_ORDER[:2] + [n['name'] for n in nodes[2:]]
+-                         + AI_POOL_ORDER[2:] + [n['name'] for n in nodes[:2]])
+-        self.assertEqual(ai['now'], AI_POOL_ORDER[-1])
+-        ai['now'] = nodes[2]['name']
+-        self.assertFalse(enforce_us_egress(cfg))
+-        self.assertEqual(ai['now'], nodes[2]['name'])
++    def test_partial_subscription_keeps_only_available_residential_nodes(self):
++        cfg = _pool_cfg(now=US_PINNED_NODE)
++        cfg['proxy-groups'][0]['proxies'] = ['马来西亚 MY1 住宅 hy2']
++        enforce_us_egress(cfg)
++        self.assertEqual(cfg['proxy-groups'][1]['proxies'], ['马来西亚 MY1 住宅 hy2'])
++        self.assertEqual(cfg['proxy-groups'][1]['now'], '马来西亚 MY1 住宅 hy2')
+ 
+-    def test_h1p2m3_filters_region_protocol_blacklist_and_other_airports(self):
+-        nodes = [{'name': '美国 good', 'type': 'anytls'},
+-                 {'name': '美国 blocked', 'type': 'hysteria2'},
+-                 {'name': '加拿大 CA1', 'type': 'anytls'},
+-                 {'name': '日本 JP1', 'type': 'hysteria2'},
+-                 {'name': '美国 unsupported', 'type': 'trojan'},
+-                 {'name': '美国 套餐到期', 'type': 'vless'},
+-                 {'name': '三毛美国', 'type': 'anytls'}]
+-        cfg = {'proxies': nodes, 'proxy-groups': [
+-            {'name': '素心机场', 'proxies': []},
+-            {'name': 'H1P2M3 机场', 'proxies': [n['name'] for n in nodes[:-1]]},
+-            {'name': '三毛机场', 'proxies': [nodes[-1]['name']]},
+-            {'name': 'ai-谷歌', 'proxies': [], 'now': 'deleted'}]}
+-        enforce_us_egress(cfg, ['美国 blocked'])
+-        self.assertEqual(cfg['proxy-groups'][-1]['proxies'], ['美国 good'])
+-        self.assertEqual(cfg['proxy-groups'][-1]['now'], '美国 good')
+-
+-    def test_h1p2m3_keeps_pool_available_without_suxin_group(self):
+-        cfg = {'proxies': [{'name': '美国 H1 住宅', 'type': 'anytls'}], 'proxy-groups': [
+-            {'name': 'H1P2M3 机场', 'proxies': ['H1 自动']},
+-            {'name': 'H1 自动', 'proxies': ['H1P2M3 机场', '美国 H1 住宅']},
+-            {'name': 'ai-谷歌', 'proxies': [], 'now': 'deleted'}]}
+-        self.assertTrue(enforce_us_egress(cfg))
+-        self.assertEqual(cfg['proxy-groups'][-1]['proxies'], ['美国 H1 住宅'])
+-        self.assertEqual(cfg['proxy-groups'][-1]['now'], '美国 H1 住宅')
++    def test_renamed_non_residential_candidates_refuse_without_mutation(self):
++        cfg = _pool_cfg()
++        cfg['proxies'] = [{'name': '美国 US1', 'type': 'anytls'}]
++        cfg['proxy-groups'][0]['proxies'] = ['美国 US1']
+         before = copy.deepcopy(cfg)
+         with self.assertRaises(ValueError):
+-            enforce_us_egress(cfg, ['美国 H1 住宅'])
++            enforce_us_egress(cfg)
+         self.assertEqual(cfg, before)
+ 
+ 
+@@ -245,18 +182,5 @@
+         self.assertEqual(g['proxies'], ['台湾 01', '新加坡 01'])
+         self.assertEqual(g['now'], '新加坡 01')
+ 
+-    def test_partial_subscription_falls_back_inside_ordered(self):
+-        # D12：订阅只剩备用节点（缺住宅首选）时，now 仍必须落在实际成员内
+-        backup = [n for n in AI_POOL_ORDER if '住宅' not in n][0]
+-        cfg = {'proxies': [{'name': backup, 'type': 'vless'}], 'proxy-groups': [
+-            {'name': '素心机场', 'proxies': [backup]},
+-            {'name': 'ai-谷歌', 'type': 'select', 'proxies': [backup], 'now': 'STALE'},
+-        ]}
+-        self.assertTrue(enforce_us_egress(cfg))
+-        ai = cfg['proxy-groups'][1]
+-        self.assertEqual(ai['proxies'], [backup])
+-        self.assertIn(ai['now'], ai['proxies'])
+-
+-
+ if __name__ == '__main__':
+     unittest.main()
+--- a/tests/test_subscription_update.py
++++ b/tests/test_subscription_update.py
+@@ -29,11 +29,11 @@
+         self.blacklist = Path(self.directory.name) / 'blacklist.json'
+         self.blacklist.write_text('[]')
+         self.old_us = AI_POOL_ORDER[0]
+-        self.new_us = '🇺🇸 [su19] 美国 VLESS 新节点'
++        self.new_us = '日本 JP3 住宅 新节点'
+         self.other = '三毛日本节点'
+         cfg = {'proxies': [{'name': self.old_us, 'type': 'vless', 'server': 'example.com', 'port': 443},
+                            {'name': self.other, 'type': 'trojan', 'server': 'example.org', 'port': 443}],
+-               'proxy-groups': [{'name': '素心机场', 'type': 'select', 'proxies': [self.old_us]},
++               'proxy-groups': [{'name': 'H1P2M3 机场', 'type': 'select', 'proxies': [self.old_us]},
+                                 {'name': '三毛机场', 'type': 'select', 'proxies': [self.other]},
+                                 {'name': 'ai-谷歌', 'type': 'select', 'proxies': [self.old_us], 'now': self.old_us},
+                                 {'name': 'AI-优选', 'type': 'select', 'proxies': [self.other], 'now': self.other}],
+@@ -42,7 +42,7 @@
+                'rules': ['MATCH,DIRECT']}
+         self.target.write_text(yaml.safe_dump(cfg, allow_unicode=True))
+         self.original = self.target.read_bytes()
+-        self.airports = [{'id': 'suxin', 'group': '素心机场', 'url': 'https://example.com/feed', 'updated_at': 'before'},
++        self.airports = [{'id': 'h1', 'group': 'H1P2M3 机场', 'url': 'https://example.com/feed', 'updated_at': 'before'},
+                          {'id': 'other', 'group': '三毛机场', 'url': 'https://example.org/feed', 'updated_at': 'before'}]
+         self.save = Mock()
+         self.reload_count = 0
+@@ -110,7 +110,7 @@
+         self.target.write_bytes(Path(backup).read_bytes())
+         return True
+ 
+-    def update(self, name=None, airport='suxin'):
++    def update(self, name=None, airport='h1'):
+         feed = yaml.safe_dump({'proxies': [{'name': name or self.new_us, 'type': 'vless',
+                                            'server': 'example.net', 'port': 443}]}).encode()
+         with patch.object(subscription_http, 'download', return_value=feed):
+@@ -135,31 +135,37 @@
+         repeated = yaml.safe_load(self.target.read_bytes())
+         self.assertEqual(cfg, repeated)
+ 
+-    def test_other_airport_update_preserves_suxin(self):
++    def test_other_airport_update_preserves_h1p2m3(self):
+         self.assertTrue(self.update('三毛新日本节点', airport='other')['success'])
+         cfg = yaml.safe_load(self.target.read_bytes())
+         old_node = next(p for p in yaml.safe_load(self.original)['proxies'] if p['name'] == self.old_us)
+         self.assertIn(old_node, cfg['proxies'])
+         self.assertEqual(self.runtime['proxies']['ai-谷歌']['now'], self.old_us)
+ 
+-    def test_h1p2m3_update_and_other_subscription_keep_both_ai_pools(self):
+-        self.airports.append({'id': 'h1', 'group': 'H1P2M3 机场', 'url': 'https://example.net/feed'})
+-        us = '美国 H1 住宅'
+-        jp = '日本 H1'
++    def test_h1p2m3_and_suxin_updates_never_restore_suxin_in_google_pool(self):
++        us = '美国 US2 住宅'
++        jp = '日本 JP3 住宅'
++        ordinary = '美国 US1'
++        excluded = '香港 HK5 住宅'
+         feed = yaml.safe_dump({'proxies': [
+             {'name': us, 'type': 'anytls', 'server': 'example.net', 'port': 443},
+-            {'name': jp, 'type': 'hysteria2', 'server': 'example.org', 'port': 443}]}).encode()
++            {'name': jp, 'type': 'hysteria2', 'server': 'example.org', 'port': 443},
++            {'name': ordinary, 'type': 'anytls', 'server': 'example.net', 'port': 443},
++            {'name': excluded, 'type': 'anytls', 'server': 'example.net', 'port': 443}]}).encode()
+         with patch.object(subscription_http, 'download', return_value=feed):
+             self.assertTrue(self.namespace['update_subscription'](airport_id='h1')['success'])
+-        self.assertEqual(self.runtime['proxies']['ai-谷歌']['all'], [self.old_us, us])
+-        self.assertEqual(self.runtime['proxies']['ai-谷歌']['now'], self.old_us)
++        self.assertEqual(self.runtime['proxies']['ai-谷歌']['all'], [us, jp])
++        self.assertEqual(self.runtime['proxies']['ai-谷歌']['now'], us)
+         self.assertIn(jp, self.runtime['proxies']['AI-优选']['all'])
+         self.assertNotIn(us, self.runtime['proxies']['AI-优选']['all'])
+-        self.runtime['proxies']['ai-谷歌']['now'] = us
+-        self.assertTrue(self.update()['success'])
+-        self.assertEqual(self.runtime['proxies']['ai-谷歌']['all'], [us, self.new_us])
+-        self.assertEqual(self.runtime['proxies']['ai-谷歌']['now'], us)
+-        self.assertIn(jp, self.runtime['proxies']['AI-优选']['all'])
++        self.airports.append({'id': 'suxin', 'group': '素心机场', 'url': 'https://example.net/feed'})
++        self.runtime['proxies']['ai-谷歌']['now'] = jp
++        self.assertTrue(self.update('素心美国住宅', airport='suxin')['success'])
++        self.assertEqual(self.runtime['proxies']['ai-谷歌']['all'], [us, jp])
++        self.assertEqual(self.runtime['proxies']['ai-谷歌']['now'], jp)
++        self.assertTrue(self.update('三毛新日本节点', airport='other')['success'])
++        self.assertEqual(self.runtime['proxies']['ai-谷歌']['all'], [us, jp])
++        self.assertEqual(self.runtime['proxies']['ai-谷歌']['now'], jp)
+ 
+     def test_empty_eligible_pool_never_writes_or_updates_metadata(self):
+         result = self.update('素心新加坡节点')
+--- a/tests/test_ai_failover.py
++++ b/tests/test_ai_failover.py
+@@ -7,20 +7,17 @@
+ from pathlib import Path
+ from unittest.mock import Mock
+ 
+-sys.path.insert(0, str(Path("/home/meet/hermes-dashboard").resolve()))
++sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+ import server as S
+ from proxy_policy import AI_POOL_ORDER
+ 
+ POOL = list(AI_POOL_ORDER)
+ _RESIDENTIAL = [n for n in POOL if "住宅" in n]
+-_BACKUP = [n for n in POOL if "住宅" not in n]
+-# 2026-10-01 住宅优先池：2 个住宅（VLESS + Hysteria2）排在最前，其后为 VLESS 备用。
+-# 用例依赖 POOL[0..3] 的逐位序，故锁死四条不变量：唯一 / 住宅在前 / 协议齐备 / 备用足量。
++# 7891 仅使用 H1P2M3 住宅节点，排除香港与台湾。
+ assert len(POOL) == len(set(POOL)) and len(POOL) >= 4, "逃生池成员须 ≥4 且不重复"
+-assert len(_RESIDENTIAL) == 2 and POOL[:2] == _RESIDENTIAL, "住宅节点须为 2 个且排在最前"
+-assert any("VLESS" in n for n in _RESIDENTIAL) and any("Hysteria2" in n for n in _RESIDENTIAL), \
+-    "住宅须含 VLESS 与 Hysteria2 各一"
+-assert len(_BACKUP) >= 4 and all("VLESS" in n for n in _BACKUP), "VLESS 备用须 ≥4 且全部非住宅"
++assert len(_RESIDENTIAL) == 12 and _RESIDENTIAL == POOL, "池内须全部为住宅节点"
++assert any("hy2" in n for n in POOL) and any("hy2" not in n for n in POOL), "住宅须包含两种协议"
++assert not any(marker in n for n in POOL for marker in ('香港', '台湾', '[su')), "池内不得包含香港、台湾或素心"
+ 
+ 
+ class AiFailoverTests(unittest.TestCase):

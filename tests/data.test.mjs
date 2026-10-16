@@ -61,16 +61,32 @@ test('connected model scope uses provider IDs, route aliases and custom node pre
   assert.deepEqual(modelCatalog(), []);
 });
 
-test('request TPS uses output tokens and measured generation time, with explicit gateway fallback', () => {
+test('request TPS keeps one streaming formula and labels non-streaming averages', () => {
   const entry = { responseMode: 'streaming', tokens: { prompt_tokens: 10000, completion_tokens: 100, cached_tokens: 9000 }, latency: { ttft: 1000, total: 3000 } };
   assert.equal(requestSpeed(entry).tps, 50);
   assert.equal(requestSpeed(entry).durationMs, 2000);
   assert.equal(requestSpeed({ ...entry, responseMode: 'non-streaming' }).tps, 100 / 3);
-  assert.equal(requestSpeed({ ...entry, latency: { total: 2000 } }).tps, 50);
+  assert.match(requestSpeed({ ...entry, responseMode: 'non-streaming' }).basis, /含等待时间/);
+  assert.equal(requestSpeed({ ...entry, latency: { total: 2000 } }), null);
   const burst = requestSpeed({ ...entry, latency: { ttft: 2800, total: 3000 } });
-  assert.equal(burst.durationMs, 3000);
-  assert.match(burst.basis, /300/);
-  assert.equal(requestSpeed({ ...entry, tokens: { output_tokens: 30 }, latency: { total: 1000, ttft: 990 } }).tps, 30);
-  assert.equal(requestSpeed({ ...entry, tokens: { output_tokens: 30 }, latency: { total: 1000, ttft: 1500 } }).tps, 30);
+  assert.equal(burst.durationMs, 200);
+  assert.equal(burst.tps, 500);
+  assert.match(burst.basis, /首包后接收速率/);
+  for (const ttft of [0, -1, 951, 990, 1000, 1500, NaN, Infinity, '900']) {
+    assert.equal(requestSpeed({ ...entry, latency: { total: 1000, ttft } }), null);
+  }
+  assert.equal(requestSpeed({ ...entry, latency: { total: 1000, ttft: 950 } }).tps, 2000);
   for (const patch of [{ imported: true }, { tokens: {} }, { tokens: { completion_tokens: 0 } }, { tokens: { completion_tokens: -1 } }, { latency: {} }, { latency: { total: 0 } }, { latency: { total: 49 } }, { latency: { total: Infinity } }, { latency: { total: '1000' } }]) assert.equal(requestSpeed({ ...entry, ...patch }), null);
+});
+
+test('faster streaming responses stay faster across the old 300 TPS boundary', () => {
+  const entry = { responseMode: 'streaming', tokens: { completion_tokens: 175 } };
+  const slower = requestSpeed({ ...entry, latency: { total: 67742, ttft: 67121 } });
+  const faster = requestSpeed({ ...entry, latency: { total: 68845, ttft: 68306 } });
+  assert.equal(slower.tps.toFixed(1), '281.8');
+  assert.equal(faster.tps.toFixed(1), '324.7');
+  assert(faster.tps > slower.tps);
+  for (const output of [299, 300, 301]) {
+    assert.equal(requestSpeed({ ...entry, tokens: { output_tokens: output }, latency: { total: 61000, ttft: 60000 } }).tps, output);
+  }
 });

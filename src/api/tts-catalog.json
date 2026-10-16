@@ -1,0 +1,1769 @@
+[
+  {
+    "id": "aws-polly",
+    "alias": "polly",
+    "name": "AWS Polly",
+    "noAuth": false,
+    "models": [
+      {
+        "id": "standard",
+        "name": "Standard"
+      },
+      {
+        "id": "neural",
+        "name": "Neural"
+      },
+      {
+        "id": "long-form",
+        "name": "Long-form"
+      },
+      {
+        "id": "generative",
+        "name": "Generative"
+      }
+    ],
+    "voices": [],
+    "voicesPerModel": {},
+    "defaultVoice": "",
+    "voicesUrl": null,
+    "languageHint": false,
+    "style": false
+  },
+  {
+    "id": "cartesia",
+    "alias": "cartesia",
+    "name": "Cartesia",
+    "noAuth": false,
+    "models": [
+      {
+        "id": "sonic-2",
+        "name": "Sonic 2"
+      },
+      {
+        "id": "sonic-3",
+        "name": "Sonic 3"
+      }
+    ],
+    "voices": [],
+    "voicesPerModel": {},
+    "defaultVoice": "",
+    "voicesUrl": null,
+    "languageHint": false,
+    "style": false
+  },
+  {
+    "id": "coqui",
+    "alias": "coqui",
+    "name": "Coqui TTS",
+    "noAuth": true,
+    "models": [
+      {
+        "id": "tts_models/en/ljspeech/tacotron2-DDC",
+        "name": "Tacotron2 DDC (LJSpeech)"
+      }
+    ],
+    "voices": [],
+    "voicesPerModel": {},
+    "defaultVoice": "",
+    "voicesUrl": null,
+    "languageHint": false,
+    "style": false
+  },
+  {
+    "id": "edge-tts",
+    "alias": "edge-tts",
+    "name": "Edge TTS",
+    "noAuth": true,
+    "models": [],
+    "voices": [
+      {
+        "id": "en-US-AriaNeural",
+        "name": "Aria (en-US)"
+      },
+      {
+        "id": "en-US-GuyNeural",
+        "name": "Guy (en-US)"
+      },
+      {
+        "id": "en-GB-SoniaNeural",
+        "name": "Sonia (en-GB)"
+      },
+      {
+        "id": "vi-VN-HoaiMyNeural",
+        "name": "Hoai My (vi-VN)"
+      },
+      {
+        "id": "vi-VN-NamMinhNeural",
+        "name": "Nam Minh (vi-VN)"
+      },
+      {
+        "id": "zh-CN-XiaoxiaoNeural",
+        "name": "Xiaoxiao (zh-CN)"
+      },
+      {
+        "id": "zh-CN-YunxiNeural",
+        "name": "Yunxi (zh-CN)"
+      },
+      {
+        "id": "fr-FR-DeniseNeural",
+        "name": "Denise (fr-FR)"
+      },
+      {
+        "id": "de-DE-KatjaNeural",
+        "name": "Katja (de-DE)"
+      },
+      {
+        "id": "ja-JP-NanamiNeural",
+        "name": "Nanami (ja-JP)"
+      },
+      {
+        "id": "ko-KR-SunHiNeural",
+        "name": "SunHi (ko-KR)"
+      }
+    ],
+    "voicesPerModel": {},
+    "defaultVoice": "",
+    "voicesUrl": "/api/media-providers/tts/voices?provider=edge-tts",
+    "languageHint": false,
+    "style": false
+  },
+  {
+    "id": "elevenlabs",
+    "alias": "el",
+    "name": "ElevenLabs",
+    "noAuth": false,
+    "models": [
+      {
+        "id": "eleven_flash_v2_5",
+        "name": "Flash v2.5 (Fastest)"
+      },
+      {
+        "id": "eleven_turbo_v2_5",
+        "name": "Turbo v2.5 (Fast)"
+      },
+      {
+        "id": "eleven_multilingual_v2",
+        "name": "Multilingual v2 (Quality)"
+      },
+      {
+        "id": "eleven_monolingual_v1",
+        "name": "Monolingual v1 (English)"
+      }
+    ],
+    "voices": [],
+    "voicesPerModel": {},
+    "defaultVoice": "",
+    "voicesUrl": "/api/media-providers/tts/elevenlabs/voices",
+    "languageHint": false,
+    "style": false
+  },
+  {
+    "id": "fish-audio",
+    "alias": "fish",
+    "name": "Fish Audio",
+    "noAuth": false,
+    "models": [
+      {
+        "id": "s2.1-pro-free",
+        "name": "S2.1 Pro Free"
+      },
+      {
+        "id": "s2.1-pro",
+        "name": "S2.1 Pro"
+      },
+      {
+        "id": "s2-pro",
+        "name": "S2 Pro"
+      },
+      {
+        "id": "s1",
+        "name": "S1"
+      }
+    ],
+    "voices": [],
+    "voicesPerModel": {},
+    "defaultVoice": "",
+    "voicesUrl": null,
+    "languageHint": false,
+    "style": false
+  },
+  {
+    "id": "gemini",
+    "alias": "gemini",
+    "name": "Gemini",
+    "noAuth": false,
+    "models": [
+      {
+        "id": "gemini-3.1-flash-tts-preview",
+        "name": "Gemini 3.1 Flash TTS"
+      },
+      {
+        "id": "gemini-2.5-flash-preview-tts",
+        "name": "Gemini 2.5 Flash TTS"
+      },
+      {
+        "id": "gemini-2.5-pro-preview-tts",
+        "name": "Gemini 2.5 Pro TTS"
+      }
+    ],
+    "voices": [
+      {
+        "id": "Zephyr",
+        "name": "Zephyr"
+      },
+      {
+        "id": "Puck",
+        "name": "Puck"
+      },
+      {
+        "id": "Charon",
+        "name": "Charon"
+      },
+      {
+        "id": "Kore",
+        "name": "Kore"
+      },
+      {
+        "id": "Fenrir",
+        "name": "Fenrir"
+      },
+      {
+        "id": "Leda",
+        "name": "Leda"
+      },
+      {
+        "id": "Orus",
+        "name": "Orus"
+      },
+      {
+        "id": "Aoede",
+        "name": "Aoede"
+      },
+      {
+        "id": "Callirrhoe",
+        "name": "Callirrhoe"
+      },
+      {
+        "id": "Autonoe",
+        "name": "Autonoe"
+      },
+      {
+        "id": "Enceladus",
+        "name": "Enceladus"
+      },
+      {
+        "id": "Iapetus",
+        "name": "Iapetus"
+      },
+      {
+        "id": "Umbriel",
+        "name": "Umbriel"
+      },
+      {
+        "id": "Algieba",
+        "name": "Algieba"
+      },
+      {
+        "id": "Despina",
+        "name": "Despina"
+      },
+      {
+        "id": "Erinome",
+        "name": "Erinome"
+      },
+      {
+        "id": "Algenib",
+        "name": "Algenib"
+      },
+      {
+        "id": "Rasalgethi",
+        "name": "Rasalgethi"
+      },
+      {
+        "id": "Laomedeia",
+        "name": "Laomedeia"
+      },
+      {
+        "id": "Achernar",
+        "name": "Achernar"
+      },
+      {
+        "id": "Alnilam",
+        "name": "Alnilam"
+      },
+      {
+        "id": "Schedar",
+        "name": "Schedar"
+      },
+      {
+        "id": "Gacrux",
+        "name": "Gacrux"
+      },
+      {
+        "id": "Pulcherrima",
+        "name": "Pulcherrima"
+      },
+      {
+        "id": "Achird",
+        "name": "Achird"
+      },
+      {
+        "id": "Zubenelgenubi",
+        "name": "Zubenelgenubi"
+      },
+      {
+        "id": "Vindemiatrix",
+        "name": "Vindemiatrix"
+      },
+      {
+        "id": "Sadachbia",
+        "name": "Sadachbia"
+      },
+      {
+        "id": "Sadaltager",
+        "name": "Sadaltager"
+      },
+      {
+        "id": "Sulafat",
+        "name": "Sulafat"
+      }
+    ],
+    "voicesPerModel": {
+      "gemini-3.1-flash-tts-preview": [
+        {
+          "id": "Zephyr",
+          "name": "Zephyr"
+        },
+        {
+          "id": "Puck",
+          "name": "Puck"
+        },
+        {
+          "id": "Charon",
+          "name": "Charon"
+        },
+        {
+          "id": "Kore",
+          "name": "Kore"
+        },
+        {
+          "id": "Fenrir",
+          "name": "Fenrir"
+        },
+        {
+          "id": "Leda",
+          "name": "Leda"
+        },
+        {
+          "id": "Orus",
+          "name": "Orus"
+        },
+        {
+          "id": "Aoede",
+          "name": "Aoede"
+        },
+        {
+          "id": "Callirrhoe",
+          "name": "Callirrhoe"
+        },
+        {
+          "id": "Autonoe",
+          "name": "Autonoe"
+        },
+        {
+          "id": "Enceladus",
+          "name": "Enceladus"
+        },
+        {
+          "id": "Iapetus",
+          "name": "Iapetus"
+        },
+        {
+          "id": "Umbriel",
+          "name": "Umbriel"
+        },
+        {
+          "id": "Algieba",
+          "name": "Algieba"
+        },
+        {
+          "id": "Despina",
+          "name": "Despina"
+        },
+        {
+          "id": "Erinome",
+          "name": "Erinome"
+        },
+        {
+          "id": "Algenib",
+          "name": "Algenib"
+        },
+        {
+          "id": "Rasalgethi",
+          "name": "Rasalgethi"
+        },
+        {
+          "id": "Laomedeia",
+          "name": "Laomedeia"
+        },
+        {
+          "id": "Achernar",
+          "name": "Achernar"
+        },
+        {
+          "id": "Alnilam",
+          "name": "Alnilam"
+        },
+        {
+          "id": "Schedar",
+          "name": "Schedar"
+        },
+        {
+          "id": "Gacrux",
+          "name": "Gacrux"
+        },
+        {
+          "id": "Pulcherrima",
+          "name": "Pulcherrima"
+        },
+        {
+          "id": "Achird",
+          "name": "Achird"
+        },
+        {
+          "id": "Zubenelgenubi",
+          "name": "Zubenelgenubi"
+        },
+        {
+          "id": "Vindemiatrix",
+          "name": "Vindemiatrix"
+        },
+        {
+          "id": "Sadachbia",
+          "name": "Sadachbia"
+        },
+        {
+          "id": "Sadaltager",
+          "name": "Sadaltager"
+        },
+        {
+          "id": "Sulafat",
+          "name": "Sulafat"
+        }
+      ],
+      "gemini-2.5-flash-preview-tts": [
+        {
+          "id": "Zephyr",
+          "name": "Zephyr"
+        },
+        {
+          "id": "Puck",
+          "name": "Puck"
+        },
+        {
+          "id": "Charon",
+          "name": "Charon"
+        },
+        {
+          "id": "Kore",
+          "name": "Kore"
+        },
+        {
+          "id": "Fenrir",
+          "name": "Fenrir"
+        },
+        {
+          "id": "Leda",
+          "name": "Leda"
+        },
+        {
+          "id": "Orus",
+          "name": "Orus"
+        },
+        {
+          "id": "Aoede",
+          "name": "Aoede"
+        },
+        {
+          "id": "Callirrhoe",
+          "name": "Callirrhoe"
+        },
+        {
+          "id": "Autonoe",
+          "name": "Autonoe"
+        },
+        {
+          "id": "Enceladus",
+          "name": "Enceladus"
+        },
+        {
+          "id": "Iapetus",
+          "name": "Iapetus"
+        },
+        {
+          "id": "Umbriel",
+          "name": "Umbriel"
+        },
+        {
+          "id": "Algieba",
+          "name": "Algieba"
+        },
+        {
+          "id": "Despina",
+          "name": "Despina"
+        },
+        {
+          "id": "Erinome",
+          "name": "Erinome"
+        },
+        {
+          "id": "Algenib",
+          "name": "Algenib"
+        },
+        {
+          "id": "Rasalgethi",
+          "name": "Rasalgethi"
+        },
+        {
+          "id": "Laomedeia",
+          "name": "Laomedeia"
+        },
+        {
+          "id": "Achernar",
+          "name": "Achernar"
+        },
+        {
+          "id": "Alnilam",
+          "name": "Alnilam"
+        },
+        {
+          "id": "Schedar",
+          "name": "Schedar"
+        },
+        {
+          "id": "Gacrux",
+          "name": "Gacrux"
+        },
+        {
+          "id": "Pulcherrima",
+          "name": "Pulcherrima"
+        },
+        {
+          "id": "Achird",
+          "name": "Achird"
+        },
+        {
+          "id": "Zubenelgenubi",
+          "name": "Zubenelgenubi"
+        },
+        {
+          "id": "Vindemiatrix",
+          "name": "Vindemiatrix"
+        },
+        {
+          "id": "Sadachbia",
+          "name": "Sadachbia"
+        },
+        {
+          "id": "Sadaltager",
+          "name": "Sadaltager"
+        },
+        {
+          "id": "Sulafat",
+          "name": "Sulafat"
+        }
+      ],
+      "gemini-2.5-pro-preview-tts": [
+        {
+          "id": "Zephyr",
+          "name": "Zephyr"
+        },
+        {
+          "id": "Puck",
+          "name": "Puck"
+        },
+        {
+          "id": "Charon",
+          "name": "Charon"
+        },
+        {
+          "id": "Kore",
+          "name": "Kore"
+        },
+        {
+          "id": "Fenrir",
+          "name": "Fenrir"
+        },
+        {
+          "id": "Leda",
+          "name": "Leda"
+        },
+        {
+          "id": "Orus",
+          "name": "Orus"
+        },
+        {
+          "id": "Aoede",
+          "name": "Aoede"
+        },
+        {
+          "id": "Callirrhoe",
+          "name": "Callirrhoe"
+        },
+        {
+          "id": "Autonoe",
+          "name": "Autonoe"
+        },
+        {
+          "id": "Enceladus",
+          "name": "Enceladus"
+        },
+        {
+          "id": "Iapetus",
+          "name": "Iapetus"
+        },
+        {
+          "id": "Umbriel",
+          "name": "Umbriel"
+        },
+        {
+          "id": "Algieba",
+          "name": "Algieba"
+        },
+        {
+          "id": "Despina",
+          "name": "Despina"
+        },
+        {
+          "id": "Erinome",
+          "name": "Erinome"
+        },
+        {
+          "id": "Algenib",
+          "name": "Algenib"
+        },
+        {
+          "id": "Rasalgethi",
+          "name": "Rasalgethi"
+        },
+        {
+          "id": "Laomedeia",
+          "name": "Laomedeia"
+        },
+        {
+          "id": "Achernar",
+          "name": "Achernar"
+        },
+        {
+          "id": "Alnilam",
+          "name": "Alnilam"
+        },
+        {
+          "id": "Schedar",
+          "name": "Schedar"
+        },
+        {
+          "id": "Gacrux",
+          "name": "Gacrux"
+        },
+        {
+          "id": "Pulcherrima",
+          "name": "Pulcherrima"
+        },
+        {
+          "id": "Achird",
+          "name": "Achird"
+        },
+        {
+          "id": "Zubenelgenubi",
+          "name": "Zubenelgenubi"
+        },
+        {
+          "id": "Vindemiatrix",
+          "name": "Vindemiatrix"
+        },
+        {
+          "id": "Sadachbia",
+          "name": "Sadachbia"
+        },
+        {
+          "id": "Sadaltager",
+          "name": "Sadaltager"
+        },
+        {
+          "id": "Sulafat",
+          "name": "Sulafat"
+        }
+      ]
+    },
+    "defaultVoice": "",
+    "voicesUrl": null,
+    "languageHint": true,
+    "style": false
+  },
+  {
+    "id": "google-tts",
+    "alias": "google-tts",
+    "name": "Google TTS",
+    "noAuth": true,
+    "models": [],
+    "voices": [
+      {
+        "id": "af",
+        "name": "Afrikaans"
+      },
+      {
+        "id": "ar",
+        "name": "Arabic"
+      },
+      {
+        "id": "bg",
+        "name": "Bulgarian"
+      },
+      {
+        "id": "bn",
+        "name": "Bengali"
+      },
+      {
+        "id": "bs",
+        "name": "Bosnian"
+      },
+      {
+        "id": "ca",
+        "name": "Catalan"
+      },
+      {
+        "id": "cs",
+        "name": "Czech"
+      },
+      {
+        "id": "cy",
+        "name": "Welsh"
+      },
+      {
+        "id": "da",
+        "name": "Danish"
+      },
+      {
+        "id": "de",
+        "name": "German"
+      },
+      {
+        "id": "el",
+        "name": "Greek"
+      },
+      {
+        "id": "en",
+        "name": "English"
+      },
+      {
+        "id": "eo",
+        "name": "Esperanto"
+      },
+      {
+        "id": "es",
+        "name": "Spanish"
+      },
+      {
+        "id": "et",
+        "name": "Estonian"
+      },
+      {
+        "id": "fi",
+        "name": "Finnish"
+      },
+      {
+        "id": "fr",
+        "name": "French"
+      },
+      {
+        "id": "gu",
+        "name": "Gujarati"
+      },
+      {
+        "id": "hi",
+        "name": "Hindi"
+      },
+      {
+        "id": "hr",
+        "name": "Croatian"
+      },
+      {
+        "id": "hu",
+        "name": "Hungarian"
+      },
+      {
+        "id": "hy",
+        "name": "Armenian"
+      },
+      {
+        "id": "id",
+        "name": "Indonesian"
+      },
+      {
+        "id": "is",
+        "name": "Icelandic"
+      },
+      {
+        "id": "it",
+        "name": "Italian"
+      },
+      {
+        "id": "ja",
+        "name": "Japanese"
+      },
+      {
+        "id": "jw",
+        "name": "Javanese"
+      },
+      {
+        "id": "km",
+        "name": "Khmer"
+      },
+      {
+        "id": "kn",
+        "name": "Kannada"
+      },
+      {
+        "id": "ko",
+        "name": "Korean"
+      },
+      {
+        "id": "la",
+        "name": "Latin"
+      },
+      {
+        "id": "lv",
+        "name": "Latvian"
+      },
+      {
+        "id": "mk",
+        "name": "Macedonian"
+      },
+      {
+        "id": "ml",
+        "name": "Malayalam"
+      },
+      {
+        "id": "mr",
+        "name": "Marathi"
+      },
+      {
+        "id": "my",
+        "name": "Myanmar (Burmese)"
+      },
+      {
+        "id": "ne",
+        "name": "Nepali"
+      },
+      {
+        "id": "nl",
+        "name": "Dutch"
+      },
+      {
+        "id": "no",
+        "name": "Norwegian"
+      },
+      {
+        "id": "pl",
+        "name": "Polish"
+      },
+      {
+        "id": "pt",
+        "name": "Portuguese"
+      },
+      {
+        "id": "ro",
+        "name": "Romanian"
+      },
+      {
+        "id": "ru",
+        "name": "Russian"
+      },
+      {
+        "id": "si",
+        "name": "Sinhala"
+      },
+      {
+        "id": "sk",
+        "name": "Slovak"
+      },
+      {
+        "id": "sq",
+        "name": "Albanian"
+      },
+      {
+        "id": "sr",
+        "name": "Serbian"
+      },
+      {
+        "id": "su",
+        "name": "Sundanese"
+      },
+      {
+        "id": "sv",
+        "name": "Swedish"
+      },
+      {
+        "id": "sw",
+        "name": "Swahili"
+      },
+      {
+        "id": "ta",
+        "name": "Tamil"
+      },
+      {
+        "id": "te",
+        "name": "Telugu"
+      },
+      {
+        "id": "th",
+        "name": "Thai"
+      },
+      {
+        "id": "tl",
+        "name": "Filipino"
+      },
+      {
+        "id": "tr",
+        "name": "Turkish"
+      },
+      {
+        "id": "uk",
+        "name": "Ukrainian"
+      },
+      {
+        "id": "ur",
+        "name": "Urdu"
+      },
+      {
+        "id": "vi",
+        "name": "Vietnamese"
+      },
+      {
+        "id": "zh-CN",
+        "name": "Chinese (Simplified)"
+      },
+      {
+        "id": "zh-TW",
+        "name": "Chinese (Traditional)"
+      }
+    ],
+    "voicesPerModel": {},
+    "defaultVoice": "",
+    "voicesUrl": null,
+    "languageHint": false,
+    "style": false
+  },
+  {
+    "id": "inworld",
+    "alias": "inworld",
+    "name": "Inworld TTS",
+    "noAuth": false,
+    "models": [
+      {
+        "id": "inworld-tts-1.5-mini",
+        "name": "Inworld TTS 1.5 Mini ($0.01/min)"
+      },
+      {
+        "id": "inworld-tts-1.5-max",
+        "name": "Inworld TTS 1.5 Max ($0.025/min)"
+      }
+    ],
+    "voices": [],
+    "voicesPerModel": {},
+    "defaultVoice": "",
+    "voicesUrl": "/api/media-providers/tts/inworld/voices",
+    "languageHint": false,
+    "style": false
+  },
+  {
+    "id": "local-device",
+    "alias": "local-device",
+    "name": "Local Device",
+    "noAuth": true,
+    "models": [],
+    "voices": [
+      {
+        "id": "default",
+        "name": "System Default Voice"
+      }
+    ],
+    "voicesPerModel": {},
+    "defaultVoice": "",
+    "voicesUrl": "/api/media-providers/tts/voices?provider=local-device",
+    "languageHint": false,
+    "style": false
+  },
+  {
+    "id": "minimax-cn",
+    "alias": "minimax-cn",
+    "name": "Minimax (China)",
+    "noAuth": false,
+    "models": [
+      {
+        "id": "speech-2.8-hd",
+        "name": "Speech 2.8 HD"
+      },
+      {
+        "id": "speech-2.8-turbo",
+        "name": "Speech 2.8 Turbo"
+      },
+      {
+        "id": "speech-2.6-hd",
+        "name": "Speech 2.6 HD"
+      },
+      {
+        "id": "speech-2.6-turbo",
+        "name": "Speech 2.6 Turbo"
+      },
+      {
+        "id": "speech-02-hd",
+        "name": "Speech 02 HD"
+      },
+      {
+        "id": "speech-02-turbo",
+        "name": "Speech 02 Turbo"
+      },
+      {
+        "id": "speech-01-hd",
+        "name": "Speech 01 HD"
+      },
+      {
+        "id": "speech-01-turbo",
+        "name": "Speech 01 Turbo"
+      }
+    ],
+    "voices": [],
+    "voicesPerModel": {},
+    "defaultVoice": "English_expressive_narrator",
+    "voicesUrl": "/api/media-providers/tts/minimax/voices?provider=minimax-cn",
+    "languageHint": false,
+    "style": false
+  },
+  {
+    "id": "minimax",
+    "alias": "minimax",
+    "name": "Minimax Coding",
+    "noAuth": false,
+    "models": [
+      {
+        "id": "speech-2.8-hd",
+        "name": "Speech 2.8 HD"
+      },
+      {
+        "id": "speech-2.8-turbo",
+        "name": "Speech 2.8 Turbo"
+      },
+      {
+        "id": "speech-2.6-hd",
+        "name": "Speech 2.6 HD"
+      },
+      {
+        "id": "speech-2.6-turbo",
+        "name": "Speech 2.6 Turbo"
+      },
+      {
+        "id": "speech-02-hd",
+        "name": "Speech 02 HD"
+      },
+      {
+        "id": "speech-02-turbo",
+        "name": "Speech 02 Turbo"
+      },
+      {
+        "id": "speech-01-hd",
+        "name": "Speech 01 HD"
+      },
+      {
+        "id": "speech-01-turbo",
+        "name": "Speech 01 Turbo"
+      }
+    ],
+    "voices": [],
+    "voicesPerModel": {},
+    "defaultVoice": "English_expressive_narrator",
+    "voicesUrl": "/api/media-providers/tts/minimax/voices",
+    "languageHint": false,
+    "style": false
+  },
+  {
+    "id": "nvidia",
+    "alias": "nvidia",
+    "name": "NVIDIA NIM",
+    "noAuth": false,
+    "models": [
+      {
+        "id": "fastpitch",
+        "name": "FastPitch"
+      },
+      {
+        "id": "tacotron2",
+        "name": "Tacotron2"
+      }
+    ],
+    "voices": [],
+    "voicesPerModel": {},
+    "defaultVoice": "",
+    "voicesUrl": null,
+    "languageHint": false,
+    "style": false
+  },
+  {
+    "id": "openai",
+    "alias": "openai",
+    "name": "OpenAI",
+    "noAuth": false,
+    "models": [
+      {
+        "id": "gpt-4o-mini-tts",
+        "name": "GPT-4o Mini TTS"
+      },
+      {
+        "id": "tts-1-hd",
+        "name": "TTS-1 HD"
+      },
+      {
+        "id": "tts-1",
+        "name": "TTS-1"
+      }
+    ],
+    "voices": [
+      {
+        "id": "alloy",
+        "name": "Alloy"
+      },
+      {
+        "id": "ash",
+        "name": "Ash"
+      },
+      {
+        "id": "ballad",
+        "name": "Ballad"
+      },
+      {
+        "id": "cedar",
+        "name": "Cedar"
+      },
+      {
+        "id": "coral",
+        "name": "Coral"
+      },
+      {
+        "id": "echo",
+        "name": "Echo"
+      },
+      {
+        "id": "fable",
+        "name": "Fable"
+      },
+      {
+        "id": "marin",
+        "name": "Marin"
+      },
+      {
+        "id": "nova",
+        "name": "Nova"
+      },
+      {
+        "id": "onyx",
+        "name": "Onyx"
+      },
+      {
+        "id": "sage",
+        "name": "Sage"
+      },
+      {
+        "id": "shimmer",
+        "name": "Shimmer"
+      },
+      {
+        "id": "verse",
+        "name": "Verse"
+      }
+    ],
+    "voicesPerModel": {
+      "gpt-4o-mini-tts": [
+        {
+          "id": "alloy",
+          "name": "Alloy"
+        },
+        {
+          "id": "ash",
+          "name": "Ash"
+        },
+        {
+          "id": "ballad",
+          "name": "Ballad"
+        },
+        {
+          "id": "cedar",
+          "name": "Cedar"
+        },
+        {
+          "id": "coral",
+          "name": "Coral"
+        },
+        {
+          "id": "echo",
+          "name": "Echo"
+        },
+        {
+          "id": "fable",
+          "name": "Fable"
+        },
+        {
+          "id": "marin",
+          "name": "Marin"
+        },
+        {
+          "id": "nova",
+          "name": "Nova"
+        },
+        {
+          "id": "onyx",
+          "name": "Onyx"
+        },
+        {
+          "id": "sage",
+          "name": "Sage"
+        },
+        {
+          "id": "shimmer",
+          "name": "Shimmer"
+        },
+        {
+          "id": "verse",
+          "name": "Verse"
+        }
+      ],
+      "tts-1": [
+        {
+          "id": "alloy",
+          "name": "Alloy"
+        },
+        {
+          "id": "ash",
+          "name": "Ash"
+        },
+        {
+          "id": "coral",
+          "name": "Coral"
+        },
+        {
+          "id": "echo",
+          "name": "Echo"
+        },
+        {
+          "id": "fable",
+          "name": "Fable"
+        },
+        {
+          "id": "nova",
+          "name": "Nova"
+        },
+        {
+          "id": "onyx",
+          "name": "Onyx"
+        },
+        {
+          "id": "sage",
+          "name": "Sage"
+        },
+        {
+          "id": "shimmer",
+          "name": "Shimmer"
+        }
+      ],
+      "tts-1-hd": [
+        {
+          "id": "alloy",
+          "name": "Alloy"
+        },
+        {
+          "id": "ash",
+          "name": "Ash"
+        },
+        {
+          "id": "coral",
+          "name": "Coral"
+        },
+        {
+          "id": "echo",
+          "name": "Echo"
+        },
+        {
+          "id": "fable",
+          "name": "Fable"
+        },
+        {
+          "id": "nova",
+          "name": "Nova"
+        },
+        {
+          "id": "onyx",
+          "name": "Onyx"
+        },
+        {
+          "id": "sage",
+          "name": "Sage"
+        },
+        {
+          "id": "shimmer",
+          "name": "Shimmer"
+        }
+      ]
+    },
+    "defaultVoice": "",
+    "voicesUrl": null,
+    "languageHint": false,
+    "style": false
+  },
+  {
+    "id": "openrouter",
+    "alias": "openrouter",
+    "name": "OpenRouter",
+    "noAuth": false,
+    "models": [
+      {
+        "id": "openai/gpt-4o-mini-tts",
+        "name": "GPT-4o Mini TTS"
+      },
+      {
+        "id": "openai/tts-1-hd",
+        "name": "TTS-1 HD"
+      },
+      {
+        "id": "openai/tts-1",
+        "name": "TTS-1"
+      }
+    ],
+    "voices": [
+      {
+        "id": "alloy",
+        "name": "Alloy"
+      },
+      {
+        "id": "ash",
+        "name": "Ash"
+      },
+      {
+        "id": "ballad",
+        "name": "Ballad"
+      },
+      {
+        "id": "cedar",
+        "name": "Cedar"
+      },
+      {
+        "id": "coral",
+        "name": "Coral"
+      },
+      {
+        "id": "echo",
+        "name": "Echo"
+      },
+      {
+        "id": "fable",
+        "name": "Fable"
+      },
+      {
+        "id": "marin",
+        "name": "Marin"
+      },
+      {
+        "id": "nova",
+        "name": "Nova"
+      },
+      {
+        "id": "onyx",
+        "name": "Onyx"
+      },
+      {
+        "id": "sage",
+        "name": "Sage"
+      },
+      {
+        "id": "shimmer",
+        "name": "Shimmer"
+      },
+      {
+        "id": "verse",
+        "name": "Verse"
+      }
+    ],
+    "voicesPerModel": {
+      "openai/gpt-4o-mini-tts": [
+        {
+          "id": "alloy",
+          "name": "Alloy"
+        },
+        {
+          "id": "ash",
+          "name": "Ash"
+        },
+        {
+          "id": "ballad",
+          "name": "Ballad"
+        },
+        {
+          "id": "cedar",
+          "name": "Cedar"
+        },
+        {
+          "id": "coral",
+          "name": "Coral"
+        },
+        {
+          "id": "echo",
+          "name": "Echo"
+        },
+        {
+          "id": "fable",
+          "name": "Fable"
+        },
+        {
+          "id": "marin",
+          "name": "Marin"
+        },
+        {
+          "id": "nova",
+          "name": "Nova"
+        },
+        {
+          "id": "onyx",
+          "name": "Onyx"
+        },
+        {
+          "id": "sage",
+          "name": "Sage"
+        },
+        {
+          "id": "shimmer",
+          "name": "Shimmer"
+        },
+        {
+          "id": "verse",
+          "name": "Verse"
+        }
+      ],
+      "openai/tts-1": [
+        {
+          "id": "alloy",
+          "name": "Alloy"
+        },
+        {
+          "id": "ash",
+          "name": "Ash"
+        },
+        {
+          "id": "coral",
+          "name": "Coral"
+        },
+        {
+          "id": "echo",
+          "name": "Echo"
+        },
+        {
+          "id": "fable",
+          "name": "Fable"
+        },
+        {
+          "id": "nova",
+          "name": "Nova"
+        },
+        {
+          "id": "onyx",
+          "name": "Onyx"
+        },
+        {
+          "id": "sage",
+          "name": "Sage"
+        },
+        {
+          "id": "shimmer",
+          "name": "Shimmer"
+        }
+      ],
+      "openai/tts-1-hd": [
+        {
+          "id": "alloy",
+          "name": "Alloy"
+        },
+        {
+          "id": "ash",
+          "name": "Ash"
+        },
+        {
+          "id": "coral",
+          "name": "Coral"
+        },
+        {
+          "id": "echo",
+          "name": "Echo"
+        },
+        {
+          "id": "fable",
+          "name": "Fable"
+        },
+        {
+          "id": "nova",
+          "name": "Nova"
+        },
+        {
+          "id": "onyx",
+          "name": "Onyx"
+        },
+        {
+          "id": "sage",
+          "name": "Sage"
+        },
+        {
+          "id": "shimmer",
+          "name": "Shimmer"
+        }
+      ]
+    },
+    "defaultVoice": "",
+    "voicesUrl": null,
+    "languageHint": false,
+    "style": false
+  },
+  {
+    "id": "playht",
+    "alias": "playht",
+    "name": "PlayHT",
+    "noAuth": false,
+    "models": [
+      {
+        "id": "PlayDialog",
+        "name": "PlayDialog"
+      },
+      {
+        "id": "Play3.0-mini",
+        "name": "Play 3.0 Mini"
+      }
+    ],
+    "voices": [],
+    "voicesPerModel": {},
+    "defaultVoice": "",
+    "voicesUrl": null,
+    "languageHint": false,
+    "style": false
+  },
+  {
+    "id": "selfhosted-tts",
+    "alias": "selfhosted-tts",
+    "name": "Self-hosted TTS",
+    "noAuth": false,
+    "models": [
+      {
+        "id": "kokoro",
+        "name": "Kokoro (self-hosted)"
+      }
+    ],
+    "voices": [],
+    "voicesPerModel": {},
+    "defaultVoice": "",
+    "voicesUrl": null,
+    "languageHint": false,
+    "style": false
+  },
+  {
+    "id": "stepfun-cn",
+    "alias": "step-cn",
+    "name": "StepFun CN",
+    "noAuth": false,
+    "models": [
+      {
+        "id": "stepaudio-3-tts",
+        "name": "StepAudio 3 TTS"
+      },
+      {
+        "id": "stepaudio-2.5-tts",
+        "name": "StepAudio 2.5 TTS"
+      },
+      {
+        "id": "step-tts-2",
+        "name": "Step TTS 2"
+      },
+      {
+        "id": "step-tts-mini",
+        "name": "Step TTS Mini"
+      }
+    ],
+    "voices": [],
+    "voicesPerModel": {},
+    "defaultVoice": "cixingnansheng",
+    "voicesUrl": null,
+    "languageHint": false,
+    "style": false
+  },
+  {
+    "id": "stepfun-plan-cn",
+    "alias": "stepp-cn",
+    "name": "StepFun CN Plan",
+    "noAuth": false,
+    "models": [
+      {
+        "id": "stepaudio-2.5-tts",
+        "name": "StepAudio 2.5 TTS"
+      }
+    ],
+    "voices": [],
+    "voicesPerModel": {},
+    "defaultVoice": "cixingnansheng",
+    "voicesUrl": null,
+    "languageHint": false,
+    "style": false
+  },
+  {
+    "id": "stepfun-plan",
+    "alias": "stepp",
+    "name": "StepFun Plan",
+    "noAuth": false,
+    "models": [
+      {
+        "id": "stepaudio-2.5-tts",
+        "name": "StepAudio 2.5 TTS"
+      }
+    ],
+    "voices": [],
+    "voicesPerModel": {},
+    "defaultVoice": "cixingnansheng",
+    "voicesUrl": null,
+    "languageHint": false,
+    "style": false
+  },
+  {
+    "id": "stepfun",
+    "alias": "step",
+    "name": "StepFun",
+    "noAuth": false,
+    "models": [
+      {
+        "id": "stepaudio-3-tts",
+        "name": "StepAudio 3 TTS"
+      },
+      {
+        "id": "stepaudio-2.5-tts",
+        "name": "StepAudio 2.5 TTS"
+      },
+      {
+        "id": "step-tts-2",
+        "name": "Step TTS 2"
+      },
+      {
+        "id": "step-tts-mini",
+        "name": "Step TTS Mini"
+      }
+    ],
+    "voices": [],
+    "voicesPerModel": {},
+    "defaultVoice": "cixingnansheng",
+    "voicesUrl": null,
+    "languageHint": false,
+    "style": false
+  },
+  {
+    "id": "tortoise",
+    "alias": "tortoise",
+    "name": "Tortoise TTS",
+    "noAuth": true,
+    "models": [
+      {
+        "id": "tortoise-v2",
+        "name": "Tortoise v2"
+      }
+    ],
+    "voices": [],
+    "voicesPerModel": {},
+    "defaultVoice": "",
+    "voicesUrl": null,
+    "languageHint": false,
+    "style": false
+  },
+  {
+    "id": "xiaomi-mimo",
+    "alias": "xiaomi-mimo",
+    "name": "Xiaomi MiMo",
+    "noAuth": false,
+    "models": [
+      {
+        "id": "mimo-v2.5-tts",
+        "name": "MiMo V2.5 TTS"
+      }
+    ],
+    "voices": [],
+    "voicesPerModel": {
+      "mimo-v2.5-tts": [
+        {
+          "id": "mimo_default",
+          "name": "mimo_default"
+        },
+        {
+          "id": "\u51b0\u7cd6",
+          "name": "\u51b0\u7cd6"
+        },
+        {
+          "id": "\u8309\u8389",
+          "name": "\u8309\u8389"
+        },
+        {
+          "id": "\u82cf\u6253",
+          "name": "\u82cf\u6253"
+        },
+        {
+          "id": "\u767d\u6866",
+          "name": "\u767d\u6866"
+        },
+        {
+          "id": "Mia",
+          "name": "Mia"
+        },
+        {
+          "id": "Chloe",
+          "name": "Chloe"
+        },
+        {
+          "id": "Milo",
+          "name": "Milo"
+        },
+        {
+          "id": "Dean",
+          "name": "Dean"
+        }
+      ]
+    },
+    "defaultVoice": "",
+    "voicesUrl": null,
+    "languageHint": true,
+    "style": true
+  },
+  {
+    "id": "xiaomi-tokenplan",
+    "alias": "xiaomi-tokenplan",
+    "name": "MiMo Token Plan",
+    "noAuth": false,
+    "models": [
+      {
+        "id": "mimo-v2.5-tts",
+        "name": "MiMo V2.5 TTS"
+      },
+      {
+        "id": "mimo-v2.5-tts-voiceclone",
+        "name": "MiMo V2.5 TTS Voice Clone"
+      },
+      {
+        "id": "mimo-v2.5-tts-voicedesign",
+        "name": "MiMo V2.5 TTS Voice Design"
+      }
+    ],
+    "voices": [],
+    "voicesPerModel": {},
+    "defaultVoice": "",
+    "voicesUrl": null,
+    "languageHint": false,
+    "style": false
+  }
+]

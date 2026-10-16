@@ -1,4 +1,5 @@
-import { readFile } from 'node:fs/promises';
+import { mkdir, readFile, rename, writeFile } from 'node:fs/promises';
+import { dirname } from 'node:path';
 
 const proxyReads = new Set(['groups', 'status', 'failover']);
 const postRoutes = new Set(['proxy/select', 'proxy/delay', 'egress-ip', 'health/check', 'subscription/save', 'subscription/update', 'airports', 'proxy/failover/observe', 'proxy/failover/tick', 'proxy/failover/ack']);
@@ -14,10 +15,11 @@ function origin(value) {
   return url.origin;
 }
 
-export function createHermesBridge({ backendUrl, hermesUrl, token, tokenFile, management = false, fetcher = fetch }) {
+export function createHermesBridge({ backendUrl, hermesUrl, token, tokenFile, healthCacheFile, management = false, fetcher = fetch }) {
   const backend = origin(backendUrl);
   const hermes = hermesUrl ? origin(hermesUrl) : null;
   let health = { mem0: null, icarus: null, checked_at: null };
+  let healthRestore;
   let healthJob;
   let lastHealthAttempt = 0;
   const egress = new Map();
@@ -61,13 +63,33 @@ export function createHermesBridge({ backendUrl, hermesUrl, token, tokenFile, ma
     if (result.status?.airports) result.status.airports = safeAirports(result.status.airports);
     return result;
   }
+  async function restoreHealth() {
+    if (!healthRestore) healthRestore = (async () => {
+      if (!healthCacheFile) return;
+      try {
+        const cached = JSON.parse(await readFile(healthCacheFile, 'utf8'));
+        if (cached.hermesUrl === hermes && Number.isFinite(Date.parse(cached.health?.checked_at)) && [cached.health.mem0, cached.health.icarus].every(result => result && Array.isArray(result.components))) health = cached.health;
+      } catch {}
+    })();
+    await healthRestore;
+  }
   async function checkHealth() {
+    await restoreHealth();
     if (healthJob) return healthJob;
     if (Date.now() - lastHealthAttempt < 30000) return health;
-    lastHealthAttempt = Date.now();
-    healthJob = Promise.allSettled(['mem0', 'icarus'].map(name => call(`${name}-health?refresh=1`))).then(results => {
+    healthJob = Promise.allSettled(['mem0', 'icarus'].map(name => call(`${name}-health?refresh=1`))).then(async results => {
       health = Object.fromEntries(results.map((result, index) => [index ? 'icarus' : 'mem0', result.status === 'fulfilled' ? result.value : { components: [], all_ok: false, error: result.reason.message, checked_at: new Date().toISOString() }]));
       health.checked_at = new Date().toISOString();
+      // Throttle from the moment this detection finishes, so a slow probe cannot leave the window already
+      // expired and force an immediate duplicate detection.
+      lastHealthAttempt = Date.now();
+      if (healthCacheFile) {
+        try {
+          await mkdir(dirname(healthCacheFile), { recursive: true, mode: 0o700 });
+          await writeFile(healthCacheFile + '.tmp', JSON.stringify({ hermesUrl: hermes, health }), { mode: 0o600 });
+          await rename(healthCacheFile + '.tmp', healthCacheFile);
+        } catch { health.cache_error = '检测记录暂未保存，服务重启后需重新检测'; }
+      }
       return health;
     }).finally(() => { healthJob = null; });
     return healthJob;
@@ -103,7 +125,7 @@ export function createHermesBridge({ backendUrl, hermesUrl, token, tokenFile, ma
       const auth = await authResponse.json();
       if (!auth.authenticated && auth.requireLogin !== false) return send(response, 401, { error: 'Unauthorized' });
       if (!hermes) return send(response, 503, { error: 'Hermes 服务地址尚未配置' });
-      if (route === 'health') return send(response, 200, health);
+      if (route === 'health') { await restoreHealth(); return send(response, 200, health); }
       if (route === 'health/check') return send(response, 200, await checkHealth());
       if (write && (route.startsWith('subscription/') || route === 'airports' || deleting)) {
         const data = await body(request);

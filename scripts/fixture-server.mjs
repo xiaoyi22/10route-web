@@ -36,6 +36,9 @@ export function fixtureStats(period = '24h') {
 export async function startFixtureServer() {
   const sessions = new Set();
   const timers = new Set();
+  // Test-only controls for the reconstructed matrix: they let isolated cases drive empty/error states
+  // on this in-memory fixture instance. They are never mounted on the real gateway.
+  const fixtureControl = { mode: 'normal', errorPath: null, delayMs: 0 };
   const providers = connections.map(connection => ({ ...connection, authType: connection.provider === 'openrouter' ? 'apikey' : 'oauth', priority: 1, lastTested: connection.testStatus ? new Date().toISOString() : null }));
   providers[0].providerSpecificData = { proxyPoolId: 'demo-google' };
   const proxyPools = [{ id: 'demo-google', name: 'ai-谷歌', type: 'http', proxyUrl: 'http://127.0.0.1:7891', isActive: true, noProxy: '.tencent.com', strictProxy: false }, { id: 'demo-best', name: 'mihomo-优选', type: 'http', proxyUrl: 'http://127.0.0.1:7892', isActive: true, noProxy: '', strictProxy: true }];
@@ -71,6 +74,18 @@ export async function startFixtureServer() {
     };
     const token = request.headers.cookie?.split(';').map(part => part.trim()).find(part => part.startsWith('tenrouter_demo_session='))?.split('=')[1];
     const authenticated = sessions.has(token);
+    // Test-only fixture controls must run before the request whitelist so they are always reachable.
+    if (url.pathname === '/__fixture/mode' && request.method === 'POST') {
+      let raw = '';
+      for await (const chunk of request) raw += chunk;
+      let body = {};
+      try { body = JSON.parse(raw || '{}'); } catch { return send(400, { error: 'Invalid JSON' }); }
+      fixtureControl.mode = body.mode || 'normal';
+      fixtureControl.errorPath = body.errorPath || null;
+      fixtureControl.delayMs = Number(body.delayMs) || 0;
+      return send(200, { ok: true, ...fixtureControl });
+    }
+    if (url.pathname === '/__fixture/state') return send(200, fixtureControl);
     if (!isAllowedRequest(`${url.pathname}${url.search}`, request.method, true)) return send(405, { error: '接口尚未开放' });
     if (!['GET', 'HEAD'].includes(request.method)) {
       const origin = request.headers.origin;
@@ -86,6 +101,13 @@ export async function startFixtureServer() {
       }
       return JSON.parse(raw || '{}');
     }
+
+
+    // 'empty' mode makes list endpoints return no rows; 'error' mode fails the configured path.
+    if (fixtureControl.mode === 'error' && fixtureControl.errorPath && url.pathname === fixtureControl.errorPath) {
+      return send(500, { error: 'fixture-injected failure' });
+    }
+    if (fixtureControl.delayMs) await new Promise(resolve => setTimeout(resolve, fixtureControl.delayMs));
     if (url.pathname === '/api/auth/login' && request.method === 'POST') {
       let raw = '';
       for await (const chunk of request) {
@@ -197,6 +219,23 @@ export async function startFixtureServer() {
       keys[index].isActive = body.isActive;
       return send(200, { key: keys[index] });
     }
+    // Empty mode short-circuits collection endpoints so empty-state rendering can be asserted.
+    if (fixtureControl.mode === 'empty') {
+      const EMPTY = {
+        '/api/providers': { connections: [], providers: [] },
+        '/api/models': { models: [] },
+        '/api/keys': { keys: [] },
+        '/api/combos': { combos: [] },
+        '/api/proxy-pools': { proxyPools: [] },
+        '/api/pricing': {},
+        '/api/usage/stats': { totalRequests: 0, totalPromptTokens: 0, totalCompletionTokens: 0, totalCachedTokens: 0, totalCost: 0, byModel: {}, recentRequests: [] },
+      };
+      if (EMPTY[url.pathname]) {
+        // Keep period validation identical to the populated handler, so tests see the same contract in both modes.
+        if (url.pathname === '/api/usage/stats' && !periods.has(url.searchParams.get('period') || '24h')) return send(400, { error: 'Invalid period' });
+        return send(200, EMPTY[url.pathname]);
+      }
+    }
     if (url.pathname === '/api/providers') {
       if (method === 'GET') return send(200, { connections: providers });
       if (!['openai', 'anthropic', 'openrouter', 'deepseek', ...nodes.map(node => node.id)].includes(body.provider)) return send(400, { error: 'Invalid provider' });
@@ -264,7 +303,8 @@ export async function startFixtureServer() {
     }
     send(404, { error: 'API not found' });
   });
-  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  const fixturePort = Number(process.env.TENROUTER_FIXTURE_PORT) || 0;
+  await new Promise(resolve => server.listen(fixturePort, '127.0.0.1', resolve));
   return {
     url: `http://127.0.0.1:${server.address().port}`,
     close: async () => {

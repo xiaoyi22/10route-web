@@ -29,7 +29,7 @@ try {
   await send('Runtime.enable'); await send('Page.enable');
   await navigate('/dashboard/providers');
   await until(`${button('进入管理端')} != null`);
-  await fill('登录密码', 'web-e2e-local-20261003'); await click('进入管理端');
+  await fill('登录密码', process.env.TENROUTER_E2E_PASSWORD || 'linear-demo'); await click('进入管理端');
   await until(`${button('添加供应商')} != null`);
   const run = Date.now().toString(36);
   const key=await api('/api/keys','POST',{name:'model test '+run}); assert.equal(key.status,201);

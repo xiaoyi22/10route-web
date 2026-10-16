@@ -26,19 +26,19 @@ try {
   await page.getByRole('heading', { name: '请求日志', exact: true }).waitFor();
   await page.waitForFunction(() => document.querySelectorAll('tbody tr').length === 4);
   const row = index => page.locator('tbody tr').nth(index).locator('td').nth(1);
-  assert.equal((await row(0).innerText()).trim(), 'high', '模型名 -high 后缀应推断为 high');
-  assert.equal((await row(1).innerText()).trim(), 'medium', '模型名 -medium 后缀应推断为 medium');
-  assert.equal((await row(2).innerText()).trim(), '-', '无档位后缀应保持未记录');
-  assert.equal((await row(3).innerText()).trim(), 'high', '后端显式记录的强度应优先于模型名推断');
+  assert.equal((await row(0).innerText()).trim(), '-', '模型名 -high 后缀不应被当作已记录的推理强度');
+  assert.equal((await row(1).innerText()).trim(), '-', '模型名 -medium 后缀不应被当作已记录的推理强度');
+  assert.equal((await row(2).innerText()).trim(), '-', '无记录时保持未记录');
+  assert.equal((await row(3).innerText()).trim(), 'high', '后端显式记录的强度应直接展示');
   await page.getByRole('button', { name: '查看请求 ag/gemini-3.8-flash-high', exact: true }).click();
   const dialog = page.getByRole('dialog');
   await dialog.getByText('推理强度', { exact: true }).waitFor();
-  assert.equal((await dialog.locator('.request-details > div').filter({ hasText: '推理强度' }).locator('dd').innerText()).trim(), 'high', '详情弹窗应显示模型名推断的推理强度');
+  assert.equal((await dialog.locator('.request-details > div').filter({ hasText: '推理强度' }).locator('dd').innerText()).trim(), '-', '详情弹窗不推断模型名档位，无记录显示未记录');
   await page.getByRole('button', { name: '关闭窗口' }).click();
   assert.deepEqual(errors, []);
-  console.log('PASS: effort falls back to model-name suffix, explicit record wins, detail dialog matches.');
+  console.log('PASS: only explicitly recorded reasoning effort is shown; missing fields stay unrecorded.');
 } catch (error) {
-  console.error('Effort inference browser state:', await page?.locator('body').innerText().catch(() => ''));
+  console.error('Effort display browser state:', await page?.locator('body').innerText().catch(() => ''));
   throw error;
 } finally {
   await browser.close();

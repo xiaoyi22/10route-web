@@ -34,8 +34,8 @@ export default function TokenCacheChart({ chart, stats, loading, periodTitle }) 
         <AreaChart data={chart} margin={{ top: 10, right: 12, left: 0, bottom: 0 }}>
           <defs>{series.map(item => <linearGradient key={item.key} id={`token-fill-${item.key}`} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={item.color} stopOpacity={.16}/><stop offset="100%" stopColor={item.color} stopOpacity={.015}/></linearGradient>)}</defs>
           <CartesianGrid vertical={false} stroke="var(--border)"/>
-          <XAxis dataKey="label" tickLine={false} axisLine={false} minTickGap={35} tick={{ fill: 'var(--muted)', fontSize: 11 }}/>
-          <YAxis width={48} tickFormatter={compact} tickLine={false} axisLine={false} tick={{ fill: 'var(--muted)', fontSize: 11 }}/>
+          <XAxis dataKey="label" tickLine={false} axisLine={false} minTickGap={35} tick={{ fill: 'var(--muted)', fontSize: 12 }}/>
+          <YAxis width={48} tickFormatter={compact} tickLine={false} axisLine={false} tick={{ fill: 'var(--muted)', fontSize: 12 }}/>
           <Tooltip content={<TokenTooltip visibleSeries={visibleSeries}/>} filterNull={false} cursor={{ stroke: 'var(--muted)', strokeDasharray: '3 4' }}/>
           {visibleSeries.map(item => <Area key={item.key} type="linear" dataKey={item.key} name={item.name} stroke={item.color} strokeWidth={2} fill={`url(#token-fill-${item.key})`} connectNulls={false} isAnimationActive={false} activeDot={{ r: 3, strokeWidth: 0 }}/>) }
         </AreaChart>

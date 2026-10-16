@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import Icon from '../components/Icon.jsx';
 import { ErrorBlock, IconButton, Modal, PageHeading, formatDate, managementEnabled, useResource } from '../components/Controls.jsx';
@@ -31,12 +31,31 @@ export function ProxyPage() {
   const switchingStatus = useResource(switching?.choosing ? `/api/hermes/proxy/status?group=${encodeURIComponent(switching.group)}` : null);
   const switchingData = switchingStatus.data?.group === switching?.group ? switchingStatus.data : null;
   const [measurements, setMeasurements] = useState({});
+  const [sort, setSort] = useState({ key: 'delay', direction: 'asc' });
+  const [progress, setProgress] = useState(null);
+  const testing = useRef(null);
   const [revision, setRevision] = useState(0);
   const group = allGroups.find(group => group.name === selected);
   const currentData = status.data?.group === selected ? status.data : null;
   const nodes = (currentData?.nodes || []).filter(node => !node.is_info);
   const entries = proxyEntries(groups.data);
-  const filtered = nodes.filter(node => node.name.toLowerCase().includes(query.toLowerCase()));
+  const filtered = nodes.filter(node => node.name.toLowerCase().includes(query.toLowerCase())).sort((left, right) => {
+    const a = { ...left, ...measurements[left.name] };
+    const b = { ...right, ...measurements[right.name] };
+    const direction = sort.direction === 'asc' ? 1 : -1;
+    let comparison;
+    if (sort.key === 'delay') {
+      const validA = typeof a.delay === 'number' && Number.isFinite(a.delay) && a.delay > 0;
+      const validB = typeof b.delay === 'number' && Number.isFinite(b.delay) && b.delay > 0;
+      if (validA !== validB) return validA ? -1 : 1;
+      comparison = validA ? a.delay - b.delay : 0;
+    } else if (sort.key === 'state') {
+      const order = { healthy: 0, error: 1, unknown: 2 };
+      comparison = order[nodeState(a).type] - order[nodeState(b).type];
+    } else comparison = (a[sort.key] || '').localeCompare(b[sort.key] || '', 'zh-CN', { numeric: true });
+    return comparison * direction || a.name.localeCompare(b.name, 'zh-CN', { numeric: true });
+  });
+  function sortBy(key) { setSort(previous => ({ key, direction: previous.key === key && previous.direction === 'asc' ? 'desc' : 'asc' })); }
   const chain = groupChain(selected, groups.data?.groups);
   function chooseNode(group) { setError(''); setSwitching({ group, name: '', choosing: true }); }
   function refresh(removedGroup) {
@@ -46,6 +65,7 @@ export function ProxyPage() {
     groups.refresh(); status.refresh(); setRevision(value => value + 1);
   }
   useEffect(() => { setMeasurements({}); setQuery(''); setError(''); setMessage(''); setSwitching(null); }, [selected]);
+  useEffect(() => () => testing.current?.abort(), []);
   useEffect(() => {
     if (view !== 'nodes') return;
     function syncGroups() {
@@ -56,15 +76,34 @@ export function ProxyPage() {
     window.addEventListener('online', syncGroups);
     return () => { clearInterval(timer); document.removeEventListener('visibilitychange', syncGroups); window.removeEventListener('online', syncGroups); };
   }, [view, groups.loading, groups.refresh]);
-  async function test(node) {
-    setBusy(node.name); setError(''); setMessage('');
+  async function testNodes(targets) {
+    if (testing.current || !targets.length) return;
+    const controller = new AbortController();
+    testing.current = controller;
+    setBusy('测速'); setError(''); setMessage('');
+    setProgress({ done: 0, total: targets.length });
+    let done = 0;
+    let failed = 0;
+    const failures = [];
     try {
-      const result = await requestJson('/api/hermes/proxy/delay', { method: 'POST', body: JSON.stringify({ name: node.name }) });
-      setMeasurements(previous => ({ ...previous, [node.name]: { delay: result.delay, alive: typeof result.delay === 'number' && result.delay > 0, measured: true } }));
-    } catch (failure) {
-      setMeasurements(previous => ({ ...previous, [node.name]: { delay: null, alive: false, measured: true, error: failure.message } }));
-      setError(`${node.name}：${failure.message}`);
-    } finally { setBusy(''); }
+      for (let index = 0; index < targets.length && !controller.signal.aborted; index += 3) {
+        await Promise.all(targets.slice(index, index + 3).map(async node => {
+          try {
+            const result = await requestJson('/api/hermes/proxy/delay', { method: 'POST', body: JSON.stringify({ name: node.name }), signal: AbortSignal.any([controller.signal, AbortSignal.timeout(15000)]) });
+            const alive = typeof result.delay === 'number' && Number.isFinite(result.delay) && result.delay > 0;
+            if (!alive) failed++;
+            setMeasurements(previous => ({ ...previous, [node.name]: { delay: result.delay, alive, measured: true } }));
+          } catch (failure) {
+            if (controller.signal.aborted) return;
+            failed++; failures.push(`${node.name}：${failure.message}`);
+            setMeasurements(previous => ({ ...previous, [node.name]: { delay: null, alive: false, measured: true, error: failure.message } }));
+            if (failure.status === 401 || failure.status === 403) controller.abort();
+          } finally { setProgress({ done: ++done, total: targets.length }); }
+        }));
+      }
+      if (failures.length) setError(failures.join('；'));
+      if (!controller.signal.aborted) setMessage(`测速完成：${done} 个节点，${done - failed} 个正常，${failed} 个失败`);
+    } finally { testing.current = null; setBusy(''); setProgress(null); }
   }
   async function switchNode() {
     if (!switching?.name) return;
@@ -88,12 +127,14 @@ export function ProxyPage() {
     {view === 'nodes' && <>
     <section className="requests-section"><div className="panel-heading"><div><h2>代理入口</h2><p>自动检测出口 IP / 位置 · 缓存5分钟，切换节点后更新</p></div><Icon name="globe"/></div><div className="table-shell"><table className="proxy-table"><caption className="sr-only">Mihomo 入口和出口检测</caption><thead><tr><th>入口端口</th><th>代理组 → 当前节点</th><th>出口 IP / 位置</th><th>检测时间</th><th>操作</th></tr></thead><tbody>{entries.map(entry => entry.probeSupported ? <EgressRow key={entry.port} entry={entry} revision={revision} switchDisabled={!!busy || groups.loading} onSwitch={managementEnabled && watchedGroups.includes(entry.group) && allGroups.find(group => group.name === entry.group)?.type === 'Selector' ? chooseNode : undefined}/> : <tr key={entry.port}><td className="mono">:{entry.port}</td><td className="proxy-chain">{entry.chain.join(' → ') || '按分流规则处理'}</td><td colSpan="3" className="muted">此入口暂不支持出口探测</td></tr>)}{!entries.length && <tr><td colSpan="5" className="table-empty">{groups.loading ? '正在读取代理入口…' : '暂无代理入口配置'}</td></tr>}</tbody></table></div></section>
     <section className="requests-section proxy-section"><div className="panel-heading"><div><h2>节点</h2><p className="proxy-chain">{chain.join(' → ') || '未选择代理组'}</p></div><span className="badge subdued">{group?.type || '—'}</span></div>
-      <div className="proxy-filters"><label>代理组<select aria-label="代理组" value={selected} disabled={!!busy} onChange={event => setParams({ group: event.target.value })}>{!allGroups.length && <option value="">暂无代理组</option>}{allGroups.map(group => <option key={group.name} value={group.name}>{group.name} · {group.type}</option>)}</select></label><label>搜索节点<input type="search" aria-label="搜索节点" value={query} onChange={event => setQuery(event.target.value)} placeholder="节点名称"/></label></div>
-      <div className="table-shell"><table className="proxy-table" aria-busy={status.loading}><caption className="sr-only">代理节点与历史探测状态</caption><thead><tr><th>节点名称</th><th>协议 / 类型</th><th>检测状态</th><th>延迟</th><th>操作</th></tr></thead><tbody>{filtered.map(node => {
+      <div className="proxy-filters"><label>代理组<select aria-label="代理组" value={selected} disabled={!!busy} onChange={event => setParams({ group: event.target.value })}>{!allGroups.length && <option value="">暂无代理组</option>}{allGroups.map(group => <option key={group.name} value={group.name}>{group.name} · {group.type}</option>)}</select></label><label>搜索节点<input type="search" aria-label="搜索节点" value={query} disabled={!!busy} onChange={event => setQuery(event.target.value)} placeholder="节点名称"/></label></div>
+      <div className="proxy-test-toolbar"><p className="muted">节点延迟来自 Mihomo 最近记录；一键测速仅检测当前列表中的 {filtered.length} 个节点。</p><button className="button" disabled={!managementEnabled || !!busy || status.loading || !!status.error || !filtered.length} onClick={() => testNodes(filtered)}><Icon name="activity"/>{progress ? `测速中 ${progress.done}/${progress.total}` : '一键测速'}</button></div>
+      {progress && <p className="muted" role="status">已完成 {progress.done} / {progress.total} 个节点</p>}
+      <div className="table-shell"><table className="proxy-table" aria-busy={status.loading || !!progress}><caption className="sr-only">代理节点与历史探测状态</caption><thead><tr>{[['name', '节点名称'], ['type', '协议 / 类型'], ['state', '检测状态'], ['delay', '延迟']].map(([key, label]) => <th key={key} aria-sort={sort.key === key ? sort.direction === 'asc' ? 'ascending' : 'descending' : 'none'}><button className="proxy-sort-button" onClick={() => sortBy(key)} title={`按${label}${sort.key === key && sort.direction === 'asc' ? '降序' : '升序'}排序`}>{label}<span aria-hidden="true">{sort.key === key ? sort.direction === 'asc' ? '↑' : '↓' : '↕'}</span></button></th>)}<th>操作</th></tr></thead><tbody>{filtered.map(node => {
         const measured = measurements[node.name];
         const state = nodeState({ ...node, ...measured });
         const delay = measured ? measured.delay : node.delay;
-        return <tr key={node.name}><td className="proxy-node-name"><strong>{node.name}</strong>{currentData?.now === node.name && <span className="badge subdued">当前选择</span>}</td><td className="muted">{node.type || '—'}</td><td><span className={`status ${state.type}`} title={measured?.error || ''}><span className="dot"/>{state.label}</span><small className="cell-note">{measured ? '本次手动检测' : 'Mihomo 最近记录'}</small></td><td className="mono">{typeof delay === 'number' && delay > 0 ? `${delay} ms` : delay === 0 ? '超时' : '—'}</td><td><div className="row-actions"><IconButton icon="activity" label={`测速 ${node.name}`} disabled={!managementEnabled || !!busy || status.loading} onClick={() => test(node)}/>{group?.type === 'Selector' && <IconButton icon="check" label={`选择 ${node.name}`} disabled={!managementEnabled || !!busy || status.loading || currentData?.now === node.name} onClick={() => { setError(''); setSwitching({ group: selected, name: node.name }); }}/>}</div></td></tr>;
+        return <tr key={node.name}><td className="proxy-node-name"><strong>{node.name}</strong>{currentData?.now === node.name && <span className="badge subdued">当前选择</span>}</td><td className="muted">{node.type || '—'}</td><td><span className={`status ${state.type}`} title={measured?.error || ''}><span className="dot"/>{state.label}</span><small className="cell-note">{measured ? '本次手动检测' : 'Mihomo 最近记录'}</small></td><td className="mono">{typeof delay === 'number' && delay > 0 ? `${delay} ms` : delay === 0 ? '超时' : '—'}</td><td><div className="row-actions"><IconButton icon="activity" label={`测速 ${node.name}`} disabled={!managementEnabled || !!busy || status.loading} onClick={() => testNodes([node])}/>{group?.type === 'Selector' && <IconButton icon="check" label={`选择 ${node.name}`} disabled={!managementEnabled || !!busy || status.loading || currentData?.now === node.name} onClick={() => { setError(''); setSwitching({ group: selected, name: node.name }); }}/>}</div></td></tr>;
       })}{!filtered.length && <tr><td colSpan="5" className="table-empty">{status.loading ? '正在读取节点…' : '没有匹配的节点'}</td></tr>}</tbody></table></div><div className="table-footer"><span>{filtered.length} 个节点</span><span>{group?.type === 'Selector' ? '节点选择为运行时状态' : '当前代理组由 Mihomo 自动选择节点'}</span></div>
     </section>
     </>}

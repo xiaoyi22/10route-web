@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Icon from '../components/Icon.jsx';
 import { ErrorBlock, PageHeading, formatDate, formatNumber, managementEnabled, useResource } from '../components/Controls.jsx';
 import { requestJson } from '../api/client.js';
@@ -18,22 +18,30 @@ export function ChainHealthPage() {
   const [result, setResult] = useState(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const automaticStarted = useRef(false);
   const data = result || resource.data;
-  async function check() {
+  const check = useCallback(async () => {
     setBusy(true); setError('');
     try { setResult(await requestJson('/api/hermes/health/check', { method: 'POST', body: '{}' })); }
     catch (failure) { setError(failure.message); }
     finally { setBusy(false); }
-  }
+  }, []);
+  useEffect(() => {
+    if (!managementEnabled || resource.loading || resource.error || !resource.data || resource.data.checked_at || automaticStarted.current) return;
+    automaticStarted.current = true;
+    check();
+  }, [resource.loading, resource.error, resource.data, check]);
   function refresh() { setResult(null); resource.refresh(); }
   const components = [data?.mem0, data?.icarus].flatMap(result => result?.components || []);
   const failed = components.filter(component => component.ok === false).length;
   return <>
     <PageHeading title="链路健康" subtitle="Hermes / Mem0 与 Icarus"><button className="button" disabled={busy || resource.loading} onClick={refresh}><Icon name="refresh"/>刷新记录</button>{managementEnabled && <button className="button primary" disabled={busy || resource.loading} onClick={check}><Icon name="activity"/>{busy ? '正在检测…' : '检测链路'}</button>}</PageHeading>
-    {(error || resource.error) && <ErrorBlock message={error || resource.error} onRetry={refresh}/>}
+    {(error || resource.error) && <ErrorBlock message={error || resource.error} onRetry={error ? check : refresh}/>}
+    {data?.cache_error && <p className="muted" role="status">{data.cache_error}</p>}
+    {(busy || resource.loading) && <p className="health-loading" role="status" aria-live="polite"><Icon name="refresh"/>{busy ? '正在检测链路，首次检测可能需要一些时间…' : '正在读取最近检测记录…'}</p>}
     <div className="monitor-runtime"><span>最近检测 <strong>{formatDate(data?.checked_at)}</strong></span><span>检测范围 <strong>组件接口、配置与数据新鲜度</strong></span><span>检测链路会调用模型服务</span></div>
     <section className="metrics-grid health-metrics" aria-label="链路检测摘要"><div className="metric"><div className="metric-label">已检查组件<Icon name="activity"/></div><div className="metric-value">{data?.checked_at ? components.length : '—'}</div><span className="metric-note">Mem0 + Icarus</span></div><div className="metric"><div className="metric-label">异常组件<Icon name="shield"/></div><div className="metric-value">{data?.checked_at ? failed : '—'}</div><span className="metric-note">最近一次结果</span></div><div className="metric"><div className="metric-label">记忆数量<Icon name="server"/></div><div className="metric-value">{formatNumber(data?.mem0?.memory_count)}</div><span className="metric-note">Qdrant / mem0</span></div><div className="metric"><div className="metric-label">提取文件<Icon name="logs"/></div><div className="metric-value">{formatNumber(data?.icarus?.fabric_count)}</div><span className="metric-note">Icarus / fabric</span></div></section>
-    <HealthSection title="Mem0" result={data?.mem0} loading={resource.loading}/>
-    <HealthSection title="Icarus" result={data?.icarus} loading={resource.loading}/>
+    <HealthSection title="Mem0" result={data?.mem0} loading={busy || resource.loading}/>
+    <HealthSection title="Icarus" result={data?.icarus} loading={busy || resource.loading}/>
   </>;
 }

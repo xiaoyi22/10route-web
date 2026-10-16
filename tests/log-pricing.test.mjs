@@ -14,6 +14,14 @@ test('log estimates use current provider rates and charge cache subsets once', (
   assert.equal(formatLogCost({ value: 0 }), '$0.000000');
 });
 
+test('provider alias resolves pricing stored under either canonical ID or short alias', () => {
+  const rates = { input: 0.75, output: 3.75 };
+  const entry = { provider: 'antigravity', model: 'gemini-3.8-flash-high', tokens: { prompt_tokens: 1000, completion_tokens: 100 } };
+  assert.equal(logCost(entry, { ag: { 'gemini-3.8-flash-high': rates } }).value, 0.001125);
+  assert.equal(logCost({ ...entry, provider: 'ag' }, { antigravity: { 'gemini-3.8-flash-high': rates } }).value, 0.001125);
+  assert.equal(logCost(entry, { gemini: { 'gemini-3.8-flash-high': rates } }), null);
+});
+
 test('raw Claude cache-exclusive input and long-context pricing remain distinct', () => {
   const prices = { claude: { sonnet: { input: 3, output: 15, cached: 0.3, cache_creation: 3.75, reasoning_included: true, long_context: { threshold: 1000, input: 6 } } } };
   const entry = { provider: 'claude', model: 'sonnet', tokens: { input_tokens: 200, output_tokens: 100, cache_read_input_tokens: 1000 } };

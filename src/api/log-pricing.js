@@ -1,8 +1,9 @@
-import { providerId, requestTokens } from './data.js';
+import { providerLookupIds, requestTokens } from './data.js';
 
 export function logCost(entry, pricing) {
   if (typeof entry.cost === 'number' && Number.isFinite(entry.cost) && entry.cost >= 0) return { value: entry.cost, source: 'recorded' };
-  const rates = pricing?.[entry.provider]?.[entry.model] || pricing?.[providerId(entry.provider)]?.[entry.model];
+  // Gateway logs and the pricing catalog may key the same provider by canonical ID or short alias (antigravity vs ag).
+  const rates = providerLookupIds(entry.provider).map(id => pricing?.[id]?.[entry.model]).find(Boolean);
   const tokens = requestTokens(entry.tokens);
   if (!rates || tokens.input === null || tokens.output === null || ![rates.input, rates.output].every(value => typeof value === 'number' && Number.isFinite(value) && value >= 0)) return null;
   const cached = tokens.cached ?? 0;

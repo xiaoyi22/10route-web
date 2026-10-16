@@ -75,7 +75,7 @@ node tests/core-browser.mjs --section=keys
 node tests/core-browser.mjs --section=providers
 node tests/core-browser.mjs --section=models
 node tests/core-browser.mjs --section=logs
-node tests/log-effort-inference-browser.mjs
+node tests/log-effort-display-browser.mjs
 node tests/core-browser.mjs --section=layout
 node tests/token-cache-browser.mjs
 node tests/monitor-browser.mjs

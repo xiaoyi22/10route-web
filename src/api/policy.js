@@ -10,6 +10,9 @@ const reads = new Set([
   '/api/channel-balances', '/api/usage/quotas',
   '/api/settings/database',
   '/api/cli-tools/all-statuses',
+  '/api/media-providers/tts/voices',
+  '/api/media-providers/tts/elevenlabs/voices', '/api/media-providers/tts/deepgram/voices',
+  '/api/media-providers/tts/inworld/voices', '/api/media-providers/tts/minimax/voices',
   '/api/translator/load', '/api/headroom/status', '/api/headroom/extras',
   '/api/pxpipe/status', '/api/pxpipe/stats', '/api/pxpipe/logs', '/api/pxpipe/health',
   '/api/auth/oidc/start', '/api/auth/oidc/callback', '/api/auth/saml/start', '/api/auth/saml/metadata',
@@ -52,6 +55,7 @@ export function isAllowedRequest(url, method = 'GET', management = false) {
   if (method === 'POST' && ['/api/translator/translate', '/api/translator/send', '/api/translator/save', '/api/headroom/start', '/api/headroom/stop', '/api/headroom/restart', '/api/pxpipe/start', '/api/pxpipe/stop', '/api/pxpipe/restart', '/api/pxpipe/install', '/api/pxpipe/health'].includes(pathname)) return true;
   if (pathname === '/api/headroom/extras' && ['POST', 'DELETE'].includes(method)) return true;
   if (method === 'POST' && pathname === '/api/v1/chat/completions') return true;
+  if (method === 'POST' && pathname === '/api/v1/audio/speech') return true;
   if (method === 'POST' && ['/api/settings/database', '/api/settings/proxy-test', '/api/auth/oidc/test', '/api/auth/saml/test'].includes(pathname)) return true;
   if (pathname === '/api/pricing' && ['PATCH', 'DELETE'].includes(method)) return true;
   if (pathname === '/api/proxy-pools' && method === 'POST') return true;

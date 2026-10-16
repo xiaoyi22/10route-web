@@ -55,7 +55,7 @@ export default function SystemPage() {
   return <div className="system-information-page">
     <PageHeading title="系统信息" subtitle="当前网关所在的 KN10 主机与资源状态">
       <label className="checkbox-filter"><input type="checkbox" checked={autoRefresh} onChange={event => setAutoRefresh(event.target.checked)} aria-label="自动更新系统信息"/>自动更新</label>
-      <button className="button refresh-button" aria-label="刷新" disabled={system.loading} onClick={system.refresh}><Icon name="refresh"/>{system.loading ? '更新中…' : '刷新'}</button>
+      <button className="button refresh-button" aria-label="刷新" aria-busy={system.loading} disabled={system.loading} onClick={system.refresh}><Icon name="refresh"/>{system.loading ? '更新中…' : '刷新'}</button>
     </PageHeading>
     <div className="section-toolbar"><span className="section-kicker">CURRENT SYSTEM</span><span className="last-updated">每 10 秒采集 · 隐藏页面暂停更新</span></div>
     <SystemPanel resource={system} enabled={autoRefresh}/>

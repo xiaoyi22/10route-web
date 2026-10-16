@@ -85,7 +85,7 @@ async function stableRefresh(kind, width, paths, label, automatic = false) {
   const before = await snapshot();
   const navigationBefore = documents;
   const block = hold(paths);
-  if (automatic) await page.getByRole('checkbox', { name: '自动更新用量' }).evaluate(input => input.click());
+  if (automatic) await page.getByRole('checkbox', { name: '自动更新概览' }).evaluate(input => input.click());
   else await button.evaluate(button => button.click());
   await block.first;
   await painted();
@@ -99,7 +99,7 @@ async function stableRefresh(kind, width, paths, label, automatic = false) {
   if (!automatic) await screenshot(`${kind}-${width}-refreshing`);
   block.release();
   await idle(label);
-  if (automatic) await page.getByRole('checkbox', { name: '自动更新用量' }).uncheck();
+  if (automatic) await page.getByRole('checkbox', { name: '自动更新概览' }).uncheck();
   assert.equal(documents, navigationBefore);
   check({ kind, width, automatic, height: during.height, scroll: during.scroll, retainedNodes: true, documentNavigations: 0 });
 }
@@ -115,7 +115,7 @@ try {
     assert.equal(await page.locator('.traffic-chart .recharts-surface').count(), 0);
     initial.release();
     await idle('刷新');
-    await page.getByRole('checkbox', { name: '自动更新用量' }).uncheck();
+    await page.getByRole('checkbox', { name: '自动更新概览' }).uncheck();
     await page.locator('.traffic-chart .recharts-surface').waitFor();
     await stableRefresh('overview', width, usagePaths, '刷新');
     if (width === 1440) await stableRefresh('overview-auto', width, usagePaths, '刷新', true);

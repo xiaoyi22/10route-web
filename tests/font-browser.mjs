@@ -1,3 +1,4 @@
+import { selectTheme } from './theme-control.mjs';
 import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
@@ -33,7 +34,7 @@ try {
   await client.send('DOM.enable');
   await client.send('CSS.enable');
   for (const value of ['light', 'dark']) {
-    await page.getByLabel('主题模式').selectOption(value);
+    await selectTheme(page, value);
     await page.waitForTimeout(180);
     await page.evaluate(() => {
       const probe = document.createElement('span');
@@ -54,8 +55,15 @@ try {
     await page.locator('#font-probe').evaluate(element => element.remove());
     await page.screenshot({ path: resolve(directory, 'chinese-' + value + '.png'), fullPage: true, animations: 'disabled' });
   }
-  const modelWidths = await page.locator('.log-model').evaluateAll(elements => elements.map(element => element.getBoundingClientRect().width));
-  assert(modelWidths.every(width => width >= 140), 'Larger readable fonts must not squeeze model names into vertical fragments: ' + JSON.stringify(modelWidths.slice(0, 4)));
+  const modelLayout = await page.locator('.log-model').evaluateAll(elements => elements.map(element => {
+    const cell = element.closest('td');
+    const style = getComputedStyle(cell);
+    const rect = element.getBoundingClientRect();
+    const bounds = cell.getBoundingClientRect();
+    return { available: cell.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight), withinCell: rect.left >= bounds.left && rect.right <= bounds.right, singleLine: getComputedStyle(element).whiteSpace === 'nowrap' };
+  }));
+  const modelWidths = modelLayout.map(item => item.available);
+  assert(modelLayout.every(item => item.available >= 140 && item.withinCell && item.singleLine), 'Model columns must reserve readable space and keep model text on one line within the cell: ' + JSON.stringify(modelLayout.slice(0, 4)));
   assert.deepEqual(fontFailures, [], 'Bundled fonts must load without network errors');
   for (const name of ['SuperPingFangV1.woff2', 'SuperSFMonoV1.woff2']) {
     assert(fontResponses.some(response => new URL(response.url).origin === new URL(base).origin && new URL(response.url).pathname === '/fonts/' + name && response.status === 200 && response.type?.includes('font/woff2')), 'A same-origin WOFF2 font must load successfully: ' + name);

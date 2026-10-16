@@ -1,3 +1,4 @@
+import { selectTheme } from './theme-control.mjs';
 import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
@@ -78,7 +79,7 @@ async function audit(page, label) {
 }
 
 async function theme(page, value) {
-  await page.getByLabel('主题模式').selectOption(value, { force: true });
+  await selectTheme(page, value);
   await page.waitForFunction(expected => document.documentElement.dataset.theme === expected, value);
   await page.waitForTimeout(180);
 }
@@ -184,7 +185,7 @@ try {
     assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), 'light');
     for (let iteration = 0; iteration < 10; iteration++) await theme(page, iteration % 2 ? 'light' : 'dark');
     await audit(page, screen.name + '-ten-switches');
-    await page.getByLabel('主题模式').selectOption('system');
+    await selectTheme(page, 'system');
     for (const value of ['dark', 'light']) {
       await page.emulateMedia({ colorScheme: value });
       await page.waitForFunction(expected => document.documentElement.dataset.theme === expected, value);

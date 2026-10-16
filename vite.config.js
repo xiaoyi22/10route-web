@@ -19,7 +19,7 @@ export default async () => {
     if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password || url.search || url.hash) throw new Error('模型端点须为不含凭据和查询参数的 http(s) URL');
   }
   const proxy = target ? { '/api': { target, changeOrigin: false, xfwd: true } } : undefined;
-  const hermesBridge = target ? createHermesBridge({ backendUrl: target, hermesUrl: process.env.TENROUTER_HERMES_URL, token: process.env.TENROUTER_HERMES_TOKEN, tokenFile: process.env.TENROUTER_HERMES_TOKEN_FILE, management }) : null;
+  const hermesBridge = target ? createHermesBridge({ backendUrl: target, hermesUrl: process.env.TENROUTER_HERMES_URL, token: process.env.TENROUTER_HERMES_TOKEN, tokenFile: process.env.TENROUTER_HERMES_TOKEN_FILE, healthCacheFile: dataMode !== 'demo' && process.env.TENROUTER_CHECKIN_DIR ? resolve(process.env.TENROUTER_CHECKIN_DIR, 'chain-health.json') : undefined, management }) : null;
   const systemBridge = target && dataMode !== 'demo' ? createSystemBridge({ backendUrl: target, sshTarget: process.env.TENROUTER_SYSTEM_SSH_TARGET, sshIdentity: process.env.TENROUTER_SYSTEM_SSH_IDENTITY }) : null;
   const checkinBridge = target ? createCheckinBridge({ backendUrl: target, management, directory: dataMode !== 'demo' ? process.env.TENROUTER_CHECKIN_DIR : undefined, proxyUrl: process.env.TENROUTER_CHECKIN_PROXY_URL }) : null;
   const readOnlyGuard = (request, response, next) => {

@@ -12,7 +12,7 @@ try {
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
   await page.goto(`${base}/dashboard/providers`);
-  await page.getByLabel('登录密码').fill('web-e2e-local-20261003');
+  await page.getByLabel('登录密码').fill(process.env.TENROUTER_E2E_PASSWORD || 'linear-demo');
   await page.getByRole('button', { name: '进入管理端' }).click();
   await page.getByRole('button', { name: '添加供应商', exact: true }).waitFor();
   const before = await (await page.request.get(`${base}/api/providers`)).json();

@@ -1,3 +1,4 @@
+import { selectTheme } from './theme-control.mjs';
 import assert from 'node:assert/strict';
 import { mkdtemp, rm, mkdir } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -102,7 +103,7 @@ try {
   await page.getByRole('heading', { name: 'AnyRouter', exact: true }).waitFor();
   await mkdir('screenshots', { recursive: true });
   await page.screenshot({ path: 'screenshots/checkins-desktop.png', fullPage: true });
-  await page.getByLabel('主题模式').selectOption('dark');
+  await selectTheme(page, 'dark');
   await page.setViewportSize({ width: 375, height: 900 });
   assert(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
   await page.screenshot({ path: 'screenshots/checkins-mobile.png', fullPage: true });

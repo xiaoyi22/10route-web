@@ -211,7 +211,7 @@ try {
   await page.getByLabel('日志连接').selectOption('demo-codex');
   await page.getByRole('button', { name: '筛选', exact: true }).click();
   await page.getByLabel('每页日志条数').selectOption('50');
-  await page.waitForFunction(() => document.querySelectorAll('tbody tr').length === 22);
+  await page.waitForFunction(() => document.querySelectorAll('tbody tr').length === 18);
   assert((await page.locator('tbody').innerText()).includes('Codex · 开发连接'));
   assert(!(await page.locator('tbody').innerText()).includes('Claude · 工作连接'));
   await page.screenshot({ path: resolve(screenshotDir, 'logs.png'), fullPage: true });

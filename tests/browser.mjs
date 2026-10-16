@@ -1,3 +1,4 @@
+import { selectTheme } from './theme-control.mjs';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { mkdir } from 'node:fs/promises';
@@ -55,9 +56,9 @@ try {
   await page.getByRole('link', { name: '用量统计', exact: true }).click();
   await page.getByText('实时流已连接', { exact: true }).waitFor();
   await page.getByRole('link', { name: '概览', exact: true }).click();
-  await page.getByLabel('主题模式').selectOption('light');
+  await selectTheme(page, 'light');
   assert.equal(await page.locator('html').getAttribute('data-theme'), 'light');
-  await page.getByLabel('主题模式').selectOption('dark');
+  await selectTheme(page, 'dark');
   await page.keyboard.press('Control+k');
   await page.getByLabel('搜索页面').fill('供应商');
   await page.getByRole('dialog').getByRole('link', { name: '供应商' }).click();
@@ -89,10 +90,10 @@ try {
     await page.getByTestId('request-value').filter({ hasText: /\d/ }).waitFor();
     await page.waitForTimeout(500);
     await page.screenshot({ path: resolve(screenshotDir, 'desktop.png'), fullPage: true });
-    await page.getByLabel('主题模式').selectOption('light');
+    await selectTheme(page, 'light');
     await page.waitForTimeout(200);
     await page.screenshot({ path: resolve(screenshotDir, 'light.png'), fullPage: true });
-    await page.getByLabel('主题模式').selectOption('dark');
+    await selectTheme(page, 'dark');
     await page.waitForTimeout(200);
     await page.setViewportSize({ width: 375, height: 900 });
     await page.screenshot({ path: resolve(screenshotDir, 'mobile.png'), fullPage: true });

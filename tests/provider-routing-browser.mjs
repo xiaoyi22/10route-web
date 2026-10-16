@@ -1,3 +1,4 @@
+import { selectTheme } from './theme-control.mjs';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { mkdir } from 'node:fs/promises';
@@ -104,7 +105,7 @@ try {
   for (const width of [1440, 768, 375, 320]) {
     await page.setViewportSize({ width, height: 1000 });
     for (const theme of ['light', 'dark']) {
-      await page.getByLabel('主题模式').selectOption(theme);
+      await selectTheme(page, theme);
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `Page overflow: ${width}, ${theme}`);
       assert.equal(await routing.evaluate(form => form.scrollWidth <= form.clientWidth), true);
       if (screenshotDir) await page.screenshot({ path: resolve(screenshotDir, `provider-routing-${width}-${theme}.png`), fullPage: true });

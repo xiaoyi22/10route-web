@@ -1,3 +1,4 @@
+import { selectTheme } from './theme-control.mjs';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { mkdir, readFile } from 'node:fs/promises';
@@ -55,7 +56,7 @@ try {
     const modelWidth = await page.locator('.logs-table tbody td').first().evaluate(cell => cell.getBoundingClientRect().width);
     assert(modelWidth >= 160 && modelWidth <= 220, `prices=${prices}: model column must not absorb spare width; actual=${modelWidth}`);
     for (const theme of ['dark', 'light']) {
-      await page.getByLabel('主题模式').selectOption(theme);
+      await selectTheme(page, theme);
       for (const width of [320, 375, 768, 1280, 1440, 1920]) {
         await page.setViewportSize({ width, height: 1080 });
         const layout = await page.evaluate(() => {
@@ -91,7 +92,7 @@ try {
     const narrow = widths.find(sample => sample.prices === prices && sample.width === 1440).columns;
     const wide = widths.find(sample => sample.prices === prices && sample.width === 1920).columns;
     for (const name of ['端点', '供应商', 'Token', '延迟']) assert(wide[name] > narrow[name] + 15, `${name} must share spare desktop width (prices=${prices})`);
-    await page.getByLabel('主题模式').selectOption('dark');
+    await selectTheme(page, 'dark');
     await mkdir('screenshots', { recursive: true });
     await page.screenshot({ path: `screenshots/log-layout-${live ? 'live' : 'stress'}-${prices ? 'prices' : 'default'}.png`, fullPage: true });
   }

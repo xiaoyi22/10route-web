@@ -1,3 +1,4 @@
+import { selectTheme } from './theme-control.mjs';
 import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
 import { mkdir, writeFile } from 'node:fs/promises';
@@ -117,7 +118,7 @@ try {
   await metrics(['21', '0', '1', '0.0%']);
   report.checks.push('empty, ungraded-only and all-failed histories do not fabricate a success rate');
   for (const theme of ['dark', 'light']) {
-    await page.getByLabel('主题模式').selectOption(theme);
+    await selectTheme(page, theme);
     await page.waitForFunction(theme => document.documentElement.dataset.theme === theme, theme);
     await page.screenshot({ path: resolve(directory, 'monitor-summary-' + theme + '.png'), fullPage: true, animations: 'disabled' });
   }

@@ -3,6 +3,8 @@ import providerAliases from './provider-aliases.json' with { type: 'json' };
 const numeric = value => typeof value === 'number' && Number.isFinite(value) ? value : null;
 const aliasIds = Object.fromEntries(Object.entries(providerAliases).flatMap(([id, aliases]) => aliases.map(alias => [alias, id])));
 export const providerId = value => Object.hasOwn(providerAliases, value) ? value : aliasIds[value] || value;
+// Pricing catalogs may key models under a provider's canonical ID or any short alias; return every ID to try.
+export const providerLookupIds = value => [...new Set([value, providerId(value), ...(providerAliases[value] || []), ...(providerAliases[providerId(value)] || [])])];
 
 export function cacheRate(cached, input) {
   if (numeric(cached) === null || numeric(input) === null || input <= 0 || cached < 0 || cached > input) return null;
@@ -35,6 +37,14 @@ export function requestErrorLabel(entry) {
   return reason + (Number.isInteger(error.status) ? `（HTTP ${error.status}）` : '');
 }
 
+export function isModelMismatch(entry) {
+  if (entry?.modelMismatch === true) return true;
+  if (!entry?.model || !entry?.responseModel) return false;
+  const cleanReq = String(entry.model).replace(/^[^/]+\//, '').trim().toLowerCase();
+  const cleanResp = String(entry.responseModel).replace(/^[^/]+\//, '').trim().toLowerCase();
+  return Boolean(cleanReq && cleanResp && cleanReq !== cleanResp);
+}
+
 export function responseModeLabel(mode) {
   return mode === 'streaming' ? '流式' : mode === 'non-streaming' ? '非流式' : mode || '—';
 }
@@ -45,20 +55,17 @@ export function requestSpeed(entry) {
   const ttft = numeric(entry.latency?.ttft);
   if (entry.imported || output === null || output <= 0 || total === null || total < 50) return null;
   let duration = total;
-  let basis = '输出 Token ÷ 总耗时';
-  if (entry.responseMode === 'streaming' && ttft !== null && ttft > 0 && total - ttft >= 50) {
+  let basis = '平均速度：输出 Token ÷ 总耗时（含等待时间）';
+  if (entry.responseMode === 'streaming') {
+    if (ttft === null || ttft <= 0 || total - ttft < 50) return null;
     duration = total - ttft;
-    basis = '输出 Token ÷（总耗时 − 首 Token 延迟）';
-    // Match the gateway performance statistics' short-burst fallback.
-    if (output * 1000 / duration > 300) {
-      duration = total;
-      basis = '首 Token 后速率超过 300，按网关统计口径使用输出 Token ÷ 总耗时';
-    }
+    basis = '输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token';
   }
   return { tps: output * 1000 / duration, durationMs: duration, basis };
 }
 
 export function modelCatalog(builtIn = [], custom = [], connections = [], nodes = [], disabled = {}) {
+  const credits = model => Object.fromEntries(['rateMultiplier', 'nightFree', 'promoFreeUntil', 'promotion'].filter(key => model[key] !== undefined).map(key => [key, model[key]]));
   const activeIds = new Set(connections.filter(connection => connection.isActive !== false).map(connection => providerId(connection.provider)));
   const activeAliases = new Set(activeIds);
   for (const id of activeIds) for (const alias of providerAliases[id] || []) activeAliases.add(alias);
@@ -67,12 +74,12 @@ export function modelCatalog(builtIn = [], custom = [], connections = [], nodes 
   for (const model of builtIn) {
     const id = model.routedModel || model.fullModel || `${model.provider}/${model.model}`;
     if (activeAliases.has(model.provider)) activeAliases.add(id.split('/')[0]);
-    all.set(id, { id, name: model.name || model.alias || model.model, provider: model.provider, caps: model.caps || {}, enabled: true, custom: false, connected: activeAliases.has(model.provider) });
+    all.set(id, { id, name: model.name || model.alias || model.model, provider: model.provider, caps: model.caps || {}, ...credits(model), enabled: true, custom: false, connected: activeAliases.has(model.provider) });
   }
   for (const model of custom) {
     const prefix = nodes.find(node => node.id === model.providerAlias)?.prefix || model.providerAlias;
     const id = `${prefix}/${model.id}`;
-    all.set(id, { id, upstreamId: model.id, type: model.type || 'llm', name: model.name || model.id, provider: model.providerAlias, caps: model, enabled: model.enabled !== false, custom: true, connected: activeAliases.has(model.providerAlias) });
+    all.set(id, { id, upstreamId: model.id, type: model.type || 'llm', name: model.name || model.id, provider: model.providerAlias, caps: model, ...credits(all.get(id) || {}), ...credits(model), enabled: model.enabled !== false, custom: true, connected: activeAliases.has(model.providerAlias) });
   }
   // The gateway omits disabled built-ins from /api/models; recover their IDs for management.
   for (const [provider, ids] of Object.entries(disabled)) {

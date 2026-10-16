@@ -17,7 +17,7 @@
 .checkin-account dt { color: var(--muted); }
 .checkin-account dd { margin: 0; overflow-wrap: anywhere; }
 .checkin-result { padding-top: 12px; border-top: 1px solid var(--border); font-size: 12px; line-height: 1.7; overflow-wrap: anywhere; }
-.checkin-account-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 16px; }
+.checkin-account-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end; margin-top: 16px; }
 .checkin-account-actions .checkbox-filter { margin-right: auto; }
 .checkin-account-actions .icon-button { min-width: 36px; min-height: 36px; }
 .checkin-history-row { display: flex; align-items: center; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--border); flex-wrap: wrap; }

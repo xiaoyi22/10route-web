@@ -88,7 +88,7 @@ export default function OverviewPage() {
   return <div className="gateway-overview">
     <PageHeading title="概览" subtitle="网关运行、业务流量与连接状态">
       <label className="checkbox-filter"><input type="checkbox" checked={autoRefresh} onChange={event => setAutoRefresh(event.target.checked)} aria-label="自动更新概览"/>自动更新</label>
-      <button className="button refresh-button" aria-label="刷新" disabled={resources.some(resource => resource.loading)} onClick={() => resources.forEach(resource => resource.refresh())}><Icon name="refresh"/>{resources.some(resource => resource.loading) ? '更新中…' : '刷新'}</button>
+      <button className="button refresh-button" aria-label="刷新" aria-busy={resources.some(resource => resource.loading)} disabled={resources.some(resource => resource.loading)} onClick={() => resources.forEach(resource => resource.refresh())}><Icon name="refresh"/>{resources.some(resource => resource.loading) ? '更新中…' : '刷新'}</button>
     </PageHeading>
     <section className="overview-health-strip" aria-label="网关状态">
       <span><Icon name="activity"/>网关 <State type={healthOld ? 'error' : health.data ? 'healthy' : 'unknown'}>{healthOld ? '检查失败 / 已过期' : health.data ? autoRefresh ? '可达' : '上次检查可达' : '检查中'}</State></span>

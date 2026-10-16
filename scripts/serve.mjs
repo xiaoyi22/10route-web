@@ -21,7 +21,7 @@ export async function startGatewayServer({ backendUrl, distDir = resolve(root, '
   const transport = backend.protocol === 'https:' ? https : http;
   const sockets = new Set();
   const upstreams = new Set();
-  const hermesBridge = createHermesBridge({ backendUrl, hermesUrl, token: hermesToken, tokenFile: hermesTokenFile, management });
+  const hermesBridge = createHermesBridge({ backendUrl, hermesUrl, token: hermesToken, tokenFile: hermesTokenFile, healthCacheFile: checkinDir ? resolve(checkinDir, 'chain-health.json') : undefined, management });
   const systemBridge = createSystemBridge({ backendUrl, sshTarget: systemSshTarget, sshIdentity: systemSshIdentity });
   const checkinBridge = createCheckinBridge({ backendUrl, management, directory: checkinDir, proxyUrl: checkinProxyUrl, service: checkinService, automatic: checkinAutomatic });
   function json(response, status, message) {

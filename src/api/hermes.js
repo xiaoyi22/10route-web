@@ -5,7 +5,7 @@ export function proxyEntries(data) {
   if (ports.mixed) entries.push({ port: Number(ports.mixed), group: 'GLOBAL', name: '混合入口' });
   for (const listener of ports.listeners || []) {
     if (!listener.port) continue;
-    entries.push({ port: Number(listener.port), group: listener.proxy || '', name: listener.name || '独立入口' });
+    entries.push({ port: Number(listener.port), group: listener.proxy || '', name: listener.proxy || listener.name || '独立入口' });
   }
   return entries.map(entry => ({ ...entry, chain: groupChain(entry.group, data.groups), probeSupported: [7890, 7891, 7892].includes(entry.port) }));
 }

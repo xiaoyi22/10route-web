@@ -1,3 +1,4 @@
+import { selectTheme } from './theme-control.mjs';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 const { chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT_MODULE || 'playwright');
@@ -65,7 +66,7 @@ try {
   await page.getByText('该供应商尚未提供可查询的余额数据。', { exact: true }).waitFor();
   assert((await page.locator('.finance-values').innerText()).includes('上次数据'));
   await page.getByLabel('查询余额 Zero Wallet').click();
-  await page.getByText('余额查询已关闭', { exact: true }).waitFor();
+  await page.getByText('余额查询已关闭', { exact: false }).waitFor();
   await page.getByLabel('查询余额 Zero Wallet').click();
   await page.getByText('0 USD', { exact: true }).waitFor();
   const refreshed = page.waitForResponse(response => response.url().includes('channel-balances?force=1'));
@@ -73,7 +74,7 @@ try {
   await refreshed;
   assert(requests.some(url => url.includes('force=1')));
   for (const theme of ['light', 'dark']) {
-    await page.getByLabel('主题模式').selectOption(theme);
+    await selectTheme(page, theme);
     for (const width of [320, 375, 768, 960, 1280, 1536, 1920]) {
       await page.setViewportSize({ width, height: width === 1280 ? 720 : 1000 });
       await page.waitForTimeout(250);

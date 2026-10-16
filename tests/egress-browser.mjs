@@ -1,3 +1,4 @@
+import { selectTheme } from './theme-control.mjs';
 import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
 import { mkdir, writeFile } from 'node:fs/promises';
@@ -106,10 +107,10 @@ try {
   report.checks.push('TTL and hidden-page pause');
   assert(writes.every(path => path.endsWith('/egress-ip') || path.endsWith('/proxy/select')), 'Automatic egress must never trigger model or health checks');
   assert.deepEqual(report.errors, []);
-  await page.getByLabel('主题模式').selectOption('dark');
+  await selectTheme(page, 'dark');
   await page.waitForFunction(() => document.documentElement.dataset.theme === 'dark');
   await page.screenshot({ path: resolve(directory, 'automatic-egress-dark.png'), fullPage: true });
-  await page.getByLabel('主题模式').selectOption('light');
+  await selectTheme(page, 'light');
   await page.waitForFunction(() => document.documentElement.dataset.theme === 'light');
   await page.screenshot({ path: resolve(directory, 'automatic-egress-light.png'), fullPage: true });
   await page.setViewportSize({ width: 375, height: 812 });

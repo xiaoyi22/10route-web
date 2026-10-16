@@ -1,3 +1,4 @@
+import { selectTheme } from './theme-control.mjs';
 import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
@@ -49,7 +50,7 @@ try {
     }
   };
   const theme = async value => {
-    await page.getByLabel('主题模式').selectOption(value);
+    await selectTheme(page, value);
     await page.waitForFunction(expected => document.documentElement.dataset.theme === expected, value);
     await page.waitForTimeout(180);
   };
@@ -80,7 +81,7 @@ try {
     await page.keyboard.press('Escape');
   }
   for (const value of ['dark', 'light', 'dark', 'light']) { await theme(value); await audit('switch-' + value); }
-  await page.getByLabel('主题模式').selectOption('system');
+  await selectTheme(page, 'system');
   for (const value of ['dark', 'light']) {
     await page.emulateMedia({ colorScheme: value });
     await page.waitForFunction(expected => document.documentElement.dataset.theme === expected, value);
@@ -95,7 +96,7 @@ try {
   await page.reload();
   await page.getByRole('heading', { name: '模型检测', exact: true }).waitFor();
   assert.equal(await page.locator('html').getAttribute('data-theme'), 'light');
-  assert.equal(await page.getByLabel('主题模式').inputValue(), 'light');
+  assert.equal(await page.getByRole('radio', { name: '浅色', exact: true }).isChecked(), true);
   await audit('reload-light');
   assert.deepEqual((await (await context.request.get(base + '/api/iq-monitor')).json()).config, initial.config);
   assert.deepEqual(report.errors, []);

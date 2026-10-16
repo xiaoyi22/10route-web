@@ -1,3 +1,4 @@
+import { selectTheme } from './theme-control.mjs';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
@@ -45,7 +46,7 @@ try {
     await page.goto(base + '/dashboard/providers');
     await page.getByRole('heading', { name: '供应商', exact: true }).waitFor();
     for (const theme of ['light', 'dark']) {
-      await page.getByLabel('主题模式').selectOption(theme);
+      await selectTheme(page, theme);
       await page.keyboard.press('Control+k');
       const dialog = page.getByRole('dialog', { name: '快速跳转' });
       await dialog.waitFor();
@@ -54,17 +55,20 @@ try {
       assert(!(await dialog.innerText()).includes('�'), 'Search contains replacement characters');
       assert.equal(await page.getByLabel('搜索页面').getAttribute('placeholder'), '搜索页面…');
       assert.equal(await dialog.locator('.search-results a').count(), 19);
+      await page.waitForFunction(() => document.activeElement === document.querySelector('.search-input input'));
       assert.equal(await page.getByLabel('搜索页面').evaluate(element => element === document.activeElement), true);
       const bounds = await dialog.boundingBox();
       assert(bounds.y >= 16 && bounds.y + bounds.height <= screen.height - 16 + 1, screen.name + ': search dialog leaves the viewport');
       const results = dialog.locator('.search-results');
+      await page.waitForTimeout(200);
       const headerBefore = await dialog.locator('.dialog-top').boundingBox();
       await results.evaluate(element => { element.scrollTop = element.scrollHeight; });
       const lastResult = results.getByRole('link', { name: '协议调试', exact: true });
       const lastBounds = await lastResult.boundingBox();
       const resultBounds = await results.boundingBox();
       assert(lastBounds.y >= resultBounds.y - 1 && lastBounds.y + lastBounds.height <= resultBounds.y + resultBounds.height + 1, 'Last search result is not reachable');
-      assert.deepEqual(await dialog.locator('.dialog-top').boundingBox(), headerBefore, 'Search header moves when results scroll');
+      const headerAfter = await dialog.locator('.dialog-top').boundingBox();
+      assert.deepEqual(headerAfter, headerBefore, 'Search header moves when results scroll');
       await page.screenshot({ path: resolve(directory, screen.name + '-' + theme + '-search.png'), animations: 'disabled' });
       await page.getByLabel('搜索页面').fill('模型');
       assert.deepEqual(await results.getByRole('link').allTextContents(), ['模型', '组合模型', '模型检测', '模型价格']);

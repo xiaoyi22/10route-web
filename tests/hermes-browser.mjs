@@ -68,7 +68,7 @@ await new Promise(resolve => hermes.listen(0, '127.0.0.1', resolve));
 process.env.TENROUTER_INTERNAL_TARGET = fixture.url;
 process.env.TENROUTER_DATA_MODE = 'demo';
 process.env.TENROUTER_ENABLE_MANAGEMENT = '1';
-process.env.TENROUTER_PORT = '4320';
+process.env.TENROUTER_PORT = process.env.HERMES_TEST_PORT || '4320';
 process.env.TENROUTER_HERMES_URL = `http://127.0.0.1:${hermes.address().port}`;
 process.env.TENROUTER_HERMES_TOKEN = 'isolated-test-token';
 // Keep the browser driver responsive while Vite scans the shared filesystem.
@@ -130,7 +130,7 @@ try {
       const timer = setTimeout(() => { socket.removeEventListener('message', listener); reject(new Error(`Page load timed out: ${path}`)); }, 90000);
       socket.addEventListener('message', listener);
     });
-    await send('Page.navigate', { url: 'http://127.0.0.1:4320' + path });
+    await send('Page.navigate', { url: 'http://127.0.0.1:' + process.env.TENROUTER_PORT + path });
     await loaded;
     await until("document.readyState==='complete' && document.querySelector('h1')");
     console.log(`PAGE ${path}: ${Math.round(performance.now() - started)} ms`);
@@ -262,12 +262,12 @@ try {
   await until("!!document.querySelector('.provider-mark img') && document.querySelector('.provider-mark img').complete && document.querySelector('.provider-mark img').naturalWidth > 0");
   assert((await evaluate("document.querySelector('.provider-proxy-link').getAttribute('href')")).includes('group=ai-'));
   await navigate('/dashboard/chain-health');
-  await until("document.body.innerText.includes('尚无检测记录')");
+  await until("document.body.innerText.includes('请求过于频繁') && document.body.innerText.includes('记忆较新')");
   const iconModules = await evaluate("performance.getEntriesByType('resource').filter(item=>item.name.includes('/assets/providers/') && item.name.includes('?import')).length");
   assert.equal(iconModules, 0, 'Health page must not load unused provider icons');
-  assert.equal(calls.filter(path => path.includes('health')).length, 0);
+  assert.equal(calls.filter(path => path.includes('health')).length, 2);
   await click('刷新记录'); await delay(200);
-  assert.equal(calls.filter(path => path.includes('health')).length, 0);
+  assert.equal(calls.filter(path => path.includes('health')).length, 2);
   await click('检测链路');
   await until("document.body.innerText.includes('请求过于频繁') && document.body.innerText.includes('记忆较新')");
   await click('刷新记录'); await delay(200);
@@ -283,7 +283,7 @@ try {
   await click('刷新记录');
   await until("!!document.querySelector('#login-password')");
   assert.deepEqual(errors, []);
-  console.log('PASS browser: node probe, verified switch, egress probe, provider mapping, manual-only health, session expiry, desktop/mobile light/dark, no uncaught exceptions');
+  console.log('PASS browser: node probe, verified switch, egress probe, provider mapping, first-entry health with cached refresh, session expiry, desktop/mobile light/dark, no uncaught exceptions');
 
   // Exercise the existing live Hermes APIs through the adapter, with an isolated gateway session.
   if (process.argv.includes('--live') || process.argv.includes('--live-health')) {

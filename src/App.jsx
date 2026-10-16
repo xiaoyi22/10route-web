@@ -29,6 +29,7 @@ const ProxyPoolsPage = lazy(() => import('./pages/ProxyPoolsPage.jsx').then(modu
 const SettingsPage = lazy(() => import('./pages/SettingsPage.jsx').then(module => ({ default: module.SettingsPage })));
 const AuthorizationPage = lazy(() => import('./pages/AuthorizationPage.jsx').then(module => ({ default: module.AuthorizationPage })));
 const TranslatorPage = lazy(() => import('./pages/TranslatorPage.jsx').then(module => ({ default: module.TranslatorPage })));
+const TtsPage = lazy(() => import('./pages/TtsPage.jsx'));
 
 const demo = __DATA_MODE__ === 'demo';
 const navItems = [
@@ -37,6 +38,7 @@ const navItems = [
   { path: '/dashboard/authorization', title: '账号授权', icon: 'key', group: '工作区' },
   { path: '/dashboard/endpoint', title: '端点与接入', icon: 'link', group: '工作区' },
   { path: '/dashboard/models', title: '模型', icon: 'grid', group: '工作区' },
+  { path: '/dashboard/media-providers/tts', title: '语音合成', icon: 'audio', group: '工作区' },
   { path: '/dashboard/combos', title: '组合模型', icon: 'radio', group: '工作区' },
   { path: '/dashboard/distribution', title: '下游分发', icon: 'globe', group: '工作区' },
   { path: '/dashboard/proxy', title: '代理控制', icon: 'globe', group: '工作区' },
@@ -57,7 +59,8 @@ const compact = value => value === null || value === undefined ? '—' : new Int
 
 function ThemeControl() {
   const { theme, setTheme } = usePreferences();
-  return <label className="theme-control"><Icon name="globe"/><select aria-label="主题模式" value={theme} onChange={event => setTheme(event.target.value)}><option value="system">跟随系统</option><option value="dark">深色</option><option value="light">浅色</option></select></label>;
+  const modes = [{ value: 'light', label: '浅色', icon: 'sun' }, { value: 'dark', label: '深色', icon: 'moon' }, { value: 'system', label: '跟随系统', icon: 'monitor' }];
+  return <div className="theme-control" role="radiogroup" aria-label="主题模式" style={{ '--theme-index': Math.max(0, modes.findIndex(mode => mode.value === theme)) }}><span className="theme-slider" aria-hidden="true"/>{modes.map(mode => <label key={mode.value} className="theme-option" title={mode.label}><input type="radio" name="theme-mode" aria-label={mode.label} checked={theme === mode.value} onChange={() => setTheme(mode.value)}/><span className="theme-option-label"><Icon name={mode.icon}/><span>{mode.label}</span></span></label>)}</div>;
 }
 
 function useTheme() {
@@ -160,7 +163,7 @@ function Layout({ auth, onLogout }) {
       {operationMessage && <div className="operation-toast" role="status" aria-live="polite"><Icon name="check"/>{operationMessage}</div>}
       <header className="topbar"><button className="icon-button mobile-menu" aria-label="打开导航" title="打开导航" onClick={() => setMobileOpen(true)}><Icon name="menu"/></button><span className="mobile-brand">KN10 网关</span><span>我的网关</span><span className="breadcrumb-slash">/</span><strong>{current.title}</strong><div className="topbar-right"><span className="mode-indicator"><span className="dot"/>{demo ? '演示数据' : managementEnabled ? '网关管理' : '网关只读'}</span><ThemeControl /></div></header>
       <Suspense fallback={<main id="main" className="main-content"><p className="empty-state" role="status" aria-busy="true">正在加载…</p></main>}>
-      <main id="main" className="main-content"><Routes><Route index element={<Navigate to="/dashboard/overview" replace/>}/><Route path="overview" element={<OverviewPage/>}/><Route path="system" element={<SystemPage/>}/><Route path="checkins" element={<CheckinsPage/>}/><Route path="usage" element={<UsagePage/>}/><Route path="providers" element={<ProvidersPage/>}/><Route path="providers/:provider" element={<ProvidersPage/>}/><Route path="endpoint" element={<EndpointPage/>}/><Route path="models" element={<ModelsPage/>}/><Route path="logs" element={<LogsPage/>}/><Route path="monitor" element={<MonitorPage/>}/><Route path="combos" element={<CombosPage/>}/><Route path="distribution" element={<DistributionPage/>}/><Route path="balances" element={<BalancesPage/>}/><Route path="proxy" element={<ProxyPage/>}/><Route path="chain-health" element={<ChainHealthPage/>}/><Route path="pricing" element={<PricingPage/>}/><Route path="proxy-pools" element={<ProxyPoolsPage/>}/><Route path="settings" element={<SettingsPage/>}/><Route path="authorization" element={<AuthorizationPage/>}/><Route path="translator" element={<TranslatorPage/>}/><Route path="*" element={<NotFound/>}/></Routes><footer className="page-footer"><span><span className="dot"/>{demo ? '演示工作区 · 未连接真实网关' : `KN10 网关 · ${managementEnabled ? '管理' : '只读'}工作区`}</span><span>YOUR MODELS. YOUR GATEWAY.</span></footer></main>
+      <main id="main" className="main-content" key={location.pathname}><Routes><Route index element={<Navigate to="/dashboard/overview" replace/>}/><Route path="overview" element={<OverviewPage/>}/><Route path="system" element={<SystemPage/>}/><Route path="checkins" element={<CheckinsPage/>}/><Route path="usage" element={<UsagePage/>}/><Route path="providers" element={<ProvidersPage/>}/><Route path="providers/:provider" element={<ProvidersPage/>}/><Route path="endpoint" element={<EndpointPage/>}/><Route path="models" element={<ModelsPage/>}/><Route path="logs" element={<LogsPage/>}/><Route path="monitor" element={<MonitorPage/>}/><Route path="combos" element={<CombosPage/>}/><Route path="media-providers/tts" element={<TtsPage/>}/><Route path="media-providers/tts/:provider" element={<TtsPage/>}/><Route path="distribution" element={<DistributionPage/>}/><Route path="balances" element={<BalancesPage/>}/><Route path="proxy" element={<ProxyPage/>}/><Route path="chain-health" element={<ChainHealthPage/>}/><Route path="pricing" element={<PricingPage/>}/><Route path="proxy-pools" element={<ProxyPoolsPage/>}/><Route path="settings" element={<SettingsPage/>}/><Route path="authorization" element={<AuthorizationPage/>}/><Route path="translator" element={<TranslatorPage/>}/><Route path="*" element={<NotFound/>}/></Routes><footer className="page-footer"><span><span className="dot"/>{demo ? '演示工作区 · 未连接真实网关' : `KN10 网关 · ${managementEnabled ? '管理' : '只读'}工作区`}</span><span>YOUR MODELS. YOUR GATEWAY.</span></footer></main>
     </Suspense>
     </div><SearchDialog open={searchOpen} onClose={() => setSearchOpen(false)}/>
   </div>;

@@ -26,3 +26,13 @@ test('missing historical error metadata is not fabricated', () => {
   assert.equal(requestErrorLabel({ status: 'failed' }), '未记录');
   assert.equal(requestErrorLabel({ status: 'success' }), '—');
 });
+
+test('model mismatch helper identifies discrepancy between requested and response model', async () => {
+  const { isModelMismatch } = await import('../src/api/data.js');
+  assert.equal(isModelMismatch({ modelMismatch: true }), true);
+  assert.equal(isModelMismatch({ model: 'anthropic/claude-3-5-sonnet', responseModel: 'claude-3-5-sonnet' }), false);
+  assert.equal(isModelMismatch({ model: 'gpt-4o', responseModel: 'gpt-4o' }), false);
+  assert.equal(isModelMismatch({ model: 'gpt-4o', responseModel: 'gpt-3.5-turbo' }), true);
+  assert.equal(isModelMismatch({ model: 'openai/gpt-4o', responseModel: 'azure/gpt-3.5' }), true);
+  assert.equal(isModelMismatch({ model: 'gpt-4o' }), false);
+});

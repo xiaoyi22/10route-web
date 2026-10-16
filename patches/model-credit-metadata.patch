@@ -1,0 +1,74 @@
+diff --git a/src/app/api/models/route.js b/src/app/api/models/route.js
+index 87f7d36a..12d1861f 100644
+--- a/src/app/api/models/route.js
++++ b/src/app/api/models/route.js
+@@ -5,6 +5,7 @@ import { getAllModelCaps } from "@/lib/modelCapsDb";
+ import { AI_MODELS } from "@/shared/constants/config";
+ import { getProviderAlias } from "@/shared/constants/providers";
+ import { getCapabilitiesForModel } from "open-sse/providers/capabilities.js";
++import { getProviderModels } from "open-sse/config/providerModels.js";
+ 
+ // GET /api/models - Get models with aliases
+ export async function GET() {
+@@ -33,6 +34,11 @@ export async function GET() {
+         const providerAlias = getProviderAlias(m.provider) || m.provider;
+         const routedModel = `${providerAlias}/${m.model}`;
+         const c = getCapabilitiesForModel(m.provider, m.model);
++        const creditModel = getProviderModels(m.provider).find((entry) => entry.id === m.model);
++        const creditMetadata = {};
++        for (const key of ["rateMultiplier", "nightFree", "promoFreeUntil", "promotion"]) {
++          if (creditModel?.[key] !== undefined) creditMetadata[key] = creditModel[key];
++        }
+         const caps = {
+           vision: c.vision,
+           search: c.search,
+@@ -45,6 +51,7 @@ export async function GET() {
+         if (ov?.maxOutput) caps.maxOutput = ov.maxOutput;
+         return {
+           ...m,
++          ...creditMetadata,
+           fullModel,
+           routedModel,
+           alias: modelAliases[fullModel] || m.model,
+diff --git a/tests/unit/model-credit-metadata.test.js b/tests/unit/model-credit-metadata.test.js
+new file mode 100644
+--- /dev/null
++++ b/tests/unit/model-credit-metadata.test.js
+@@ -0,0 +1,37 @@
++import { describe, expect, it, vi } from "vitest";
++import * as registry from "../../open-sse/config/providerModels.js";
++
++vi.mock("@/models", () => ({ getModelAliases: async () => ({}), setModelAlias: vi.fn() }));
++vi.mock("@/lib/disabledModelsDb", () => ({ getDisabledModels: async () => ({}) }));
++vi.mock("@/lib/modelCapsDb", () => ({ getAllModelCaps: async () => ({}) }));
++
++describe("model credit metadata", () => {
++  it("projects optional promotion fields without leaking unrelated registry data", async () => {
++    const original = registry.getProviderModels;
++    const fields = { rateMultiplier: 0, nightFree: { from: 23, to: 8 }, promoFreeUntil: "2026-10-16", promotion: { timezone: "Asia/Shanghai" } };
++    const spy = vi.spyOn(registry, "getProviderModels").mockImplementation((provider) => original(provider).map((model) => model.id === "hy3" ? { ...model, ...fields, privatePricingKey: "not-public" } : model));
++    try {
++      const { GET } = await import("../../src/app/api/models/route.js");
++      const { models } = await (await GET()).json();
++      const model = models.find((row) => row.provider === "cbcn" && row.model === "hy3");
++      expect(model).toMatchObject(fields);
++      expect(model).not.toHaveProperty("privatePricingKey");
++    } finally { spy.mockRestore(); }
++  });
++
++  it("publishes registry pricing without mixing CN and international rules", async () => {
++    const { GET } = await import("../../src/app/api/models/route.js");
++    const response = await GET();
++    expect(response.status).toBe(200);
++    const { models } = await response.json();
++    const cn = models.find((model) => model.provider === "cbcn" && model.model === "hy4-preview");
++    const intl = models.find((model) => model.provider === "cbai" && model.model === "hy4-preview");
++    expect(cn.rateMultiplier).toBe(0.29);
++    expect(cn.nightFree).toEqual({ from: 23, to: 8 });
++    expect(intl.rateMultiplier).toBe(0);
++    expect(intl).not.toHaveProperty("nightFree");
++    expect(cn.routedModel).toBe("cbcn/hy4-preview");
++    expect(cn.caps.contextWindow).toBeGreaterThan(0);
++    expect(models.find((model) => model.provider === "qd" && model.model === "auto")).not.toHaveProperty("rateMultiplier");
++  });
++});

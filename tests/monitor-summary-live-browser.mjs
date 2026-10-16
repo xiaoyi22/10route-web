@@ -1,3 +1,4 @@
+import { selectTheme } from './theme-control.mjs';
 import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
@@ -54,7 +55,7 @@ try {
   await page.reload();
   await verify('reload');
   for (const theme of ['dark', 'light']) {
-    await page.getByLabel('主题模式').selectOption(theme);
+    await selectTheme(page, theme);
     await page.waitForFunction(theme => document.documentElement.dataset.theme === theme, theme);
     await page.screenshot({ path: resolve(directory, 'monitor-real-summary-' + theme + '.png'), fullPage: true, animations: 'disabled' });
   }

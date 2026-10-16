@@ -1,3 +1,4 @@
+import { selectTheme } from './theme-control.mjs';
 import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
@@ -151,7 +152,7 @@ try {
   for (const width of [1920, 1440, 1280, 768, 375, 320]) {
     await page.setViewportSize({ width, height: 1000 });
     for (const theme of ['light', 'dark']) {
-      await page.getByLabel('主题模式').selectOption(theme);
+      await selectTheme(page, theme);
       await page.evaluate(() => document.fonts.ready);
       await page.evaluate(() => Promise.all(document.getAnimations().filter(animation => animation.effect?.getComputedTiming().iterations !== Infinity).map(animation => animation.finished.catch(() => {}))));
       assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), '概览横向溢出：' + width + ' ' + theme);

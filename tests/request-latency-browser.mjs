@@ -1,3 +1,4 @@
+import { selectTheme } from './theme-control.mjs';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { mkdir, readFile } from 'node:fs/promises';
@@ -58,7 +59,7 @@ try {
   }
   await mkdir('screenshots', { recursive: true });
   for (const theme of ['dark', 'light']) {
-    await page.getByLabel('主题模式').selectOption(theme);
+    await selectTheme(page, theme);
     for (const prices of [false, true]) {
       await page.getByLabel('显示日志价格').setChecked(prices);
       for (const width of [320, 375, 768, 1440]) {
