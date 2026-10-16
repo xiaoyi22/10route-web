@@ -1,0 +1,182 @@
+{
+    "date":  "2026-10-16",
+    "scope":  "read-only source audit, temporary three-way merge checks, authenticated settings GET",
+    "backendBranch":  "upgrade-v1.4.0-run",
+    "backendHead":  "baae1a49a64bfa72764ea614eeaa85ce45c54adf",
+    "backendVersion":  "1.4.0",
+    "buildId":  "ABVOEyMzMRnVWFiD6ak4d",
+    "base":  "f47a870cdf40be840dc46f38d79a6bc86e11271c",
+    "target":  "689be5c9f408eabc22bc65a8faa203a8d490f3b2",
+    "method":  "Temporary shared bare clone; fetch fixed target; git cat-file blob for exact paths; git merge-file -p --diff3 on temporary files",
+    "upstreamChangedPaths":  144,
+    "overlappingPaths":  16,
+    "mergeSummary":  {
+                         "clean":  13,
+                         "textConflict":  2,
+                         "addAdd":  1
+                     },
+    "files":  [
+                  {
+                      "path":  "open-sse/config/errorConfig.js",
+                      "result":  "clean"
+                  },
+                  {
+                      "path":  "open-sse/executors/antigravity.js",
+                      "result":  "text-conflict",
+                      "conflictBlocks":  1,
+                      "currentSymbols":  [
+                                             "beforeAttempt",
+                                             "inspectResponse"
+                                         ],
+                      "targetSymbols":  [
+                                            "parseError"
+                                        ]
+                  },
+                  {
+                      "path":  "open-sse/executors/base.js",
+                      "result":  "clean"
+                  },
+                  {
+                      "path":  "open-sse/executors/default.js",
+                      "result":  "clean"
+                  },
+                  {
+                      "path":  "open-sse/services/tokenRefresh.js",
+                      "result":  "clean"
+                  },
+                  {
+                      "path":  "open-sse/services/tokenRefresh/providers.js",
+                      "result":  "clean"
+                  },
+                  {
+                      "path":  "open-sse/services/usage.js",
+                      "result":  "clean"
+                  },
+                  {
+                      "path":  "package-lock.json",
+                      "result":  "add-add",
+                      "baseTracked":  false,
+                      "localIgnored":  true
+                  },
+                  {
+                      "path":  "src/app/api/providers/[id]/test/testUtils.js",
+                      "result":  "clean"
+                  },
+                  {
+                      "path":  "src/app/api/usage/[connectionId]/route.js",
+                      "result":  "text-conflict",
+                      "conflictBlocks":  1,
+                      "currentSymbols":  [
+                                             "USAGE_APIKEY_PROVIDERS",
+                                             "assertAntigravityAllowed"
+                                         ],
+                      "targetSymbols":  [
+                                            "USAGE_APIKEY_PROVIDERS",
+                                            "USAGE_COOKIE_PROVIDERS"
+                                        ]
+                  },
+                  {
+                      "path":  "src/app/api/v1/models/route.js",
+                      "result":  "clean"
+                  },
+                  {
+                      "path":  "src/dashboardGuard.js",
+                      "result":  "clean"
+                  },
+                  {
+                      "path":  "src/lib/db/index.js",
+                      "result":  "clean"
+                  },
+                  {
+                      "path":  "src/lib/db/repos/connectionsRepo.js",
+                      "result":  "clean"
+                  },
+                  {
+                      "path":  "src/sse/handlers/chat.js",
+                      "result":  "clean"
+                  },
+                  {
+                      "path":  "src/sse/services/auth.js",
+                      "result":  "clean"
+                  }
+              ],
+    "settingsHttpStatus":  200,
+    "providerStrategies":  {
+                               "antigravity":  {
+                                                   "earliestExpiryFirst":  false,
+                                                   "fallbackStrategy":  "round-robin",
+                                                   "stickyRoundRobinLimit":  3
+                                               },
+                               "qoder":  {
+                                             "earliestExpiryFirst":  false,
+                                             "fallbackStrategy":  "round-robin",
+                                             "stickyRoundRobinLimit":  1
+                                         },
+                               "codebuddy-cn":  {
+                                                    "earliestExpiryFirst":  true,
+                                                    "fallbackStrategy":  "round-robin",
+                                                    "stickyRoundRobinLimit":  3
+                                                },
+                               "codebuddy-intl":  {
+                                                      "earliestExpiryFirst":  false,
+                                                      "fallbackStrategy":  "round-robin",
+                                                      "stickyRoundRobinLimit":  3
+                                                  }
+                           },
+    "lockfiles":  {
+                      "local":  {
+                                    "version":  "1.4.0",
+                                    "lockfileVersion":  3,
+                                    "packages":  1132,
+                                    "next":  "16.3.2",
+                                    "nobleHashes":  "1.4.0",
+                                    "betterSqlite3":  "12.11.1"
+                                },
+                      "target":  {
+                                     "version":  "1.5.0",
+                                     "lockfileVersion":  3,
+                                     "packages":  1137,
+                                     "next":  "16.3.3",
+                                     "nobleHashes":  "1.8.0",
+                                     "betterSqlite3":  "12.11.1"
+                                 }
+                  },
+    "productionGitHeadAndStatusUnchanged":  true,
+    "productionCodeWritten":  false,
+    "productionConfigurationWritten":  false,
+    "servicesRestarted":  false,
+    "candidateRegressionExecuted":  false,
+    "deploymentRecheck":  {
+                              "checkedAt":  "2026-10-16 (second pass)",
+                              "backendGitHead":  "baae1a49a64bfa72764ea614eeaa85ce45c54adf",
+                              "backendWorkingTreeDirtyEntries":  163,
+                              "backendBranch":  "upgrade-v1.4.0-run",
+                              "upstreamOriginMain":  "c3cf93fc93b4f2243a6c7c7d3ad3ce3801f39359",
+                              "upstreamTagV150":  "b01adfb11d265e902c85d1a639d4fa69088b8b84",
+                              "backendService":  "systemctl --user 10router.service (user-level systemd, Linger=yes, PID 182869)",
+                              "webService":  "systemctl --user 10router-web.service (user-level systemd, PID 497326)",
+                              "systemLevelSystemctlVisibility":  "not-found / inactive for both units",
+                              "backendWorkingDirectory":  "/home/meet/10router/.next/standalone",
+                              "frontendWorkingDirectory":  "/home/meet/.local/share/10router-web/current",
+                              "frontendCurrentRelease":  "20261016-vision-settings",
+                              "frontendStack":  "React 19 + Vite (separate repo E:\\\\10reoute-web), not Next.js",
+                              "listeningPorts":  {
+                                                     "20128":  "next-server v16.3.2",
+                                                     "4317":  "node serve.mjs"
+                                                 },
+                              "versionApi":  {
+                                                 "currentVersion":  "1.4.0",
+                                                 "hasUpdate":  true,
+                                                 "httpStatus":  200,
+                                                 "latestVersion":  "1.5.0"
+                                             },
+                              "versionApiNote":  "An earlier read of the same build returned latestVersion 1.4.0 / hasUpdate false; the update flag is cache-dependent and must not replace release-source checks."
+                          },
+    "conflictItems":  "C01-C13 (C01-C03 text/dependency conflicts, C04 behavioral, C05-C08 integration gaps, C09-C12 custom-retention, C13 deployment-chain)",
+    "notes":  [
+                  "This is a transcribed summary of terminal observations, not a raw test-runner report.",
+                  "Clean merges do not imply compatible behavior or successful runtime tests.",
+                  "The first preliminary probe used git show for bracketed paths; the final results use exact git cat-file blob reads and exclude that preliminary false missing-file result.",
+                  "Lockfile versions are declared resolutions, not an inventory of loaded runtime modules."
+              ]
+}

@@ -1,0 +1,102 @@
+[
+  {
+    "title": "概览",
+    "path": "/dashboard/overview",
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" str"
+  },
+  {
+    "title": "供应商",
+    "path": "/dashboard/providers",
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" str"
+  },
+  {
+    "title": "账号授权",
+    "path": "/dashboard/authorization",
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" str"
+  },
+  {
+    "title": "端点与接入",
+    "path": "/dashboard/endpoint",
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" str"
+  },
+  {
+    "title": "模型",
+    "path": "/dashboard/models",
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" str"
+  },
+  {
+    "title": "语音合成",
+    "path": "/dashboard/media-providers/tts",
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" str"
+  },
+  {
+    "title": "组合模型",
+    "path": "/dashboard/combos",
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" str"
+  },
+  {
+    "title": "下游分发",
+    "path": "/dashboard/distribution",
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" str"
+  },
+  {
+    "title": "代理控制",
+    "path": "/dashboard/proxy",
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" str"
+  },
+  {
+    "title": "余额与配额",
+    "path": "/dashboard/balances",
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" str"
+  },
+  {
+    "title": "用量统计",
+    "path": "/dashboard/usage",
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" str"
+  },
+  {
+    "title": "请求日志",
+    "path": "/dashboard/logs",
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" str"
+  },
+  {
+    "title": "模型检测",
+    "path": "/dashboard/monitor",
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" str"
+  },
+  {
+    "title": "链路健康",
+    "path": "/dashboard/chain-health",
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" str"
+  },
+  {
+    "title": "系统信息",
+    "path": "/dashboard/system",
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" str"
+  },
+  {
+    "title": "每日签到",
+    "path": "/dashboard/checkins",
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" str"
+  },
+  {
+    "title": "模型价格",
+    "path": "/dashboard/pricing",
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" str"
+  },
+  {
+    "title": "代理池",
+    "path": "/dashboard/proxy-pools",
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" str"
+  },
+  {
+    "title": "系统设置",
+    "path": "/dashboard/settings",
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" str"
+  },
+  {
+    "title": "协议调试",
+    "path": "/dashboard/translator",
+    "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" str"
+  }
+]

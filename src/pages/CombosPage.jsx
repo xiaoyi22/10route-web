@@ -59,7 +59,7 @@ function ComboEditor({ combo, choices, settings, onClose, onSaved }) {
     } catch (failure) { setError(failure.message); if (persisted) onSaved(); }
     finally { setBusy(false); }
   }
-  return <Modal title={combo ? '编辑组合模型' : '创建组合模型'} busy={busy} onClose={onClose}><form className="editor-form" onSubmit={save}>
+  return <Modal title={combo ? '编辑组合模型' : '创建组合模型'} busy={busy} className="combo-editor-dialog" onClose={onClose}><form className="editor-form" onSubmit={save}>
     <fieldset disabled={busy || !!saved} className="plain-fieldset">
     <label>下游模型名称<input required pattern="[a-zA-Z0-9_.\-]+" value={name} onChange={event => setName(event.target.value)} placeholder="例如 my-assistant"/></label>
     <label>调度方式<select aria-label="调度方式" value={strategy} onChange={event => setStrategy(event.target.value)}><option value="">继承全局策略（当前：{({ fallback: '主备优先', 'round-robin': '粘性轮询', fusion: '融合' })[settings.comboStrategy || 'fallback'] || settings.comboStrategy}）</option><option value="fallback">主备优先</option><option value="round-robin">粘性轮询</option>{strategy && !['fallback', 'round-robin'].includes(strategy) && <option value={strategy}>保留当前策略：{strategy}</option>}</select></label>

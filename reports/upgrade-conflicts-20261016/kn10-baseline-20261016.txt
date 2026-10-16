@@ -1,0 +1,168 @@
+BRANCH=upgrade-v1.4.0-run
+HEAD=baae1a49a64bfa72764ea614eeaa85ce45c54adf
+DIRTY_COUNT=163
+[TRACKED_MODIFIED]
+ M custom-server.js
+ M open-sse/config/errorConfig.js
+ M open-sse/config/runtimeConfig.js
+ M open-sse/executors/antigravity.js
+ M open-sse/executors/base.js
+ M open-sse/executors/default.js
+ M open-sse/handlers/chatCore.js
+ M open-sse/handlers/chatCore/nonStreamingHandler.js
+ M open-sse/handlers/chatCore/requestDetail.js
+ M open-sse/handlers/chatCore/sseToJsonHandler.js
+ M open-sse/handlers/chatCore/streamingHandler.js
+ M open-sse/services/combo.js
+ M open-sse/services/oauthCredentialManager.js
+ M open-sse/services/projectId.js
+ M open-sse/services/provider.js
+ M open-sse/services/sensitiveRetry.js
+ M open-sse/services/tokenRefresh.js
+ M open-sse/services/tokenRefresh/dedup.js
+ M open-sse/services/tokenRefresh/providers.js
+ M open-sse/services/usage.js
+ M open-sse/services/usage/antigravityWeeklyQuota.js
+ M open-sse/services/usage/google.js
+ M open-sse/transformer/streamToJsonConverter.js
+ M open-sse/translator/request/claude-to-openai.js
+ M open-sse/translator/request/openai-responses.js
+ M open-sse/translator/request/openai-to-claude.js
+ M open-sse/translator/response/claude-to-openai.js
+ M open-sse/translator/response/openai-responses.js
+ M open-sse/translator/response/openai-to-claude.js
+ M open-sse/utils/error.js
+ M open-sse/utils/proxyFetch.js
+ M open-sse/utils/responsesStreamHelpers.js
+ M open-sse/utils/sse.js
+ M open-sse/utils/stream.js
+ M open-sse/utils/streamHandler.js
+ M open-sse/utils/streamHelpers.js
+ M open-sse/utils/usageTracking.js
+ M src/app/api/auth/verify-password/route.js
+ M src/app/api/models/route.js
+ M src/app/api/models/test/ping.js
+ M src/app/api/models/test/route.js
+ M src/app/api/providers/[id]/route.js
+ M src/app/api/providers/[id]/test/route.js
+ M src/app/api/providers/[id]/test/testUtils.js
+ M src/app/api/settings/route.js
+ M src/app/api/usage/[connectionId]/route.js
+ M src/app/api/v1/models/route.js
+ M src/dashboardGuard.js
+ M src/lib/db/index.js
+ M src/lib/db/repos/connectionsRepo.js
+ M src/lib/db/repos/requestDetailsRepo.js
+ M src/lib/db/repos/settingsRepo.js
+ M src/lib/db/repos/usageRepo.js
+ M src/lib/localDb.js
+ M src/sse/handlers/chat.js
+ M src/sse/handlers/fetch.js
+ M src/sse/handlers/imageGeneration.js
+ M src/sse/handlers/search.js
+ M src/sse/handlers/stt.js
+ M src/sse/handlers/systemone.js
+ M src/sse/handlers/tts.js
+ M src/sse/handlers/videoGeneration.js
+ M src/sse/services/auth.js
+ M src/sse/services/tokenRefresh.js
+ M tests/translator/__snapshots__/golden-response-stream.test.js.snap
+ M tests/translator/bugs-toClaude-context.test.js
+ M tests/translator/golden-response-stream.test.js
+ M tests/unit/combo-retry-on-empty.test.js
+ M tests/unit/combo-routing.test.js
+ M tests/unit/openai-responses-nonstream.test.js
+ M tests/unit/openai-to-claude.test.js
+ M tests/unit/request-details-metadata-persistence.test.js
+ M tests/unit/responses-completed-output.test.js
+ M tests/unit/stop-sequence-wiring.test.js
+ M tests/unit/stream-complete-on-done-sentinel.test.js
+ M tests/unit/stream-truncation.test.js
+ M tests/unit/streaming-abort-detail-row.test.js
+ M tests/unit/usage-dashboard-import-exclusion.test.js
+[UNTRACKED]
+?? .bak-logs-restore-2026-10-14T08-03-16/
+?? .bak-modelcheck-2026-10-14T08-55-00/
+?? AGENTS.md
+?? CLAUDE.md.bak-20260930-104836
+?? UPGRADE-SOP-v1.3.5-engine.md
+?? UPGRADE-SOP-v1.3.5.md
+?? anyRoute-conn.bak-20260929-223000.json
+?? anyRoute-conn.bak-conn.json
+?? anyRoute-node.bak-20260929-223000.json
+?? anyRoute-node.bak-node.json
+?? database.sqlite
+?? deploy.sh.bak-20260929-093445
+?? open-sse/executors/default.js.bak-forcestream-20260929-200043
+?? open-sse/handlers/chatCore.js.bak-forcestream-20260929-200043
+?? open-sse/handlers/chatCore/nonStreamingHandler.js.bak-20260926132103
+?? open-sse/handlers/chatCore/requestDetail.js.bak-20261013-111131
+?? open-sse/services/antigravityQuarantine.js
+?? open-sse/services/combo.js.bak-20261015134717
+?? open-sse/services/provider.js.bak-forcestream-20260929-200043
+?? open-sse/services/sensitiveRetry.js.bak-20261015134717
+?? open-sse/translator/request/openai-responses.js.bak-20261008-toolfix
+?? open-sse/utils/agRequestBudget.js
+?? public/i18n/literals/zh-CN.json.bak-20261001-015606
+?? public/i18n/literals/zh-TW.json.bak-20261001-015606
+?? src/app/(dashboard)/dashboard/channel-balances/
+?? src/app/api/channel-balances/
+?? src/app/api/host-management/
+?? src/app/api/iq-monitor/
+?? src/app/api/models/distribution/
+?? src/app/api/usage/request-details/route.js.bak-20261013-112529
+?? src/lib/channelBalances.js
+?? src/lib/db/repos/distributionRepo.js
+?? src/lib/db/repos/requestDetailsRepo.js.bak-20261013-111131
+?? src/lib/distributionDb.js
+?? src/lib/iqMonitor/
+?? src/shared/utils/requestOutcome.js
+?? src/sse/services/distributionGuard.js
+?? tests/e2e/
+?? tests/test-hooks.mjs
+?? tests/test-loader.mjs
+?? tests/unit/antigravity-chat-stop-state.test.js
+?? tests/unit/antigravity-p0-fix1.test.js
+?? tests/unit/antigravity-quota-policy.test.js
+?? tests/unit/antigravity-refresh-singleflight.test.js
+?? tests/unit/antigravity-retry-budget.test.js
+?? tests/unit/antigravity-tos-quarantine.test.js
+?? tests/unit/channel-balances-preferences-repo.test.js
+?? tests/unit/channel-balances-public.test.js
+?? tests/unit/channel-balances-route.test.js
+?? tests/unit/channel-balances-visibility.test.js
+?? tests/unit/channel-balances.test.js
+?? tests/unit/codebuddy-intl-capability-alias.test.js
+?? tests/unit/combo-retry-on-empty.test.js.bak-20261015134717
+?? tests/unit/combo-rotation-fixes.test.js
+?? tests/unit/combo-routing.test.js.bak-20261015134717
+?? tests/unit/combo-sticky-handlers.test.js
+?? tests/unit/combo-sticky-nine.test.js
+?? tests/unit/combo-sticky-nine.test.js.bak-20261015134717
+?? tests/unit/combo-sticky-settings.test.js
+?? tests/unit/compatible-node-toggle.test.js
+?? tests/unit/distribution-guard.test.js
+?? tests/unit/downstream-distribution.test.js
+?? tests/unit/force-stream.test.js
+?? tests/unit/iq-monitor-probe.test.js
+?? tests/unit/iq-monitor-service.test.js
+?? tests/unit/iq-monitor.test.js
+?? tests/unit/iq-probe.test.js
+?? tests/unit/model-credit-metadata.test.js
+?? tests/unit/monitor-manual-live.test.js
+?? tests/unit/monitor-manual-route.test.js
+?? tests/unit/monitor-sse-nonstream.test.js
+?? tests/unit/openai-responses-tool-metadata.test.js
+?? tests/unit/protocol-nonstream-integrity.test.js
+?? tests/unit/protocol-stream-integrity.test.js
+?? tests/unit/protocol-stream-sync-regression.test.js
+?? tests/unit/request-thinking-metadata.test.js
+?? tests/unit/sse-event-framing.test.js
+?? tests/unit/stream-cancel-done.test.js
+?? tests/unit/stream-cancel-usage.test.js
+?? tests/unit/stream-detail-finalization.test.js
+?? tests/unit/stream-reasoning-metadata.test.js
+?? tests/unit/stream-usage-provenance.test.js
+?? tests/unit/usage-chart-cache.test.js
+?? tests/unit/usage-output-speed.test.js
+?? tests/unit/verify-password-lockout.test.js

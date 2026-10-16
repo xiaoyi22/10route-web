@@ -19,6 +19,10 @@ export function groupProviders(connections, nodes = []) {
   const groups = new Map();
   for (const connection of connections) {
     const info = providerInfo(connection.provider, nodes, connection);
+    // Ghost rows: a connection whose provider left the registry (e.g. a
+    // delisted provider whose DB rows survived) must not resurrect as an
+    // unnamed grey card. Custom nodes stay visible.
+    if (!info.custom && !providerNames[info.id]) continue;
     if (!groups.has(info.id)) groups.set(info.id, { ...info, connections: [] });
     groups.get(info.id).connections.push(connection);
   }

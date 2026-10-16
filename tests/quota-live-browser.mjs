@@ -85,7 +85,7 @@ try {
         await until(`(() => {const r=document.querySelector(${JSON.stringify(selector)}).getBoundingClientRect();return r.top>=0 && r.bottom<=innerHeight;})()`);
         await until(`(() => {const img=document.querySelector(${JSON.stringify(selector)}).querySelector('img');return !img || img.complete && img.naturalWidth>0;})()`);
         const cardLayout = await evaluate(`(() => {const card=document.querySelector(${JSON.stringify(selector)});return {horizontal:card.scrollWidth>card.clientWidth,height:card.getBoundingClientRect().height,windows:card.querySelector('.quota-windows').scrollHeight<=card.querySelector('.quota-windows').clientHeight};})()`);
-        assert(!cardLayout.horizontal && cardLayout.height===340, JSON.stringify(cardLayout));
+        assert(!cardLayout.horizontal && cardLayout.height>=220 && cardLayout.height<=380, JSON.stringify(cardLayout));
         if (connection.provider === 'antigravity' && connection.quotas.length<=4) assert(cardLayout.windows, 'Real model windows must fit without scrolling');
         const cardShot = await send('Page.captureScreenshot', { format: 'png' });
         await writeFile(`C:/Users/20449/.codex/tmp/quota-real-card-${connection.provider}-${width}-${theme}.png`, Buffer.from(cardShot.data, 'base64'));

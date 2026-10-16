@@ -1,6 +1,8 @@
 # 10router v1.5.0 更新取舍与升级 SOP
 
-日期：2026-10-16。状态：只读审计与待执行方案；本轮仅新增本文档，未修改业务代码、数据库、生产配置或服务。
+日期：2026-10-16。状态：只读审计与待执行方案；本轮仅维护方案及审计记录，未修改业务代码、数据库、生产配置或服务。
+
+落地前必读：[与现有定制的逐项冲突核对](upgrade-conflicts-v1.5.0-2026-10-16.md)。补充核验已完成临时副本三方合并检查：16 个重叠文件中，2 个文本冲突、1 个依赖锁文件冲突、13 个可自动合并；另有不产生文本冲突的行为与接口差异，不能直接判定兼容。
 
 ## 1. 结论
 
@@ -11,7 +13,7 @@
 | 路线 | 收益 | 代价与影响 |
 | --- | --- | --- |
 | A：分批吸收，推荐 | 每批可独立验收和回滚，优先改善现有账号与兼容节点 | 需维护移植记录；不能把部分移植标成完整 v1.5.0 |
-| B：整体迁移到固定 v1.5.0 提交，再逐项恢复定制 | 一次获得完整上游功能，后续版本关系清楚 | 上游涉及 144 个路径，至少 15 个文件与本地未提交定制重叠；还要迁移独立前端、校验数据库变化 |
+| B：整体迁移到固定 v1.5.0 提交，再逐项恢复定制 | 一次获得完整上游功能，后续版本关系清楚 | 上游涉及 144 个路径，15 个已跟踪定制文件及被忽略的本地 package-lock.json 与其重叠；还要处理调度行为、独立前端和数据库变化 |
 
 本 SOP 的默认建议为 A。两条路线都使用独立副本，不在生产目录执行 pull、reset 或覆盖源码。
 
@@ -29,8 +31,8 @@
 | 生产分支与 HEAD | `upgrade-v1.4.0-run`；`baae1a49a64bfa72764ea614eeaa85ce45c54adf`，在上述 v1.4.0 基线之后有 1 个本地提交 |
 | 当前运行版本 | 后端 `/api/version` 实测 HTTP 200，`currentVersion: 1.4.0`；源码与 standalone 的 package 版本也为 `1.4.0` |
 | 当前构建标识 | `.next/BUILD_ID` 为 `ABVOEyMzMRnVWFiD6ak4d` |
-| 服务 | 用户级 `10router.service` active；本轮读取 PID 为 `182869`，执行 standalone `custom-server.js` |
-| 独立前端 | 本机 `E:\10reoute-web`，分支 `main`，存在大量既有未提交与未跟踪改动；远端实际入口为 `http://192.168.11.150:4317` |
+| 服务 | 用户级 systemd（`systemctl --user`，`Linger=yes`，非 root 单元）：`10router.service` 与 `10router-web.service` 均 active。后端 PID 182869，工作目录 `/home/meet/10router/.next/standalone`，执行 `custom-server.js`、`PORT=20128`；前端 PID 497326，工作目录 `~/.local/share/10router-web/current`（软链到 `releases/20261016-vision-settings`），执行 `scripts/serve.mjs`、`TENROUTER_PORT=4317`。系统级 `systemctl` 查询会显示 not-found/inactive，不要据此判断服务停止 |
+| 独立前端 | 本机 `E:\10reoute-web`（React 19 + Vite，非 Next.js），分支 `main`，存在大量既有未提交与未跟踪改动；远端按 release 目录加 `current` 软链发布，由 `scripts/deploy-kn10.sh` 切换并 `systemctl --user restart 10router-web.service`；入口 `http://192.168.11.150:4317` |
 | 生产配置摘要 | 38 个供应商连接，其中 AG 3 个、Qoder 2 个、CodeBuddy 国际 2 个、国内 3 个，另有多类兼容节点；连接数不等于健康账号数 |
 
 本轮真实 HTTP 结果：后端健康 200 且驱动为 `better-sqlite3`；前端认证状态 200、密码登录 200、`demo:false`；供应商列表 200；分发接口 200、`allowlist` 模式且配置 39 项；余额接口 200、返回 3 个渠道。
@@ -38,7 +40,7 @@
 需要注意两处现场差异：
 
 - 昨日修复报告的运行版本为 `1.4.1-test.1`，本轮版本与 BUILD_ID 已改变。因此昨日测试结果只作历史证据；不能据版本号断言定制补丁还在或已经丢失。
-- 本轮版本接口同时返回 `latestVersion:1.4.0`、`hasUpdate:false`，但 GitHub 发布接口 HTTP 200 已确认 v1.5.0。更新提示不能替代发布源核查。前端 4317 不开放 `/api/version`，请求返回 405；该项直接通过认证后的后端 20128 查询，无需添加兼容路由。
+- 本轮复审版本接口返回 `currentVersion:1.4.0`、`latestVersion:1.5.0`、`hasUpdate:true`（HTTP 200，认证后查询 20128）。此前一次读取得到 `latestVersion:1.4.0`、`hasUpdate:false`，说明该字段受上游检查缓存或刷新时机影响，同一构建会给出不同结果；判断是否有新版本一律以 GitHub 发布源为准，不以该字段为准。前端 4317 不开放 `/api/version`，请求返回 405，无需添加兼容路由。
 
 本机无 `R:` 映射，且直连 GitHub DNS 解析失败；本次通过已有 SSH 别名 `kn10` 在网关读取 GitHub API。没有修改网络或代理配置。
 
@@ -61,7 +63,7 @@
 | Rerank：Cohere / Jina / SiliconFlow，`ae0c6571fda0` | 有 RAG 或知识库精排需求时使用 `/v1/rerank` | 可选后续批次。当前供应商连接中未见这三类；先补分发和权限检查，再接入客户端 |
 | 供应商活跃/错误/未激活/无连接筛选、拓扑清理 | 当前 38 个连接，筛选有直接使用价值 | 按需在独立前端复用业务规则。上游 Next.js 页面更新不会自动出现在我们的 React 前端 |
 | OpenCode 会话头修复 | 当前未发现 OpenCode 连接 | 低优先级，有接入需求时一并验证 |
-| Gemini 4 能力与价格登记 | 当前实际供应商是否开放该模型尚未验证 | 仅作为上游元数据线索；核实供应商目录、价格与调用后再发布到下游 |
+| Gemini 4 能力与价格登记 | 补查发现当前分发目录已有 fs/gemini-4-argon 且在白名单内；当前及目标版 AG 注册表均未列 Gemini 4 | 不作为“AG 支持 Gemini 4”的升级收益；fs 线路尚未进行真实生成验收 |
 | 桌面安装器、fnOS、Docker 发布修复 | 当前采用 Linux x86_64 源码构建和 systemd | 不列入本次业务移植，保持现有部署方式 |
 
 ## 4. 不能直接照搬的行为
@@ -78,7 +80,9 @@
 
 上游通过最近的 `lastUsedAt` 选择当前接力账号，以剩余额度低于 5% 为切换信号；未知剩余额度仍交给原有 429/锁定流程处理。它改变“到期优先”开关的行为，并非只优化显示。
 
-当前全局配置摘要为 `fallbackStrategy:fill-first`、账号粘性计数 9、`comboStrategy:fallback`、Combo 粘性计数 8；本轮未据此确认每个供应商的 `earliestExpiryFirst` 开关状态。执行前须逐供应商记录原值，并验证与本地 Combo 轮转补丁的相互影响。先使用隔离假账号验证，不自动切换生产调度。
+当前全局配置摘要为 `fallbackStrategy:fill-first`、账号粘性计数 9、`comboStrategy:fallback`、Combo 粘性计数 8。补充真实 GET `/api/settings` 返回 200：`codebuddy-cn` 已开启 `earliestExpiryFirst`，同时配置 `round-robin`、粘性 3；AG 未开启到期优先，配置轮询 3；Qoder 未开启到期优先，配置轮询 1；CodeBuddy 国际未开启到期优先，配置轮询 3。
+
+**这是已确认的现网策略冲突：直接采用新版调度，在多个可用账号时 CodeBuddy 国内版会优先进入接力分支，不再按原每账号 3 次轮询。** 第一批不得引入该行为变化。第二批需独立设计启用方式，在保留旧策略的前提下验证接力，不能借用现有 true 值自动迁移。Combo 粘性属于另一层，不应声称一定同样失效。
 
 ### 4.3 外部额度与数据库
 
@@ -123,7 +127,9 @@ src/sse/handlers/chat.js
 src/sse/services/auth.js
 ```
 
-这是路径交集，不是已经执行合并所得的冲突数。`combo.js` 等虽不在交集中，也会被共享调度行为影响；未跟踪定制模块、此前已提交改动和实际构建产物也要纳入核验。
+以上是 15 个已跟踪定制文件的交集，另外存在被 Git 忽略但实际在用的 `package-lock.json`。补查用基线文件、当前实际文件、固定目标文件执行 `git merge-file -p --diff3`：2 个文本冲突分别是 AG 执行器与账号配额接口；其余 13 个已跟踪文件可自动合并。锁文件双方均新增且内容不同，需单独选择和验证。逐项处理见 [冲突核对表](upgrade-conflicts-v1.5.0-2026-10-16.md) 的 C01–C03；行为冲突 C04、接入缺口 C05–C08、定制保留 C09–C12 与部署链 C13 同在该文。
+
+`combo.js` 等虽不在交集中，也会被共享调度行为影响；未跟踪定制模块、此前已提交改动和实际构建产物也要纳入核验。自动合并成功仅说明文本可合并，不代表功能验收通过。
 
 ## 6. 执行 SOP
 
@@ -131,7 +137,7 @@ src/sse/services/auth.js
 
 1. 由用户选定 A/B 路线及本批功能。默认建议 A 的第一批；后续批次各自验收，不捆绑发布。
 2. 在前后端分别记录分支、HEAD、工作区状态、未跟踪运行源码清单、逐文件 SHA-256、Node 版本和当前运行 BUILD_ID；复核版本、服务和端口，防止其他会话同时更新。
-3. 在 KN10 私有备份目录保存 Git bundle、tracked diff、必要的未跟踪源码、完整现行运行包、systemd 单元及启动配置。环境与加密密钥只保存在受保护目录，不加入仓库或公开交付物。
+3. 在 KN10 私有备份目录保存 Git bundle、tracked diff、必要的未跟踪源码、完整现行运行包、用户级 systemd 单元（`~/.config/systemd/user/10router.service`、`10router-web.service`）及启动配置。后端运行包 `.next/standalone` 与前端 release 目录（`~/.local/share/10router-web/{releases,staging,current}`）分属两条部署链，各自记录路径、BUILD_ID、release-id 与 tar 备份，不要只备其中一条。环境与加密密钥只保存在受保护目录，不加入仓库或公开交付物。
 4. 从实际启动环境和数据路径解析逻辑确认业务数据库，使用 SQLite backup API 做一致性备份并执行 integrity_check；不把仓库根目录的同名 SQLite 文件当作真实业务库，不裸拷正在使用的单个 WAL 数据文件。
 5. 配置修改前按项目规则仅建立一次 `.bak-<timestamp>` 备份。若执行需要改后端 `deploy.sh` 或构建脚本，先完成规则要求的 Git 快照提交；提交动作按现有独立授权约定办理。
 6. 保存当前只读接口与配置数量摘要。以本次完整基线为准，不把昨日修复补丁直接覆盖到今天的工作树。
@@ -150,7 +156,7 @@ src/sse/services/auth.js
 ### P2：按批实施并验证行为
 
 1. 第一批仅覆盖视觉能力兜底、AG 精确冷却、Gemini 工具配对及耗尽包提取器，分别补针对性测试。特别拆开 `47f5d132a9c7` 的提取器与接力算法改动。
-2. 第二批验证接力：首次选择、低于 5% 交棒、早先账号恢复后不插队、全部耗尽、未知额度、重启、并发、429/403、AG 隔离以及 Combo 粘性。明确各供应商开关状态和行为变化后再决定是否启用。
+2. 第二批验证接力：首次选择、低于 5% 交棒、早先账号恢复后不插队、全部耗尽、未知额度、重启、并发、429/403、AG 隔离以及 Combo 粘性。先处理 CodeBuddy 国内版现有“到期优先 + 轮询 3 次”的策略冲突；不得直接用旧开关启用新算法。
 3. 第三批按需求实施 Key 权限、外部额度、新供应商或 Rerank；每项单独列后端入口、独立前端、策略白名单、持久化及回滚范围。
 4. Key 权限补充名称/别名/通配符、模型/Combo 空值、停用模型、异常分支及全部媒体入口测试。Rerank 补分发限制，未授权请求必须在上游调用前结束。
 5. 外部额度补认证、来源隔离、同名冲突、过期时间、删除及回源刷新测试；刷新不能只读取旧快照。Rerank 补参数校验、排序分数、fallback、真实用量和错误格式测试。
@@ -164,7 +170,7 @@ src/sse/services/auth.js
 
 - `src/pages/CorePages.jsx` 当前创建 Key 仅提交名称，尚无模型/Combo 权限编辑；若做权限批次，补充编辑、保存、刷新读回和权限摘要。
 - `src/api/oauth-catalog.js` 当前没有 `minimax-code` / `minimax-code-global`；需要该批次时按真实后端路由接入设备码流程。
-- `src/pages/BalancesPage.jsx` 当前只渲染配额响应的 `connections`；接入外部卡时同时核对新响应字段与刷新流程。
+- `src/pages/BalancesPage.jsx` 当前只渲染 `/api/usage/quotas` 的 `connections`，该后端接口仅遍历数据库账号；上游外部卡合并在 `/api/providers/client`，并由其传回 `refreshUrl`。接入外部卡需要适配真实数据来源、认领及回源刷新，不能只增加一个前端字段。
 - `src/api/policy.js` 尚未开放外部额度和 Rerank 相关请求；仅在前端确需调用时精准放行实际方法与路径。服务到服务的外部推送可直达后端，不为其开放整个管理接口段。
 
 在本机前端执行以下现有门禁；修改前端时才需要运行，本次纯方案未运行：
@@ -198,7 +204,7 @@ npm.cmd run build
 此阶段是后续执行步骤，本轮不执行。按项目约定，上线、systemd 重启及真实对外写入分别获得明确授权；本次“出 SOP”不包含这些操作。
 
 1. 再次比对生产 HEAD、工作区哈希、BUILD_ID 和服务状态；若已变化，停止切换并重新合并当前有效改动。
-2. 完成一次本次发布备份，安装已验收统一运行包；后端与独立前端分别切换、分别记录，避免把两种部署脚本混用。
+2. 完成一次本次发布备份，安装已验收统一运行包；后端与独立前端分别切换、分别记录，避免把两种部署脚本混用。后端由用户级 systemd 托管（`systemctl --user restart 10router.service`）；前端走 `scripts/deploy-kn10.sh` 的 release 软链切换并由 `systemctl --user restart 10router-web.service` 生效。系统级 `systemctl` 不显示这两个单元是正常现象。
 3. 先检查服务 active、健康和认证，再查询模型目录。模型目录单次超时至少给予此前实测所需的 45 秒窗口，不用 3 秒探针误判启动失败；异常响应仍应停止验收。
 4. 从真实入口 `http://192.168.11.150:4317` 验证登录与必要接口的状态码、JSON 内容、分发配置、余额和关键页面；后端版本通过 20128 认证接口核对。
 5. 执行获授权的真实功能验收，分别记录 HTTP 状态码、断言、调用用量与控制台异常。只读巡检通过不能替代模型生成、权限拒绝、调度交棒或配置保存验收。
@@ -217,6 +223,8 @@ npm.cmd run build
 
 本轮完成：核对 GitHub 正式版本和固定提交、检查 24 个提交的文件差异、核实生产版本与真实只读接口、核对独立前端接入缺口、编写本文。没有执行升级、安装依赖、生产构建或重启；没有执行真实模型生成与签到。新增后端 `PATCH_CHECKS` 为 0。
 
+补充核验完成：临时 bare 副本获取固定上游对象，逐文件三方合并检查及真实供应商调度开关核对；临时文件已随检查退出清理，生产 Git HEAD/status 前后相同。仅执行文本和接口审计，未执行候选版业务回归。逐项处理规则见下列冲突核对文档。
+
 - [v1.5.0 正式发布](https://github.com/techysy/10router/releases/tag/v1.5.0)
 - [固定目标与 v1.4.0 基线对比](https://github.com/techysy/10router/compare/f47a870cdf40be840dc46f38d79a6bc86e11271c...689be5c9f408eabc22bc65a8faa203a8d490f3b2)
 - [固定目标密钥权限与账号调度实现](https://github.com/techysy/10router/blob/689be5c9f408eabc22bc65a8faa203a8d490f3b2/src/sse/services/auth.js)
@@ -225,5 +233,6 @@ npm.cmd run build
 - [固定目标外部额度接口](https://github.com/techysy/10router/blob/689be5c9f408eabc22bc65a8faa203a8d490f3b2/src/app/api/external-quota/%5Bsource%5D/route.js)
 - [既有 v1.4.0 修复与历史验收](upgrade-audit-2026-10-15-codex.md)
 - [独立前端部署手册](deploy.md)
+- [逐项冲突核对与处理规则](upgrade-conflicts-v1.5.0-2026-10-16.md)
 
 目标提交的 GitHub 检查显示 test、服务端构建、Docker 与平台打包均成功；这证明上游自身门禁成功，不等于本地定制回归已通过。

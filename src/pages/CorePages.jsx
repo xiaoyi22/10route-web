@@ -27,8 +27,14 @@ function Toggle({ checked, label, disabled, onChange }) {
   return <label className="toggle-control" title={label}><input type="checkbox" role="switch" aria-label={label} checked={checked} disabled={disabled} onChange={onChange}/><span aria-hidden="true" className="toggle-track"/></label>;
 }
 
+function splitLines(value) {
+  return String(value || '').split(/\s*[\n,]\s*/).map(s => s.trim()).filter(Boolean);
+}
+
 function CreateKey({ onClose, onSaved }) {
   const [name, setName] = useState('');
+  const [models, setModels] = useState('');
+  const [combos, setCombos] = useState('');
   const [created, setCreated] = useState(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -37,13 +43,38 @@ function CreateKey({ onClose, onSaved }) {
     setBusy(true);
     setError('');
     try {
-      const result = await requestJson('/api/keys', { method: 'POST', body: JSON.stringify({ name: name.trim() }) });
+      const result = await requestJson('/api/keys', { method: 'POST', body: JSON.stringify({ name: name.trim(), allowedModels: splitLines(models), allowedCombos: splitLines(combos) }) });
       setCreated(result);
       onSaved();
     } catch (failure) { setError(failure.message); }
     finally { setBusy(false); }
   }
-  return <Modal title={created ? '密钥已创建' : '创建 API 密钥'} busy={busy} onClose={onClose}>{created ? <><p className="subtitle">{created.name}</p><div className="created-key"><code>{created.key}</code><CopyButton value={created.key} label="复制新密钥"/></div><div className="dialog-actions"><button className="button primary" onClick={onClose}>完成</button></div></> : <form className="editor-form" onSubmit={create}><label>密钥名称<input required autoFocus maxLength={100} value={name} onChange={event => setName(event.target.value)} placeholder="例如：个人开发"/></label>{error && <ErrorBlock message={error}/>}<div className="dialog-actions"><button type="button" className="button" disabled={busy} onClick={onClose}>取消</button><button type="submit" className="button primary" disabled={busy}><Icon name="key"/>{busy ? '正在创建…' : '创建密钥'}</button></div></form>}</Modal>;
+  return <Modal title={created ? '密钥已创建' : '创建 API 密钥'} busy={busy} onClose={onClose}>{created ? <><p className="subtitle">{created.name}</p><div className="created-key"><code>{created.key}</code><CopyButton value={created.key} label="复制新密钥"/></div><div className="dialog-actions"><button className="button primary" onClick={onClose}>完成</button></div></> : <form className="editor-form" onSubmit={create}><label>密钥名称<input required autoFocus maxLength={100} value={name} onChange={event => setName(event.target.value)} placeholder="例如：个人开发"/></label><label>允许模型<textarea rows={4} value={models} onChange={event => setModels(event.target.value)} placeholder="每行一个，支持通配 anthropic/* 、*qwen*；留空不限"/></label><label>允许 Combo<textarea rows={3} value={combos} onChange={event => setCombos(event.target.value)} placeholder="每行一个 Combo 名称；留空不限"/></label>{error && <ErrorBlock message={error}/>}<div className="dialog-actions"><button type="button" className="button" disabled={busy} onClick={onClose}>取消</button><button type="submit" className="button primary" disabled={busy}><Icon name="key"/>{busy ? '正在创建…' : '创建密钥'}</button></div></form>}</Modal>;
+}
+
+function EditKey({ keyRecord, onClose, onSaved }) {
+  const [models, setModels] = useState((keyRecord.allowedModels || []).join('\n'));
+  const [combos, setCombos] = useState((keyRecord.allowedCombos || []).join('\n'));
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  async function save(event) {
+    event.preventDefault();
+    setBusy(true);
+    setError('');
+    try {
+      await requestJson(`/api/keys/${encodeURIComponent(keyRecord.id)}`, { method: 'PUT', body: JSON.stringify({ allowedModels: splitLines(models), allowedCombos: splitLines(combos) }) });
+      onSaved();
+      onClose();
+    } catch (failure) { setError(failure.message); }
+    finally { setBusy(false); }
+  }
+  return <Modal title={`编辑权限 · ${keyRecord.name}`} onClose={onClose} busy={busy}><form className="editor-form" onSubmit={save}>
+    <label>允许模型<textarea rows={8} value={models} onChange={event => setModels(event.target.value)} placeholder="每行一个，支持通配 anthropic/* 、*qwen*；留空不限"/></label>
+    <label>允许 Combo<textarea rows={4} value={combos} onChange={event => setCombos(event.target.value)} placeholder="每行一个 Combo 名称；留空不限"/></label>
+    <p className="admin-hint">模型名支持通配（anthropic/*、*qwen*）与去掉厂商前缀匹配（gpt-4o 匹配 openai/gpt-4o）。Combo 名单与模型名单互不替代，留空即不限制对应类别。</p>
+    {error && <ErrorBlock message={error}/>}
+    <div className="dialog-actions"><button type="button" className="button" disabled={busy} onClick={onClose}>取消</button><button type="submit" className="button primary" disabled={busy}><Icon name="check"/>{busy ? '正在保存…' : '保存权限'}</button></div>
+  </form></Modal>;
 }
 
 export function EndpointPage() {
@@ -51,6 +82,7 @@ export function EndpointPage() {
   const keys = Array.isArray(resource.data?.keys) ? resource.data.keys : [];
   const [creating, setCreating] = useState(false);
   const [removing, setRemoving] = useState(null);
+  const [editing, setEditing] = useState(null);
   const [visible, setVisible] = useState(new Set());
   const [busy, setBusy] = useState(null);
   const [error, setError] = useState('');
@@ -77,9 +109,10 @@ export function EndpointPage() {
     </section>
     <section className="keys-section"><div className="panel-heading"><div><h2>API 密钥 <span className="heading-count">{keys.length}</span></h2><p>{keys.filter(key => key.isActive !== false).length} 个启用</p></div><Icon name="key"/></div>
       {resource.error && <ErrorBlock message={`${resource.error}${resource.data ? ' · 显示上次数据' : ''}`} onRetry={resource.refresh}/>}{error && <ErrorBlock message={error}/>}
-      <div className="table-shell"><table><caption className="sr-only">网关 API 密钥</caption><thead><tr><th>名称</th><th>密钥</th><th>创建时间</th><th>启用</th>{managementEnabled && <th className="actions-column">操作</th>}</tr></thead><tbody>{resource.loading && !resource.data ? <tr><td colSpan="5" className="table-empty">正在加载密钥…</td></tr> : keys.length ? keys.map(key => <tr key={key.id}><td>{key.name}</td><td><div className="key-value"><code>{visible.has(key.id) ? key.key : `••••••••${key.key?.slice(-4) || ''}`}</code><IconButton icon={visible.has(key.id) ? 'hide' : 'eye'} label={`${visible.has(key.id) ? '隐藏' : '显示'}密钥 ${key.name}`} onClick={() => toggleVisible(key.id)}/><CopyButton value={key.key} label={`复制密钥 ${key.name}`}/></div></td><td className="mono muted">{formatDate(key.createdAt)}</td><td><Toggle label={`启用密钥 ${key.name}`} checked={key.isActive !== false} disabled={!managementEnabled || !!busy || resource.loading} onChange={() => toggle(key)}/></td>{managementEnabled && <td><IconButton icon="trash" label={`删除密钥 ${key.name}`} disabled={!!busy} onClick={() => setRemoving(key)}/></td>}</tr>) : <tr><td colSpan="5" className="table-empty">{resource.error ? '密钥读取失败' : '暂无 API 密钥'}</td></tr>}</tbody></table></div>
+      <div className="table-shell"><table><caption className="sr-only">网关 API 密钥</caption><thead><tr><th>名称</th><th>密钥</th><th>创建时间</th><th>启用</th>{managementEnabled && <th className="actions-column">操作</th>}</tr></thead><tbody>{resource.loading && !resource.data ? <tr><td colSpan="5" className="table-empty">正在加载密钥…</td></tr> : keys.length ? keys.map(key => <tr key={key.id}><td>{key.name}</td><td><div className="key-value"><code>{visible.has(key.id) ? key.key : `••••••••${key.key?.slice(-4) || ''}`}</code><IconButton icon={visible.has(key.id) ? 'hide' : 'eye'} label={`${visible.has(key.id) ? '隐藏' : '显示'}密钥 ${key.name}`} onClick={() => toggleVisible(key.id)}/><CopyButton value={key.key} label={`复制密钥 ${key.name}`}/></div></td><td className="mono muted">{formatDate(key.createdAt)}</td><td><Toggle label={`启用密钥 ${key.name}`} checked={key.isActive !== false} disabled={!managementEnabled || !!busy || resource.loading} onChange={() => toggle(key)}/></td>{managementEnabled && <td><IconButton icon="edit" label={`编辑权限 ${key.name}`} disabled={!!busy} onClick={() => setEditing(key)}/><IconButton icon="trash" label={`删除密钥 ${key.name}`} disabled={!!busy} onClick={() => setRemoving(key)}/></td>}</tr>) : <tr><td colSpan="5" className="table-empty">{resource.error ? '密钥读取失败' : '暂无 API 密钥'}</td></tr>}</tbody></table></div>
     </section>
     {creating && <CreateKey onClose={() => setCreating(false)} onSaved={resource.refresh}/>}
+    {editing && <EditKey keyRecord={editing} onClose={() => setEditing(null)} onSaved={resource.refresh}/>}
     {removing && <ConfirmDelete title="删除 API 密钥" name={removing.name} url={`/api/keys/${encodeURIComponent(removing.id)}`} onClose={() => setRemoving(null)} onDeleted={() => { setVisible(new Set()); resource.refresh(); }}/>} 
   </>;
 }

@@ -56,6 +56,7 @@ export function isAllowedRequest(url, method = 'GET', management = false) {
   if (pathname === '/api/headroom/extras' && ['POST', 'DELETE'].includes(method)) return true;
   if (method === 'POST' && pathname === '/api/v1/chat/completions') return true;
   if (method === 'POST' && pathname === '/api/v1/audio/speech') return true;
+  if (method === 'POST' && pathname === '/api/v1/rerank') return true;
   if (method === 'POST' && ['/api/settings/database', '/api/settings/proxy-test', '/api/auth/oidc/test', '/api/auth/saml/test'].includes(pathname)) return true;
   if (pathname === '/api/pricing' && ['PATCH', 'DELETE'].includes(method)) return true;
   if (pathname === '/api/proxy-pools' && method === 'POST') return true;
