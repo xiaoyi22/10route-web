@@ -1,0 +1,17 @@
+{
+  "backup": "/home/meet/backups/10router/batch-release-20261013-163414",
+  "startedAt": "2026-10-13T08:34:14.147230+00:00",
+  "frontendPrevious": "/home/meet/.local/share/10router-web/releases/20261013-150242",
+  "10router.serviceHash": "4263488328684e3bf7961da7126e2f1b7b1d58449faa34079396b29800d14074",
+  "10router.servicePidBefore": 3256547,
+  "10router-web.serviceHash": "90682f3777090210965f6b690f6b568d7934ccc398274a33718748edb71dc192",
+  "10router-web.servicePidBefore": 3257310,
+  "patchChecks": 61,
+  "backendBuildId": "QGNeK9dOyVvS9q4skj2Pv",
+  "backendDistDir": ".next-batch-release-20261013",
+  "backendTestsPassed": 99,
+  "10router.servicePidAfter": 3296200,
+  "10router-web.servicePidAfter": 3296408,
+  "frontendRelease": "/home/meet/.local/share/10router-web/releases/20261013-164030",
+  "publishedAt": "2026-10-13T08:40:34.880156+00:00"
+}

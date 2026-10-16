@@ -1,0 +1,19 @@
+{
+  "errors": [],
+  "requests": [
+    {
+      "model": "codex/gpt",
+      "kind": "llm",
+      "probe": "iq",
+      "monitorTarget": {
+        "provider": "codex",
+        "model": "gpt"
+      },
+      "thinkingLevel": "high"
+    }
+  ],
+  "checks": [
+    "思考强度独立传参；手动成功保存历史，更新状态、历史点与统计；刷新后保留；自动计划保持原值",
+    "HTTP失败同样更新本页最新状态"
+  ]
+}

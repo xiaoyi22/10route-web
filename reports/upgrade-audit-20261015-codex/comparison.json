@@ -1,0 +1,624 @@
+{
+  "baseline": "/tmp/10router-pre-v140-baseline-0wgwpdf3",
+  "current": "/tmp/10router-upgrade-audit-20261015-xckfnf_w",
+  "comparison": "same pre-upgrade tests run on snapshot source and copied current working tree",
+  "regressionCount": 102,
+  "suites": [
+    {
+      "suite": "force-stream.test.js",
+      "baselinePassed": 9,
+      "baselineFailed": 0,
+      "currentPassed": 2,
+      "currentFailed": 7,
+      "regressions": [
+        {
+          "test": "resolveForceStream is off when the connection carries no forceStream flag",
+          "status": "failed",
+          "reason": "TypeError: (0 , __vite_ssr_import_1__.resolveForceStream) is not a function"
+        },
+        {
+          "test": "resolveForceStream is on for a node-wide forceStream",
+          "status": "failed",
+          "reason": "TypeError: (0 , __vite_ssr_import_1__.resolveForceStream) is not a function"
+        },
+        {
+          "test": "resolveForceStream is on for a per-model forceStream key",
+          "status": "failed",
+          "reason": "TypeError: (0 , __vite_ssr_import_1__.resolveForceStream) is not a function"
+        },
+        {
+          "test": "resolveForceStream only treats an explicit boolean true as on",
+          "status": "failed",
+          "reason": "TypeError: (0 , __vite_ssr_import_1__.resolveForceStream) is not a function"
+        },
+        {
+          "test": "resolveForceStream applies to anthropic-compatible nodes too",
+          "status": "failed",
+          "reason": "TypeError: (0 , __vite_ssr_import_1__.resolveForceStream) is not a function"
+        },
+        {
+          "test": "resolveForceStream never touches non-compatible providers (registry providers own their flag)",
+          "status": "failed",
+          "reason": "TypeError: (0 , __vite_ssr_import_1__.resolveForceStream) is not a function"
+        },
+        {
+          "test": "DefaultExecutor.transformRequest forceStream wiring adds stream:true to the upstream body when the node is force-streamed",
+          "status": "failed",
+          "reason": "AssertionError: expected undefined to be true // Object.is equality"
+        }
+      ]
+    },
+    {
+      "suite": "gpt-6-sol-pricing.test.js",
+      "baselinePassed": 3,
+      "baselineFailed": 2,
+      "currentPassed": 3,
+      "currentFailed": 2,
+      "regressions": []
+    },
+    {
+      "suite": "iq-explicit-selection.test.js",
+      "baselinePassed": 2,
+      "baselineFailed": 0,
+      "currentPassed": 0,
+      "currentFailed": 0,
+      "regressions": [
+        {
+          "test": "explicit model selection snapshots legacy selection without enrolling future models",
+          "status": "not-collected",
+          "reason": "Cannot find module '../../src/lib/iqMonitor/modelSelection.js' imported from /tmp/10router-upgrade-audit-20261015-xckfnf_w/tests/unit/iq-explicit-selection.test.js"
+        },
+        {
+          "test": "explicit model selection selects availability and IQ models independently",
+          "status": "not-collected",
+          "reason": "Cannot find module '../../src/lib/iqMonitor/modelSelection.js' imported from /tmp/10router-upgrade-audit-20261015-xckfnf_w/tests/unit/iq-explicit-selection.test.js"
+        }
+      ]
+    },
+    {
+      "suite": "iq-model-bindings.test.js",
+      "baselinePassed": 2,
+      "baselineFailed": 0,
+      "currentPassed": 2,
+      "currentFailed": 0,
+      "regressions": []
+    },
+    {
+      "suite": "protocol-nonstream-integrity.test.js",
+      "baselinePassed": 25,
+      "baselineFailed": 0,
+      "currentPassed": 0,
+      "currentFailed": 25,
+      "regressions": [
+        {
+          "test": "non-streaming protocol integrity aggregates native Claude text, tools and cache usage in forced streaming",
+          "status": "failed",
+          "reason": "AssertionError: expected undefined to be 'message' // Object.is equality"
+        },
+        {
+          "test": "non-streaming protocol integrity converts forced Claude SSE to OpenAI without losing content",
+          "status": "failed",
+          "reason": "AssertionError: expected '' to be 'hello' // Object.is equality"
+        },
+        {
+          "test": "non-streaming protocol integrity aggregates unexpected Claude SSE on the ordinary JSON path",
+          "status": "failed",
+          "reason": "TypeError: Cannot read properties of undefined (reading '0')"
+        },
+        {
+          "test": "non-streaming protocol integrity rejects truncated Chat SSE instead of manufacturing a stop",
+          "status": "failed",
+          "reason": "AssertionError: expected undefined to be defined"
+        },
+        {
+          "test": "non-streaming protocol integrity preserves multiple choices in Chat SSE aggregation",
+          "status": "failed",
+          "reason": "AssertionError: expected [ 'one' ] to deeply equal [ 'one', 'two' ]"
+        },
+        {
+          "test": "non-streaming protocol integrity does not mark an SSE error successful on the ordinary JSON path",
+          "status": "failed",
+          "reason": "AssertionError: expected 200 to be 502 // Object.is equality"
+        },
+        {
+          "test": "non-streaming protocol integrity does not mark a failed Responses stream successful",
+          "status": "failed",
+          "reason": "AssertionError: expected 200 to be 502 // Object.is equality"
+        },
+        {
+          "test": "non-streaming protocol integrity preserves Responses CRLF framing and complete terminal envelopes",
+          "status": "failed",
+          "reason": "AssertionError: expected { id: 'resp_audit', …(5) } to match object { id: 'resp_audit', …(3) }"
+        },
+        {
+          "test": "non-streaming protocol integrity preserves Responses incomplete reason and usage",
+          "status": "failed",
+          "reason": "AssertionError: expected 'in_progress' to be 'incomplete' // Object.is equality"
+        },
+        {
+          "test": "non-streaming protocol integrity marks Responses streams without terminal events failed",
+          "status": "failed",
+          "reason": "AssertionError: expected 'in_progress' to be 'failed' // Object.is equality"
+        },
+        {
+          "test": "non-streaming protocol integrity preserves incomplete as length for a Chat client",
+          "status": "failed",
+          "reason": "AssertionError: expected 'in_progress' to be 'length' // Object.is equality"
+        },
+        {
+          "test": "non-streaming protocol integrity preserves mislabeled JSON fallback",
+          "status": "failed",
+          "reason": "AssertionError: expected 502 to be 200 // Object.is equality"
+        },
+        {
+          "test": "non-streaming protocol integrity unwraps a gateway Chat completion envelope with application/json",
+          "status": "failed",
+          "reason": "AssertionError: expected undefined to be 'chatcmpl-wrapped' // Object.is equality"
+        },
+        {
+          "test": "non-streaming protocol integrity unwraps a gateway Chat completion envelope with text/event-stream",
+          "status": "failed",
+          "reason": "AssertionError: expected 502 to be 200 // Object.is equality"
+        },
+        {
+          "test": "non-streaming protocol integrity aggregates wrapped Chat SSE via handleNonStreamingResponse",
+          "status": "failed",
+          "reason": "AssertionError: expected 'chatcmpl-1792026371420' to be 'chatcmpl-wrapped' // Object.is equality"
+        },
+        {
+          "test": "non-streaming protocol integrity aggregates wrapped Chat SSE via handleForcedSSEToJson",
+          "status": "failed",
+          "reason": "AssertionError: expected 'chatcmpl-1792026371422' to be 'chatcmpl-wrapped' // Object.is equality"
+        },
+        {
+          "test": "non-streaming protocol integrity retains a complete message sent inside a wrapped SSE event",
+          "status": "failed",
+          "reason": "AssertionError: expected '' to be 'hello' // Object.is equality"
+        },
+        {
+          "test": "non-streaming protocol integrity keeps separate tool calls in a wrapped complete message",
+          "status": "failed",
+          "reason": "AssertionError: expected undefined to deeply equal [ { id: 'call_first', …(2) }, …(1) ]"
+        },
+        {
+          "test": "non-streaming protocol integrity rejects a truncated wrapped stream and an empty wrapped stream",
+          "status": "failed",
+          "reason": "TypeError: Cannot read properties of undefined (reading 'code')"
+        },
+        {
+          "test": "non-streaming protocol integrity preserves wrapped upstream errors with application/json",
+          "status": "failed",
+          "reason": "AssertionError: expected 200 to be 502 // Object.is equality"
+        },
+        {
+          "test": "non-streaming protocol integrity preserves wrapped upstream errors with text/event-stream",
+          "status": "failed",
+          "reason": "AssertionError: expected 200 to be 502 // Object.is equality"
+        },
+        {
+          "test": "non-streaming protocol integrity does not hide an outer failure behind a nested completion",
+          "status": "failed",
+          "reason": "AssertionError: expected 200 to be 502 // Object.is equality"
+        },
+        {
+          "test": "non-streaming protocol integrity does not double-count cached tokens in Responses to Chat JSON",
+          "status": "failed",
+          "reason": "AssertionError: expected 8 to be 5 // Object.is equality"
+        },
+        {
+          "test": "non-streaming protocol integrity preserves cache counters when Chat JSON becomes Claude",
+          "status": "failed",
+          "reason": "AssertionError: expected { input_tokens: 14, output_tokens: 2 } to match object { input_tokens: 5, …(2) }"
+        },
+        {
+          "test": "non-streaming protocol integrity converts ordinary Responses SSE to Claude JSON",
+          "status": "failed",
+          "reason": "AssertionError: expected { id: 'chatcmpl-1792026371441', …(4) } to match object { type: 'message', …(1) }"
+        }
+      ]
+    },
+    {
+      "suite": "protocol-stream-integrity.test.js",
+      "baselinePassed": 22,
+      "baselineFailed": 0,
+      "currentPassed": 4,
+      "currentFailed": 18,
+      "regressions": [
+        {
+          "test": "new audit streaming contracts Claude upstream errors survive conversion to OpenAI",
+          "status": "failed",
+          "reason": "AssertionError: expected '' to contain 'AUDIT_OVERLOAD'"
+        },
+        {
+          "test": "new audit streaming contracts OpenAI upstream errors survive conversion to Claude",
+          "status": "failed",
+          "reason": "AssertionError: expected '' to contain 'AUDIT_SERVER_ERROR'"
+        },
+        {
+          "test": "new audit streaming contracts native OpenAI does not silently turn a truncated stream into success",
+          "status": "failed",
+          "reason": "AssertionError: expected 'data: {\"id\":\"chatcmpl-audit\",\"object\"…' to match /error|failed/"
+        },
+        {
+          "test": "new audit streaming contracts registered Responses accepts incomplete as a terminal state",
+          "status": "failed",
+          "reason": "AssertionError: expected 'event: response.incomplete\\ndata: {\"t…' not to contain 'response.failed'"
+        },
+        {
+          "test": "new audit streaming contracts compatible Responses routing detects missing terminal events",
+          "status": "failed",
+          "reason": "AssertionError: expected 'event: response.created\\ndata: {\"type…' to contain 'response.failed'"
+        },
+        {
+          "test": "new audit streaming contracts translated Claude usage includes the final OpenAI usage-only chunk",
+          "status": "failed",
+          "reason": "AssertionError: expected 1 to be 45 // Object.is equality"
+        },
+        {
+          "test": "new audit streaming contracts native OpenAI retains a nonempty secondary choice",
+          "status": "failed",
+          "reason": "AssertionError: expected '\\ndata: [DONE]\\n\\n\\n' to contain 'AUDIT_SECOND_CHOICE'"
+        },
+        {
+          "test": "new audit streaming contracts Chat to Responses does not complete a truncated reply",
+          "status": "failed",
+          "reason": "AssertionError: expected 'event: response.created\\ndata: {\"type…' not to contain '\"status\":\"completed\"'"
+        },
+        {
+          "test": "new audit streaming contracts Chat length becomes Responses incomplete rather than completed",
+          "status": "failed",
+          "reason": "AssertionError: expected 'event: response.created\\ndata: {\"type…' to contain '\"status\":\"incomplete\"'"
+        },
+        {
+          "test": "new audit streaming contracts Responses upstream failure is an error, not normal assistant text",
+          "status": "failed",
+          "reason": "AssertionError: expected false to be true // Object.is equality"
+        },
+        {
+          "test": "new audit streaming contracts OpenAI none still forbids tools after Claude request conversion",
+          "status": "failed",
+          "reason": "AssertionError: expected 'auto' to be 'none' // Object.is equality"
+        },
+        {
+          "test": "new audit streaming contracts Claude none still forbids tools after OpenAI request conversion",
+          "status": "failed",
+          "reason": "AssertionError: expected 'auto' to be 'none' // Object.is equality"
+        },
+        {
+          "test": "new audit streaming contracts OpenAI sequential-tool constraint survives Claude request conversion",
+          "status": "failed",
+          "reason": "AssertionError: expected undefined to be true // Object.is equality"
+        },
+        {
+          "test": "new audit streaming contracts Claude sequential-tool constraint survives OpenAI request conversion",
+          "status": "failed",
+          "reason": "AssertionError: expected undefined to be false // Object.is equality"
+        },
+        {
+          "test": "new audit streaming contracts handles a final error line without a newline",
+          "status": "failed",
+          "reason": "AssertionError: expected '' to contain 'TAIL_ERROR'"
+        },
+        {
+          "test": "new audit streaming contracts handles final DONE without a newline without duplicating it",
+          "status": "failed",
+          "reason": "AssertionError: expected [ '[DONE]', '[DONE]' ] to have a length of 1 but got 2"
+        },
+        {
+          "test": "new audit streaming contracts rejects truncated Responses upstream when converted to Chat",
+          "status": "failed",
+          "reason": "AssertionError: expected 'data: {\"id\":\"chatcmpl-1792026369922\",…' to contain 'stream_disconnected'"
+        },
+        {
+          "test": "new audit streaming contracts does not clear account errors for failed upstream SSE",
+          "status": "failed",
+          "reason": "AssertionError: expected \"vi.fn()\" to not be called at all, but actually been called 1 times\u001b[90m"
+        }
+      ]
+    },
+    {
+      "suite": "protocol-stream-sync-regression.test.js",
+      "baselinePassed": 23,
+      "baselineFailed": 4,
+      "currentPassed": 3,
+      "currentFailed": 24,
+      "regressions": [
+        {
+          "test": "streaming and synchronous HTTP regression contracts control: synchronous aggregation supports valid multiline SSE",
+          "status": "failed",
+          "reason": "AssertionError: expected '{\"id\":\"chatcmpl-reaudit\",\"object\":\"ch…' to contain 'MULTILINE_OK'"
+        },
+        {
+          "test": "streaming and synchronous HTTP regression contracts unwraps wrapped-json over HTTP with force=false for chat",
+          "status": "failed",
+          "reason": "TypeError: Cannot read properties of undefined (reading '0')"
+        },
+        {
+          "test": "streaming and synchronous HTTP regression contracts unwraps wrapped-json over HTTP with force=false for claude",
+          "status": "failed",
+          "reason": "TypeError: Cannot read properties of undefined (reading '0')"
+        },
+        {
+          "test": "streaming and synchronous HTTP regression contracts unwraps wrapped-sse over HTTP with force=false for chat",
+          "status": "failed",
+          "reason": "AssertionError: expected '' to be 'WRAPPED_OK' // Object.is equality"
+        },
+        {
+          "test": "streaming and synchronous HTTP regression contracts unwraps wrapped-sse over HTTP with force=true for chat",
+          "status": "failed",
+          "reason": "AssertionError: expected '' to be 'WRAPPED_OK' // Object.is equality"
+        },
+        {
+          "test": "streaming and synchronous HTTP regression contracts unwraps wrapped-sse over HTTP with force=true for claude",
+          "status": "failed",
+          "reason": "AssertionError: expected '' to be 'WRAPPED_OK' // Object.is equality"
+        },
+        {
+          "test": "streaming and synchronous HTTP regression contracts unwraps wrapped-sse over HTTP with force=true for responses",
+          "status": "failed",
+          "reason": "TypeError: Cannot read properties of undefined (reading 'content')"
+        },
+        {
+          "test": "streaming and synchronous HTTP regression contracts valid multiline SSE must preserve content for chat streaming client",
+          "status": "failed",
+          "reason": "AssertionError: expected '\\ndata: {\"id\":\"chatcmpl-reaudit\",\"obj…' to contain 'MULTILINE_OK'"
+        },
+        {
+          "test": "streaming and synchronous HTTP regression contracts valid multiline SSE must preserve content for claude streaming client",
+          "status": "failed",
+          "reason": "AssertionError: expected 'event: message_start\\ndata: {\"type\":\"…' to contain 'MULTILINE_OK'"
+        },
+        {
+          "test": "streaming and synchronous HTTP regression contracts control: synchronous aggregation rejects corrupted event",
+          "status": "failed",
+          "reason": "AssertionError: expected 200 to be 502 // Object.is equality"
+        },
+        {
+          "test": "streaming and synchronous HTTP regression contracts control: forced streaming preserves truncated tool finish",
+          "status": "failed",
+          "reason": "AssertionError: expected 'tool_calls' to be 'length' // Object.is equality"
+        },
+        {
+          "test": "streaming and synchronous HTTP regression contracts native synchronous reply must preserve truncated tool finish",
+          "status": "failed",
+          "reason": "AssertionError: expected 'tool_calls' to be 'length' // Object.is equality"
+        },
+        {
+          "test": "streaming and synchronous HTTP regression contracts native Responses incomplete tool reply must remain length after full handling",
+          "status": "failed",
+          "reason": "AssertionError: expected 'in_progress' to be 'length' // Object.is equality"
+        },
+        {
+          "test": "streaming and synchronous HTTP regression contracts preserves exceptional tool finish and normalizes legacy finish: content_filter",
+          "status": "failed",
+          "reason": "AssertionError: expected 'tool_calls' to be 'content_filter' // Object.is equality"
+        },
+        {
+          "test": "streaming and synchronous HTTP regression contracts regular synchronous handling preserves Responses cache details for Chat",
+          "status": "failed",
+          "reason": "TypeError: Cannot read properties of undefined (reading 'cached_tokens')"
+        },
+        {
+          "test": "streaming and synchronous HTTP regression contracts keeps legacy flat cache counters in forced Responses aggregation",
+          "status": "failed",
+          "reason": "TypeError: Cannot read properties of undefined (reading 'cached_tokens')"
+        },
+        {
+          "test": "streaming and synchronous HTTP regression contracts synchronous failure saves one error detail: bad-json",
+          "status": "failed",
+          "reason": "AssertionError: expected \"vi.fn()\" to be called 1 times, but got 0 times"
+        },
+        {
+          "test": "streaming and synchronous HTTP regression contracts synchronous failure saves one error detail: error-json",
+          "status": "failed",
+          "reason": "AssertionError: expected 200 to be 502 // Object.is equality"
+        },
+        {
+          "test": "streaming and synchronous HTTP regression contracts synchronous failure saves one error detail: empty-sse",
+          "status": "failed",
+          "reason": "AssertionError: expected \"vi.fn()\" to be called 1 times, but got 0 times"
+        },
+        {
+          "test": "streaming and synchronous HTTP regression contracts synchronous failure saves one error detail: corrupted",
+          "status": "failed",
+          "reason": "AssertionError: expected 200 to be 502 // Object.is equality"
+        }
+      ]
+    },
+    {
+      "suite": "sse-event-framing.test.js",
+      "baselinePassed": 8,
+      "baselineFailed": 0,
+      "currentPassed": 0,
+      "currentFailed": 8,
+      "regressions": [
+        {
+          "test": "SSE event framing across network chunks preserves split UTF-8 and multiline data with \"\\n\" for openai",
+          "status": "failed",
+          "reason": "TypeError: __vi_import_1__.parseSSEEvents is not a function"
+        },
+        {
+          "test": "SSE event framing across network chunks preserves split UTF-8 and multiline data with \"\\n\" for claude",
+          "status": "failed",
+          "reason": "TypeError: __vi_import_1__.parseSSEEvents is not a function"
+        },
+        {
+          "test": "SSE event framing across network chunks preserves split UTF-8 and multiline data with \"\\r\\n\" for openai",
+          "status": "failed",
+          "reason": "TypeError: __vi_import_1__.parseSSEEvents is not a function"
+        },
+        {
+          "test": "SSE event framing across network chunks preserves split UTF-8 and multiline data with \"\\r\\n\" for claude",
+          "status": "failed",
+          "reason": "TypeError: __vi_import_1__.parseSSEEvents is not a function"
+        },
+        {
+          "test": "SSE event framing across network chunks preserves split UTF-8 and multiline data with \"\\r\" for openai",
+          "status": "failed",
+          "reason": "TypeError: __vi_import_1__.parseSSEEvents is not a function"
+        },
+        {
+          "test": "SSE event framing across network chunks preserves split UTF-8 and multiline data with \"\\r\" for claude",
+          "status": "failed",
+          "reason": "TypeError: __vi_import_1__.parseSSEEvents is not a function"
+        },
+        {
+          "test": "SSE event framing across network chunks retains the final multiline event without a trailing separator",
+          "status": "failed",
+          "reason": "TypeError: __vi_import_1__.parseSSEEvents is not a function"
+        },
+        {
+          "test": "SSE event framing across network chunks keeps Ollama NDJSON framing and its terminal usage",
+          "status": "failed",
+          "reason": "TypeError: __vi_import_1__.parseSSEEvents is not a function"
+        }
+      ]
+    },
+    {
+      "suite": "stream-cancel-usage.test.js",
+      "baselinePassed": 5,
+      "baselineFailed": 0,
+      "currentPassed": 2,
+      "currentFailed": 3,
+      "regressions": [
+        {
+          "test": "stream usage on client abort preserves response.completed when the client closes before transport EOF",
+          "status": "failed",
+          "reason": "Error: STACK_TRACE_ERROR"
+        },
+        {
+          "test": "stream usage on client abort preserves response.failed when the client closes before transport EOF",
+          "status": "failed",
+          "reason": "Error: STACK_TRACE_ERROR"
+        },
+        {
+          "test": "stream usage on client abort reports estimated usage when the client aborts mid-stream",
+          "status": "failed",
+          "reason": "AssertionError: expected +0 to be 1 // Object.is equality"
+        }
+      ]
+    },
+    {
+      "suite": "stream-detail-finalization.test.js",
+      "baselinePassed": 12,
+      "baselineFailed": 0,
+      "currentPassed": 0,
+      "currentFailed": 12,
+      "regressions": [
+        {
+          "test": "stream terminal detail and usage settlement keeps a Responses completion successful when upstream transport closes after its terminal event",
+          "status": "failed",
+          "reason": "AssertionError: expected 'error' to be 'success' // Object.is equality"
+        },
+        {
+          "test": "stream terminal detail and usage settlement keeps partial upstream usage and TTFT on a genuine interrupted Chat stream",
+          "status": "failed",
+          "reason": "AssertionError: expected { prompt_tokens: +0, …(1) } to match object { prompt_tokens: 11, …(1) }"
+        },
+        {
+          "test": "stream terminal detail and usage settlement keeps a completed response successful when the client closes after its terminal event",
+          "status": "failed",
+          "reason": "AssertionError: expected 'error' to be 'success' // Object.is equality"
+        },
+        {
+          "test": "stream terminal detail and usage settlement settles normally from upstream tail usage rather than retaining the finish-chunk estimate",
+          "status": "failed",
+          "reason": "AssertionError: expected undefined to be 'upstream' // Object.is equality"
+        },
+        {
+          "test": "stream terminal detail and usage settlement keeps usage-only Chat tail chunks with choices []",
+          "status": "failed",
+          "reason": "AssertionError: expected { prompt_tokens: 2020, …(5) } to match object { prompt_tokens: 11, …(2) }"
+        },
+        {
+          "test": "stream terminal detail and usage settlement keeps usage-only Chat tail chunks with choices [ { index: +0, delta: {}, …(1) } ]",
+          "status": "failed",
+          "reason": "AssertionError: expected { prompt_tokens: 2020, …(3) } to match object { prompt_tokens: 11, …(2) }"
+        },
+        {
+          "test": "stream terminal detail and usage settlement does not replace measured usage when the finish chunk itself omits usage",
+          "status": "failed",
+          "reason": "AssertionError: expected { prompt_tokens: 2020, …(3) } to match object { prompt_tokens: 11, …(1) }"
+        },
+        {
+          "test": "stream terminal detail and usage settlement keeps partial usage when a Claude client receives a genuine interrupted Chat upstream",
+          "status": "failed",
+          "reason": "AssertionError: expected { prompt_tokens: +0, …(1) } to match object { input_tokens: 11, output_tokens: 2 }"
+        },
+        {
+          "test": "stream terminal detail and usage settlement records usage only once when completion is called repeatedly",
+          "status": "failed",
+          "reason": "AssertionError: expected undefined to be '1792026366992-iqoszzx7v' // Object.is equality"
+        },
+        {
+          "test": "stream terminal detail and usage settlement marks a partial-content estimate rather than presenting it as upstream usage",
+          "status": "failed",
+          "reason": "AssertionError: expected 0 to be greater than 0"
+        },
+        {
+          "test": "stream terminal detail and usage settlement preserves a real upstream 429 reason through storage and conversation redaction",
+          "status": "failed",
+          "reason": "AssertionError: expected undefined to match object { status: 429, …(2) }"
+        },
+        {
+          "test": "stream terminal detail and usage settlement redacts credentials and query strings from persisted error metadata",
+          "status": "failed",
+          "reason": "TypeError: Cannot read properties of undefined (reading 'message')"
+        }
+      ]
+    },
+    {
+      "suite": "stream-usage-provenance.test.js",
+      "baselinePassed": 3,
+      "baselineFailed": 0,
+      "currentPassed": 1,
+      "currentFailed": 2,
+      "regressions": [
+        {
+          "test": "upstream usage takes precedence over estimates replaces an estimate when actual tail usage arrives, even when actual counts are lower",
+          "status": "failed",
+          "reason": "AssertionError: expected { prompt_tokens: 2000, …(3) } to deeply equal { prompt_tokens: 11, …(2) }"
+        },
+        {
+          "test": "upstream usage takes precedence over estimates does not overwrite measured usage with an estimated finish chunk",
+          "status": "failed",
+          "reason": "AssertionError: expected { prompt_tokens: 2000, …(2) } to deeply equal { prompt_tokens: 11, …(2) }"
+        }
+      ]
+    },
+    {
+      "suite": "verify-password-lockout.test.js",
+      "baselinePassed": 5,
+      "baselineFailed": 0,
+      "currentPassed": 0,
+      "currentFailed": 5,
+      "regressions": [
+        {
+          "test": "password verification shares login lockout locks after five wrong passwords and skips verification while locked",
+          "status": "failed",
+          "reason": "AssertionError: expected 401 to be 429 // Object.is equality"
+        },
+        {
+          "test": "password verification shares login lockout shares failures across both endpoints",
+          "status": "failed",
+          "reason": "AssertionError: expected 401 to be 429 // Object.is equality"
+        },
+        {
+          "test": "password verification shares login lockout shares failures across both endpoints",
+          "status": "failed",
+          "reason": "AssertionError: expected 401 to be 429 // Object.is equality"
+        },
+        {
+          "test": "password verification shares login lockout clears earlier failures after successful verification",
+          "status": "failed",
+          "reason": "AssertionError: expected 401 to be 429 // Object.is equality"
+        },
+        {
+          "test": "password verification shares login lockout counts invalid JSON without disclosing internal errors",
+          "status": "failed",
+          "reason": "AssertionError: expected 401 to be 429 // Object.is equality"
+        }
+      ]
+    }
+  ]
+}

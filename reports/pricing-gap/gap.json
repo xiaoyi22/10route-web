@@ -1,0 +1,883 @@
+{
+  "generatedAt": "2026-10-14T03:30:52.101Z",
+  "base": "http://192.168.11.150:4317",
+  "summary": {
+    "totalModels": 1355,
+    "totalPriced": 125,
+    "totalMissing": 1230,
+    "providers": 124,
+    "zero": 117,
+    "partial": 5,
+    "full": 1
+  },
+  "rows": [
+    {
+      "provider": "ocz",
+      "models": 79,
+      "priced": 0,
+      "missing": 79,
+      "pct": 0
+    },
+    {
+      "provider": "ws",
+      "models": 75,
+      "priced": 0,
+      "missing": 75,
+      "pct": 0
+    },
+    {
+      "provider": "commandcode",
+      "models": 62,
+      "priced": 0,
+      "missing": 62,
+      "pct": 0
+    },
+    {
+      "provider": "google-tts",
+      "models": 60,
+      "priced": 0,
+      "missing": 60,
+      "pct": 0
+    },
+    {
+      "provider": "kr",
+      "models": 48,
+      "priced": 0,
+      "missing": 48,
+      "pct": 0
+    },
+    {
+      "provider": "opencode-go",
+      "models": 43,
+      "priced": 0,
+      "missing": 43,
+      "pct": 0
+    },
+    {
+      "provider": "openai",
+      "models": 41,
+      "priced": 0,
+      "missing": 41,
+      "pct": 0
+    },
+    {
+      "provider": "apinex",
+      "models": 36,
+      "priced": 0,
+      "missing": 36,
+      "pct": 0
+    },
+    {
+      "provider": "dv",
+      "models": 35,
+      "priced": 0,
+      "missing": 35,
+      "pct": 0
+    },
+    {
+      "provider": "cx",
+      "models": 30,
+      "priced": 0,
+      "missing": 30,
+      "pct": 0
+    },
+    {
+      "provider": "gemini-tts-voices",
+      "models": 30,
+      "priced": 0,
+      "missing": 30,
+      "pct": 0
+    },
+    {
+      "provider": "gemini",
+      "models": 26,
+      "priced": 0,
+      "missing": 26,
+      "pct": 0
+    },
+    {
+      "provider": "bzl",
+      "models": 24,
+      "priced": 0,
+      "missing": 24,
+      "pct": 0
+    },
+    {
+      "provider": "cloudflare-ai",
+      "models": 24,
+      "priced": 0,
+      "missing": 24,
+      "pct": 0
+    },
+    {
+      "provider": "ag",
+      "models": 24,
+      "priced": 3,
+      "missing": 21,
+      "pct": 13
+    },
+    {
+      "provider": "gh",
+      "models": 19,
+      "priced": 1,
+      "missing": 18,
+      "pct": 5
+    },
+    {
+      "provider": "siliconflow",
+      "models": 16,
+      "priced": 0,
+      "missing": 16,
+      "pct": 0
+    },
+    {
+      "provider": "if",
+      "models": 15,
+      "priced": 0,
+      "missing": 15,
+      "pct": 0
+    },
+    {
+      "provider": "openrouter",
+      "models": 15,
+      "priced": 0,
+      "missing": 15,
+      "pct": 0
+    },
+    {
+      "provider": "venice",
+      "models": 15,
+      "priced": 0,
+      "missing": 15,
+      "pct": 0
+    },
+    {
+      "provider": "bm",
+      "models": 14,
+      "priced": 0,
+      "missing": 14,
+      "pct": 0
+    },
+    {
+      "provider": "cu",
+      "models": 14,
+      "priced": 0,
+      "missing": 14,
+      "pct": 0
+    },
+    {
+      "provider": "qdc",
+      "models": 14,
+      "priced": 0,
+      "missing": 14,
+      "pct": 0
+    },
+    {
+      "provider": "minimax",
+      "models": 13,
+      "priced": 0,
+      "missing": 13,
+      "pct": 0
+    },
+    {
+      "provider": "openai-tts-voices",
+      "models": 13,
+      "priced": 0,
+      "missing": 13,
+      "pct": 0
+    },
+    {
+      "provider": "openrouter-tts-voices",
+      "models": 13,
+      "priced": 0,
+      "missing": 13,
+      "pct": 0
+    },
+    {
+      "provider": "grok-web",
+      "models": 12,
+      "priced": 0,
+      "missing": 12,
+      "pct": 0
+    },
+    {
+      "provider": "minimax-cn",
+      "models": 12,
+      "priced": 0,
+      "missing": 12,
+      "pct": 0
+    },
+    {
+      "provider": "tokenbom",
+      "models": 12,
+      "priced": 0,
+      "missing": 12,
+      "pct": 0
+    },
+    {
+      "provider": "trae-free",
+      "models": 12,
+      "priced": 0,
+      "missing": 12,
+      "pct": 0
+    },
+    {
+      "provider": "nvidia",
+      "models": 11,
+      "priced": 0,
+      "missing": 11,
+      "pct": 0
+    },
+    {
+      "provider": "perplexity-agent",
+      "models": 11,
+      "priced": 0,
+      "missing": 11,
+      "pct": 0
+    },
+    {
+      "provider": "xai",
+      "models": 11,
+      "priced": 0,
+      "missing": 11,
+      "pct": 0
+    },
+    {
+      "provider": "edge-tts",
+      "models": 11,
+      "priced": 0,
+      "missing": 11,
+      "pct": 0
+    },
+    {
+      "provider": "blackbox",
+      "models": 10,
+      "priced": 0,
+      "missing": 10,
+      "pct": 0
+    },
+    {
+      "provider": "clinepass",
+      "models": 10,
+      "priced": 0,
+      "missing": 10,
+      "pct": 0
+    },
+    {
+      "provider": "glm-cn",
+      "models": 10,
+      "priced": 0,
+      "missing": 10,
+      "pct": 0
+    },
+    {
+      "provider": "step-cn",
+      "models": 10,
+      "priced": 0,
+      "missing": 10,
+      "pct": 0
+    },
+    {
+      "provider": "step",
+      "models": 10,
+      "priced": 0,
+      "missing": 10,
+      "pct": 0
+    },
+    {
+      "provider": "cbai",
+      "models": 10,
+      "priced": 1,
+      "missing": 9,
+      "pct": 10
+    },
+    {
+      "provider": "tr",
+      "models": 9,
+      "priced": 0,
+      "missing": 9,
+      "pct": 0
+    },
+    {
+      "provider": "volcengine-ark",
+      "models": 9,
+      "priced": 0,
+      "missing": 9,
+      "pct": 0
+    },
+    {
+      "provider": "alicode",
+      "models": 8,
+      "priced": 0,
+      "missing": 8,
+      "pct": 0
+    },
+    {
+      "provider": "anthropic",
+      "models": 8,
+      "priced": 0,
+      "missing": 8,
+      "pct": 0
+    },
+    {
+      "provider": "cl",
+      "models": 8,
+      "priced": 0,
+      "missing": 8,
+      "pct": 0
+    },
+    {
+      "provider": "deepseek",
+      "models": 8,
+      "priced": 0,
+      "missing": 8,
+      "pct": 0
+    },
+    {
+      "provider": "glm",
+      "models": 8,
+      "priced": 0,
+      "missing": 8,
+      "pct": 0
+    },
+    {
+      "provider": "hyperbolic",
+      "models": 8,
+      "priced": 0,
+      "missing": 8,
+      "pct": 0
+    },
+    {
+      "provider": "kc",
+      "models": 8,
+      "priced": 0,
+      "missing": 8,
+      "pct": 0
+    },
+    {
+      "provider": "kimchi",
+      "models": 8,
+      "priced": 0,
+      "missing": 8,
+      "pct": 0
+    },
+    {
+      "provider": "kimi",
+      "models": 8,
+      "priced": 0,
+      "missing": 8,
+      "pct": 0
+    },
+    {
+      "provider": "tokenharbor",
+      "models": 8,
+      "priced": 0,
+      "missing": 8,
+      "pct": 0
+    },
+    {
+      "provider": "agnes-ai",
+      "models": 7,
+      "priced": 0,
+      "missing": 7,
+      "pct": 0
+    },
+    {
+      "provider": "alicode-intl",
+      "models": 7,
+      "priced": 0,
+      "missing": 7,
+      "pct": 0
+    },
+    {
+      "provider": "alims-intl",
+      "models": 7,
+      "priced": 0,
+      "missing": 7,
+      "pct": 0
+    },
+    {
+      "provider": "qianfan",
+      "models": 7,
+      "priced": 0,
+      "missing": 7,
+      "pct": 0
+    },
+    {
+      "provider": "byteplus",
+      "models": 7,
+      "priced": 0,
+      "missing": 7,
+      "pct": 0
+    },
+    {
+      "provider": "cc",
+      "models": 7,
+      "priced": 0,
+      "missing": 7,
+      "pct": 0
+    },
+    {
+      "provider": "cbcn",
+      "models": 11,
+      "priced": 4,
+      "missing": 7,
+      "pct": 36
+    },
+    {
+      "provider": "fal-ai",
+      "models": 7,
+      "priced": 0,
+      "missing": 7,
+      "pct": 0
+    },
+    {
+      "provider": "featherless",
+      "models": 7,
+      "priced": 0,
+      "missing": 7,
+      "pct": 0
+    },
+    {
+      "provider": "gc",
+      "models": 7,
+      "priced": 0,
+      "missing": 7,
+      "pct": 0
+    },
+    {
+      "provider": "groq",
+      "models": 7,
+      "priced": 0,
+      "missing": 7,
+      "pct": 0
+    },
+    {
+      "provider": "ollama",
+      "models": 7,
+      "priced": 0,
+      "missing": 7,
+      "pct": 0
+    },
+    {
+      "provider": "perplexity-web",
+      "models": 7,
+      "priced": 0,
+      "missing": 7,
+      "pct": 0
+    },
+    {
+      "provider": "voyage-ai",
+      "models": 7,
+      "priced": 0,
+      "missing": 7,
+      "pct": 0
+    },
+    {
+      "provider": "xiaomi-tokenplan",
+      "models": 7,
+      "priced": 0,
+      "missing": 7,
+      "pct": 0
+    },
+    {
+      "provider": "alitp-intl",
+      "models": 6,
+      "priced": 0,
+      "missing": 6,
+      "pct": 0
+    },
+    {
+      "provider": "black-forest-labs",
+      "models": 6,
+      "priced": 0,
+      "missing": 6,
+      "pct": 0
+    },
+    {
+      "provider": "cerebras",
+      "models": 6,
+      "priced": 0,
+      "missing": 6,
+      "pct": 0
+    },
+    {
+      "provider": "kgw",
+      "models": 6,
+      "priced": 0,
+      "missing": 6,
+      "pct": 0
+    },
+    {
+      "provider": "morph",
+      "models": 6,
+      "priced": 0,
+      "missing": 6,
+      "pct": 0
+    },
+    {
+      "provider": "stepp-cn",
+      "models": 6,
+      "priced": 0,
+      "missing": 6,
+      "pct": 0
+    },
+    {
+      "provider": "stepp",
+      "models": 6,
+      "priced": 0,
+      "missing": 6,
+      "pct": 0
+    },
+    {
+      "provider": "together",
+      "models": 6,
+      "priced": 0,
+      "missing": 6,
+      "pct": 0
+    },
+    {
+      "provider": "gcli",
+      "models": 5,
+      "priced": 0,
+      "missing": 5,
+      "pct": 0
+    },
+    {
+      "provider": "llm7",
+      "models": 5,
+      "priced": 0,
+      "missing": 5,
+      "pct": 0
+    },
+    {
+      "provider": "muse",
+      "models": 5,
+      "priced": 0,
+      "missing": 5,
+      "pct": 0
+    },
+    {
+      "provider": "siliconflow-cn",
+      "models": 9,
+      "priced": 4,
+      "missing": 5,
+      "pct": 44
+    },
+    {
+      "provider": "stability-ai",
+      "models": 5,
+      "priced": 0,
+      "missing": 5,
+      "pct": 0
+    },
+    {
+      "provider": "agnes-ai-cn",
+      "models": 4,
+      "priced": 0,
+      "missing": 4,
+      "pct": 0
+    },
+    {
+      "provider": "assemblyai",
+      "models": 4,
+      "priced": 0,
+      "missing": 4,
+      "pct": 0
+    },
+    {
+      "provider": "deepgram",
+      "models": 4,
+      "priced": 0,
+      "missing": 4,
+      "pct": 0
+    },
+    {
+      "provider": "drex",
+      "models": 4,
+      "priced": 0,
+      "missing": 4,
+      "pct": 0
+    },
+    {
+      "provider": "fireworks",
+      "models": 4,
+      "priced": 0,
+      "missing": 4,
+      "pct": 0
+    },
+    {
+      "provider": "huggingface",
+      "models": 4,
+      "priced": 0,
+      "missing": 4,
+      "pct": 0
+    },
+    {
+      "provider": "minimax-free",
+      "models": 4,
+      "priced": 0,
+      "missing": 4,
+      "pct": 0
+    },
+    {
+      "provider": "mistral",
+      "models": 4,
+      "priced": 0,
+      "missing": 4,
+      "pct": 0
+    },
+    {
+      "provider": "runwayml",
+      "models": 4,
+      "priced": 0,
+      "missing": 4,
+      "pct": 0
+    },
+    {
+      "provider": "vertex-partner",
+      "models": 4,
+      "priced": 0,
+      "missing": 4,
+      "pct": 0
+    },
+    {
+      "provider": "vertex",
+      "models": 4,
+      "priced": 0,
+      "missing": 4,
+      "pct": 0
+    },
+    {
+      "provider": "xiaomi-mimo",
+      "models": 4,
+      "priced": 0,
+      "missing": 4,
+      "pct": 0
+    },
+    {
+      "provider": "elevenlabs-tts-models",
+      "models": 4,
+      "priced": 0,
+      "missing": 4,
+      "pct": 0
+    },
+    {
+      "provider": "af",
+      "models": 3,
+      "priced": 0,
+      "missing": 3,
+      "pct": 0
+    },
+    {
+      "provider": "cohere",
+      "models": 3,
+      "priced": 0,
+      "missing": 3,
+      "pct": 0
+    },
+    {
+      "provider": "comfyui",
+      "models": 3,
+      "priced": 0,
+      "missing": 3,
+      "pct": 0
+    },
+    {
+      "provider": "mimo-desktop",
+      "models": 3,
+      "priced": 0,
+      "missing": 3,
+      "pct": 0
+    },
+    {
+      "provider": "oc",
+      "models": 3,
+      "priced": 0,
+      "missing": 3,
+      "pct": 0
+    },
+    {
+      "provider": "openai-tts-models",
+      "models": 3,
+      "priced": 0,
+      "missing": 3,
+      "pct": 0
+    },
+    {
+      "provider": "openrouter-tts-models",
+      "models": 3,
+      "priced": 0,
+      "missing": 3,
+      "pct": 0
+    },
+    {
+      "provider": "gemini-tts-models",
+      "models": 3,
+      "priced": 0,
+      "missing": 3,
+      "pct": 0
+    },
+    {
+      "provider": "longcat-intl",
+      "models": 2,
+      "priced": 0,
+      "missing": 2,
+      "pct": 0
+    },
+    {
+      "provider": "longcat",
+      "models": 2,
+      "priced": 0,
+      "missing": 2,
+      "pct": 0
+    },
+    {
+      "provider": "nanobanana",
+      "models": 2,
+      "priced": 0,
+      "missing": 2,
+      "pct": 0
+    },
+    {
+      "provider": "nebius",
+      "models": 2,
+      "priced": 0,
+      "missing": 2,
+      "pct": 0
+    },
+    {
+      "provider": "perplexity",
+      "models": 2,
+      "priced": 0,
+      "missing": 2,
+      "pct": 0
+    },
+    {
+      "provider": "poolside",
+      "models": 2,
+      "priced": 0,
+      "missing": 2,
+      "pct": 0
+    },
+    {
+      "provider": "recraft",
+      "models": 2,
+      "priced": 0,
+      "missing": 2,
+      "pct": 0
+    },
+    {
+      "provider": "sdwebui",
+      "models": 2,
+      "priced": 0,
+      "missing": 2,
+      "pct": 0
+    },
+    {
+      "provider": "sensenova",
+      "models": 2,
+      "priced": 0,
+      "missing": 2,
+      "pct": 0
+    },
+    {
+      "provider": "hunyuan",
+      "models": 2,
+      "priced": 0,
+      "missing": 2,
+      "pct": 0
+    },
+    {
+      "provider": "v1m",
+      "models": 2,
+      "priced": 0,
+      "missing": 2,
+      "pct": 0
+    },
+    {
+      "provider": "atria",
+      "models": 1,
+      "priced": 0,
+      "missing": 1,
+      "pct": 0
+    },
+    {
+      "provider": "dots",
+      "models": 1,
+      "priced": 0,
+      "missing": 1,
+      "pct": 0
+    },
+    {
+      "provider": "mmf",
+      "models": 1,
+      "priced": 0,
+      "missing": 1,
+      "pct": 0
+    },
+    {
+      "provider": "samba",
+      "models": 1,
+      "priced": 0,
+      "missing": 1,
+      "pct": 0
+    },
+    {
+      "provider": "selfhosted-embedding",
+      "models": 1,
+      "priced": 0,
+      "missing": 1,
+      "pct": 0
+    },
+    {
+      "provider": "selfhosted-stt",
+      "models": 1,
+      "priced": 0,
+      "missing": 1,
+      "pct": 0
+    },
+    {
+      "provider": "selfhosted-tts",
+      "models": 1,
+      "priced": 0,
+      "missing": 1,
+      "pct": 0
+    },
+    {
+      "provider": "zcode-free",
+      "models": 1,
+      "priced": 0,
+      "missing": 1,
+      "pct": 0
+    },
+    {
+      "provider": "local-device",
+      "models": 1,
+      "priced": 0,
+      "missing": 1,
+      "pct": 0
+    },
+    {
+      "provider": "xiaomi-mimo-tts-models",
+      "models": 1,
+      "priced": 0,
+      "missing": 1,
+      "pct": 0
+    },
+    {
+      "provider": "qd",
+      "models": 1,
+      "priced": 1,
+      "missing": 0,
+      "pct": 100
+    },
+    {
+      "provider": "tokenrouter",
+      "models": 12,
+      "priced": 111,
+      "missing": -99,
+      "pct": 925
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "backup": "/home/meet/backups/10router/stream-model-release-20261013-145856",
+  "backendBuildId": "ZEDmFkBX_EIcKfJEyDlIQ",
+  "previousFrontend": "/home/meet/.local/share/10router-web/releases/20261013-133506",
+  "10router.service": "MainPID=3218836\nActiveState=active",
+  "10router-web.service": "MainPID=3216485\nActiveState=active",
+  "10router.serviceHash": "4263488328684e3bf7961da7126e2f1b7b1d58449faa34079396b29800d14074",
+  "10router-web.serviceHash": "90682f3777090210965f6b690f6b568d7934ccc398274a33718748edb71dc192",
+  "stage": "/home/meet/10router/.next-release-stage-20261013-145856",
+  "switchStartedAt": "2026-10-13T07:01:25.382729+00:00",
+  "backendPublishedAt": "2026-10-13T07:01:26.709954+00:00",
+  "backendPidAfter": 3256547,
+  "frontendRelease": "/home/meet/.local/share/10router-web/releases/20261013-150242",
+  "frontendPublishedAt": "2026-10-13T07:02:46.266327+00:00",
+  "frontendPidAfter": 3257310,
+  "liveModelSummary": {
+    "newRequests": 7,
+    "completedSuccess": 6,
+    "completedWithResponseModel": 6,
+    "mismatches": 0,
+    "models": [
+      [
+        "gpt-6.1-sol",
+        "gpt-6.1-sol"
+      ],
+      [
+        "deepseek-v4.1-flash",
+        "deepseek-v4.1-flash"
+      ]
+    ]
+  }
+}

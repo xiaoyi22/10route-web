@@ -1,0 +1,206 @@
+{
+  "base": "http://127.0.0.1:20138",
+  "data": "isolated compiled backend + SQLite + loopback fake upstream; no real provider requests",
+  "checks": [
+    {
+      "check": "isolated login",
+      "passed": true,
+      "http": 200
+    },
+    {
+      "check": "read compatible nodes",
+      "passed": true,
+      "http": 200
+    },
+    {
+      "check": "read isolated API keys",
+      "passed": true,
+      "http": 200
+    },
+    {
+      "check": "enable local test model",
+      "passed": true,
+      "http": 200
+    },
+    {
+      "check": "balance preferences",
+      "passed": true,
+      "http": 200
+    },
+    {
+      "check": "save balance toggle True",
+      "passed": true,
+      "http": 200
+    },
+    {
+      "check": "balance toggle reflected True",
+      "passed": true
+    },
+    {
+      "check": "save balance toggle False",
+      "passed": true,
+      "http": 200
+    },
+    {
+      "check": "balance toggle reflected False",
+      "passed": true
+    },
+    {
+      "check": "read balance persistence",
+      "passed": true,
+      "http": 200
+    },
+    {
+      "check": "balance disabled persists",
+      "passed": true
+    },
+    {
+      "check": "save distribution",
+      "passed": true,
+      "http": 200
+    },
+    {
+      "check": "distribution save retained",
+      "passed": true
+    },
+    {
+      "check": "read distribution",
+      "passed": true,
+      "http": 200
+    },
+    {
+      "check": "management catalog includes unpublished model",
+      "passed": true
+    },
+    {
+      "check": "public catalog",
+      "passed": true,
+      "http": 200
+    },
+    {
+      "check": "public catalog filters unpublished model",
+      "passed": true
+    },
+    {
+      "check": "blocked /api/v1/chat/completions",
+      "passed": true,
+      "http": 404
+    },
+    {
+      "check": "structured error /api/v1/chat/completions",
+      "passed": true
+    },
+    {
+      "check": "blocked /api/v1/messages",
+      "passed": true,
+      "http": 404
+    },
+    {
+      "check": "structured error /api/v1/messages",
+      "passed": true
+    },
+    {
+      "check": "blocked /api/v1/responses",
+      "passed": true,
+      "http": 404
+    },
+    {
+      "check": "structured error /api/v1/responses",
+      "passed": true
+    },
+    {
+      "check": "blocked /api/v1/images/generations",
+      "passed": true,
+      "http": 404
+    },
+    {
+      "check": "structured error /api/v1/images/generations",
+      "passed": true
+    },
+    {
+      "check": "blocked /api/v1/audio/speech",
+      "passed": true,
+      "http": 404
+    },
+    {
+      "check": "structured error /api/v1/audio/speech",
+      "passed": true
+    },
+    {
+      "check": "blocked /api/v1/search",
+      "passed": true,
+      "http": 404
+    },
+    {
+      "check": "structured error /api/v1/search",
+      "passed": true
+    },
+    {
+      "check": "blocked /api/v1/videos/generations",
+      "passed": true,
+      "http": 404
+    },
+    {
+      "check": "structured error /api/v1/videos/generations",
+      "passed": true
+    },
+    {
+      "check": "blocked requests produce zero upstream POST",
+      "passed": true
+    },
+    {
+      "check": "forced SSE converted to synchronous JSON",
+      "passed": true,
+      "http": 200
+    },
+    {
+      "check": "synchronous content retained",
+      "passed": true
+    },
+    {
+      "check": "real tail usage retained",
+      "passed": true
+    },
+    {
+      "check": "node force stream reaches upstream",
+      "passed": true
+    },
+    {
+      "check": "upstream SSE error becomes JSON 502",
+      "passed": true,
+      "http": 502
+    },
+    {
+      "check": "upstream error code retained",
+      "passed": true
+    },
+    {
+      "check": "Responses tool conversation HTTP",
+      "passed": true,
+      "http": 200
+    },
+    {
+      "check": "Responses tool call ID reaches Chat upstream",
+      "passed": true
+    },
+    {
+      "check": "Responses tool result ID reaches Chat upstream",
+      "passed": true
+    },
+    {
+      "check": "disable local test model",
+      "passed": true,
+      "http": 200
+    },
+    {
+      "check": "read catalog after disabling",
+      "passed": true,
+      "http": 200
+    },
+    {
+      "check": "upstream catalog cannot revive disabled model",
+      "passed": true
+    }
+  ],
+  "passed": true
+}

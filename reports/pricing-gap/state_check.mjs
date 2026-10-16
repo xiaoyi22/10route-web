@@ -1,0 +1,18 @@
+﻿import { parseEnv } from 'node:util';
+import { readFileSync } from 'node:fs';
+const base='http://192.168.11.150:4317';
+const env=parseEnv(readFileSync('C:/Users/Administrator/.codex/credentials/10router-web.env','utf8'));
+const jar=[];
+const req=async(path,opts={})=>{const r=await fetch(base+path,{...opts,headers:{'content-type':'application/json',cookie:jar.join('; '),...(opts.headers||{})}});for(const c of (r.headers.getSetCookie?.()||[]))jar.push(c.split(';')[0]);return{status:r.status,text:await r.text()};};
+await req('/api/auth/login',{method:'POST',body:JSON.stringify({password:env.TENROUTER_TEST_PASSWORD})});
+const models=JSON.parse((await req('/api/models')).text).models;
+const pricing=JSON.parse((await req('/api/pricing')).text);
+const have=new Set();
+for(const [p,o] of Object.entries(pricing)) for(const m of Object.keys(o)) have.add(p+'/'+m);
+const miss=models.filter(m=>!have.has(m.provider+'/'+m.model));
+console.log('当前价目条数:', Object.values(pricing).reduce((a,o)=>a+Object.keys(o).length,0), ' 供应商:', Object.keys(pricing).length);
+console.log('当前剩余缺失:', miss.length, '/', models.length);
+console.log('thinking-1m 是否已定价:', [...have].filter(x=>x.includes('thinking-1m')).join('; ')||'无');
+const byP={};
+for(const m of miss)(byP[m.provider]=byP[m.provider]||[]).push(m.model);
+for(const [p,v] of Object.entries(byP).sort((a,b)=>b[1].length-a[1].length).slice(0,12)) console.log(' ',p.padEnd(20),v.length, v.slice(0,6).join(', '));

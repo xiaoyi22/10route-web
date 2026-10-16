@@ -1,0 +1,55 @@
+{
+  "checks": [
+    "保存无账号模型不触发测试；保存并测试使用供应商前缀及完整上游 ID，显示成功与耗时说明",
+    "无效模型、权限、限流、代理、超时及 HTTP 200 业务失败均显示失败并保留原因",
+    "支持重试；刷新清除本次结果；停用模型及保存失败不测试；手机无页面溢出",
+    "内置供应商别名保存后保留原路由；测试中禁止重复操作；挂起请求触发客户端超时并可重试"
+  ],
+  "errors": [],
+  "requests": [
+    {
+      "model": "model-test-mv7jed8y/org/new-model",
+      "kind": "llm"
+    },
+    {
+      "model": "model-test-mv7jed8y/org/new-model",
+      "kind": "llm"
+    },
+    {
+      "model": "model-test-mv7jed8y/org/new-model",
+      "kind": "llm"
+    },
+    {
+      "model": "model-test-mv7jed8y/org/new-model",
+      "kind": "llm"
+    },
+    {
+      "model": "model-test-mv7jed8y/org/new-model",
+      "kind": "llm"
+    },
+    {
+      "model": "model-test-mv7jed8y/org/new-model",
+      "kind": "llm"
+    },
+    {
+      "model": "model-test-mv7jed8y/org/new-model",
+      "kind": "llm"
+    },
+    {
+      "model": "model-test-mv7jed8y/org/new-model",
+      "kind": "llm"
+    },
+    {
+      "model": "model-test-mv7jed8y/org/new-model",
+      "kind": "llm"
+    },
+    {
+      "model": "cx/gpt",
+      "kind": "llm"
+    },
+    {
+      "model": "cx/gpt",
+      "kind": "llm"
+    }
+  ]
+}

@@ -1,0 +1,174 @@
+diff --git a/open-sse/utils/stream.js b/open-sse/utils/stream.js
+index 7834afc..b2e978e 100644
+--- a/open-sse/utils/stream.js
++++ b/open-sse/utils/stream.js
+@@ -73,6 +73,7 @@ export function createSSEStream(options = {}) {
+   let totalContentLength = 0;
+   let accumulatedContent = "";
+   let accumulatedThinking = "";
++  let responseModel = null;
+   let ttftAt = null;
+   let sseLineCount = 0;
+   let sseEmittedCount = 0;
+@@ -90,6 +91,13 @@ export function createSSEStream(options = {}) {
+   const seenChoices = new Set();
+   const clientFormat = sourceFormat || FORMATS.OPENAI;
+ 
++  const captureResponseModel = (parsed) => {
++    const upstreamModel = [parsed?.model, parsed?.message?.model, parsed?.response?.model,
++      parsed?.modelVersion, parsed?.response?.modelVersion]
++      .find(value => typeof value === "string" && value.trim());
++    if (upstreamModel) responseModel = upstreamModel.trim();
++  };
++
+   const inspectTerminal = (parsed) => {
+     for (const choice of parsed?.choices || []) {
+       seenChoices.add(choice.index ?? 0);
+@@ -131,7 +139,7 @@ export function createSSEStream(options = {}) {
+       appendRequestLog({ model, provider, connectionId, tokens: null, status: streamError ? "FAILED" : "200 OK" }).catch(() => { });
+     }
+     if (onStreamComplete) {
+-      onStreamComplete({ content: accumulatedContent, thinking: accumulatedThinking, ...extra, ...(streamError ? { status: "failed", error: streamError } : {}) }, usageValue, ttftAt);
++      onStreamComplete({ content: accumulatedContent, thinking: accumulatedThinking, responseModel, ...extra, ...(streamError ? { status: "failed", error: streamError } : {}) }, usageValue, ttftAt);
+     }
+   };
+ 
+@@ -261,6 +269,7 @@ export function createSSEStream(options = {}) {
+           if (trimmed.startsWith("data:") && trimmed.slice(5).trim() !== "[DONE]") {
+             try {
+               const parsed = JSON.parse(trimmed.slice(5).trim());
++              captureResponseModel(parsed);
+               inspectTerminal(parsed);
+               if (parsed.error) {
+                 failStream(parsed.error, controller);
+@@ -386,6 +395,7 @@ export function createSSEStream(options = {}) {
+           if (trimmed.startsWith("data:")) failStream(INVALID_SSE_ERROR, controller);
+           continue;
+         }
++        captureResponseModel(parsed);
+         inspectTerminal(parsed);
+         const upstreamError = parsed.error || (parsed.type === "response.failed" ? parsed.response?.error || STREAM_DISCONNECTED_ERROR : null);
+         if (upstreamError) {
+@@ -637,6 +647,7 @@ export function createSSEStream(options = {}) {
+             onStreamComplete({
+               content: accumulatedContent,
+               thinking: accumulatedThinking,
++              responseModel,
+               ...(streamError ? { status: "failed", error: streamError } : {})
+             }, state?.usage, ttftAt);
+           }
+diff --git a/open-sse/handlers/chatCore/streamingHandler.js b/open-sse/handlers/chatCore/streamingHandler.js
+index 68099ea..2f81820 100644
+--- a/open-sse/handlers/chatCore/streamingHandler.js
++++ b/open-sse/handlers/chatCore/streamingHandler.js
+@@ -185,6 +185,7 @@ export function buildOnStreamComplete({ provider, model, connectionId, apiKey, r
+       request: extractRequestConfig(body, stream),
+       providerRequest: finalBody || translatedBody || null,
+       providerResponse: safeContent,
++      responseModel: contentObj?.responseModel,
+       response: { content: safeContent, thinking: safeThinking, type: "streaming" },
+       pxpipe,
+       status: contentObj?.status === "failed" ? (contentObj?.source === "cancel" ? "error" : "failed") : "success"
+diff --git a/deploy.sh b/deploy.sh
+index 26a69c5..2ddabb2 100644
+--- a/deploy.sh
++++ b/deploy.sh
+@@ -48,6 +48,8 @@ PROXY_UNSET="env -u http_proxy -u https_proxy -u HTTP_PROXY -u HTTPS_PROXY -u al
+ # 本批次补丁存活检查项（P1.5），按需增删。格式: "文件名:grep词:最少命中数"
+ # 注意: grep 词含引号/括号时用 grep -F 固定字符串匹配，避免正则解析
+ PATCH_CHECKS=(
++  "open-sse/utils/stream.js:captureResponseModel:3"
++  "open-sse/handlers/chatCore/streamingHandler.js:contentObj?.responseModel:1"
+   "open-sse/handlers/chatCore/sseToJsonHandler.js:outTokensForLog:2"
+   "open-sse/utils/streamHandler.js:sawUpstreamDone:4"
+   "open-sse/utils/stream.js:finishStreamAtDone:3"
+diff --git a/tests/unit/stream-detail-finalization.test.js b/tests/unit/stream-detail-finalization.test.js
+index bae3c56..e486b71 100644
+--- a/tests/unit/stream-detail-finalization.test.js
++++ b/tests/unit/stream-detail-finalization.test.js
+@@ -44,13 +44,19 @@ async function waitForDetail(id, predicate = () => true) {
+   throw new Error("Request detail did not settle: " + id);
+ }
+ 
+-async function openStream({ terminal, usage = { prompt_tokens: 11, completion_tokens: 2 }, sourceFormat, waitForTerminal = true }) {
++async function openStream({ terminal, usage = { prompt_tokens: 11, completion_tokens: 2 }, sourceFormat, waitForTerminal = true, upstreamModel = "test-model", metadata }) {
+   let upstreamController;
+   const upstream = new Response(new ReadableStream({
+     start(controller) {
+       upstreamController = controller;
++      if (metadata) {
++        const frame = new TextEncoder().encode("data: " + JSON.stringify(metadata) + "\n\n");
++        const split = Math.floor(frame.length / 2);
++        controller.enqueue(frame.slice(0, split));
++        controller.enqueue(frame.slice(split));
++      }
+       controller.enqueue(new TextEncoder().encode("data: " + JSON.stringify({
+-        id: "chat-test", object: "chat.completion.chunk", model: "test-model",
++        id: "chat-test", object: "chat.completion.chunk", ...(upstreamModel ? { model: upstreamModel } : {}),
+         choices: [{ index: 0, delta: { content: "hello" }, finish_reason: terminal ? "stop" : null }],
+         ...(usage ? { usage } : {}),
+       }) + "\n\n"));
+@@ -258,3 +264,63 @@ describe("stream terminal detail and usage settlement", () => {
+     expect(settled.error.status).toBe(401);
+   });
+ });
++
++describe("upstream streaming model persistence", () => {
++  const metadataCases = [
++    { model: "reported-model" },
++    { message: { model: "reported-model" } },
++    { response: { model: "reported-model" } },
++    { modelVersion: "reported-model" },
++    { response: { modelVersion: "reported-model" } },
++    { model: "  ", response: { model: "reported-model" } },
++    { model: 42, message: { model: "reported-model" } },
++  ];
++
++  it.each(metadataCases)("retains split model-only events before filtering: %j", async metadata => {
++    const stream = await openStream({ terminal: true, sourceFormat: formats.OPENAI, upstreamModel: null, metadata });
++    stream.upstreamController.enqueue(new TextEncoder().encode("data: [DONE]\n\n"));
++    stream.upstreamController.close();
++    await drain(stream.reader);
++    const detail = await waitForDetail(stream.id, row => row.status === "success");
++    expect(detail.responseModel).toBe("reported-model");
++    expect(detail.modelMismatch).toBe(true);
++    const response = await getDetails(new Request("http://localhost/api/usage/request-details?provider=test-provider&pageSize=100"));
++    expect(response.status).toBe(200);
++    expect((await response.json()).details.find(row => row.id === stream.id)).toMatchObject({ responseModel: "reported-model", modelMismatch: true });
++  });
++
++  it.each(["OPENAI", "CLAUDE", "OPENAI_RESPONSES"])("keeps the upstream model through %s translation and EOF", async format => {
++    const stream = await openStream({ terminal: true, sourceFormat: formats[format], upstreamModel: "reported-model", waitForTerminal: false });
++    stream.upstreamController.close();
++    await drain(stream.reader);
++    const detail = await waitForDetail(stream.id, row => row.status === "success");
++    expect(detail.responseModel).toBe("reported-model");
++    expect(detail.modelMismatch).toBe(true);
++  });
++
++  it.each(["OPENAI", "OPENAI_RESPONSES"])("keeps a partial upstream model when %s clients cancel", async format => {
++    const stream = await openStream({ terminal: false, sourceFormat: formats[format], upstreamModel: "reported-model" });
++    await stream.reader.cancel("client cancelled mid-stream");
++    const detail = await waitForDetail(stream.id, row => row.status === "error");
++    expect(detail.responseModel).toBe("reported-model");
++    expect(detail.modelMismatch).toBe(true);
++  });
++
++  it("keeps the upstream model on transport failure", async () => {
++    const stream = await openStream({ terminal: false, sourceFormat: formats.CLAUDE, upstreamModel: "reported-model" });
++    stream.upstreamController.error(new Error("socket hang up"));
++    await drain(stream.reader);
++    const detail = await waitForDetail(stream.id, row => row.status !== "streaming");
++    expect(detail.responseModel).toBe("reported-model");
++    expect(detail.modelMismatch).toBe(true);
++  });
++
++  it.each([null, "test-model"])("does not invent a mismatch when upstream model is %j", async upstreamModel => {
++    const stream = await openStream({ terminal: true, sourceFormat: formats.OPENAI_RESPONSES, upstreamModel, waitForTerminal: false });
++    stream.upstreamController.close();
++    await drain(stream.reader);
++    const detail = await waitForDetail(stream.id, row => row.status === "success");
++    expect(detail.responseModel || null).toBe(upstreamModel);
++    expect(detail.modelMismatch).not.toBe(true);
++  });
++});

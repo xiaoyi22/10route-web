@@ -1,0 +1,217 @@
+{
+  "base": "http://192.168.11.150:4317",
+  "startedAt": "2026-10-15T01:41:08.619Z",
+  "api": [
+    {
+      "path": "/api/health",
+      "status": 200,
+      "type": "application/json",
+      "json": true,
+      "passed": true
+    },
+    {
+      "path": "/api/providers",
+      "status": 200,
+      "type": "application/json",
+      "json": true,
+      "passed": true
+    },
+    {
+      "path": "/api/provider-nodes",
+      "status": 200,
+      "type": "application/json",
+      "json": true,
+      "passed": true
+    },
+    {
+      "path": "/api/models",
+      "status": 200,
+      "type": "application/json",
+      "json": true,
+      "passed": true
+    },
+    {
+      "path": "/api/models/custom",
+      "status": 200,
+      "type": "application/json",
+      "json": true,
+      "passed": true
+    },
+    {
+      "path": "/api/models/disabled",
+      "status": 200,
+      "type": "application/json",
+      "json": true,
+      "passed": true
+    },
+    {
+      "path": "/api/models/distribution",
+      "status": 404,
+      "type": "text/html; charset=utf-8",
+      "json": false,
+      "passed": false
+    },
+    {
+      "path": "/api/channel-balances",
+      "status": 404,
+      "type": "text/html; charset=utf-8",
+      "json": false,
+      "passed": false
+    },
+    {
+      "path": "/api/iq-monitor",
+      "status": 200,
+      "type": "application/json",
+      "json": true,
+      "passed": true
+    },
+    {
+      "path": "/api/usage/stats",
+      "status": 200,
+      "type": "application/json",
+      "json": true,
+      "passed": true
+    },
+    {
+      "path": "/api/usage/chart",
+      "status": 200,
+      "type": "application/json",
+      "json": true,
+      "passed": true
+    },
+    {
+      "path": "/api/usage/request-details",
+      "status": 200,
+      "type": "application/json",
+      "json": true,
+      "passed": true
+    },
+    {
+      "path": "/api/usage/quotas",
+      "status": 200,
+      "type": "application/json",
+      "json": true,
+      "passed": true
+    },
+    {
+      "path": "/api/combos",
+      "status": 200,
+      "type": "application/json",
+      "json": true,
+      "passed": true
+    },
+    {
+      "path": "/api/keys",
+      "status": 200,
+      "type": "application/json",
+      "json": true,
+      "passed": true
+    },
+    {
+      "path": "/api/settings",
+      "status": 200,
+      "type": "application/json",
+      "json": true,
+      "passed": true
+    },
+    {
+      "path": "/api/pricing",
+      "status": 200,
+      "type": "application/json",
+      "json": true,
+      "passed": true
+    },
+    {
+      "path": "/api/proxy-pools",
+      "status": 200,
+      "type": "application/json",
+      "json": true,
+      "passed": true
+    }
+  ],
+  "pages": [
+    {
+      "route": "/dashboard/overview",
+      "passed": true
+    },
+    {
+      "route": "/dashboard/providers",
+      "passed": true
+    },
+    {
+      "route": "/dashboard/authorization",
+      "passed": true
+    },
+    {
+      "route": "/dashboard/endpoint",
+      "passed": true
+    },
+    {
+      "route": "/dashboard/models",
+      "passed": true
+    },
+    {
+      "route": "/dashboard/combos",
+      "passed": true
+    },
+    {
+      "route": "/dashboard/distribution",
+      "passed": false,
+      "error": "/api/models/distribution HTTP 404"
+    },
+    {
+      "route": "/dashboard/proxy",
+      "passed": true
+    },
+    {
+      "route": "/dashboard/balances",
+      "passed": false,
+      "error": "/api/channel-balances HTTP 404"
+    },
+    {
+      "route": "/dashboard/checkins",
+      "passed": true
+    },
+    {
+      "route": "/dashboard/usage",
+      "passed": true
+    },
+    {
+      "route": "/dashboard/logs",
+      "passed": true
+    },
+    {
+      "route": "/dashboard/monitor",
+      "passed": true
+    },
+    {
+      "route": "/dashboard/chain-health",
+      "passed": true
+    },
+    {
+      "route": "/dashboard/system",
+      "passed": true
+    },
+    {
+      "route": "/dashboard/pricing",
+      "passed": true
+    },
+    {
+      "route": "/dashboard/proxy-pools",
+      "passed": true
+    },
+    {
+      "route": "/dashboard/settings",
+      "passed": true
+    },
+    {
+      "route": "/dashboard/translator",
+      "passed": false,
+      "error": "/api/models/distribution HTTP 404"
+    }
+  ],
+  "blockedWrites": [],
+  "errors": [],
+  "finishedAt": "2026-10-15T01:41:39.082Z",
+  "passed": false
+}

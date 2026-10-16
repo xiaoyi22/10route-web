@@ -1,0 +1,12 @@
+diff --git a/src/pages/CorePages.jsx b/src/pages/CorePages.jsx
+--- a/src/pages/CorePages.jsx
++++ b/src/pages/CorePages.jsx
+@@ -223,4 +223,7 @@
+ function requestBillingMode(entry) {
+   const recorded = requestField(entry, ['billingMode', 'billing_mode', 'billing.mode', 'pricingMode', 'pricing_mode']);
+-  return recorded || (entry.imported ? '导入记录' : UNRECORDED);
++  if (recorded) return recorded;
++  if (entry.imported) return '导入记录';
++  const tokens = requestTokens(entry.tokens);
++  return [tokens.input, tokens.output, tokens.cached, tokens.created].some(value => typeof value === 'number' && value > 0) ? '按量计费（推断）' : UNRECORDED;
+ }

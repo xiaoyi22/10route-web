@@ -1,0 +1,157 @@
+{
+  "head": "baae1a49a64bfa72764ea614eeaa85ce45c54adf",
+  "snapshot": "337e824250e0c5498c5962b735107d5f10f1072f",
+  "branch": "upgrade-v1.4.0-run",
+  "diffFiles": 349,
+  "deletedFiles": 91,
+  "deletedSourcePaths": 23,
+  "deletedSourcePresent": 5,
+  "deletedSourceAbsent": 18,
+  "sourcePaths": [
+    {
+      "path": "open-sse/services/antigravityQuarantine.js",
+      "exists": false
+    },
+    {
+      "path": "open-sse/utils/agRequestBudget.js",
+      "exists": false
+    },
+    {
+      "path": "src/app/(dashboard)/dashboard/channel-balances/ChannelBalanceCard.jsx",
+      "exists": false
+    },
+    {
+      "path": "src/app/(dashboard)/dashboard/channel-balances/ChannelBalanceControls.jsx",
+      "exists": false
+    },
+    {
+      "path": "src/app/(dashboard)/dashboard/channel-balances/page.js",
+      "exists": false
+    },
+    {
+      "path": "src/app/(dashboard)/dashboard/iq-monitor/ModelCheckCards.jsx",
+      "exists": false
+    },
+    {
+      "path": "src/app/(dashboard)/dashboard/iq-monitor/page.js",
+      "exists": false
+    },
+    {
+      "path": "src/app/(dashboard)/dashboard/model-status/page.js",
+      "exists": false
+    },
+    {
+      "path": "src/app/api/channel-balances/route.js",
+      "exists": false
+    },
+    {
+      "path": "src/app/api/iq-monitor/route.js",
+      "exists": true
+    },
+    {
+      "path": "src/app/api/iq-monitor/tick/route.js",
+      "exists": true
+    },
+    {
+      "path": "src/app/api/models/distribution/route.js",
+      "exists": false
+    },
+    {
+      "path": "src/lib/channelBalances.js",
+      "exists": false
+    },
+    {
+      "path": "src/lib/db/repos/distributionRepo.js",
+      "exists": false
+    },
+    {
+      "path": "src/lib/distributionDb.js",
+      "exists": false
+    },
+    {
+      "path": "src/lib/iqMonitor/core.js",
+      "exists": true
+    },
+    {
+      "path": "src/lib/iqMonitor/modelSelection.js",
+      "exists": false
+    },
+    {
+      "path": "src/lib/iqMonitor/probe.js",
+      "exists": true
+    },
+    {
+      "path": "src/lib/iqMonitor/service.js",
+      "exists": true
+    },
+    {
+      "path": "src/shared/utils/providerCategory.js",
+      "exists": false
+    },
+    {
+      "path": "src/shared/utils/requestOutcome.js",
+      "exists": false
+    },
+    {
+      "path": "src/shared/utils/topologyFocus.js",
+      "exists": false
+    },
+    {
+      "path": "src/sse/services/distributionGuard.js",
+      "exists": false
+    }
+  ],
+  "workingTree": [
+    " M custom-server.js",
+    " M src/app/api/models/test/ping.js",
+    " M src/app/api/models/test/route.js",
+    " M src/app/api/settings/route.js",
+    " M src/dashboardGuard.js",
+    " M src/lib/db/repos/settingsRepo.js",
+    " M src/sse/handlers/chat.js",
+    " M src/sse/handlers/fetch.js",
+    " M src/sse/handlers/imageGeneration.js",
+    " M src/sse/handlers/search.js",
+    " M src/sse/handlers/tts.js",
+    "?? .bak-logs-restore-2026-10-14T08-03-16/",
+    "?? .bak-modelcheck-2026-10-14T08-55-00/",
+    "?? AGENTS.md",
+    "?? CLAUDE.md.bak-20260930-104836",
+    "?? UPGRADE-SOP-v1.3.5-engine.md",
+    "?? UPGRADE-SOP-v1.3.5.md",
+    "?? anyRoute-conn.bak-20260929-223000.json",
+    "?? anyRoute-conn.bak-conn.json",
+    "?? anyRoute-node.bak-20260929-223000.json",
+    "?? anyRoute-node.bak-node.json",
+    "?? database.sqlite",
+    "?? deploy.sh.bak-20260929-093445",
+    "?? open-sse/executors/default.js.bak-forcestream-20260929-200043",
+    "?? open-sse/handlers/chatCore.js.bak-forcestream-20260929-200043",
+    "?? open-sse/handlers/chatCore/nonStreamingHandler.js.bak-20260926132103",
+    "?? open-sse/handlers/chatCore/requestDetail.js.bak-20261013-111131",
+    "?? open-sse/services/provider.js.bak-forcestream-20260929-200043",
+    "?? open-sse/translator/request/openai-responses.js.bak-20261008-toolfix",
+    "?? public/i18n/literals/zh-CN.json.bak-20261001-015606",
+    "?? public/i18n/literals/zh-TW.json.bak-20261001-015606",
+    "?? src/app/api/host-management/",
+    "?? src/app/api/iq-monitor/",
+    "?? src/app/api/usage/request-details/route.js.bak-20261013-112529",
+    "?? src/lib/db/repos/requestDetailsRepo.js.bak-20261013-111131",
+    "?? src/lib/iqMonitor/",
+    "?? tests/unit/codebuddy-intl-capability-alias.test.js",
+    "?? tests/unit/combo-sticky-handlers.test.js",
+    "?? tests/unit/combo-sticky-nine.test.js",
+    "?? tests/unit/combo-sticky-settings.test.js",
+    "?? tests/unit/iq-monitor-probe.test.js",
+    "?? tests/unit/iq-monitor-service.test.js",
+    "?? tests/unit/iq-monitor.test.js",
+    "?? tests/unit/iq-probe.test.js",
+    "?? tests/unit/monitor-manual-live.test.js",
+    "?? tests/unit/monitor-manual-route.test.js",
+    "?? tests/unit/monitor-sse-nonstream.test.js",
+    "?? tests/unit/openai-responses-tool-metadata.test.js",
+    "?? tests/unit/stream-cancel-done.test.js",
+    "?? tests/unit/usage-chart-cache.test.js",
+    "?? tests/unit/usage-output-speed.test.js"
+  ]
+}

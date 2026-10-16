@@ -1,0 +1,658 @@
+{
+  "baseHead": "baae1a49a64bfa72764ea614eeaa85ce45c54adf",
+  "baseIncludesProductionWorkingTree": true,
+  "excluded": [
+    "private credentials",
+    "databases",
+    "node_modules",
+    ".next",
+    "test version stamps",
+    "rescue-reports private files"
+  ],
+  "sourceFiles": 69,
+  "testFiles": 36,
+  "newPatchChecks": 69,
+  "historicalPatchCheckFailures": 22,
+  "patchApplyCheck": true,
+  "appliedHashesMatch": true,
+  "patchSha256": "3318844d9d7fd72a54f38ebd7418ac1bde92e97b30a801dc6c698f2a39e40e86",
+  "archiveSha256": "e46aba1c5c4a3bd49b5dad358102c9974a68b51b88eb1cd201fe1a970e8e766d",
+  "files": [
+    {
+      "path": "deploy.sh",
+      "baseSha256": "523d5146a5f630cef38e6c95c8f04ddf8464ec4a615862351ab12ede203c6d12",
+      "sha256": "d0786150e89e9ccb9aaa1c0fe5dcd1a3b5284b18c6eca8d4025ce36f12e036b3",
+      "bytes": 26052
+    },
+    {
+      "path": "open-sse/config/errorConfig.js",
+      "baseSha256": "abb0f1ee028fb40bafbe79676a96941b2062eae201d2c6d90ac7d77de261b7b8",
+      "sha256": "f5a8df847b5a78939e7312b3ebb2f046101d6ec7831d4070f68166e7d0351e33",
+      "bytes": 10857
+    },
+    {
+      "path": "open-sse/config/runtimeConfig.js",
+      "baseSha256": "d7772acecc72be31a16514440279a8726b7893387db26aa5773503168aec1d4e",
+      "sha256": "4d38098ff8887e7a456e7060349b846cef59c447bda39388cf4dbc09e05087db",
+      "bytes": 4446
+    },
+    {
+      "path": "open-sse/executors/antigravity.js",
+      "baseSha256": "031c1765b6870045b7c2d3025ba70dfded9e58db701d502f22c58a785e802716",
+      "sha256": "c4f449c7486b5b9f7e624e1887a57463950724f46fd71bec5341947b104724e6",
+      "bytes": 28862
+    },
+    {
+      "path": "open-sse/executors/base.js",
+      "baseSha256": "1b9f66366e1014373f2f0ff4d40ceb6bd4b67608c424dbd8812fbff0766c58b0",
+      "sha256": "a5c0cca7facf344a35c48da2635decb4cb8975993973eb0c3e5be4ffb0e8483e",
+      "bytes": 11483
+    },
+    {
+      "path": "open-sse/executors/default.js",
+      "baseSha256": "ac7244d04953a858df356e7c84b88f99c65218ee8e35b1854a0fc313880d4de0",
+      "sha256": "bf28429e015951f88756790d8c2b11ff39e9c34316da00ca35a9fe9bfc2b3d02",
+      "bytes": 19557
+    },
+    {
+      "path": "open-sse/handlers/chatCore.js",
+      "baseSha256": "f34de6beb110c7727e69670c5474f8439ef5210d4730b45c2b9f7a767cabba3f",
+      "sha256": "44703ed4fb7acc8d67168690faa0164715846e6397adde579e93cddf4232d457",
+      "bytes": 41131
+    },
+    {
+      "path": "open-sse/handlers/chatCore/nonStreamingHandler.js",
+      "baseSha256": "2d4adbbe1e7f9fc2d9462f810c449c609d98ace84bbeb161b093be104f8e8102",
+      "sha256": "7ba923a2745af79bf497358d9837efbfdb774c8f60dc135d9378b2365b0c8b7a",
+      "bytes": 25770
+    },
+    {
+      "path": "open-sse/handlers/chatCore/requestDetail.js",
+      "baseSha256": "eaae31d80fd5592fadc7385a7922a06cfa4a7e33a91043f1e26c5ad5c8f8f5cd",
+      "sha256": "f883ab64bb6f26bc7f4eb1331a730432981a11fbf1743244d43df2de2fc63253",
+      "bytes": 9365
+    },
+    {
+      "path": "open-sse/handlers/chatCore/sseToJsonHandler.js",
+      "baseSha256": "35b6104b5eca059588d4926096c0f3d26e49df4585264b5cc90e1f61fa76c96f",
+      "sha256": "eb1cd3a2db356ab38c6df023c6ab465c8fa8caca58a6eb30774d6c9d9f282b94",
+      "bytes": 24661
+    },
+    {
+      "path": "open-sse/handlers/chatCore/streamingHandler.js",
+      "baseSha256": "c9043a115f933c7df7a886c64a9ce7ed2dab821a9934c046c09fb3a1ccc5d35b",
+      "sha256": "979edc98b82eaa6a864f1ef0a70852bcebaabbb873a7d2a49dc2db49a5d69f72",
+      "bytes": 13493
+    },
+    {
+      "path": "open-sse/services/antigravityQuarantine.js",
+      "baseSha256": null,
+      "sha256": "15c519ee16dc02770f91f828fbb0e8a05b35d5c899479bd5c8b45be7cf3bc0e8",
+      "bytes": 6084
+    },
+    {
+      "path": "open-sse/services/combo.js",
+      "baseSha256": "8440d716ca3fb277c04f24f51741e7c402374cdb10a921e7785d7679ba4766da",
+      "sha256": "1572fab9ebbe012d6296fbb1cffb5633715d703ebc2273b5151dbf746c8b565e",
+      "bytes": 31171
+    },
+    {
+      "path": "open-sse/services/oauthCredentialManager.js",
+      "baseSha256": "4a39c808edf0b5375b4686e21bc0155985e3f55724c9e2c4dc2ac021fd000f39",
+      "sha256": "17a8f554a3f26431f92d034903b1d489726817cc2857f7688da694d35e1d9d15",
+      "bytes": 6007
+    },
+    {
+      "path": "open-sse/services/projectId.js",
+      "baseSha256": "f6ea87804a8205b470d0aa40b2561fe92120b283d52c886c6633405b0c532445",
+      "sha256": "9288643fe0ff18c34ceaa6d37437d88ab54ed8636dd0b2a82cb8dcad921d4e8d",
+      "bytes": 13490
+    },
+    {
+      "path": "open-sse/services/provider.js",
+      "baseSha256": "8422f5daca7f90905a75eca5e2afc8a5b503619b6183b167471928290f530a51",
+      "sha256": "d0d22a93b031266d4b02eee46ee640671c1592149e806408988e94fee2e69cb0",
+      "bytes": 7814
+    },
+    {
+      "path": "open-sse/services/tokenRefresh.js",
+      "baseSha256": "6572f308cd1b6f63ffeb97f391d86df865c6e688b2837f77914a43db6cb2301f",
+      "sha256": "7ca450504a24bdffc1fdf4735aae73d3ea4e535b56b88bfcbca6a3982260375d",
+      "bytes": 10839
+    },
+    {
+      "path": "open-sse/services/tokenRefresh/dedup.js",
+      "baseSha256": "a826ac7f80b6ba08d18f8e3d2e41c448e441bf8a662b265fac7ad1d5bafbe7d4",
+      "sha256": "670b6bce202b390a869a3b81f99e00ebef816a4c5257bef9dec8b31fd8b7a370",
+      "bytes": 1257
+    },
+    {
+      "path": "open-sse/services/tokenRefresh/providers.js",
+      "baseSha256": "53c29daa6c6e2c3d9bcd5b5d941df0e1b122d489bd8fd30ca537ef2d9d841016",
+      "sha256": "f9decc40762e41cebfe5efd515426a79027dd4bc6067a9d53b2a169c51f9d78e",
+      "bytes": 26873
+    },
+    {
+      "path": "open-sse/services/usage.js",
+      "baseSha256": "92ad02b67c3e9b3edbfba1b020e16df9aaed69f915d61de739d4ad07144ea74b",
+      "sha256": "53504fa473e0493ac28a670ae446e70ccda0632688949ccb1c37c31e3e6af58f",
+      "bytes": 6727
+    },
+    {
+      "path": "open-sse/services/usage/antigravityWeeklyQuota.js",
+      "baseSha256": "38431e29a7ec27b59fdb026f22e1066f802e8aa34ea313aa52a0f8309cfe0cdd",
+      "sha256": "0eed532507c52c8dd1d03a320c65bfe3891d51831a1eca9b22e5415ad80864ec",
+      "bytes": 9852
+    },
+    {
+      "path": "open-sse/services/usage/google.js",
+      "baseSha256": "712523b2495a747c7dafbf107a5c12fd1482ef280f9911de9d98370f1e62e98f",
+      "sha256": "9afc811261e61eccfdc3159d4845535321e5d59627446c6ea03337be8536c2ab",
+      "bytes": 9754
+    },
+    {
+      "path": "open-sse/transformer/streamToJsonConverter.js",
+      "baseSha256": "bcc289c81395da73b5095c0dbb4219d2f1fc5b31835f0fbcfc2d339880245076",
+      "sha256": "ca9a65ee020d0c568bfe788d7d9fade0319086b5cd4aa04d40fa76bed41ed075",
+      "bytes": 3805
+    },
+    {
+      "path": "open-sse/translator/request/claude-to-openai.js",
+      "baseSha256": "437878b46a887152b765f64ccbf976e7c62141c404a910628de934ae8cebd94e",
+      "sha256": "3dfbc164b4d1347bbb572a4e922e81a27516beb3ae770fc94a4b8498d8b2ab2c",
+      "bytes": 9922
+    },
+    {
+      "path": "open-sse/translator/request/openai-responses.js",
+      "baseSha256": "fce585e1418ed1794931dbc4d8db951d4a944e1ea9ef42c7041cabd675fbdca8",
+      "sha256": "ad32023eb1157f880e8b59c11072be242b698835732fc50d7e2634b626d91850",
+      "bytes": 18779
+    },
+    {
+      "path": "open-sse/translator/request/openai-to-claude.js",
+      "baseSha256": "1b2de31c4c191d8fd1625af2f4c1cacf108e5ab6144df8e86dff304617a6aa0e",
+      "sha256": "cc93461dfa147ac8a054d25b712ecf163637d5df9a024a9a546c536b22e7e3b5",
+      "bytes": 15249
+    },
+    {
+      "path": "open-sse/translator/response/claude-to-openai.js",
+      "baseSha256": "c9ad2add8b1fa3ca191db4705016ee6cc9d495b21eece20c3c520616d947d8fb",
+      "sha256": "a1acc46135cc757157e6db440accffa7fbf85d994b977e8e76df290eca36cd8b",
+      "bytes": 8642
+    },
+    {
+      "path": "open-sse/translator/response/openai-responses.js",
+      "baseSha256": "d2f09c8a53a20dbaf4a77d6c2e39451ecaa244c9e1efbf84964e3dd664bd4da9",
+      "sha256": "8a1cda19565ffeeea9a405be2a9d597a6af8c450337a1df33f3bc031ec0bacf7",
+      "bytes": 25842
+    },
+    {
+      "path": "open-sse/translator/response/openai-to-claude.js",
+      "baseSha256": "5a3da4220dd713a4333d544f854708007d33a2e434b0e065e1f055aa069e42fd",
+      "sha256": "0d05e89699f8af60496b0d19ca09c3d0eb5fb5f7296e148ee84a80b4196d5d3a",
+      "bytes": 9575
+    },
+    {
+      "path": "open-sse/utils/agRequestBudget.js",
+      "baseSha256": null,
+      "sha256": "4e47e8eae20cdc6e9566af4800b2c2eb73080da26ecb847540ffc48bf1a195af",
+      "bytes": 2090
+    },
+    {
+      "path": "open-sse/utils/error.js",
+      "baseSha256": "66d18bd6ffd6b7916797fa704a7e5de69685fdae09bb3e28bfc46946b7f015ac",
+      "sha256": "5adeabbbc9bde78aa4c281f0a1ae6cc23e7608e2c7c55884be8a924b15acb0af",
+      "bytes": 8148
+    },
+    {
+      "path": "open-sse/utils/proxyFetch.js",
+      "baseSha256": "839aeac110ef0c16a32749c848c761f1989190923d25ae55dbc5c0e951f1645b",
+      "sha256": "3ad697d217060807de878519aa655daf62603ff8da2fbc7514120c3686408e89",
+      "bytes": 15388
+    },
+    {
+      "path": "open-sse/utils/responsesStreamHelpers.js",
+      "baseSha256": "22062d3e1a23fac9eae3c7b9694cb2d1ce8273ca63472f0635cf55d99535936f",
+      "sha256": "4c6eb4d3081d99cd8c0f037209e2a27aeb54a39f860d9f37f99094fde2ad59d3",
+      "bytes": 1733
+    },
+    {
+      "path": "open-sse/utils/sse.js",
+      "baseSha256": "ba21f2660e20a4971216a7159f102fab8f32739f52a58ba873986b8011172c32",
+      "sha256": "93a01edf8ca7146eeb3f9ac0e89d6d87a29dec60a04c787eca951995a0da1a71",
+      "bytes": 1855
+    },
+    {
+      "path": "open-sse/utils/stream.js",
+      "baseSha256": "b3adb04365778fd615938e3e0f5dbac34a1ec207c3254277607aa1a42abcbfe6",
+      "sha256": "f90b4bb318d1c74656d9290ea908f476f2f5b2f5b47554bf1a6c10926df24ddf",
+      "bytes": 31988
+    },
+    {
+      "path": "open-sse/utils/streamHandler.js",
+      "baseSha256": "7659f0bb50da32d8287ab5075baa55e5035c1725b796a82e34474805ea45124f",
+      "sha256": "7aef122645afd2a951c61df6d77e171613ef7e7a49fb50496c82b220f3bac673",
+      "bytes": 14035
+    },
+    {
+      "path": "open-sse/utils/streamHelpers.js",
+      "baseSha256": "af62dd7f09332478cfc6c8c7bf0c7c6d6d3fce489dc33b6a2b266cf03ff6ed4c",
+      "sha256": "7563005d1b5c374c0f42045d944a0dcb480cf606277b87deba9e93285ca25212",
+      "bytes": 6282
+    },
+    {
+      "path": "open-sse/utils/usageTracking.js",
+      "baseSha256": "8b95d91e566be78c803e690953e699915fe3c9c2dc250764927bb3804d789c78",
+      "sha256": "6945254b808d7e045ba73b1a21c6fcbc7c6496b3ce81db16ee1eba0650a6ae8a",
+      "bytes": 20479
+    },
+    {
+      "path": "src/app/(dashboard)/dashboard/channel-balances/ChannelBalanceCard.jsx",
+      "baseSha256": null,
+      "sha256": "38ddb5024d113772fc0d690b6d32ad84bfe71e7e4740593d2357046e12575e9a",
+      "bytes": 10999
+    },
+    {
+      "path": "src/app/(dashboard)/dashboard/channel-balances/ChannelBalanceControls.jsx",
+      "baseSha256": null,
+      "sha256": "c5ad8bf3e7df4f1137099af51a2bcc2e79c705630808bbab814edc34edb6897e",
+      "bytes": 2223
+    },
+    {
+      "path": "src/app/(dashboard)/dashboard/channel-balances/page.js",
+      "baseSha256": null,
+      "sha256": "73dae02dd01695704c66e43e78f22810056257f46fa95e847866943ffb6d8148",
+      "bytes": 6124
+    },
+    {
+      "path": "src/app/api/auth/verify-password/route.js",
+      "baseSha256": "e589e26e439e8ab8db34e9da4756a0a9ed3b4baef50bb948f89c116c81387914",
+      "sha256": "1cbd4d9392118208201a40a2aebcc3500afccb9b56326781b23e184873f5c024",
+      "bytes": 1368
+    },
+    {
+      "path": "src/app/api/channel-balances/route.js",
+      "baseSha256": null,
+      "sha256": "ee27c0b510fb3b523ebb0db8099407fe546d6ac9b57973e042eb324bc381f0fc",
+      "bytes": 1868
+    },
+    {
+      "path": "src/app/api/models/distribution/route.js",
+      "baseSha256": null,
+      "sha256": "cc96f697a53fe30e375ff6753c74006c28b55e637f4d2bd0eb221a1c46934072",
+      "bytes": 1864
+    },
+    {
+      "path": "src/app/api/providers/[id]/route.js",
+      "baseSha256": "08dfba98a4e0c2df47e55054832e1c76efb7473a9a413b11f711db54a898c3a5",
+      "sha256": "59a2b7dcb08f22521faafa00cb65bee834f83af96c20c276573e2eb23a8a013c",
+      "bytes": 8372
+    },
+    {
+      "path": "src/app/api/providers/[id]/test/route.js",
+      "baseSha256": "d9857ba46055e417bfabebfc7b015ae2e911699f8188cb2224838e2095588b08",
+      "sha256": "215b091015eabc3a13031f46780d6484d2cae028aef69273a1b8d4b9f078720c",
+      "bytes": 1377
+    },
+    {
+      "path": "src/app/api/providers/[id]/test/testUtils.js",
+      "baseSha256": "32fbffe761906955f9a9b693c67c30545fb8c63b2a63cc5fff271f4757d48e23",
+      "sha256": "33a4275ac41a4ac3769baa9ddde1f2ca9c1e4eecc429b10968afaf9bf193e0c3",
+      "bytes": 64018
+    },
+    {
+      "path": "src/app/api/usage/[connectionId]/route.js",
+      "baseSha256": "910f2808303a9aa9abed05e609ef5ccbcb85f60b30bac8dc13f359ba7a87ad03",
+      "sha256": "d251e914f21b25b7e63791630a7cf55728d284f0d032ec454efb085c245f7030",
+      "bytes": 10888
+    },
+    {
+      "path": "src/app/api/v1/models/route.js",
+      "baseSha256": "5a212a9c9fd44941b42d496b17439ee084dcd92f2a95fc7f469c59da1b00e7a6",
+      "sha256": "34515dca3f8b1ff25f13096a4f0a85805f2fd03b25736662e7882fac717ffa2b",
+      "bytes": 46176
+    },
+    {
+      "path": "src/lib/channelBalances.js",
+      "baseSha256": null,
+      "sha256": "78bf50036a48b5a297993b21f0bf581570e1b453380eb994b4db3c56acba1c5d",
+      "bytes": 17447
+    },
+    {
+      "path": "src/lib/db/index.js",
+      "baseSha256": "6184b0b46791bf72aafeda8182eaff3c0326a0da6a8fce661d1ed492402bf8e2",
+      "sha256": "035ad600c09b186be82012be905cbb7adf73501b6561d953536ebee34a02947d",
+      "bytes": 10140
+    },
+    {
+      "path": "src/lib/db/repos/connectionsRepo.js",
+      "baseSha256": "8afa1ee1404d5a8477d1ed4ed869ed66121d3b84e68d515766cdaed81e9b5aa8",
+      "sha256": "233b290590af51dcdd13d97a08a383fd3288ee338582683e26eaa84f831b44d4",
+      "bytes": 21663
+    },
+    {
+      "path": "src/lib/db/repos/distributionRepo.js",
+      "baseSha256": null,
+      "sha256": "2cb20cdba290f8c09b420d538ff92c6671ba28eaae2799c1dd4c1434d14b30b9",
+      "bytes": 4738
+    },
+    {
+      "path": "src/lib/db/repos/requestDetailsRepo.js",
+      "baseSha256": "a8b3c4069bfbeef6fb2c5b9dc1319bb2afdbe26a4476d435c59b3d30d7caeda4",
+      "sha256": "663ff97b787dd1a6e37cbc9ecbfaf70ba5073d58b7516c8074d47f213f02ea57",
+      "bytes": 12921
+    },
+    {
+      "path": "src/lib/db/repos/settingsRepo.js",
+      "baseSha256": "cfd6041d853c72cdef5440bf5df12ab8cb025099acbf05e2c97a646c15fe7e6d",
+      "sha256": "1d88225d9a862b4aa2256ee3cf025a2fb9ff688bb9ca28a59c00965452df90ce",
+      "bytes": 10051
+    },
+    {
+      "path": "src/lib/db/repos/usageRepo.js",
+      "baseSha256": "a4aadbff0b2e2bfce242b5f857a59dac08ae3caafcc6ef14867360d167ab9200",
+      "sha256": "c67c2262345954fc4b4e65d5c6b0483b3d833d76d0d8519cc3e7d3e2281b4039",
+      "bytes": 77404
+    },
+    {
+      "path": "src/lib/distributionDb.js",
+      "baseSha256": null,
+      "sha256": "19c179207c3bd7b8909a45a7a18425b50e15c22aa68d0133de34dd282b547c16",
+      "bytes": 206
+    },
+    {
+      "path": "src/lib/localDb.js",
+      "baseSha256": "3d99c0beaffa086b2e4bd18ec736b2affa1403176b9af8d01c952611b2f8edef",
+      "sha256": "09e639ed72b145b3116457a7d0e54c4a6ecb4bd8a4d78da46e18b4f3645827e9",
+      "bytes": 1293
+    },
+    {
+      "path": "src/shared/utils/requestOutcome.js",
+      "baseSha256": null,
+      "sha256": "a2c3158c25384b33be02abd073bf0bc177de07854c5025351ab9c7d22c9e9b49",
+      "bytes": 1994
+    },
+    {
+      "path": "src/sse/handlers/chat.js",
+      "baseSha256": "282ec0d45fc19740b5ac8dc0f7b17de9f1c53d069f551e243c13d61872010478",
+      "sha256": "783ee374ae665b6f1cdd977a8a49c8ac60aa032b7963e5eaea3d3405cbde309c",
+      "bytes": 26610
+    },
+    {
+      "path": "src/sse/handlers/fetch.js",
+      "baseSha256": "6aac97b8c63a6a89129681a76a393b1235e71dbaa806f842c16ee6ccf199a203",
+      "sha256": "1f9792239b5cb0e1c6ab0a3d04a1c94414a82dc436f908a7d206bda211d7b32d",
+      "bytes": 9620
+    },
+    {
+      "path": "src/sse/handlers/imageGeneration.js",
+      "baseSha256": "78bf3a9e5082b536c27abc933dd87ae316a4fe7d103b42b49c5557fe41121e8d",
+      "sha256": "0a15f451027b57085a114dc935b4af5c4f7d4fa104f2cc7d5c5d19728b2b096b",
+      "bytes": 6236
+    },
+    {
+      "path": "src/sse/handlers/search.js",
+      "baseSha256": "0eae81310db3a68ca529cdd1775e692792bcb0f3f9135128adc7672d273c07f4",
+      "sha256": "5c482fe7bc0c9aa24c28228361522d72e6acb4bbeb287c221c93ca47be0eff5e",
+      "bytes": 9982
+    },
+    {
+      "path": "src/sse/handlers/stt.js",
+      "baseSha256": "3e3b178be2faf267b67cb314e364ff00b431f49b36700bc12e7fd0a744420078",
+      "sha256": "d2a8c06060d5f762fddca3d6b7c67560529846b05115421729b1636e272f48bb",
+      "bytes": 5157
+    },
+    {
+      "path": "src/sse/handlers/systemone.js",
+      "baseSha256": "9ef527cf75205329c942b607194e48819059f12dc5af70efc536b291b29eb899",
+      "sha256": "fd01f088cb347afaff3df55ea3795af23f5b2f2988371df50668c862c82e8cfa",
+      "bytes": 5771
+    },
+    {
+      "path": "src/sse/handlers/tts.js",
+      "baseSha256": "1b55a34d9e5274445857d8843718dc7a8d03dd2f031de0b2d4646db4e7c262d3",
+      "sha256": "bfb5c87fcefa2d5399e79807ef941c2282d00b31132909f4596a96865c4ec5ad",
+      "bytes": 5929
+    },
+    {
+      "path": "src/sse/handlers/videoGeneration.js",
+      "baseSha256": "e1883aefd55ea6825c7eb5d6a830ac5e4fcec3f448ab69adc7a2917ce144ee77",
+      "sha256": "7fb190fc29bf43cb5127f72190b0579867b91e8149619db34645bb5dbe188c6e",
+      "bytes": 9839
+    },
+    {
+      "path": "src/sse/services/auth.js",
+      "baseSha256": "78d4b619f0ae8dd91e15c7e51ffd9841f282254f5d995eb97f5dddf786b8f77d",
+      "sha256": "ab7551a1da4ecf3cec57b07a7597b07304b79eec43d7adb5ca1b3def92db5a28",
+      "bytes": 33860
+    },
+    {
+      "path": "src/sse/services/distributionGuard.js",
+      "baseSha256": null,
+      "sha256": "6dc70c6a6787f8a4ad26171d85183b9505ffde0170a39c6c2559153460034df1",
+      "bytes": 1809
+    },
+    {
+      "path": "src/sse/services/tokenRefresh.js",
+      "baseSha256": "db72dc3b4f264d65ec7d954f2fd64577baa32de4ae69387ced9a4eec5d1a21e9",
+      "sha256": "37c9d2bdd1d8d7bc4e02d7c685d1e549effa8fb14e614d6c493d98d5fd089d19",
+      "bytes": 22211
+    },
+    {
+      "path": "tests/test-hooks.mjs",
+      "baseSha256": null,
+      "sha256": "ba1c1a40cf33829c1af24489b17febe7d8d909a514b9eaefb591ef6f3d6b81e8",
+      "bytes": 1800
+    },
+    {
+      "path": "tests/test-loader.mjs",
+      "baseSha256": null,
+      "sha256": "5ab3cb539f3d9d2c1c69b7cb2362d428f87df2f60c478d31b047c450edce2d0d",
+      "bytes": 223
+    },
+    {
+      "path": "tests/translator/__snapshots__/golden-response-stream.test.js.snap",
+      "baseSha256": "2bb11ad53cec65bb797084ae4cb7567aa3bc55601227699387bc1945e6b98f4c",
+      "sha256": "8f95c268fc3cb7c1af0091842a05649865713c34fb849a5c9fefe995a1feb97a",
+      "bytes": 10413
+    },
+    {
+      "path": "tests/translator/bugs-toClaude-context.test.js",
+      "baseSha256": "68caa4e04a1930351c1a6c5d6c1e3928599955a48f943a5146f06657de29c7ed",
+      "sha256": "0ce31f21966719b2f1db8ac9511336dc679e6050941fd0133c8ecd65e1087454",
+      "bytes": 9378
+    },
+    {
+      "path": "tests/translator/golden-response-stream.test.js",
+      "baseSha256": "c7b42a1cbd223dbded10f1aa165e57a0ff726cc3a28a9e62dc7f753029e18975",
+      "sha256": "fec9edd38edc19dea447722b95f91d582be9444f2af8969ec9a6a607e3485b8c",
+      "bytes": 6430
+    },
+    {
+      "path": "tests/unit/antigravity-chat-stop-state.test.js",
+      "baseSha256": null,
+      "sha256": "50c03dd401072ee334365567c0186c022c8fe40cbf07402a3cb040be4d08490f",
+      "bytes": 7767
+    },
+    {
+      "path": "tests/unit/antigravity-p0-fix1.test.js",
+      "baseSha256": null,
+      "sha256": "8954cdfd416990157f8eed8bab53915191c2e95ba8f3c27cc62a6d8b746845bd",
+      "bytes": 16828
+    },
+    {
+      "path": "tests/unit/antigravity-quota-policy.test.js",
+      "baseSha256": null,
+      "sha256": "548d64dc06063903e3b1b2700f9703d94f1fce4a87ff734a628c526ee073a805",
+      "bytes": 4760
+    },
+    {
+      "path": "tests/unit/antigravity-refresh-singleflight.test.js",
+      "baseSha256": null,
+      "sha256": "dcef71d3c530e134b73cf0cd6146943b4cc942d9446b8afc253ddc53ff9c9f3f",
+      "bytes": 5689
+    },
+    {
+      "path": "tests/unit/antigravity-retry-budget.test.js",
+      "baseSha256": null,
+      "sha256": "e5aab6ddadccdbff5535f17683f29d6450f000eda4037fbb82786af5b1ee594e",
+      "bytes": 13530
+    },
+    {
+      "path": "tests/unit/antigravity-tos-quarantine.test.js",
+      "baseSha256": null,
+      "sha256": "5d730f629eae2e2981520778c8f4e5b077705e0bc48d19a89668e3404eb31d71",
+      "bytes": 41371
+    },
+    {
+      "path": "tests/unit/channel-balances-preferences-repo.test.js",
+      "baseSha256": null,
+      "sha256": "a9545e66f72286a57256a23365988589342643f9de082fd8594b55b55f9c4112",
+      "bytes": 2952
+    },
+    {
+      "path": "tests/unit/channel-balances-public.test.js",
+      "baseSha256": null,
+      "sha256": "c1246453088f548edf652801ca2c641ff7ad89d991cc1f1c9861afdc0c75c95b",
+      "bytes": 8720
+    },
+    {
+      "path": "tests/unit/channel-balances-route.test.js",
+      "baseSha256": null,
+      "sha256": "9fcb6ee65de0291a05b34b12c082ddefae2c51686a7bd635d87fad840dad482e",
+      "bytes": 4264
+    },
+    {
+      "path": "tests/unit/channel-balances-visibility.test.js",
+      "baseSha256": null,
+      "sha256": "f103d7a146924a268d69ddb3f123b07724b795fd22d0b6cac44dc115c152c31e",
+      "bytes": 6719
+    },
+    {
+      "path": "tests/unit/channel-balances.test.js",
+      "baseSha256": null,
+      "sha256": "f046732aa8fd45124ef6a9fd082333decdccbbfe221189354fa9c627445ab5b1",
+      "bytes": 15962
+    },
+    {
+      "path": "tests/unit/compatible-node-toggle.test.js",
+      "baseSha256": null,
+      "sha256": "a413c2272676c8d2484c75e380975297d25c657e36f7198993ad40b2395b2fa7",
+      "bytes": 6049
+    },
+    {
+      "path": "tests/unit/distribution-guard.test.js",
+      "baseSha256": null,
+      "sha256": "f34311937e074645a9f9c540e1b8f621def7e08f0952ad856ef8e9821a541687",
+      "bytes": 3058
+    },
+    {
+      "path": "tests/unit/downstream-distribution.test.js",
+      "baseSha256": null,
+      "sha256": "8483a5e07ffc83043aac9f051f918bd71bfcff409743072a60bfdbe05ca8f85c",
+      "bytes": 6150
+    },
+    {
+      "path": "tests/unit/force-stream.test.js",
+      "baseSha256": null,
+      "sha256": "d94d3ccd131ec7cab8b0af72a4af2b43daaa9cd11110c1cd6b12731884c52405",
+      "bytes": 3470
+    },
+    {
+      "path": "tests/unit/openai-responses-nonstream.test.js",
+      "baseSha256": "b32303f5f28104d3fc0a5628134bf6b834ab9060aaf6ffaf4d7b22caa9100c0d",
+      "sha256": "e9694255c10dede5b62bec3495b727dc1d210d971924ed4cf9408d6c20633c92",
+      "bytes": 12907
+    },
+    {
+      "path": "tests/unit/openai-to-claude.test.js",
+      "baseSha256": "1d25bae8f793acf9123bfbf3015ff52ddfa59b1671c5ec3ce975a4e3a2978ba3",
+      "sha256": "20e85db4f9aa2967fca930e2e1a9ebb36c2468f7ed5328c515a4efbc5e155192",
+      "bytes": 7105
+    },
+    {
+      "path": "tests/unit/protocol-nonstream-integrity.test.js",
+      "baseSha256": null,
+      "sha256": "d5fc7484815bdc0402988fc12ce89e88567068700eb9671b38e447c97346c669",
+      "bytes": 14554
+    },
+    {
+      "path": "tests/unit/protocol-stream-integrity.test.js",
+      "baseSha256": null,
+      "sha256": "b3cf35ac7f842bda9a18f902dbcd311ba9169456ab292607fdbbb4443131d593",
+      "bytes": 11699
+    },
+    {
+      "path": "tests/unit/protocol-stream-sync-regression.test.js",
+      "baseSha256": null,
+      "sha256": "58b6338a0c97f8a5aa8edf3bb5ffee37958972f8e060848b491fe268ff008b60",
+      "bytes": 13292
+    },
+    {
+      "path": "tests/unit/responses-completed-output.test.js",
+      "baseSha256": "c5fa721c3ca74ee46a61184feb43cd89d24f58894a1f0bce4ff54e74363abdfc",
+      "sha256": "72166b5a79ad4cbf2e37a3227d5577e18f107cbfe15982996772e7a058484dba",
+      "bytes": 5770
+    },
+    {
+      "path": "tests/unit/sse-event-framing.test.js",
+      "baseSha256": null,
+      "sha256": "760f1de1570d862c5598b954e51951ca5077cb5ae746aac67f39fb20eee0969c",
+      "bytes": 3340
+    },
+    {
+      "path": "tests/unit/stop-sequence-wiring.test.js",
+      "baseSha256": "f078e7ec7f65aa6f8d1bd649a80aff72dd72fecd8b5fe81931d76b318701e794",
+      "sha256": "4022b363788a42a82ae67fc7ecab97b003da3c381abf92561dc287b79a38370c",
+      "bytes": 3849
+    },
+    {
+      "path": "tests/unit/stream-cancel-usage.test.js",
+      "baseSha256": null,
+      "sha256": "efc7eb604a0b7bc836f583133ef39a74463786a4bd94a195589da158be70d6dd",
+      "bytes": 6093
+    },
+    {
+      "path": "tests/unit/stream-complete-on-done-sentinel.test.js",
+      "baseSha256": "d27471ec5027baa5a9b9da0dbfc865b7c1f9e9558c6b323cdd45e7ef8131d979",
+      "sha256": "12a984e3cbc766d9dabdd5fd4e9224e494e1c3527de326619dc1c739313f2ba7",
+      "bytes": 7415
+    },
+    {
+      "path": "tests/unit/stream-detail-finalization.test.js",
+      "baseSha256": null,
+      "sha256": "492c4b4607e8296b6a27455d941d4164db49919166fbcd6b932cc92ed9cdfca9",
+      "bytes": 12917
+    },
+    {
+      "path": "tests/unit/stream-truncation.test.js",
+      "baseSha256": "a0ded3c8d50994ae5af73f6feaea65a9100f2cc56aa77b6c1113c8cf6e059a54",
+      "sha256": "dd9b1efd249c4fdbc044cb3652b27ac402a85245831df088503fa204c9d29ba6",
+      "bytes": 7026
+    },
+    {
+      "path": "tests/unit/stream-usage-provenance.test.js",
+      "baseSha256": null,
+      "sha256": "43ebd6672191400d6bd739e6e800956124c772298e1b05b7f5d663724e66ea3b",
+      "bytes": 1199
+    },
+    {
+      "path": "tests/unit/streaming-abort-detail-row.test.js",
+      "baseSha256": "86aaa13a6503c9b5e529c9431594ca0a5e2bedc13c19d5af028a05015cad8ba9",
+      "sha256": "d759cbd49de89c88aeebc4d058ab1fc5b14f97e5f9a81e1af288c7c63efba1a1",
+      "bytes": 5890
+    },
+    {
+      "path": "tests/unit/usage-dashboard-import-exclusion.test.js",
+      "baseSha256": "81002920d1bf89fc66a1889feebf53d99c3c11c36dc2defd67a08e9332e37dfc",
+      "sha256": "8aac3d5c4456ee897d4e5e2d2ff890ad6c2ecb22ff13578a10e5ba6229df5789",
+      "bytes": 20441
+    },
+    {
+      "path": "tests/unit/verify-password-lockout.test.js",
+      "baseSha256": null,
+      "sha256": "5ee1ad1ae00733fbfc7c0d3d8a0130166638d21ddf715be8ac19306922d355eb",
+      "bytes": 2964
+    }
+  ]
+}

@@ -1,0 +1,149 @@
+{
+  "http": 200,
+  "checks": [
+    {
+      "provider": "antigravity",
+      "model": "gemini-3.8-flash",
+      "actual": 309.1,
+      "expected": 309.1,
+      "legacy": 53.2,
+      "above300Samples": 996
+    },
+    {
+      "provider": "antigravity",
+      "model": "gemini-3.8-flash-medium",
+      "actual": 548.1,
+      "expected": 548.1,
+      "legacy": 45.9,
+      "above300Samples": 25
+    },
+    {
+      "provider": "codebuddy-cn",
+      "model": "deepseek-v4.1-flash",
+      "actual": 227.6,
+      "expected": 227.6,
+      "legacy": 215.1,
+      "above300Samples": 7
+    },
+    {
+      "provider": "openai-compatible-chat-63caea8b-205a-47a5-830f-0db66c14af96",
+      "model": "claude-haiku-5-5",
+      "actual": 222.7,
+      "expected": 222.7,
+      "legacy": 173.4,
+      "above300Samples": 6
+    },
+    {
+      "provider": "antigravity",
+      "model": "gemini-3.8-flash-high",
+      "actual": 178.8,
+      "expected": 178.8,
+      "legacy": 57.6,
+      "above300Samples": 568
+    },
+    {
+      "provider": "openai-compatible-chat-63caea8b-205a-47a5-830f-0db66c14af96",
+      "model": "claude-opus-5-5",
+      "actual": 112.5,
+      "expected": 112.5,
+      "legacy": 98.5,
+      "above300Samples": 19
+    },
+    {
+      "provider": "openai-compatible-chat-843fd785-06f9-4403-9651-c621aee6de40",
+      "model": "muse-spark-1.3-contributor",
+      "actual": 98.6,
+      "expected": 98.6,
+      "legacy": 59.4,
+      "above300Samples": 84
+    },
+    {
+      "provider": "openai-compatible-chat-b145b409-4639-4a4e-9906-a9a16962ef17",
+      "model": "deepseek-v4.1-flash",
+      "actual": 215.4,
+      "expected": 215.4,
+      "legacy": 102.2,
+      "above300Samples": 124
+    },
+    {
+      "provider": "openai-compatible-chat-a9fb2295-434b-4a0c-9623-715ca7cca344",
+      "model": "gpt-6-luna",
+      "actual": 78.6,
+      "expected": 78.6,
+      "legacy": 66.8,
+      "above300Samples": 34
+    },
+    {
+      "provider": "codebuddy-cn",
+      "model": "glm-5.3-flash",
+      "actual": 40,
+      "expected": 40,
+      "legacy": 37.4,
+      "above300Samples": 2
+    },
+    {
+      "provider": "openai-compatible-chat-bc96c6af-8311-450d-9e94-4275e5fbb31c",
+      "model": "deepseek-v4-flash-0731",
+      "actual": 61.9,
+      "expected": 61.9,
+      "legacy": 60.7,
+      "above300Samples": 24
+    },
+    {
+      "provider": "openai-compatible-chat-4184afa4-c447-4c9c-8aaa-bddd44a62999",
+      "model": "claude-opus-5-5",
+      "actual": 47.2,
+      "expected": 47.2,
+      "legacy": 45,
+      "above300Samples": 1
+    },
+    {
+      "provider": "openai-compatible-chat-4184afa4-c447-4c9c-8aaa-bddd44a62999",
+      "model": "claude-opus-5.5",
+      "actual": 25.9,
+      "expected": 25.9,
+      "legacy": 24.1,
+      "above300Samples": 2
+    },
+    {
+      "provider": "openai-compatible-chat-843fd785-06f9-4403-9651-c621aee6de40",
+      "model": "mimo-v2.6-flash",
+      "actual": 28.7,
+      "expected": 28.7,
+      "legacy": 28.4,
+      "above300Samples": 2
+    },
+    {
+      "provider": "openai-compatible-chat-b145b409-4639-4a4e-9906-a9a16962ef17",
+      "model": "gpt-6.1-sol",
+      "actual": 35.6,
+      "expected": 35.6,
+      "legacy": 35.4,
+      "above300Samples": 6
+    },
+    {
+      "provider": "openai-compatible-chat-a9fb2295-434b-4a0c-9623-715ca7cca344",
+      "model": "qwen3.8-flash-next",
+      "actual": 34.4,
+      "expected": 34.4,
+      "legacy": 34.3,
+      "above300Samples": 6
+    },
+    {
+      "provider": "openai-compatible-chat-a9fb2295-434b-4a0c-9623-715ca7cca344",
+      "model": "kimi-k3",
+      "actual": 15.8,
+      "expected": 15.8,
+      "legacy": 12.9,
+      "above300Samples": 2
+    },
+    {
+      "provider": "openai-compatible-chat-a9fb2295-434b-4a0c-9623-715ca7cca344",
+      "model": "glm-5.3",
+      "actual": 21.1,
+      "expected": 21.1,
+      "legacy": 20.6,
+      "above300Samples": 4
+    }
+  ]
+}

@@ -1,0 +1,645 @@
+{
+  "newCount": 69,
+  "changedSourceCount": 69,
+  "checks": [
+    {
+      "path": "open-sse/translator/request/openai-responses.js",
+      "marker": "fixMissingToolResponsesOpenAI(result.messages)",
+      "minimum": 1,
+      "matches": 1,
+      "passed": true
+    },
+    {
+      "path": "open-sse/translator/request/claude-to-openai.js",
+      "marker": "export function fixMissingToolResponsesOpenAI",
+      "minimum": 1,
+      "matches": 1,
+      "passed": true
+    },
+    {
+      "path": "open-sse/config/errorConfig.js",
+      "marker": "AG_QUOTA_RESET_TRUST_MAX_MS = 25",
+      "minimum": 1,
+      "matches": 1,
+      "passed": true
+    },
+    {
+      "path": "src/sse/handlers/chat.js",
+      "marker": "lastErrorDetails = result.errorDetails",
+      "minimum": 1,
+      "matches": 1,
+      "passed": true
+    },
+    {
+      "path": "open-sse/handlers/chatCore/sseToJsonHandler.js",
+      "marker": "result.errorDetails = errorDetails",
+      "minimum": 1,
+      "matches": 1,
+      "passed": true
+    },
+    {
+      "path": "open-sse/utils/error.js",
+      "marker": "errorDetails?.code || errorInfo.code",
+      "minimum": 1,
+      "matches": 1,
+      "passed": true
+    },
+    {
+      "path": "src/app/(dashboard)/dashboard/channel-balances/page.js",
+      "marker": "ChannelBalanceControls",
+      "minimum": 1,
+      "matches": 2,
+      "passed": true
+    },
+    {
+      "path": "src/app/(dashboard)/dashboard/channel-balances/ChannelBalanceControls.jsx",
+      "marker": "export default function ChannelBalanceControls",
+      "minimum": 1,
+      "matches": 1,
+      "passed": true
+    },
+    {
+      "path": "src/app/(dashboard)/dashboard/channel-balances/ChannelBalanceCard.jsx",
+      "marker": "export default function ChannelBalanceCard",
+      "minimum": 1,
+      "matches": 1,
+      "passed": true
+    },
+    {
+      "path": "src/lib/db/repos/usageRepo.js",
+      "marker": "const streaming = m.responseMode",
+      "minimum": 1,
+      "matches": 1,
+      "passed": true
+    },
+    {
+      "path": "open-sse/utils/streamHandler.js",
+      "marker": "const terminalFrames = createSSEFrameParser()",
+      "minimum": 1,
+      "matches": 1,
+      "passed": true
+    },
+    {
+      "path": "open-sse/services/tokenRefresh/dedup.js",
+      "marker": "if (result)",
+      "minimum": 1,
+      "matches": 1,
+      "passed": true
+    },
+    {
+      "path": "src/app/api/providers/[id]/test/route.js",
+      "marker": "AG_QUARANTINE_CHECK_FAILED",
+      "minimum": 1,
+      "matches": 1,
+      "passed": true
+    },
+    {
+      "path": "src/app/api/providers/[id]/route.js",
+      "marker": "releaseAntigravityQuarantine",
+      "minimum": 1,
+      "matches": 2,
+      "passed": true
+    },
+    {
+      "path": "open-sse/services/combo.js",
+      "marker": "tosResponse",
+      "minimum": 1,
+      "matches": 5,
+      "passed": true
+    },
+    {
+      "path": "open-sse/handlers/chatCore.js",
+      "marker": "buildAgBudgetExhaustedResponse",
+      "minimum": 1,
+      "matches": 2,
+      "passed": true
+    },
+    {
+      "path": "src/sse/services/auth.js",
+      "marker": "AG_QUOTA_RESET_TRUST_MAX_MS",
+      "minimum": 1,
+      "matches": 3,
+      "passed": true
+    },
+    {
+      "path": "src/lib/db/repos/connectionsRepo.js",
+      "marker": "protectQuarantine",
+      "minimum": 1,
+      "matches": 5,
+      "passed": true
+    },
+    {
+      "path": "src/app/api/usage/[connectionId]/route.js",
+      "marker": "AG_QUARANTINE_CHECK_FAILED",
+      "minimum": 1,
+      "matches": 4,
+      "passed": true
+    },
+    {
+      "path": "open-sse/utils/proxyFetch.js",
+      "marker": "assertAntigravityAllowed",
+      "minimum": 1,
+      "matches": 2,
+      "passed": true
+    },
+    {
+      "path": "src/app/api/providers/[id]/test/testUtils.js",
+      "marker": "assertAntigravityAllowed",
+      "minimum": 1,
+      "matches": 4,
+      "passed": true
+    },
+    {
+      "path": "open-sse/services/usage/google.js",
+      "marker": "assertAntigravityAllowed",
+      "minimum": 1,
+      "matches": 4,
+      "passed": true
+    },
+    {
+      "path": "open-sse/services/usage/antigravityWeeklyQuota.js",
+      "marker": "assertAntigravityAllowed",
+      "minimum": 1,
+      "matches": 3,
+      "passed": true
+    },
+    {
+      "path": "open-sse/services/usage.js",
+      "marker": "assertAntigravityAllowed",
+      "minimum": 1,
+      "matches": 2,
+      "passed": true
+    },
+    {
+      "path": "open-sse/services/tokenRefresh/providers.js",
+      "marker": "antigravityCredentials",
+      "minimum": 1,
+      "matches": 3,
+      "passed": true
+    },
+    {
+      "path": "open-sse/services/tokenRefresh.js",
+      "marker": "isAntigravityBlocked",
+      "minimum": 1,
+      "matches": 2,
+      "passed": true
+    },
+    {
+      "path": "open-sse/services/projectId.js",
+      "marker": "assertAntigravityAllowed",
+      "minimum": 1,
+      "matches": 4,
+      "passed": true
+    },
+    {
+      "path": "open-sse/config/runtimeConfig.js",
+      "marker": "AG_REQUEST_BUDGET",
+      "minimum": 1,
+      "matches": 1,
+      "passed": true
+    },
+    {
+      "path": "open-sse/services/oauthCredentialManager.js",
+      "marker": "hasPersistedQuarantine",
+      "minimum": 1,
+      "matches": 2,
+      "passed": true
+    },
+    {
+      "path": "src/sse/services/tokenRefresh.js",
+      "marker": "isAntigravityBlocked",
+      "minimum": 1,
+      "matches": 2,
+      "passed": true
+    },
+    {
+      "path": "open-sse/executors/base.js",
+      "marker": "BUDGET_WAIT_REFUSED",
+      "minimum": 1,
+      "matches": 4,
+      "passed": true
+    },
+    {
+      "path": "open-sse/executors/antigravity.js",
+      "marker": "beforeAttempt",
+      "minimum": 1,
+      "matches": 1,
+      "passed": true
+    },
+    {
+      "path": "open-sse/utils/agRequestBudget.js",
+      "marker": "createAgRequestBudget",
+      "minimum": 1,
+      "matches": 1,
+      "passed": true
+    },
+    {
+      "path": "open-sse/services/antigravityQuarantine.js",
+      "marker": "classifyAntigravityError",
+      "minimum": 1,
+      "matches": 2,
+      "passed": true
+    },
+    {
+      "path": "open-sse/translator/request/openai-to-claude.js",
+      "marker": "disable_parallel_tool_use",
+      "minimum": 1,
+      "matches": 1,
+      "passed": true
+    },
+    {
+      "path": "open-sse/utils/stream.js",
+      "marker": "createSSEFrameParser",
+      "minimum": 1,
+      "matches": 2,
+      "passed": true
+    },
+    {
+      "path": "open-sse/handlers/chatCore/streamingHandler.js",
+      "marker": "completionReported",
+      "minimum": 1,
+      "matches": 5,
+      "passed": true
+    },
+    {
+      "path": "src/lib/db/repos/requestDetailsRepo.js",
+      "marker": "getRequestUsageSource",
+      "minimum": 1,
+      "matches": 2,
+      "passed": true
+    },
+    {
+      "path": "open-sse/handlers/chatCore/requestDetail.js",
+      "marker": "getRequestUsageSource",
+      "minimum": 1,
+      "matches": 3,
+      "passed": true
+    },
+    {
+      "path": "src/shared/utils/requestOutcome.js",
+      "marker": "getRequestUsageSource",
+      "minimum": 1,
+      "matches": 1,
+      "passed": true
+    },
+    {
+      "path": "open-sse/translator/response/claude-to-openai.js",
+      "marker": "state.error = chunk.error",
+      "minimum": 1,
+      "matches": 1,
+      "passed": true
+    },
+    {
+      "path": "open-sse/translator/response/openai-to-claude.js",
+      "marker": "pendingClaudeTerminal",
+      "minimum": 1,
+      "matches": 2,
+      "passed": true
+    },
+    {
+      "path": "open-sse/translator/response/openai-responses.js",
+      "marker": "responsesFinishReason",
+      "minimum": 1,
+      "matches": 4,
+      "passed": true
+    },
+    {
+      "path": "open-sse/transformer/streamToJsonConverter.js",
+      "marker": "STREAM_DISCONNECTED_ERROR",
+      "minimum": 1,
+      "matches": 2,
+      "passed": true
+    },
+    {
+      "path": "open-sse/handlers/chatCore/nonStreamingHandler.js",
+      "marker": "recordResponseError",
+      "minimum": 1,
+      "matches": 5,
+      "passed": true
+    },
+    {
+      "path": "open-sse/utils/responsesStreamHelpers.js",
+      "marker": "response.incomplete",
+      "minimum": 1,
+      "matches": 1,
+      "passed": true
+    },
+    {
+      "path": "open-sse/utils/usageTracking.js",
+      "marker": "prev.estimated && !next.estimated",
+      "minimum": 1,
+      "matches": 1,
+      "passed": true
+    },
+    {
+      "path": "open-sse/utils/streamHelpers.js",
+      "marker": "formatStreamError",
+      "minimum": 1,
+      "matches": 2,
+      "passed": true
+    },
+    {
+      "path": "open-sse/utils/sse.js",
+      "marker": "createSSEFrameParser",
+      "minimum": 1,
+      "matches": 2,
+      "passed": true
+    },
+    {
+      "path": "src/lib/localDb.js",
+      "marker": "setChannelBalanceEnabled",
+      "minimum": 1,
+      "matches": 1,
+      "passed": true
+    },
+    {
+      "path": "src/app/api/v1/models/route.js",
+      "marker": "ignoreDistribution",
+      "minimum": 1,
+      "matches": 1,
+      "passed": true
+    },
+    {
+      "path": "src/sse/handlers/videoGeneration.js",
+      "marker": "enforceDistribution",
+      "minimum": 1,
+      "matches": 2,
+      "passed": true
+    },
+    {
+      "path": "src/sse/handlers/tts.js",
+      "marker": "enforceDistribution",
+      "minimum": 1,
+      "matches": 2,
+      "passed": true
+    },
+    {
+      "path": "src/sse/handlers/systemone.js",
+      "marker": "enforceDistribution",
+      "minimum": 1,
+      "matches": 2,
+      "passed": true
+    },
+    {
+      "path": "src/sse/handlers/stt.js",
+      "marker": "enforceDistribution",
+      "minimum": 1,
+      "matches": 2,
+      "passed": true
+    },
+    {
+      "path": "src/sse/handlers/search.js",
+      "marker": "enforceDistribution",
+      "minimum": 1,
+      "matches": 2,
+      "passed": true
+    },
+    {
+      "path": "src/sse/handlers/imageGeneration.js",
+      "marker": "enforceDistribution",
+      "minimum": 1,
+      "matches": 2,
+      "passed": true
+    },
+    {
+      "path": "src/sse/handlers/fetch.js",
+      "marker": "enforceDistribution",
+      "minimum": 1,
+      "matches": 2,
+      "passed": true
+    },
+    {
+      "path": "src/lib/db/repos/settingsRepo.js",
+      "marker": "setChannelBalanceEnabled",
+      "minimum": 1,
+      "matches": 1,
+      "passed": true
+    },
+    {
+      "path": "src/lib/db/index.js",
+      "marker": "invalidateDistributionCache",
+      "minimum": 1,
+      "matches": 1,
+      "passed": true
+    },
+    {
+      "path": "open-sse/executors/default.js",
+      "marker": "resolveForceStream",
+      "minimum": 1,
+      "matches": 2,
+      "passed": true
+    },
+    {
+      "path": "open-sse/services/provider.js",
+      "marker": "resolveForceStream",
+      "minimum": 1,
+      "matches": 1,
+      "passed": true
+    },
+    {
+      "path": "src/app/api/auth/verify-password/route.js",
+      "marker": "checkLock(ip)",
+      "minimum": 1,
+      "matches": 1,
+      "passed": true
+    },
+    {
+      "path": "src/app/api/channel-balances/route.js",
+      "marker": "setChannelBalanceEnabled",
+      "minimum": 1,
+      "matches": 2,
+      "passed": true
+    },
+    {
+      "path": "src/lib/channelBalances.js",
+      "marker": "getChannelBalances",
+      "minimum": 1,
+      "matches": 1,
+      "passed": true
+    },
+    {
+      "path": "src/sse/services/distributionGuard.js",
+      "marker": "enforceDistribution",
+      "minimum": 1,
+      "matches": 1,
+      "passed": true
+    },
+    {
+      "path": "src/app/api/models/distribution/route.js",
+      "marker": "ignoreDistribution",
+      "minimum": 1,
+      "matches": 1,
+      "passed": true
+    },
+    {
+      "path": "src/lib/distributionDb.js",
+      "marker": "DISTRIBUTION_MODES",
+      "minimum": 1,
+      "matches": 1,
+      "passed": true
+    },
+    {
+      "path": "src/lib/db/repos/distributionRepo.js",
+      "marker": "invalidateDistributionCache",
+      "minimum": 1,
+      "matches": 1,
+      "passed": true
+    }
+  ],
+  "historicalFailures": [
+    {
+      "path": "src/lib/db/repos/usageRepo.js",
+      "marker": "outputSpeedDurationMs",
+      "minimum": 3,
+      "matches": 0,
+      "passed": false
+    },
+    {
+      "path": "open-sse/utils/stream.js",
+      "marker": "captureResponseModel",
+      "minimum": 3,
+      "matches": 0,
+      "passed": false
+    },
+    {
+      "path": "open-sse/utils/stream.js",
+      "marker": "finishStreamAtDone",
+      "minimum": 3,
+      "matches": 0,
+      "passed": false
+    },
+    {
+      "path": "src/sse/handlers/chat.js",
+      "marker": "getClientIp",
+      "minimum": 1,
+      "matches": 0,
+      "passed": false
+    },
+    {
+      "path": "src/shared/components/UsageStats.js",
+      "marker": "absolute inset-0 flex min-h-0 min-w-0 flex-col overflow-hidden",
+      "minimum": 1,
+      "matches": 0,
+      "passed": false
+    },
+    {
+      "path": "public/i18n/literals/zh-CN.json",
+      "marker": "Not returned by the API",
+      "minimum": 1,
+      "matches": 0,
+      "passed": false
+    },
+    {
+      "path": "public/i18n/literals/zh-TW.json",
+      "marker": "Not returned by the API",
+      "minimum": 1,
+      "matches": 0,
+      "passed": false
+    },
+    {
+      "path": "src/app/api/usage/stream/route.js",
+      "marker": "getSharedUsageStats",
+      "minimum": 2,
+      "matches": 0,
+      "passed": false
+    },
+    {
+      "path": "open-sse/executors/base.js",
+      "marker": "this.buildUrl(model, stream, urlIndex, credentials, body)",
+      "minimum": 1,
+      "matches": 0,
+      "passed": false
+    },
+    {
+      "path": "open-sse/executors/codex.js",
+      "marker": "requestBody?._compact",
+      "minimum": 1,
+      "matches": 0,
+      "passed": false
+    },
+    {
+      "path": "open-sse/executors/grok-cli.js",
+      "marker": "_defaultAgentIdPromise",
+      "minimum": 3,
+      "matches": 0,
+      "passed": false
+    },
+    {
+      "path": "src/sse/services/auth.js",
+      "marker": "earliestLock.connection",
+      "minimum": 1,
+      "matches": 0,
+      "passed": false
+    },
+    {
+      "path": "src/app/(dashboard)/dashboard/usage/components/ProviderTopology.js",
+      "marker": "refreshActive",
+      "minimum": 3,
+      "matches": 0,
+      "passed": false
+    },
+    {
+      "path": "open-sse/services/accountFallback.js",
+      "marker": "errorText.slice(0, 500)",
+      "minimum": 1,
+      "matches": 0,
+      "passed": false
+    },
+    {
+      "path": "open-sse/utils/streamHandler.js",
+      "marker": "dbg(\"STREAM-CANCEL\", disconnectState)",
+      "minimum": 1,
+      "matches": 0,
+      "passed": false
+    },
+    {
+      "path": "open-sse/handlers/chatCore/sseToJsonHandler.js",
+      "marker": "legacyCacheTokens",
+      "minimum": 2,
+      "matches": 0,
+      "passed": false
+    },
+    {
+      "path": "src/shared/utils/providerIcon.js",
+      "marker": "if (isOpenAICompatibleProvider(id) || isAnthropicCompatibleProvider(id) || isCustomEmbeddingProvider(id))",
+      "minimum": 1,
+      "matches": 0,
+      "passed": false
+    },
+    {
+      "path": "src/app/api/settings/database/import-usage/route.js",
+      "marker": "cliToken === await getCliToken()",
+      "minimum": 1,
+      "matches": 0,
+      "passed": false
+    },
+    {
+      "path": "src/app/api/settings/database/import-usage/route.js",
+      "marker": "recordFail(ip)",
+      "minimum": 1,
+      "matches": 0,
+      "passed": false
+    },
+    {
+      "path": "src/app/api/providers/route.js",
+      "marker": "An apikey connection named",
+      "minimum": 1,
+      "matches": 0,
+      "passed": false
+    },
+    {
+      "path": "src/app/(dashboard)/dashboard/usage/components/OverviewCards.js",
+      "marker": "hitRate}% cache hit rate",
+      "minimum": 1,
+      "matches": 0,
+      "passed": false
+    },
+    {
+      "path": "src/app/(dashboard)/dashboard/usage/components/RequestDetailsTab.js",
+      "marker": "function responseModeLabel(detail)",
+      "minimum": 1,
+      "matches": 0,
+      "passed": false
+    }
+  ]
+}

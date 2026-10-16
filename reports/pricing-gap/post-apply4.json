@@ -1,0 +1,11 @@
+{
+  "generatedAt": "2026-10-14T04:08:39.318Z",
+  "before": 785,
+  "after": 829,
+  "providersBefore": 93,
+  "providersAfter": 99,
+  "missing": 660,
+  "total": 1355,
+  "patchApplied": 44,
+  "fail": []
+}

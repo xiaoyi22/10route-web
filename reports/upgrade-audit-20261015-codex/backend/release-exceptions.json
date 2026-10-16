@@ -1,0 +1,10 @@
+{
+  "authorizedBy": "User: deploy now, after prior disclosed audit",
+  "historicalPatchChecksUnmatched": 22,
+  "remainingAssertionFailures": 35,
+  "suiteLoadFailures": 2,
+  "baselineDifference": "One renamed speed test; inventory left unchanged",
+  "newPatchChecksPassed": 69,
+  "newAssertionRegressions": 0,
+  "method": "Install verified packaged build; deploy.sh not executed and no checks removed"
+}

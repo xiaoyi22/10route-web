@@ -1,0 +1,915 @@
+{
+  "base": "http://192.168.11.150:4317",
+  "http": {
+    "status": 200,
+    "health": 200,
+    "login": 200,
+    "page": 200,
+    "logs": 200
+  },
+  "rows": [
+    {
+      "id": "1792024587677-hk9e52ycg",
+      "output": 191,
+      "total": 6185,
+      "ttft": 5260,
+      "responseMode": "streaming",
+      "speed": "206.5 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "2026-10-15T00:36:19.766Z-e7kl3q-gpt-6-1-sol-high-",
+      "output": 346,
+      "total": 13927,
+      "ttft": 13927,
+      "responseMode": "non-streaming",
+      "speed": "24.8 tok/s",
+      "basis": "平均速度：输出 Token ÷ 总耗时（含等待时间）"
+    },
+    {
+      "id": "2026-10-15T00:35:57.445Z-n8w90g-deepseek-v4-1-flash",
+      "output": 17,
+      "total": 2299,
+      "ttft": 2299,
+      "responseMode": "non-streaming",
+      "speed": "7.4 tok/s",
+      "basis": "平均速度：输出 Token ÷ 总耗时（含等待时间）"
+    },
+    {
+      "id": "1792024545957-dd51p75sy",
+      "output": 220,
+      "total": 6501,
+      "ttft": 5495,
+      "responseMode": "streaming",
+      "speed": "218.7 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024538208-imalzhojr",
+      "output": 414,
+      "total": 6131,
+      "ttft": 4500,
+      "responseMode": "streaming",
+      "speed": "253.8 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024531557-vh8upo5ke",
+      "output": 375,
+      "total": 6813,
+      "ttft": 5265,
+      "responseMode": "streaming",
+      "speed": "242.2 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024525647-nkdvugh8c",
+      "output": 78,
+      "total": 4838,
+      "ttft": 4536,
+      "responseMode": "streaming",
+      "speed": "258.3 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024517242-f6fag3ubh",
+      "output": 161,
+      "total": 6106,
+      "ttft": 5381,
+      "responseMode": "streaming",
+      "speed": "222.1 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024477208-dvag4niin",
+      "output": 187,
+      "total": 6094,
+      "ttft": 5114,
+      "responseMode": "streaming",
+      "speed": "190.8 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024470618-ktgfz462u",
+      "output": 209,
+      "total": 5788,
+      "ttft": 4733,
+      "responseMode": "streaming",
+      "speed": "198.1 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024464349-gkzgad1zb",
+      "output": 166,
+      "total": 5408,
+      "ttft": 4440,
+      "responseMode": "streaming",
+      "speed": "171.5 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024458449-qhgvmnyfc",
+      "output": 179,
+      "total": 5435,
+      "ttft": 4731,
+      "responseMode": "streaming",
+      "speed": "254.3 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024452004-ig76xumrl",
+      "output": 206,
+      "total": 5656,
+      "ttft": 4662,
+      "responseMode": "streaming",
+      "speed": "207.2 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024445581-nz6mg6ovf",
+      "output": 227,
+      "total": 5744,
+      "ttft": 4619,
+      "responseMode": "streaming",
+      "speed": "201.8 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024439443-e3h008v6b",
+      "output": 181,
+      "total": 5499,
+      "ttft": 4602,
+      "responseMode": "streaming",
+      "speed": "201.8 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024433351-9q142t9u6",
+      "output": 178,
+      "total": 5941,
+      "ttft": 5017,
+      "responseMode": "streaming",
+      "speed": "192.6 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024426994-8074egoza",
+      "output": 155,
+      "total": 4815,
+      "ttft": 4072,
+      "responseMode": "streaming",
+      "speed": "208.6 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024420640-d8h62gay5",
+      "output": 210,
+      "total": 6267,
+      "ttft": 5144,
+      "responseMode": "streaming",
+      "speed": "187.0 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024410282-sh5f55ptp",
+      "output": 522,
+      "total": 6326,
+      "ttft": 4324,
+      "responseMode": "streaming",
+      "speed": "260.7 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024404561-e9f4u5tbo",
+      "output": 142,
+      "total": 5285,
+      "ttft": 4281,
+      "responseMode": "streaming",
+      "speed": "141.4 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024398405-xcfb9yfgp",
+      "output": 438,
+      "total": 6446,
+      "ttft": 4873,
+      "responseMode": "streaming",
+      "speed": "278.4 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024391720-94uby8qhg",
+      "output": 203,
+      "total": 5633,
+      "ttft": 4271,
+      "responseMode": "streaming",
+      "speed": "149.0 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024386980-ai9pv2js8",
+      "output": 71,
+      "total": 4943,
+      "ttft": 4775,
+      "responseMode": "streaming",
+      "speed": "422.6 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024381434-c9thc7xcj",
+      "output": 108,
+      "total": 4484,
+      "ttft": 4119,
+      "responseMode": "streaming",
+      "speed": "295.9 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024376258-ow6vak105",
+      "output": 128,
+      "total": 5345,
+      "ttft": 4658,
+      "responseMode": "streaming",
+      "speed": "186.3 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024370280-hxusblhuu",
+      "output": 218,
+      "total": 5462,
+      "ttft": 4635,
+      "responseMode": "streaming",
+      "speed": "263.6 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024364183-adtdtsvk7",
+      "output": 202,
+      "total": 4756,
+      "ttft": 3825,
+      "responseMode": "streaming",
+      "speed": "217.0 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024358159-hvcjjvbb5",
+      "output": 131,
+      "total": 4530,
+      "ttft": 3879,
+      "responseMode": "streaming",
+      "speed": "201.2 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024352960-863nmdb9m",
+      "output": 154,
+      "total": 5623,
+      "ttft": 4892,
+      "responseMode": "streaming",
+      "speed": "210.7 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024335800-inlgd0969",
+      "output": 571,
+      "total": 5732,
+      "ttft": 3748,
+      "responseMode": "streaming",
+      "speed": "287.8 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024326345-4n96mulzj",
+      "output": 570,
+      "total": 7641,
+      "ttft": 5614,
+      "responseMode": "streaming",
+      "speed": "281.2 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024312799-zxkw19boo",
+      "output": 316,
+      "total": 4959,
+      "ttft": 4021,
+      "responseMode": "streaming",
+      "speed": "336.9 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024306267-3q8ah1cav",
+      "output": 434,
+      "total": 5406,
+      "ttft": 3640,
+      "responseMode": "streaming",
+      "speed": "245.8 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024301606-814bx7xhi",
+      "output": 92,
+      "total": 5769,
+      "ttft": 5252,
+      "responseMode": "streaming",
+      "speed": "177.9 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024291373-fuck4ptce",
+      "output": 188,
+      "total": 4890,
+      "ttft": 4105,
+      "responseMode": "streaming",
+      "speed": "239.5 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024286171-r40xejld3",
+      "output": 217,
+      "total": 5308,
+      "ttft": 4552,
+      "responseMode": "streaming",
+      "speed": "287.0 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024279884-m5o03kmaz",
+      "output": 331,
+      "total": 5507,
+      "ttft": 4357,
+      "responseMode": "streaming",
+      "speed": "287.8 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024274476-rrv3s06mv",
+      "output": 133,
+      "total": 5904,
+      "ttft": 5234,
+      "responseMode": "streaming",
+      "speed": "198.5 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024233026-z8vhyvv93",
+      "output": 205,
+      "total": 5991,
+      "ttft": 5142,
+      "responseMode": "streaming",
+      "speed": "241.5 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024226385-0eqys6msb",
+      "output": 150,
+      "total": 6362,
+      "ttft": 5517,
+      "responseMode": "streaming",
+      "speed": "177.5 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792024181575-xq4igg2e7",
+      "output": 305,
+      "total": 6793,
+      "ttft": 5426,
+      "responseMode": "streaming",
+      "speed": "223.1 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792023816912-2fds5gr3v",
+      "output": 246,
+      "total": 6445,
+      "ttft": 5055,
+      "responseMode": "streaming",
+      "speed": "177.0 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792023806083-0uzdd2vde",
+      "output": 158,
+      "total": 4539,
+      "ttft": 3767,
+      "responseMode": "streaming",
+      "speed": "204.7 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792023800655-v97ppmdo4",
+      "output": 178,
+      "total": 4192,
+      "ttft": 3310,
+      "responseMode": "streaming",
+      "speed": "201.8 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792023795843-z5odoqubi",
+      "output": 148,
+      "total": 4726,
+      "ttft": 3959,
+      "responseMode": "streaming",
+      "speed": "193.0 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792023788990-vp77klq55",
+      "output": 477,
+      "total": 5955,
+      "ttft": 4087,
+      "responseMode": "streaming",
+      "speed": "255.4 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792023782713-2zvbe9wcr",
+      "output": 231,
+      "total": 4406,
+      "ttft": 3402,
+      "responseMode": "streaming",
+      "speed": "230.1 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792023777021-s7lh10q3b",
+      "output": 407,
+      "total": 5161,
+      "ttft": 3723,
+      "responseMode": "streaming",
+      "speed": "283.0 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792023771548-9mj65k0j8",
+      "output": 299,
+      "total": 5125,
+      "ttft": 3974,
+      "responseMode": "streaming",
+      "speed": "259.8 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792023765477-20jlomdxl",
+      "output": 253,
+      "total": 4832,
+      "ttft": 3722,
+      "responseMode": "streaming",
+      "speed": "227.9 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792023758424-d1ts8x18f",
+      "output": 226,
+      "total": 4743,
+      "ttft": 3733,
+      "responseMode": "streaming",
+      "speed": "223.8 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792023753292-e97gzydq9",
+      "output": 167,
+      "total": 4086,
+      "ttft": 3371,
+      "responseMode": "streaming",
+      "speed": "233.6 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792023749200-advpegkj4",
+      "output": 106,
+      "total": 4032,
+      "ttft": 3519,
+      "responseMode": "streaming",
+      "speed": "206.6 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792023744237-15pt6rdyf",
+      "output": 208,
+      "total": 3824,
+      "ttft": 2844,
+      "responseMode": "streaming",
+      "speed": "212.2 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792023738726-77ryrfqsy",
+      "output": 356,
+      "total": 6327,
+      "ttft": 4882,
+      "responseMode": "streaming",
+      "speed": "246.4 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792023726111-6r10m54wn",
+      "output": 260,
+      "total": 5635,
+      "ttft": 4530,
+      "responseMode": "streaming",
+      "speed": "235.3 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1792023718613-74sguuljy",
+      "output": 145,
+      "total": 5573,
+      "ttft": 4926,
+      "responseMode": "streaming",
+      "speed": "224.1 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "2026-10-15T00:19:04.512Z-xs3de2-gpt-6-1-sol-high-",
+      "output": 312,
+      "total": 11073,
+      "ttft": 11073,
+      "responseMode": "non-streaming",
+      "speed": "28.2 tok/s",
+      "basis": "平均速度：输出 Token ÷ 总耗时（含等待时间）"
+    },
+    {
+      "id": "1791971081232-y3r3kefy2",
+      "output": 1102,
+      "total": 23516,
+      "ttft": 10964,
+      "responseMode": "streaming",
+      "speed": "87.8 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791971068747-hfgw7zcdf",
+      "output": 145,
+      "total": 25585,
+      "ttft": 24237,
+      "responseMode": "streaming",
+      "speed": "107.6 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791971018717-5uti3tum5",
+      "output": 405,
+      "total": 16846,
+      "ttft": 6579,
+      "responseMode": "streaming",
+      "speed": "39.4 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970971567-h91f46yb0",
+      "output": 439,
+      "total": 22274,
+      "ttft": 12068,
+      "responseMode": "streaming",
+      "speed": "43.0 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970955689-wssoahnzk",
+      "output": 169,
+      "total": 9440,
+      "ttft": 7789,
+      "responseMode": "streaming",
+      "speed": "102.4 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970938878-776xjrk0w",
+      "output": 559,
+      "total": 32670,
+      "ttft": 26261,
+      "responseMode": "streaming",
+      "speed": "87.2 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970906087-nxjkooysf",
+      "output": 313,
+      "total": 9305,
+      "ttft": 5689,
+      "responseMode": "streaming",
+      "speed": "86.6 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970890446-zwjqzcod8",
+      "output": 660,
+      "total": 20173,
+      "ttft": 12922,
+      "responseMode": "streaming",
+      "speed": "91.0 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970866362-vukppwb5g",
+      "output": 997,
+      "total": 26145,
+      "ttft": 15159,
+      "responseMode": "streaming",
+      "speed": "90.8 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970840752-8yp0mg0v9",
+      "output": 201,
+      "total": 21166,
+      "ttft": 17871,
+      "responseMode": "streaming",
+      "speed": "61.0 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970814657-fg08wagfn",
+      "output": 380,
+      "total": 11126,
+      "ttft": 6772,
+      "responseMode": "streaming",
+      "speed": "87.3 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970802218-yjtr74vot",
+      "output": 332,
+      "total": 13166,
+      "ttft": 10810,
+      "responseMode": "streaming",
+      "speed": "140.9 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970784684-aorcnrey6",
+      "output": 515,
+      "total": 15832,
+      "ttft": 11983,
+      "responseMode": "streaming",
+      "speed": "133.8 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970763055-ys4fc0tfv",
+      "output": 147,
+      "total": 14205,
+      "ttft": 12111,
+      "responseMode": "streaming",
+      "speed": "70.2 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970744198-i8zofruoc",
+      "output": 463,
+      "total": 10516,
+      "ttft": 6223,
+      "responseMode": "streaming",
+      "speed": "107.8 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970735386-6o4j5jknb",
+      "output": 78,
+      "total": 6811,
+      "ttft": 6407,
+      "responseMode": "streaming",
+      "speed": "193.1 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970725168-tx4u5iyyn",
+      "output": 247,
+      "total": 7279,
+      "ttft": 5569,
+      "responseMode": "streaming",
+      "speed": "144.4 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970712163-8lrhwmkwy",
+      "output": 419,
+      "total": 20542,
+      "ttft": 15977,
+      "responseMode": "streaming",
+      "speed": "91.8 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970689178-jatqpdvkn",
+      "output": 535,
+      "total": 18830,
+      "ttft": 13708,
+      "responseMode": "streaming",
+      "speed": "104.5 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970664426-4isig5qnb",
+      "output": 777,
+      "total": 32454,
+      "ttft": 23898,
+      "responseMode": "streaming",
+      "speed": "90.8 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970636891-vyu1q6w52",
+      "output": 150,
+      "total": 13491,
+      "ttft": 11736,
+      "responseMode": "streaming",
+      "speed": "85.5 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970621251-pufql3eap",
+      "output": 178,
+      "total": 14017,
+      "ttft": 12078,
+      "responseMode": "streaming",
+      "speed": "91.8 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970603144-syrxzayr9",
+      "output": 366,
+      "total": 9053,
+      "ttft": 5373,
+      "responseMode": "streaming",
+      "speed": "99.5 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970590979-s7of8da0w",
+      "output": 175,
+      "total": 20858,
+      "ttft": 16181,
+      "responseMode": "streaming",
+      "speed": "37.4 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970562837-n8ncgs3ux",
+      "output": 947,
+      "total": 21231,
+      "ttft": 11443,
+      "responseMode": "streaming",
+      "speed": "96.8 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970545880-igsl96jwl",
+      "output": 303,
+      "total": 10375,
+      "ttft": 6698,
+      "responseMode": "streaming",
+      "speed": "82.4 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970526078-ppwgrrzxi",
+      "output": 1087,
+      "total": 21136,
+      "ttft": 10209,
+      "responseMode": "streaming",
+      "speed": "99.5 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970504537-qpj7t19rj",
+      "output": 483,
+      "total": 21017,
+      "ttft": 11531,
+      "responseMode": "streaming",
+      "speed": "50.9 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970483801-t3m6iqf0s",
+      "output": 338,
+      "total": 18799,
+      "ttft": 11790,
+      "responseMode": "streaming",
+      "speed": "48.2 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970462966-yk5c4ncw5",
+      "output": 332,
+      "total": 15847,
+      "ttft": 9150,
+      "responseMode": "streaming",
+      "speed": "49.6 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970447454-s6t2070qs",
+      "output": 402,
+      "total": 13396,
+      "ttft": 8826,
+      "responseMode": "streaming",
+      "speed": "88.0 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970425203-mo7lrduqx",
+      "output": 889,
+      "total": 22866,
+      "ttft": 11266,
+      "responseMode": "streaming",
+      "speed": "76.6 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970405370-9fs5pzgek",
+      "output": 340,
+      "total": 15333,
+      "ttft": 8696,
+      "responseMode": "streaming",
+      "speed": "51.2 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970382157-jg0x1ovd2",
+      "output": 756,
+      "total": 30204,
+      "ttft": 18002,
+      "responseMode": "streaming",
+      "speed": "62.0 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970359246-tnsnrrpgr",
+      "output": 195,
+      "total": 12747,
+      "ttft": 9874,
+      "responseMode": "streaming",
+      "speed": "67.9 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970341387-itrgn5bgk",
+      "output": 448,
+      "total": 14853,
+      "ttft": 8774,
+      "responseMode": "streaming",
+      "speed": "73.7 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970316155-vlcnrn4i3",
+      "output": 899,
+      "total": 22452,
+      "ttft": 8666,
+      "responseMode": "streaming",
+      "speed": "65.2 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970275697-tz5lp6z4d",
+      "output": 1804,
+      "total": 36524,
+      "ttft": 17052,
+      "responseMode": "streaming",
+      "speed": "92.6 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970250076-dtqwjzg8q",
+      "output": 463,
+      "total": 15221,
+      "ttft": 10212,
+      "responseMode": "streaming",
+      "speed": "92.4 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970228708-vo9h6gn5w",
+      "output": 212,
+      "total": 13120,
+      "ttft": 10000,
+      "responseMode": "streaming",
+      "speed": "67.9 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970205369-enzkx67rd",
+      "output": 756,
+      "total": 19719,
+      "ttft": 10824,
+      "responseMode": "streaming",
+      "speed": "85.0 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    },
+    {
+      "id": "1791970180892-l5199mx7t",
+      "output": 562,
+      "total": 11753,
+      "ttft": 6016,
+      "responseMode": "streaming",
+      "speed": "98.0 tok/s",
+      "basis": "输出 Token ÷（总耗时 − 首包耗时）；首包后接收速率，受上游缓冲和网络影响，首包不一定包含正文 Token"
+    }
+  ],
+  "highSpeedRows": 2,
+  "errors": [],
+  "writes": []
+}

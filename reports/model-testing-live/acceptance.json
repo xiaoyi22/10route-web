@@ -11,10 +11,10 @@
   ],
   "resourceErrors": [],
   "httpFailures": [],
-  "model": "cbcn/glm-5.3-flash",
+  "model": "nexa/deepseek-v4.1-flash",
   "result": {
     "ok": true,
-    "latencyMs": 7534,
+    "latencyMs": 2317,
     "error": null,
     "status": 200
   },

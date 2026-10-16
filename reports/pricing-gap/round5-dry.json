@@ -1,0 +1,8821 @@
+{
+ "resolved": [
+  {
+   "provider": "agnes-ai-cn",
+   "model": "agnes-2.5-flash",
+   "base": "agnes25flash",
+   "rates": {
+    "input": 0.03,
+    "output": 0.15,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "agnes-ai-cn",
+   "model": "agnes-2.5-pro",
+   "base": "agnes25pro",
+   "rates": {
+    "input": 0.44999999999999996,
+    "output": 0.8999999999999999,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "agnes-ai",
+   "model": "agnes-2.5-flash",
+   "base": "agnes25flash",
+   "rates": {
+    "input": 0.03,
+    "output": 0.15,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "agnes-ai",
+   "model": "agnes-2.5-pro",
+   "base": "agnes25pro",
+   "rates": {
+    "input": 0.44999999999999996,
+    "output": 0.8999999999999999,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "agnes-ai",
+   "model": "agnes-2.5-pro-beta",
+   "base": "agnes25pro",
+   "rates": {
+    "input": 0.44999999999999996,
+    "output": 0.8999999999999999,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "alitp-intl",
+   "model": "qwen3.8-max-preview",
+   "base": "qwen38max",
+   "rates": {
+    "input": 2,
+    "output": 6,
+    "cached": 0.25
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "anthropic",
+   "model": "claude-haiku-4-5-20251001",
+   "base": "claudehaiku4520251001",
+   "rates": {
+    "input": 1,
+    "output": 5,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "anthropic",
+   "model": "claude-3-5-sonnet-20241022",
+   "base": "claude35sonnet20241022",
+   "rates": {
+    "input": 3,
+    "output": 15,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "ag",
+   "model": "gemini-3.8-flash-medium",
+   "base": "gemini38flash",
+   "rates": {
+    "input": 0.75,
+    "output": 3.75,
+    "cached": 0.075
+   },
+   "src": "gateway:openai-compatible-chat-876820c2-303e-4a21-850b-7ed90cb46682"
+  },
+  {
+   "provider": "ag",
+   "model": "gemini-3.8-flash-low",
+   "base": "gemini38flash",
+   "rates": {
+    "input": 0.75,
+    "output": 3.75,
+    "cached": 0.075
+   },
+   "src": "gateway:openai-compatible-chat-876820c2-303e-4a21-850b-7ed90cb46682"
+  },
+  {
+   "provider": "ag",
+   "model": "gemini-3.7-flash-high",
+   "base": "gemini37flash",
+   "rates": {
+    "input": 0.75,
+    "output": 3.75,
+    "cached": 0.075
+   },
+   "src": "gateway:commandcode"
+  },
+  {
+   "provider": "ag",
+   "model": "gemini-3.7-flash-medium",
+   "base": "gemini37flash",
+   "rates": {
+    "input": 0.75,
+    "output": 3.75,
+    "cached": 0.075
+   },
+   "src": "gateway:commandcode"
+  },
+  {
+   "provider": "ag",
+   "model": "gemini-3.7-flash-low",
+   "base": "gemini37flash",
+   "rates": {
+    "input": 0.75,
+    "output": 3.75,
+    "cached": 0.075
+   },
+   "src": "gateway:commandcode"
+  },
+  {
+   "provider": "ag",
+   "model": "gemini-3.6-flash-high",
+   "base": "gemini36flash",
+   "rates": {
+    "input": 1.5,
+    "output": 7.5,
+    "cached": 0.15
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "ag",
+   "model": "gemini-3.6-flash-medium",
+   "base": "gemini36flash",
+   "rates": {
+    "input": 1.5,
+    "output": 7.5,
+    "cached": 0.15
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "ag",
+   "model": "gemini-3.6-flash-low",
+   "base": "gemini36flash",
+   "rates": {
+    "input": 1.5,
+    "output": 7.5,
+    "cached": 0.15
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "ag",
+   "model": "gemini-3.5-flash-high",
+   "base": "gemini35flash",
+   "rates": {
+    "input": 1.5,
+    "output": 9,
+    "cached": 0.15
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "ag",
+   "model": "gemini-3.5-flash-low",
+   "base": "gemini35flash",
+   "rates": {
+    "input": 1.5,
+    "output": 9,
+    "cached": 0.15
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "ag",
+   "model": "gpt-oss-120b-medium",
+   "base": "gptoss120b",
+   "rates": {
+    "input": 0.039,
+    "output": 0.18,
+    "cached": 0
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "ag",
+   "model": "gemini-3-flash",
+   "base": "gemini3flash*gemini3flashpreview",
+   "rates": {
+    "input": 0.5,
+    "output": 3,
+    "cached": 0.05
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "af",
+   "model": "anthropic/claude-3.7-sonnet",
+   "base": "claude37sonnet",
+   "rates": {
+    "input": 3,
+    "output": 15,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "black-forest-labs",
+   "model": "flux-kontext-pro",
+   "base": "fluxkontextpro",
+   "rates": {
+    "input": 0.04,
+    "output": 0.04,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "black-forest-labs",
+   "model": "flux-kontext-max",
+   "base": "fluxkontextmax",
+   "rates": {
+    "input": 0.08,
+    "output": 0.08,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "bm",
+   "model": "gemini-2.0-flash",
+   "base": "gemini20flash",
+   "rates": {
+    "input": 0.15,
+    "output": 0.6,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "bm",
+   "model": "gemini-2.0-flash-exp",
+   "base": "gemini20flash",
+   "rates": {
+    "input": 0.15,
+    "output": 0.6,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "bm",
+   "model": "qwen-turbo",
+   "base": "qwenturbo",
+   "rates": {
+    "input": 0.049999999999999996,
+    "output": 0.19999999999999998,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "byteplus",
+   "model": "seed-2-0-mini-260215",
+   "base": "seed20mini",
+   "rates": {
+    "input": 0.09999999999999999,
+    "output": 0.39999999999999997,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "byteplus",
+   "model": "gpt-oss-120b-250805",
+   "base": "gptoss120b",
+   "rates": {
+    "input": 0.039,
+    "output": 0.18,
+    "cached": 0
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "cerebras",
+   "model": "llama-3.3-70b",
+   "base": "llama3370b",
+   "rates": {
+    "input": 0.85,
+    "output": 1.2,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "cerebras",
+   "model": "llama-4-scout-17b-16e-instruct",
+   "base": "llama4scout17b16einstruct",
+   "rates": {
+    "input": 0.19999999999999998,
+    "output": 0.78,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "cerebras",
+   "model": "qwen-3-235b-a22b-instruct-2507",
+   "base": "qwen3235ba22binstruct2507",
+   "rates": {
+    "input": 0.09,
+    "output": 0.55,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "cc",
+   "model": "claude-haiku-4-5-20251001",
+   "base": "claudehaiku4520251001",
+   "rates": {
+    "input": 1,
+    "output": 5,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "cl",
+   "model": "kwaipilot/kat-coder-pro",
+   "base": "katcoderpro",
+   "rates": {
+    "input": 0.3,
+    "output": 1.2,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "cloudflare-ai",
+   "model": "@cf/meta/llama-3.2-1b-instruct",
+   "base": "llama321binstruct",
+   "rates": {
+    "input": 0.027,
+    "output": 0.201,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "cloudflare-ai",
+   "model": "@cf/meta/llama-3.2-3b-instruct",
+   "base": "llama323binstruct",
+   "rates": {
+    "input": 0.05,
+    "output": 0.33,
+    "cached": 0
+   },
+   "src": "gateway:hyperbolic"
+  },
+  {
+   "provider": "cloudflare-ai",
+   "model": "@cf/meta/llama-3.1-8b-instruct-fp8-fast",
+   "base": "llama318binstructfp8",
+   "rates": {
+    "input": 0.15200000000000002,
+    "output": 0.28700000000000003,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "cloudflare-ai",
+   "model": "@cf/mistralai/mistral-small-3.1-24b-instruct",
+   "base": "mistralsmall3124binstruct",
+   "rates": {
+    "input": 0.351,
+    "output": 0.5549999999999999,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "cloudflare-ai",
+   "model": "@cf/meta/llama-3.1-70b-instruct-fp8-fast",
+   "base": "llama3170binstructfp8",
+   "rates": {
+    "input": 0.12,
+    "output": 0.3,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "cloudflare-ai",
+   "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+   "base": "llama3370binstructfp8fast",
+   "rates": {
+    "input": 0.293,
+    "output": 2.2529999999999997,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "cloudflare-ai",
+   "model": "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b",
+   "base": "deepseekr1distillqwen32b",
+   "rates": {
+    "input": 0.49699999999999994,
+    "output": 4.881,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "cloudflare-ai",
+   "model": "@cf/moonshotai/kimi-k2.5",
+   "base": "kimik25",
+   "rates": {
+    "input": 0.6,
+    "output": 3,
+    "cached": 0.1
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "cloudflare-ai",
+   "model": "@cf/moonshotai/kimi-k2.6",
+   "base": "kimik26",
+   "rates": {
+    "input": 0.91,
+    "output": 3.78,
+    "cached": 0.15
+   },
+   "src": "gateway:siliconflow-cn"
+  },
+  {
+   "provider": "cloudflare-ai",
+   "model": "@cf/zai-org/glm-4.7-flash",
+   "base": "glm47flash",
+   "rates": {
+    "input": 0.0605,
+    "output": 0.4,
+    "cached": 0
+   },
+   "src": "gateway:ollama"
+  },
+  {
+   "provider": "cloudflare-ai",
+   "model": "@cf/qwen/qwq-32b",
+   "base": "qwq32b",
+   "rates": {
+    "input": 0.66,
+    "output": 1,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "cloudflare-ai",
+   "model": "@cf/qwen/qwen2.5-coder-32b-instruct",
+   "base": "qwen25coder32binstruct",
+   "rates": {
+    "input": 0.66,
+    "output": 1,
+    "cached": 0
+   },
+   "src": "gateway:hyperbolic"
+  },
+  {
+   "provider": "cloudflare-ai",
+   "model": "@cf/black-forest-labs/flux-1-schnell",
+   "base": "flux1schnell",
+   "rates": {
+    "input": 0.09999999999999999,
+    "output": 0.09999999999999999,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "cx",
+   "model": "gpt-5.6-sol-review",
+   "base": "gpt56sol",
+   "rates": {
+    "input": 5,
+    "output": 30,
+    "cached": 0.5
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "cx",
+   "model": "gpt-5.6-terra-review",
+   "base": "gpt56terra",
+   "rates": {
+    "input": 2,
+    "output": 12,
+    "cached": 0.2
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "cx",
+   "model": "gpt-5.6-luna-review",
+   "base": "gpt56luna",
+   "rates": {
+    "input": 0.2,
+    "output": 1.2,
+    "cached": 0.02
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "cx",
+   "model": "gpt-5.5-review",
+   "base": "gpt55",
+   "rates": {
+    "input": 5,
+    "output": 30,
+    "cached": 0.5
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "cx",
+   "model": "gpt-daybreak-blue-latest",
+   "base": "gptdaybreakbluelatest",
+   "rates": {
+    "input": 4,
+    "output": 20,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "cx",
+   "model": "gpt-image-2.5-flare",
+   "base": "gptimage25flare",
+   "rates": {
+    "input": 5,
+    "output": 5,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "cx",
+   "model": "gpt-image-2.5-sunburst",
+   "base": "gptimage25sunburst",
+   "rates": {
+    "input": 5,
+    "output": 5,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "cx",
+   "model": "gpt-image-2",
+   "base": "gptimage2",
+   "rates": {
+    "input": 5,
+    "output": 5,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "cx",
+   "model": "gpt-image-1.5",
+   "base": "gptimage15",
+   "rates": {
+    "input": 5,
+    "output": 10,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "cx",
+   "model": "gpt-5.6-sol-image",
+   "base": "gpt56sol",
+   "rates": {
+    "input": 5,
+    "output": 30,
+    "cached": 0.5
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "cx",
+   "model": "gpt-5.6-terra-image",
+   "base": "gpt56terra",
+   "rates": {
+    "input": 2,
+    "output": 12,
+    "cached": 0.2
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "cx",
+   "model": "gpt-5.6-luna-image",
+   "base": "gpt56luna",
+   "rates": {
+    "input": 0.2,
+    "output": 1.2,
+    "cached": 0.02
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "cx",
+   "model": "gpt-5.5-image",
+   "base": "gpt55",
+   "rates": {
+    "input": 5,
+    "output": 30,
+    "cached": 0.5
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "cohere",
+   "model": "command-a-03-2025",
+   "base": "commanda032025",
+   "rates": {
+    "input": 2.5,
+    "output": 10,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "commandcode",
+   "model": "claude-haiku-4-5-20251001",
+   "base": "claudehaiku4520251001",
+   "rates": {
+    "input": 1,
+    "output": 5,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "commandcode",
+   "model": "moonshotai/Kimi-K2.7-Code-Highspeed",
+   "base": "kimik27codehighspeed",
+   "rates": {
+    "input": 1.9,
+    "output": 8,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "commandcode",
+   "model": "Qwen/Qwen3.6-Max-Preview",
+   "base": "qwen36maxpreview",
+   "rates": {
+    "input": 1.268,
+    "output": 7.608,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "commandcode",
+   "model": "zai-org/GLM-5.2-Fast",
+   "base": "glm52fast",
+   "rates": {
+    "input": 2.0999999999999996,
+    "output": 6.6000000000000005,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "cu",
+   "model": "claude-4.5-sonnet-thinking",
+   "base": "claude45sonnet",
+   "rates": {
+    "input": 3,
+    "output": 15,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "cu",
+   "model": "claude-4.5-sonnet",
+   "base": "claude45sonnet",
+   "rates": {
+    "input": 3,
+    "output": 15,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "cu",
+   "model": "claude-4.5-haiku",
+   "base": "claude45haiku",
+   "rates": {
+    "input": 1,
+    "output": 5,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "deepseek",
+   "model": "deepseek-flash",
+   "base": "deepseekflash",
+   "rates": {
+    "input": 0.3,
+    "output": 1.2,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "deepseek",
+   "model": "deepseek-v4-pro-max",
+   "base": "deepseekv4pro",
+   "rates": {
+    "input": 1.68,
+    "output": 3.36,
+    "cached": 0.14
+   },
+   "src": "gateway:siliconflow-cn"
+  },
+  {
+   "provider": "deepseek",
+   "model": "deepseek-reasoner",
+   "base": "deepseekreasoner",
+   "rates": {
+    "input": 0.28,
+    "output": 0.42,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "dv",
+   "model": "swe-1.6-fast",
+   "base": "swe16",
+   "rates": {
+    "input": 0.5,
+    "output": 2.5,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "dv",
+   "model": "swe-1.6",
+   "base": "swe16",
+   "rates": {
+    "input": 0.5,
+    "output": 2.5,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "dv",
+   "model": "claude-opus-4.7-max",
+   "base": "claudeopus47",
+   "rates": {
+    "input": 5,
+    "output": 25,
+    "cached": 0.5
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "dv",
+   "model": "claude-opus-4.7-high",
+   "base": "claudeopus47",
+   "rates": {
+    "input": 5,
+    "output": 25,
+    "cached": 0.5
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "dv",
+   "model": "claude-opus-4.7-medium",
+   "base": "claudeopus47",
+   "rates": {
+    "input": 5,
+    "output": 25,
+    "cached": 0.5
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "dv",
+   "model": "claude-opus-4.7-low",
+   "base": "claudeopus47",
+   "rates": {
+    "input": 5,
+    "output": 25,
+    "cached": 0.5
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "dv",
+   "model": "claude-sonnet-4.6-thinking",
+   "base": "claudesonnet46",
+   "rates": {
+    "input": 3,
+    "output": 15,
+    "cached": 0.30000000000000004
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "dv",
+   "model": "gpt-5.5-xhigh",
+   "base": "gpt55",
+   "rates": {
+    "input": 5,
+    "output": 30,
+    "cached": 0.5
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "dv",
+   "model": "gpt-5.5-high",
+   "base": "gpt55",
+   "rates": {
+    "input": 5,
+    "output": 30,
+    "cached": 0.5
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "dv",
+   "model": "gpt-5.5-medium",
+   "base": "gpt55",
+   "rates": {
+    "input": 5,
+    "output": 30,
+    "cached": 0.5
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "dv",
+   "model": "gpt-5.5-low",
+   "base": "gpt55",
+   "rates": {
+    "input": 5,
+    "output": 30,
+    "cached": 0.5
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "dv",
+   "model": "gpt-5.4-high",
+   "base": "gpt54high",
+   "rates": {
+    "input": 2.5,
+    "output": 15,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "dv",
+   "model": "gpt-5.4-medium",
+   "base": "gpt54",
+   "rates": {
+    "input": 2.5,
+    "output": 15,
+    "cached": 0.25
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "dv",
+   "model": "gpt-5.4-low",
+   "base": "gpt54low",
+   "rates": {
+    "input": 2.5,
+    "output": 15,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "dv",
+   "model": "gpt-5.3-codex-high",
+   "base": "gpt53codex",
+   "rates": {
+    "input": 1.75,
+    "output": 14,
+    "cached": 0.175
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "dv",
+   "model": "gpt-5.3-codex-medium",
+   "base": "gpt53codex",
+   "rates": {
+    "input": 1.75,
+    "output": 14,
+    "cached": 0.175
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "dv",
+   "model": "gpt-5.3-codex-low",
+   "base": "gpt53codex",
+   "rates": {
+    "input": 1.75,
+    "output": 14,
+    "cached": 0.175
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "dv",
+   "model": "gpt-5.2-high",
+   "base": "gpt52",
+   "rates": {
+    "input": 1.75,
+    "output": 14,
+    "cached": 0.175
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "dv",
+   "model": "gpt-5.2-medium",
+   "base": "gpt52",
+   "rates": {
+    "input": 1.75,
+    "output": 14,
+    "cached": 0.175
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "dv",
+   "model": "gpt-5.2-low",
+   "base": "gpt52",
+   "rates": {
+    "input": 1.75,
+    "output": 14,
+    "cached": 0.175
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "fireworks",
+   "model": "accounts/fireworks/models/deepseek-v3p1",
+   "base": "deepseekv3p1",
+   "rates": {
+    "input": 0.56,
+    "output": 1.68,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "fireworks",
+   "model": "accounts/fireworks/models/llama-v3p3-70b-instruct",
+   "base": "llamav3p370binstruct",
+   "rates": {
+    "input": 0.8999999999999999,
+    "output": 0.8999999999999999,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "fireworks",
+   "model": "accounts/fireworks/models/qwen3-235b-a22b",
+   "base": "qwen3235ba22b",
+   "rates": {
+    "input": 0.18,
+    "output": 0.54,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "fireworks",
+   "model": "nomic-ai/nomic-embed-text-v1.5",
+   "base": "nomicembedtextv15",
+   "rates": {
+    "input": 0.008,
+    "output": 0,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "gc",
+   "model": "gemini-3-pro-preview",
+   "base": "gemini3propreview",
+   "rates": {
+    "input": 2,
+    "output": 12,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "gemini",
+   "model": "gemini-2.0-flash",
+   "base": "gemini20flash",
+   "rates": {
+    "input": 0.15,
+    "output": 0.6,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "gh",
+   "model": "grok-code-fast-1",
+   "base": "grokcodefast1",
+   "rates": {
+    "input": 0.19999999999999998,
+    "output": 1.5,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "gcli",
+   "model": "grok-build",
+   "base": "grokbuild*grokbuildlatest",
+   "rates": {
+    "input": 2,
+    "output": 6,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "gcli",
+   "model": "grok-4.5-high",
+   "base": "grok45",
+   "rates": {
+    "input": 2,
+    "output": 6,
+    "cached": 0.5
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "gcli",
+   "model": "grok-4.5-medium",
+   "base": "grok45",
+   "rates": {
+    "input": 2,
+    "output": 6,
+    "cached": 0.5
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "gcli",
+   "model": "grok-4.5-low",
+   "base": "grok45",
+   "rates": {
+    "input": 2,
+    "output": 6,
+    "cached": 0.5
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "grok-web",
+   "model": "grok-3",
+   "base": "grok3",
+   "rates": {
+    "input": 3,
+    "output": 15,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "grok-web",
+   "model": "grok-3-mini",
+   "base": "grok3mini",
+   "rates": {
+    "input": 0.3,
+    "output": 0.5,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "grok-web",
+   "model": "grok-3-thinking",
+   "base": "grok3",
+   "rates": {
+    "input": 3,
+    "output": 15,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "grok-web",
+   "model": "grok-4",
+   "base": "grok4",
+   "rates": {
+    "input": 3,
+    "output": 15,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "grok-web",
+   "model": "grok-4-thinking",
+   "base": "grok4",
+   "rates": {
+    "input": 3,
+    "output": 15,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "groq",
+   "model": "meta-llama/llama-4-maverick-17b-128e-instruct",
+   "base": "llama4maverick17b128einstruct",
+   "rates": {
+    "input": 0.63,
+    "output": 1.7999999999999998,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "huggingface",
+   "model": "black-forest-labs/FLUX.1-schnell",
+   "base": "flux1schnell",
+   "rates": {
+    "input": 0.09999999999999999,
+    "output": 0.09999999999999999,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "hyperbolic",
+   "model": "Qwen/QwQ-32B",
+   "base": "qwq32b",
+   "rates": {
+    "input": 0.66,
+    "output": 1,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "hyperbolic",
+   "model": "deepseek-ai/DeepSeek-V3",
+   "base": "deepseekv3",
+   "rates": {
+    "input": 1.1400000000000001,
+    "output": 4.5600000000000005,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "if",
+   "model": "qwen3-max",
+   "base": "qwen3max",
+   "rates": {
+    "input": 2.1100000000000003,
+    "output": 8.450000000000001,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "if",
+   "model": "qwen3-max-preview",
+   "base": "qwen3max",
+   "rates": {
+    "input": 2.1100000000000003,
+    "output": 8.450000000000001,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "if",
+   "model": "qwen3-235b",
+   "base": "qwen3235b",
+   "rates": {
+    "input": 0.19999999999999998,
+    "output": 0.6,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "if",
+   "model": "deepseek-v3.1",
+   "base": "deepseekv31",
+   "rates": {
+    "input": 0.25,
+    "output": 0.95,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "if",
+   "model": "deepseek-v3",
+   "base": "deepseekv3",
+   "rates": {
+    "input": 1.1400000000000001,
+    "output": 4.5600000000000005,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "kc",
+   "model": "deepseek/deepseek-reasoner",
+   "base": "deepseekreasoner",
+   "rates": {
+    "input": 0.28,
+    "output": 0.42,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "kimi",
+   "model": "kimi-k2.7-code-highspeed",
+   "base": "kimik27codehighspeed",
+   "rates": {
+    "input": 1.9,
+    "output": 8,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "kr",
+   "model": "claude-opus-5.5-thinking",
+   "base": "claudeopus55",
+   "rates": {
+    "input": 4,
+    "output": 20,
+    "cached": 0.4
+   },
+   "src": "gateway:openai-compatible-chat-63caea8b-205a-47a5-830f-0db66c14af96"
+  },
+  {
+   "provider": "kr",
+   "model": "claude-opus-5.5-agentic",
+   "base": "claudeopus55",
+   "rates": {
+    "input": 4,
+    "output": 20,
+    "cached": 0.4
+   },
+   "src": "gateway:openai-compatible-chat-63caea8b-205a-47a5-830f-0db66c14af96"
+  },
+  {
+   "provider": "kr",
+   "model": "claude-opus-5.5-thinking-agentic",
+   "base": "claudeopus55",
+   "rates": {
+    "input": 4,
+    "output": 20,
+    "cached": 0.4
+   },
+   "src": "gateway:openai-compatible-chat-63caea8b-205a-47a5-830f-0db66c14af96"
+  },
+  {
+   "provider": "kr",
+   "model": "claude-opus-5-thinking",
+   "base": "claudeopus5",
+   "rates": {
+    "input": 5,
+    "output": 25,
+    "cached": 0.5
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "kr",
+   "model": "claude-opus-5-agentic",
+   "base": "claudeopus5",
+   "rates": {
+    "input": 5,
+    "output": 25,
+    "cached": 0.5
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "kr",
+   "model": "claude-opus-5-thinking-agentic",
+   "base": "claudeopus5",
+   "rates": {
+    "input": 5,
+    "output": 25,
+    "cached": 0.5
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "kr",
+   "model": "claude-opus-4.8-thinking",
+   "base": "claudeopus48",
+   "rates": {
+    "input": 5,
+    "output": 25,
+    "cached": 0.5
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "kr",
+   "model": "claude-opus-4.8-agentic",
+   "base": "claudeopus48",
+   "rates": {
+    "input": 5,
+    "output": 25,
+    "cached": 0.5
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "kr",
+   "model": "claude-opus-4.8-thinking-agentic",
+   "base": "claudeopus48",
+   "rates": {
+    "input": 5,
+    "output": 25,
+    "cached": 0.5
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "kr",
+   "model": "claude-opus-4.7-thinking",
+   "base": "claudeopus47",
+   "rates": {
+    "input": 5,
+    "output": 25,
+    "cached": 0.5
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "kr",
+   "model": "claude-opus-4.7-agentic",
+   "base": "claudeopus47",
+   "rates": {
+    "input": 5,
+    "output": 25,
+    "cached": 0.5
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "kr",
+   "model": "claude-opus-4.7-thinking-agentic",
+   "base": "claudeopus47",
+   "rates": {
+    "input": 5,
+    "output": 25,
+    "cached": 0.5
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "kr",
+   "model": "claude-opus-4.5-thinking",
+   "base": "claudeopus45",
+   "rates": {
+    "input": 5,
+    "output": 25,
+    "cached": 0.5
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "kr",
+   "model": "claude-opus-4.5-agentic",
+   "base": "claudeopus45",
+   "rates": {
+    "input": 5,
+    "output": 25,
+    "cached": 0.5
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "kr",
+   "model": "claude-opus-4.5-thinking-agentic",
+   "base": "claudeopus45",
+   "rates": {
+    "input": 5,
+    "output": 25,
+    "cached": 0.5
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "kr",
+   "model": "claude-sonnet-5-thinking",
+   "base": "claudesonnet5",
+   "rates": {
+    "input": 2,
+    "output": 10,
+    "cached": 0.2
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "kr",
+   "model": "claude-sonnet-4.5-thinking",
+   "base": "claudesonnet45",
+   "rates": {
+    "input": 3,
+    "output": 15,
+    "cached": 0.3
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "kr",
+   "model": "claude-haiku-4.5-thinking",
+   "base": "claudehaiku45",
+   "rates": {
+    "input": 1,
+    "output": 5,
+    "cached": 0.1
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "kr",
+   "model": "gpt-5.6-sol-thinking",
+   "base": "gpt56sol",
+   "rates": {
+    "input": 5,
+    "output": 30,
+    "cached": 0.5
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "kr",
+   "model": "gpt-5.6-terra-thinking",
+   "base": "gpt56terra",
+   "rates": {
+    "input": 2,
+    "output": 12,
+    "cached": 0.2
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "kr",
+   "model": "gpt-5.6-luna-thinking",
+   "base": "gpt56luna",
+   "rates": {
+    "input": 0.2,
+    "output": 1.2,
+    "cached": 0.02
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "kr",
+   "model": "claude-sonnet-5-agentic",
+   "base": "claudesonnet5",
+   "rates": {
+    "input": 2,
+    "output": 10,
+    "cached": 0.2
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "kr",
+   "model": "claude-sonnet-4.5-agentic",
+   "base": "claudesonnet45",
+   "rates": {
+    "input": 3,
+    "output": 15,
+    "cached": 0.3
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "kr",
+   "model": "claude-haiku-4.5-agentic",
+   "base": "claudehaiku45",
+   "rates": {
+    "input": 1,
+    "output": 5,
+    "cached": 0.1
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "kr",
+   "model": "gpt-5.6-sol-agentic",
+   "base": "gpt56sol",
+   "rates": {
+    "input": 5,
+    "output": 30,
+    "cached": 0.5
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "kr",
+   "model": "gpt-5.6-terra-agentic",
+   "base": "gpt56terra",
+   "rates": {
+    "input": 2,
+    "output": 12,
+    "cached": 0.2
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "kr",
+   "model": "gpt-5.6-luna-agentic",
+   "base": "gpt56luna",
+   "rates": {
+    "input": 0.2,
+    "output": 1.2,
+    "cached": 0.02
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "kr",
+   "model": "claude-sonnet-5-thinking-agentic",
+   "base": "claudesonnet5",
+   "rates": {
+    "input": 2,
+    "output": 10,
+    "cached": 0.2
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "kr",
+   "model": "claude-sonnet-4.5-thinking-agentic",
+   "base": "claudesonnet45",
+   "rates": {
+    "input": 3,
+    "output": 15,
+    "cached": 0.3
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "kr",
+   "model": "claude-haiku-4.5-thinking-agentic",
+   "base": "claudehaiku45",
+   "rates": {
+    "input": 1,
+    "output": 5,
+    "cached": 0.1
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "kr",
+   "model": "gpt-5.6-sol-thinking-agentic",
+   "base": "gpt56sol",
+   "rates": {
+    "input": 5,
+    "output": 30,
+    "cached": 0.5
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "kr",
+   "model": "gpt-5.6-terra-thinking-agentic",
+   "base": "gpt56terra",
+   "rates": {
+    "input": 2,
+    "output": 12,
+    "cached": 0.2
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "kr",
+   "model": "gpt-5.6-luna-thinking-agentic",
+   "base": "gpt56luna",
+   "rates": {
+    "input": 0.2,
+    "output": 1.2,
+    "cached": 0.02
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "minimax-cn",
+   "model": "speech-2.6-hd",
+   "base": "speech26hd",
+   "rates": {
+    "input": 100,
+    "output": 100,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "minimax-cn",
+   "model": "speech-2.6-turbo",
+   "base": "speech26turbo",
+   "rates": {
+    "input": 60,
+    "output": 60,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "minimax-cn",
+   "model": "speech-02-hd",
+   "base": "speech02hd",
+   "rates": {
+    "input": 100,
+    "output": 100,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "minimax-cn",
+   "model": "speech-02-turbo",
+   "base": "speech02turbo",
+   "rates": {
+    "input": 60,
+    "output": 60,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "minimax",
+   "model": "speech-2.6-hd",
+   "base": "speech26hd",
+   "rates": {
+    "input": 100,
+    "output": 100,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "minimax",
+   "model": "speech-2.6-turbo",
+   "base": "speech26turbo",
+   "rates": {
+    "input": 60,
+    "output": 60,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "minimax",
+   "model": "speech-02-hd",
+   "base": "speech02hd",
+   "rates": {
+    "input": 100,
+    "output": 100,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "minimax",
+   "model": "speech-02-turbo",
+   "base": "speech02turbo",
+   "rates": {
+    "input": 60,
+    "output": 60,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "mistral",
+   "model": "mistral-large-latest",
+   "base": "mistrallargelatest",
+   "rates": {
+    "input": 8,
+    "output": 24,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "mistral",
+   "model": "mistral-medium-latest",
+   "base": "mistralmediumlatest",
+   "rates": {
+    "input": 1.5,
+    "output": 7.5,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "nanobanana",
+   "model": "nanobanana-pro",
+   "base": "nanobananapro*nanobananapropreview",
+   "rates": {
+    "input": 2,
+    "output": 12,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "openai",
+   "model": "o1-mini",
+   "base": "o1mini",
+   "rates": {
+    "input": 1.1,
+    "output": 4.4,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "openai",
+   "model": "gpt-4o-transcribe",
+   "base": "gpt4otranscribe",
+   "rates": {
+    "input": 2.5,
+    "output": 10,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "openai",
+   "model": "gpt-4o-mini-transcribe",
+   "base": "gpt4ominitranscribe",
+   "rates": {
+    "input": 1.25,
+    "output": 5,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "openai",
+   "model": "gpt-image-2.5-flare",
+   "base": "gptimage25flare",
+   "rates": {
+    "input": 5,
+    "output": 5,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "openai",
+   "model": "gpt-image-2.5-sunburst",
+   "base": "gptimage25sunburst",
+   "rates": {
+    "input": 5,
+    "output": 5,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "openai",
+   "model": "gpt-image-1",
+   "base": "gptimage1",
+   "rates": {
+    "input": 5,
+    "output": 5,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "opencode-go",
+   "model": "deepseek-flash",
+   "base": "deepseekflash",
+   "rates": {
+    "input": 0.3,
+    "output": 1.2,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "ocz",
+   "model": "gemini-3-flash",
+   "base": "gemini3flash*gemini3flashpreview",
+   "rates": {
+    "input": 0.5,
+    "output": 3,
+    "cached": 0.05
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "ocz",
+   "model": "gpt-5.3-codex-spark",
+   "base": "gpt53codex",
+   "rates": {
+    "input": 1.75,
+    "output": 14,
+    "cached": 0.175
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "ocz",
+   "model": "gpt-5-codex",
+   "base": "gpt5codex",
+   "rates": {
+    "input": 1.25,
+    "output": 10,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "openrouter",
+   "model": "openai/gpt-image-1",
+   "base": "gptimage1",
+   "rates": {
+    "input": 5,
+    "output": 5,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "openrouter",
+   "model": "black-forest-labs/FLUX.1-schnell",
+   "base": "flux1schnell",
+   "rates": {
+    "input": 0.09999999999999999,
+    "output": 0.09999999999999999,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "perplexity-agent",
+   "model": "xai/grok-4.20-reasoning",
+   "base": "grok420reasoning",
+   "rates": {
+    "input": 1.25,
+    "output": 2.5,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "siliconflow",
+   "model": "deepseek-ai/DeepSeek-V3.1",
+   "base": "deepseekv31",
+   "rates": {
+    "input": 0.25,
+    "output": 0.95,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "step-cn",
+   "model": "step-3.5-flash-2603",
+   "base": "step35flash",
+   "rates": {
+    "input": 0.1,
+    "output": 0.3,
+    "cached": 0.02
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "stepp-cn",
+   "model": "step-3.5-flash-2603",
+   "base": "step35flash",
+   "rates": {
+    "input": 0.1,
+    "output": 0.3,
+    "cached": 0.02
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "stepp",
+   "model": "step-3.5-flash-2603",
+   "base": "step35flash",
+   "rates": {
+    "input": 0.1,
+    "output": 0.3,
+    "cached": 0.02
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "step",
+   "model": "step-3.5-flash-2603",
+   "base": "step35flash",
+   "rates": {
+    "input": 0.1,
+    "output": 0.3,
+    "cached": 0.02
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "together",
+   "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo",
+   "base": "llama3370binstructturbo",
+   "rates": {
+    "input": 0.09999999999999999,
+    "output": 0.32,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "together",
+   "model": "Qwen/Qwen3-235B-A22B",
+   "base": "qwen3235ba22b",
+   "rates": {
+    "input": 0.18,
+    "output": 0.54,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "together",
+   "model": "meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8",
+   "base": "llama4maverick17b128einstructfp8",
+   "rates": {
+    "input": 0.25,
+    "output": 1,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "trae-free",
+   "model": "Doubao-Seed-2.0-Code",
+   "base": "doubaoseed20code*doubaoseed20codepreview",
+   "rates": {
+    "input": 0.4822,
+    "output": 2.411,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "venice",
+   "model": "qwen3-235b-a22b-instruct-2507",
+   "base": "qwen3235ba22binstruct2507",
+   "rates": {
+    "input": 0.09,
+    "output": 0.55,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "venice",
+   "model": "qwen3-coder-480b-a35b-instruct-turbo",
+   "base": "qwen3coder480ba35binstructturbo",
+   "rates": {
+    "input": 0.3,
+    "output": 1,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "venice",
+   "model": "qwen3-vl-235b-a22b",
+   "base": "qwen3vl235ba22b*qwen3vl235ba22bthinking",
+   "rates": {
+    "input": 0.39999999999999997,
+    "output": 4,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "venice",
+   "model": "llama-3.3-70b",
+   "base": "llama3370b",
+   "rates": {
+    "input": 0.85,
+    "output": 1.2,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "venice",
+   "model": "gpt-image-2",
+   "base": "gptimage2",
+   "rates": {
+    "input": 5,
+    "output": 5,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "vertex-partner",
+   "model": "deepseek-ai/deepseek-v3.2-maas",
+   "base": "deepseekv32maas",
+   "rates": {
+    "input": 0.56,
+    "output": 1.68,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "vertex-partner",
+   "model": "qwen/qwen3-next-80b-a3b-thinking-maas",
+   "base": "qwen3next80ba3bthinkingmaas",
+   "rates": {
+    "input": 0.15,
+    "output": 1.2,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "vertex-partner",
+   "model": "qwen/qwen3-next-80b-a3b-instruct-maas",
+   "base": "qwen3next80ba3binstructmaas",
+   "rates": {
+    "input": 0.15,
+    "output": 1.2,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "vertex-partner",
+   "model": "zai-org/glm-5-maas",
+   "base": "glm5maas",
+   "rates": {
+    "input": 1,
+    "output": 3.1999999999999997,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "volcengine-ark",
+   "model": "Doubao-Seed-2.0-Code",
+   "base": "doubaoseed20code*doubaoseed20codepreview",
+   "rates": {
+    "input": 0.4822,
+    "output": 2.411,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "volcengine-ark",
+   "model": "Doubao-Seed-2.0-pro",
+   "base": "doubaoseed20pro",
+   "rates": {
+    "input": 0.4822,
+    "output": 2.411,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "ws",
+   "model": "swe-1.6-fast",
+   "base": "swe16",
+   "rates": {
+    "input": 0.5,
+    "output": 2.5,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "ws",
+   "model": "swe-1.6",
+   "base": "swe16",
+   "rates": {
+    "input": 0.5,
+    "output": 2.5,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "ws",
+   "model": "claude-opus-4.7-max",
+   "base": "claudeopus47",
+   "rates": {
+    "input": 5,
+    "output": 25,
+    "cached": 0.5
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "ws",
+   "model": "claude-opus-4.7-xhigh",
+   "base": "claudeopus47",
+   "rates": {
+    "input": 5,
+    "output": 25,
+    "cached": 0.5
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "ws",
+   "model": "claude-opus-4.7-high",
+   "base": "claudeopus47",
+   "rates": {
+    "input": 5,
+    "output": 25,
+    "cached": 0.5
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "ws",
+   "model": "claude-opus-4.7-medium",
+   "base": "claudeopus47",
+   "rates": {
+    "input": 5,
+    "output": 25,
+    "cached": 0.5
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "ws",
+   "model": "claude-opus-4.7-low",
+   "base": "claudeopus47",
+   "rates": {
+    "input": 5,
+    "output": 25,
+    "cached": 0.5
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "ws",
+   "model": "claude-opus-4.7-review",
+   "base": "claudeopus47",
+   "rates": {
+    "input": 5,
+    "output": 25,
+    "cached": 0.5
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "ws",
+   "model": "claude-sonnet-4.6-thinking",
+   "base": "claudesonnet46",
+   "rates": {
+    "input": 3,
+    "output": 15,
+    "cached": 0.30000000000000004
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "ws",
+   "model": "claude-opus-4.5-thinking",
+   "base": "claudeopus45",
+   "rates": {
+    "input": 5,
+    "output": 25,
+    "cached": 0.5
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "ws",
+   "model": "claude-sonnet-4.5-thinking",
+   "base": "claudesonnet45",
+   "rates": {
+    "input": 3,
+    "output": 15,
+    "cached": 0.3
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.5-xhigh-fast",
+   "base": "gpt55",
+   "rates": {
+    "input": 5,
+    "output": 30,
+    "cached": 0.5
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.5-xhigh",
+   "base": "gpt55",
+   "rates": {
+    "input": 5,
+    "output": 30,
+    "cached": 0.5
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.5-high-fast",
+   "base": "gpt55",
+   "rates": {
+    "input": 5,
+    "output": 30,
+    "cached": 0.5
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.5-high",
+   "base": "gpt55",
+   "rates": {
+    "input": 5,
+    "output": 30,
+    "cached": 0.5
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.5-medium-fast",
+   "base": "gpt55",
+   "rates": {
+    "input": 5,
+    "output": 30,
+    "cached": 0.5
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.5-medium",
+   "base": "gpt55",
+   "rates": {
+    "input": 5,
+    "output": 30,
+    "cached": 0.5
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.5-low-fast",
+   "base": "gpt55",
+   "rates": {
+    "input": 5,
+    "output": 30,
+    "cached": 0.5
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.5-low",
+   "base": "gpt55",
+   "rates": {
+    "input": 5,
+    "output": 30,
+    "cached": 0.5
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.4-xhigh-fast",
+   "base": "gpt54",
+   "rates": {
+    "input": 2.5,
+    "output": 15,
+    "cached": 0.25
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.4-xhigh",
+   "base": "gpt54",
+   "rates": {
+    "input": 2.5,
+    "output": 15,
+    "cached": 0.25
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.4-high-fast",
+   "base": "gpt54high",
+   "rates": {
+    "input": 2.5,
+    "output": 15,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.4-high",
+   "base": "gpt54high",
+   "rates": {
+    "input": 2.5,
+    "output": 15,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.4-medium-fast",
+   "base": "gpt54",
+   "rates": {
+    "input": 2.5,
+    "output": 15,
+    "cached": 0.25
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.4-medium",
+   "base": "gpt54",
+   "rates": {
+    "input": 2.5,
+    "output": 15,
+    "cached": 0.25
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.4-low-fast",
+   "base": "gpt54low",
+   "rates": {
+    "input": 2.5,
+    "output": 15,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.4-low",
+   "base": "gpt54low",
+   "rates": {
+    "input": 2.5,
+    "output": 15,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.4-mini-xhigh",
+   "base": "gpt54mini",
+   "rates": {
+    "input": 0.75,
+    "output": 4.5,
+    "cached": 0.075
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.4-mini-high",
+   "base": "gpt54mini",
+   "rates": {
+    "input": 0.75,
+    "output": 4.5,
+    "cached": 0.075
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.4-mini-medium",
+   "base": "gpt54mini",
+   "rates": {
+    "input": 0.75,
+    "output": 4.5,
+    "cached": 0.075
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.4-mini-low",
+   "base": "gpt54mini",
+   "rates": {
+    "input": 0.75,
+    "output": 4.5,
+    "cached": 0.075
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.3-codex-xhigh-fast",
+   "base": "gpt53codex",
+   "rates": {
+    "input": 1.75,
+    "output": 14,
+    "cached": 0.175
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.3-codex-xhigh",
+   "base": "gpt53codex",
+   "rates": {
+    "input": 1.75,
+    "output": 14,
+    "cached": 0.175
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.3-codex-high-fast",
+   "base": "gpt53codex",
+   "rates": {
+    "input": 1.75,
+    "output": 14,
+    "cached": 0.175
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.3-codex-high",
+   "base": "gpt53codex",
+   "rates": {
+    "input": 1.75,
+    "output": 14,
+    "cached": 0.175
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.3-codex-medium-fast",
+   "base": "gpt53codex",
+   "rates": {
+    "input": 1.75,
+    "output": 14,
+    "cached": 0.175
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.3-codex-medium",
+   "base": "gpt53codex",
+   "rates": {
+    "input": 1.75,
+    "output": 14,
+    "cached": 0.175
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.3-codex-low-fast",
+   "base": "gpt53codex",
+   "rates": {
+    "input": 1.75,
+    "output": 14,
+    "cached": 0.175
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.3-codex-low",
+   "base": "gpt53codex",
+   "rates": {
+    "input": 1.75,
+    "output": 14,
+    "cached": 0.175
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.2-xhigh",
+   "base": "gpt52",
+   "rates": {
+    "input": 1.75,
+    "output": 14,
+    "cached": 0.175
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.2-high",
+   "base": "gpt52",
+   "rates": {
+    "input": 1.75,
+    "output": 14,
+    "cached": 0.175
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.2-medium",
+   "base": "gpt52",
+   "rates": {
+    "input": 1.75,
+    "output": 14,
+    "cached": 0.175
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.2-low",
+   "base": "gpt52",
+   "rates": {
+    "input": 1.75,
+    "output": 14,
+    "cached": 0.175
+   },
+   "src": "gateway:gh"
+  },
+  {
+   "provider": "xai",
+   "model": "grok-4",
+   "base": "grok4",
+   "rates": {
+    "input": 3,
+    "output": 15,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "xai",
+   "model": "grok-4-fast-reasoning",
+   "base": "grok4fastreasoning",
+   "rates": {
+    "input": 0.19999999999999998,
+    "output": 0.5,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "xai",
+   "model": "grok-code-fast-1",
+   "base": "grokcodefast1",
+   "rates": {
+    "input": 0.19999999999999998,
+    "output": 1.5,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "xai",
+   "model": "grok-3",
+   "base": "grok3",
+   "rates": {
+    "input": 3,
+    "output": 15,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "xiaomi-mimo",
+   "model": "mimo-v2.5-tts",
+   "base": "mimov25",
+   "rates": {
+    "input": 0.4,
+    "output": 2,
+    "cached": 0.08
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "xiaomi-tokenplan",
+   "model": "mimo-v2.5-tts",
+   "base": "mimov25",
+   "rates": {
+    "input": 0.4,
+    "output": 2,
+    "cached": 0.08
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "xiaomi-tokenplan",
+   "model": "mimo-v2.5-tts-voiceclone",
+   "base": "mimov25",
+   "rates": {
+    "input": 0.4,
+    "output": 2,
+    "cached": 0.08
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "xiaomi-tokenplan",
+   "model": "mimo-v2.5-tts-voicedesign",
+   "base": "mimov25",
+   "rates": {
+    "input": 0.4,
+    "output": 2,
+    "cached": 0.08
+   },
+   "src": "gateway:tokenrouter"
+  },
+  {
+   "provider": "elevenlabs-tts-models",
+   "model": "eleven_multilingual_v2",
+   "base": "elevenmultilingualv2",
+   "rates": {
+    "input": 180,
+    "output": 180,
+    "cached": 0
+   },
+   "src": "litellm"
+  },
+  {
+   "provider": "xiaomi-mimo-tts-models",
+   "model": "mimo-v2.5-tts",
+   "base": "mimov25",
+   "rates": {
+    "input": 0.4,
+    "output": 2,
+    "cached": 0.08
+   },
+   "src": "gateway:tokenrouter"
+  }
+ ],
+ "unresolved": [
+  {
+   "provider": "agnes-ai-cn",
+   "model": "agnes-image-2.1-flash",
+   "name": "Agnes Image 2.1 Flash",
+   "fullModel": "agnes-ai-cn/agnes-image-2.1-flash",
+   "routedModel": "agnes-ai-cn/agnes-image-2.1-flash",
+   "alias": "agnes-image-2.1-flash",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "agnes-ai-cn",
+   "model": "agnes-image-2.5-flash",
+   "name": "Agnes Image 2.5 Flash",
+   "fullModel": "agnes-ai-cn/agnes-image-2.5-flash",
+   "routedModel": "agnes-ai-cn/agnes-image-2.5-flash",
+   "alias": "agnes-image-2.5-flash",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "agnes-ai",
+   "model": "agnes-3.0-flash",
+   "name": "Agnes 3.0 Flash",
+   "fullModel": "agnes-ai/agnes-3.0-flash",
+   "routedModel": "agnes-ai/agnes-3.0-flash",
+   "alias": "agnes-3.0-flash",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "agnes-ai",
+   "model": "agnes-image-2.0-flash",
+   "name": "Agnes Image 2.0 Flash",
+   "fullModel": "agnes-ai/agnes-image-2.0-flash",
+   "routedModel": "agnes-ai/agnes-image-2.0-flash",
+   "alias": "agnes-image-2.0-flash",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "agnes-ai",
+   "model": "agnes-image-2.1-flash",
+   "name": "Agnes Image 2.1 Flash",
+   "fullModel": "agnes-ai/agnes-image-2.1-flash",
+   "routedModel": "agnes-ai/agnes-image-2.1-flash",
+   "alias": "agnes-image-2.1-flash",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "agnes-ai",
+   "model": "agnes-image-2.5-flash",
+   "name": "Agnes Image 2.5 Flash",
+   "fullModel": "agnes-ai/agnes-image-2.5-flash",
+   "routedModel": "agnes-ai/agnes-image-2.5-flash",
+   "alias": "agnes-image-2.5-flash",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "alicode-intl",
+   "model": "qwen3.5-plus",
+   "name": "Qwen3.5 Plus",
+   "fullModel": "alicode-intl/qwen3.5-plus",
+   "routedModel": "alicode-intl/qwen3.5-plus",
+   "alias": "qwen3.5-plus",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 65536
+   }
+  },
+  {
+   "provider": "alicode-intl",
+   "model": "qwen3-coder-plus",
+   "name": "Qwen3 Coder Plus",
+   "fullModel": "alicode-intl/qwen3-coder-plus",
+   "routedModel": "alicode-intl/qwen3-coder-plus",
+   "alias": "qwen3-coder-plus",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "alicode",
+   "model": "qwen3.5-plus",
+   "name": "Qwen3.5 Plus",
+   "fullModel": "alicode/qwen3.5-plus",
+   "routedModel": "alicode/qwen3.5-plus",
+   "alias": "qwen3.5-plus",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 65536
+   }
+  },
+  {
+   "provider": "alicode",
+   "model": "qwen3-max-2026-01-23",
+   "name": "Qwen3 Max",
+   "fullModel": "alicode/qwen3-max-2026-01-23",
+   "routedModel": "alicode/qwen3-max-2026-01-23",
+   "alias": "qwen3-max-2026-01-23",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 65536
+   }
+  },
+  {
+   "provider": "alicode",
+   "model": "qwen3-coder-plus",
+   "name": "Qwen3 Coder Plus",
+   "fullModel": "alicode/qwen3-coder-plus",
+   "routedModel": "alicode/qwen3-coder-plus",
+   "alias": "qwen3-coder-plus",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "alims-intl",
+   "model": "qwen3.5-plus",
+   "name": "Qwen3.5 Plus",
+   "fullModel": "alims-intl/qwen3.5-plus",
+   "routedModel": "alims-intl/qwen3.5-plus",
+   "alias": "qwen3.5-plus",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 65536
+   }
+  },
+  {
+   "provider": "alims-intl",
+   "model": "qwen3-coder-plus",
+   "name": "Qwen3 Coder Plus",
+   "fullModel": "alims-intl/qwen3-coder-plus",
+   "routedModel": "alims-intl/qwen3-coder-plus",
+   "alias": "qwen3-coder-plus",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "anthropic",
+   "model": "claude-sonnet-4-20250514",
+   "name": "Claude Sonnet 4",
+   "fullModel": "anthropic/claude-sonnet-4-20250514",
+   "routedModel": "anthropic/claude-sonnet-4-20250514",
+   "alias": "claude-sonnet-4-20250514",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "anthropic",
+   "model": "claude-opus-4-20250514",
+   "name": "Claude Opus 4",
+   "fullModel": "anthropic/claude-opus-4-20250514",
+   "routedModel": "anthropic/claude-opus-4-20250514",
+   "alias": "claude-opus-4-20250514",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "ag",
+   "model": "gemini-3-flash-agent",
+   "name": "Gemini 3.5 Flash (High)",
+   "fullModel": "ag/gemini-3-flash-agent",
+   "routedModel": "ag/gemini-3-flash-agent",
+   "alias": "gemini-3-flash-agent",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 1048576,
+    "maxOutput": 65536
+   }
+  },
+  {
+   "provider": "ag",
+   "model": "gemini-3.5-flash-extra-low",
+   "name": "Gemini 3.5 Flash (Low)",
+   "fullModel": "ag/gemini-3.5-flash-extra-low",
+   "routedModel": "ag/gemini-3.5-flash-extra-low",
+   "alias": "gemini-3.5-flash-extra-low",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 1048576,
+    "maxOutput": 65536
+   }
+  },
+  {
+   "provider": "ag",
+   "model": "gemini-pro-agent",
+   "name": "Gemini 3.1 Pro (High)",
+   "fullModel": "ag/gemini-pro-agent",
+   "routedModel": "ag/gemini-pro-agent",
+   "alias": "gemini-pro-agent",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 1048576,
+    "maxOutput": 65535
+   }
+  },
+  {
+   "provider": "ag",
+   "model": "imagen-3.0-generate-002",
+   "name": "Imagen 3",
+   "fullModel": "ag/imagen-3.0-generate-002",
+   "routedModel": "ag/imagen-3.0-generate-002",
+   "alias": "imagen-3.0-generate-002",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "assemblyai",
+   "model": "universal-3-pro",
+   "name": "Universal 3 Pro",
+   "fullModel": "assemblyai/universal-3-pro",
+   "routedModel": "aai/universal-3-pro",
+   "alias": "universal-3-pro",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "assemblyai",
+   "model": "universal-2",
+   "name": "Universal 2",
+   "fullModel": "assemblyai/universal-2",
+   "routedModel": "aai/universal-2",
+   "alias": "universal-2",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "assemblyai",
+   "model": "best",
+   "name": "Best (Nano + Universal)",
+   "fullModel": "assemblyai/best",
+   "routedModel": "aai/best",
+   "alias": "best",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "assemblyai",
+   "model": "nano",
+   "name": "Nano (Fast)",
+   "fullModel": "assemblyai/nano",
+   "routedModel": "aai/nano",
+   "alias": "nano",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "atria",
+   "model": "Atria-Dawn-Preview",
+   "name": "Atria Dawn Preview",
+   "fullModel": "atria/Atria-Dawn-Preview",
+   "routedModel": "atria/Atria-Dawn-Preview",
+   "alias": "Atria-Dawn-Preview",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "bzl",
+   "model": "auto:free",
+   "name": "Auto Free (Zero Cost)",
+   "fullModel": "bzl/auto:free",
+   "routedModel": "bzl/auto:free",
+   "alias": "auto:free",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "black-forest-labs",
+   "model": "flux-pro-1.1",
+   "name": "FLUX Pro 1.1",
+   "fullModel": "black-forest-labs/flux-pro-1.1",
+   "routedModel": "bfl/flux-pro-1.1",
+   "alias": "flux-pro-1.1",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "black-forest-labs",
+   "model": "flux-pro-1.1-ultra",
+   "name": "FLUX Pro 1.1 Ultra",
+   "fullModel": "black-forest-labs/flux-pro-1.1-ultra",
+   "routedModel": "bfl/flux-pro-1.1-ultra",
+   "alias": "flux-pro-1.1-ultra",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "black-forest-labs",
+   "model": "flux-pro",
+   "name": "FLUX Pro",
+   "fullModel": "black-forest-labs/flux-pro",
+   "routedModel": "bfl/flux-pro",
+   "alias": "flux-pro",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "black-forest-labs",
+   "model": "flux-dev",
+   "name": "FLUX Dev",
+   "fullModel": "black-forest-labs/flux-dev",
+   "routedModel": "bfl/flux-dev",
+   "alias": "flux-dev",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "byteplus",
+   "model": "seed-2-0-lite-260228",
+   "name": "Seed 2.0 Lite",
+   "fullModel": "byteplus/seed-2-0-lite-260228",
+   "routedModel": "bpm/seed-2-0-lite-260228",
+   "alias": "seed-2-0-lite-260228",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 256000,
+    "maxOutput": 131072
+   }
+  },
+  {
+   "provider": "cloudflare-ai",
+   "model": "@cf/meta/llama-3.1-8b-instruct-awq",
+   "name": "Llama 3.1 8B Instruct AWQ",
+   "fullModel": "cloudflare-ai/@cf/meta/llama-3.1-8b-instruct-awq",
+   "routedModel": "cf/@cf/meta/llama-3.1-8b-instruct-awq",
+   "alias": "@cf/meta/llama-3.1-8b-instruct-awq",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 128000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "cloudflare-ai",
+   "model": "@cf/black-forest-labs/flux-2-klein-9b",
+   "name": "FLUX.2 Klein 9B",
+   "fullModel": "cloudflare-ai/@cf/black-forest-labs/flux-2-klein-9b",
+   "routedModel": "cf/@cf/black-forest-labs/flux-2-klein-9b",
+   "alias": "@cf/black-forest-labs/flux-2-klein-9b",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "cloudflare-ai",
+   "model": "@cf/black-forest-labs/flux-2-klein-4b",
+   "name": "FLUX.2 Klein 4B",
+   "fullModel": "cloudflare-ai/@cf/black-forest-labs/flux-2-klein-4b",
+   "routedModel": "cf/@cf/black-forest-labs/flux-2-klein-4b",
+   "alias": "@cf/black-forest-labs/flux-2-klein-4b",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "cloudflare-ai",
+   "model": "@cf/black-forest-labs/flux-2-dev",
+   "name": "FLUX.2 Dev",
+   "fullModel": "cloudflare-ai/@cf/black-forest-labs/flux-2-dev",
+   "routedModel": "cf/@cf/black-forest-labs/flux-2-dev",
+   "alias": "@cf/black-forest-labs/flux-2-dev",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "cloudflare-ai",
+   "model": "@cf/leonardo/lucid-origin",
+   "name": "Lucid Origin",
+   "fullModel": "cloudflare-ai/@cf/leonardo/lucid-origin",
+   "routedModel": "cf/@cf/leonardo/lucid-origin",
+   "alias": "@cf/leonardo/lucid-origin",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "cloudflare-ai",
+   "model": "@cf/leonardo/phoenix-1.0",
+   "name": "Phoenix 1.0",
+   "fullModel": "cloudflare-ai/@cf/leonardo/phoenix-1.0",
+   "routedModel": "cf/@cf/leonardo/phoenix-1.0",
+   "alias": "@cf/leonardo/phoenix-1.0",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "cloudflare-ai",
+   "model": "@cf/bytedance/stable-diffusion-xl-lightning",
+   "name": "SDXL Lightning",
+   "fullModel": "cloudflare-ai/@cf/bytedance/stable-diffusion-xl-lightning",
+   "routedModel": "cf/@cf/bytedance/stable-diffusion-xl-lightning",
+   "alias": "@cf/bytedance/stable-diffusion-xl-lightning",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "cloudflare-ai",
+   "model": "@cf/lykon/dreamshaper-8-lcm",
+   "name": "DreamShaper 8 LCM",
+   "fullModel": "cloudflare-ai/@cf/lykon/dreamshaper-8-lcm",
+   "routedModel": "cf/@cf/lykon/dreamshaper-8-lcm",
+   "alias": "@cf/lykon/dreamshaper-8-lcm",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "cloudflare-ai",
+   "model": "@cf/runwayml/stable-diffusion-v1-5-img2img",
+   "name": "Stable Diffusion v1.5 Img2Img",
+   "fullModel": "cloudflare-ai/@cf/runwayml/stable-diffusion-v1-5-img2img",
+   "routedModel": "cf/@cf/runwayml/stable-diffusion-v1-5-img2img",
+   "alias": "@cf/runwayml/stable-diffusion-v1-5-img2img",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "cloudflare-ai",
+   "model": "@cf/runwayml/stable-diffusion-v1-5-inpainting",
+   "name": "Stable Diffusion v1.5 Inpainting",
+   "fullModel": "cloudflare-ai/@cf/runwayml/stable-diffusion-v1-5-inpainting",
+   "routedModel": "cf/@cf/runwayml/stable-diffusion-v1-5-inpainting",
+   "alias": "@cf/runwayml/stable-diffusion-v1-5-inpainting",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "cloudflare-ai",
+   "model": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+   "name": "SDXL Base 1.0",
+   "fullModel": "cloudflare-ai/@cf/stabilityai/stable-diffusion-xl-base-1.0",
+   "routedModel": "cf/@cf/stabilityai/stable-diffusion-xl-base-1.0",
+   "alias": "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "cbcn",
+   "model": "space-bunny",
+   "name": "Space-Bunny",
+   "fullModel": "cbcn/space-bunny",
+   "routedModel": "cbcn/space-bunny",
+   "alias": "space-bunny",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "cbcn",
+   "model": "kimi-k2.7",
+   "name": "Kimi-K2.7-Code",
+   "fullModel": "cbcn/kimi-k2.7",
+   "routedModel": "cbcn/kimi-k2.7",
+   "alias": "kimi-k2.7",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 256000,
+    "maxOutput": 32000
+   }
+  },
+  {
+   "provider": "cx",
+   "model": "gpt-reserve",
+   "name": "GPT Reserve",
+   "fullModel": "cx/gpt-reserve",
+   "routedModel": "cx/gpt-reserve",
+   "alias": "gpt-reserve",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 272000,
+    "maxOutput": 128000
+   }
+  },
+  {
+   "provider": "cx",
+   "model": "gpt-image-2.5",
+   "name": "GPT Image 2.5",
+   "fullModel": "cx/gpt-image-2.5",
+   "routedModel": "cx/gpt-image-2.5",
+   "alias": "gpt-image-2.5",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "cx",
+   "model": "gpt-5.3-image",
+   "name": "GPT 5.3 Image",
+   "fullModel": "cx/gpt-5.3-image",
+   "routedModel": "cx/gpt-5.3-image",
+   "alias": "gpt-5.3-image",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "comfyui",
+   "model": "stable-diffusion-v1-5",
+   "name": "Stable Diffusion v1.5",
+   "fullModel": "comfyui/stable-diffusion-v1-5",
+   "routedModel": "comfyui/stable-diffusion-v1-5",
+   "alias": "stable-diffusion-v1-5",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "comfyui",
+   "model": "flux-dev",
+   "name": "FLUX Dev",
+   "fullModel": "comfyui/flux-dev",
+   "routedModel": "comfyui/flux-dev",
+   "alias": "flux-dev",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "comfyui",
+   "model": "sdxl",
+   "name": "SDXL",
+   "fullModel": "comfyui/sdxl",
+   "routedModel": "comfyui/sdxl",
+   "alias": "sdxl",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "commandcode",
+   "model": "minimax/minimax-m2.7-free",
+   "name": "MiniMax M2.7 (Free)",
+   "fullModel": "commandcode/minimax/minimax-m2.7-free",
+   "routedModel": "cmc/minimax/minimax-m2.7-free",
+   "alias": "minimax/minimax-m2.7-free",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 204800,
+    "maxOutput": 131072
+   }
+  },
+  {
+   "provider": "commandcode",
+   "model": "minimax/minimax-m3-free",
+   "name": "MiniMax M3 (Free)",
+   "fullModel": "commandcode/minimax/minimax-m3-free",
+   "routedModel": "cmc/minimax/minimax-m3-free",
+   "alias": "minimax/minimax-m3-free",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 131072
+   }
+  },
+  {
+   "provider": "commandcode",
+   "model": "tencent/hy3-paid",
+   "name": "Tencent Hy3",
+   "fullModel": "commandcode/tencent/hy3-paid",
+   "routedModel": "cmc/tencent/hy3-paid",
+   "alias": "tencent/hy3-paid",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 262144,
+    "maxOutput": 262144
+   }
+  },
+  {
+   "provider": "cu",
+   "model": "default",
+   "name": "Auto (Server Picks)",
+   "fullModel": "cu/default",
+   "routedModel": "cu/default",
+   "alias": "default",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "cu",
+   "model": "claude-4.5-opus-high-thinking",
+   "name": "Claude 4.5 Opus High Thinking",
+   "fullModel": "cu/claude-4.5-opus-high-thinking",
+   "routedModel": "cu/claude-4.5-opus-high-thinking",
+   "alias": "claude-4.5-opus-high-thinking",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "cu",
+   "model": "claude-4.5-opus-high",
+   "name": "Claude 4.5 Opus High",
+   "fullModel": "cu/claude-4.5-opus-high",
+   "routedModel": "cu/claude-4.5-opus-high",
+   "alias": "claude-4.5-opus-high",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "cu",
+   "model": "claude-4.5-opus",
+   "name": "Claude 4.5 Opus",
+   "fullModel": "cu/claude-4.5-opus",
+   "routedModel": "cu/claude-4.5-opus",
+   "alias": "claude-4.5-opus",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "cu",
+   "model": "claude-4.6-opus-max",
+   "name": "Claude 4.6 Opus Max",
+   "fullModel": "cu/claude-4.6-opus-max",
+   "routedModel": "cu/claude-4.6-opus-max",
+   "alias": "claude-4.6-opus-max",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "cu",
+   "model": "claude-4.6-sonnet-medium-thinking",
+   "name": "Claude 4.6 Sonnet Medium Thinking",
+   "fullModel": "cu/claude-4.6-sonnet-medium-thinking",
+   "routedModel": "cu/claude-4.6-sonnet-medium-thinking",
+   "alias": "claude-4.6-sonnet-medium-thinking",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "deepgram",
+   "model": "nova-3",
+   "name": "Nova 3",
+   "fullModel": "deepgram/nova-3",
+   "routedModel": "dg/nova-3",
+   "alias": "nova-3",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "deepgram",
+   "model": "nova-2",
+   "name": "Nova 2",
+   "fullModel": "deepgram/nova-2",
+   "routedModel": "dg/nova-2",
+   "alias": "nova-2",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "deepgram",
+   "model": "whisper-large",
+   "name": "Whisper Large",
+   "fullModel": "deepgram/whisper-large",
+   "routedModel": "dg/whisper-large",
+   "alias": "whisper-large",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "deepgram",
+   "model": "nova",
+   "name": "Nova",
+   "fullModel": "deepgram/nova",
+   "routedModel": "dg/nova",
+   "alias": "nova",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "deepseek",
+   "model": "deepseek-v4-pro-none",
+   "name": "DeepSeek V4 Pro No Thinking",
+   "fullModel": "deepseek/deepseek-v4-pro-none",
+   "routedModel": "ds/deepseek-v4-pro-none",
+   "alias": "deepseek-v4-pro-none",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 384000
+   }
+  },
+  {
+   "provider": "dv",
+   "model": "swe-1.5-fast",
+   "name": "SWE-1.5 Fast",
+   "fullModel": "dv/swe-1.5-fast",
+   "routedModel": "dv/swe-1.5-fast",
+   "alias": "swe-1.5-fast",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "dv",
+   "model": "swe-1.5",
+   "name": "SWE-1.5",
+   "fullModel": "dv/swe-1.5",
+   "routedModel": "dv/swe-1.5",
+   "alias": "swe-1.5",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "dv",
+   "model": "claude-sonnet-4.6-thinking-1m",
+   "name": "Claude Sonnet 4.6 Thinking 1M",
+   "fullModel": "dv/claude-sonnet-4.6-thinking-1m",
+   "routedModel": "dv/claude-sonnet-4.6-thinking-1m",
+   "alias": "claude-sonnet-4.6-thinking-1m",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "dv",
+   "model": "gemini-3.0-flash-high",
+   "name": "Gemini 3 Flash High",
+   "fullModel": "dv/gemini-3.0-flash-high",
+   "routedModel": "dv/gemini-3.0-flash-high",
+   "alias": "gemini-3.0-flash-high",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 1048576,
+    "maxOutput": 65536
+   }
+  },
+  {
+   "provider": "dv",
+   "model": "deepseek-v4",
+   "name": "DeepSeek V4",
+   "fullModel": "dv/deepseek-v4",
+   "routedModel": "dv/deepseek-v4",
+   "alias": "deepseek-v4",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 384000
+   }
+  },
+  {
+   "provider": "dots",
+   "model": "dots3-note-prev",
+   "name": "Dots3 Note Prev",
+   "fullModel": "dots/dots3-note-prev",
+   "routedModel": "dots/dots3-note-prev",
+   "alias": "dots3-note-prev",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "drex",
+   "model": "drex-v1.0",
+   "name": "Drex v1.0",
+   "fullModel": "drex/drex-v1.0",
+   "routedModel": "drex/drex-v1.0",
+   "alias": "drex-v1.0",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "drex",
+   "model": "drex-v1.1",
+   "name": "Drex v1.1",
+   "fullModel": "drex/drex-v1.1",
+   "routedModel": "drex/drex-v1.1",
+   "alias": "drex-v1.1",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "drex",
+   "model": "drex-v1.5",
+   "name": "Drex v1.5",
+   "fullModel": "drex/drex-v1.5",
+   "routedModel": "drex/drex-v1.5",
+   "alias": "drex-v1.5",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "drex",
+   "model": "drex-latest",
+   "name": "Drex Latest",
+   "fullModel": "drex/drex-latest",
+   "routedModel": "drex/drex-latest",
+   "alias": "drex-latest",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "fal-ai",
+   "model": "fal-ai/flux/schnell",
+   "name": "FLUX Schnell",
+   "fullModel": "fal-ai/fal-ai/flux/schnell",
+   "routedModel": "fal/fal-ai/flux/schnell",
+   "alias": "fal-ai/flux/schnell",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "fal-ai",
+   "model": "fal-ai/flux/dev",
+   "name": "FLUX Dev",
+   "fullModel": "fal-ai/fal-ai/flux/dev",
+   "routedModel": "fal/fal-ai/flux/dev",
+   "alias": "fal-ai/flux/dev",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "fal-ai",
+   "model": "fal-ai/flux-pro/v1.1",
+   "name": "FLUX Pro v1.1",
+   "fullModel": "fal-ai/fal-ai/flux-pro/v1.1",
+   "routedModel": "fal/fal-ai/flux-pro/v1.1",
+   "alias": "fal-ai/flux-pro/v1.1",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "fal-ai",
+   "model": "fal-ai/flux-pro/v1.1-ultra",
+   "name": "FLUX Pro v1.1 Ultra",
+   "fullModel": "fal-ai/fal-ai/flux-pro/v1.1-ultra",
+   "routedModel": "fal/fal-ai/flux-pro/v1.1-ultra",
+   "alias": "fal-ai/flux-pro/v1.1-ultra",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "fal-ai",
+   "model": "fal-ai/recraft-v3",
+   "name": "Recraft V3",
+   "fullModel": "fal-ai/fal-ai/recraft-v3",
+   "routedModel": "fal/fal-ai/recraft-v3",
+   "alias": "fal-ai/recraft-v3",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "fal-ai",
+   "model": "fal-ai/ideogram/v2",
+   "name": "Ideogram V2",
+   "fullModel": "fal-ai/fal-ai/ideogram/v2",
+   "routedModel": "fal/fal-ai/ideogram/v2",
+   "alias": "fal-ai/ideogram/v2",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "fal-ai",
+   "model": "fal-ai/stable-diffusion-v35-large",
+   "name": "SD 3.5 Large",
+   "fullModel": "fal-ai/fal-ai/stable-diffusion-v35-large",
+   "routedModel": "fal/fal-ai/stable-diffusion-v35-large",
+   "alias": "fal-ai/stable-diffusion-v35-large",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gemini",
+   "model": "gemini-2.5-flash-native-audio-preview-09-17",
+   "name": "Gemini Live Transcription (Realtime)",
+   "fullModel": "gemini/gemini-2.5-flash-native-audio-preview-09-17",
+   "routedModel": "gemini/gemini-2.5-flash-native-audio-preview-09-17",
+   "alias": "gemini-2.5-flash-native-audio-preview-09-17",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 1048576,
+    "maxOutput": 65536
+   }
+  },
+  {
+   "provider": "gemini",
+   "model": "embedding-001",
+   "name": "Embedding 001",
+   "fullModel": "gemini/embedding-001",
+   "routedModel": "gemini/embedding-001",
+   "alias": "embedding-001",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gh",
+   "model": "oswe-vscode-prime",
+   "name": "Raptor Mini",
+   "fullModel": "gh/oswe-vscode-prime",
+   "routedModel": "gh/oswe-vscode-prime",
+   "alias": "oswe-vscode-prime",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gh",
+   "model": "goldeneye-free-auto",
+   "name": "GoldenEye",
+   "fullModel": "gh/goldeneye-free-auto",
+   "routedModel": "gh/goldeneye-free-auto",
+   "alias": "goldeneye-free-auto",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "grok-web",
+   "model": "grok-4-mini",
+   "name": "Grok 4 Mini (Thinking)",
+   "fullModel": "grok-web/grok-4-mini",
+   "routedModel": "gw/grok-4-mini",
+   "alias": "grok-4-mini",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 256000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "grok-web",
+   "model": "grok-4-heavy",
+   "name": "Grok 4 Heavy (SuperGrok)",
+   "fullModel": "grok-web/grok-4-heavy",
+   "routedModel": "gw/grok-4-heavy",
+   "alias": "grok-4-heavy",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 256000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "grok-web",
+   "model": "grok-4.1-mini",
+   "name": "Grok 4.1 Mini (Thinking)",
+   "fullModel": "grok-web/grok-4.1-mini",
+   "routedModel": "gw/grok-4.1-mini",
+   "alias": "grok-4.1-mini",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 256000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "grok-web",
+   "model": "grok-4.1-expert",
+   "name": "Grok 4.1 Expert",
+   "fullModel": "grok-web/grok-4.1-expert",
+   "routedModel": "gw/grok-4.1-expert",
+   "alias": "grok-4.1-expert",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 256000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "grok-web",
+   "model": "grok-4.1-thinking",
+   "name": "Grok 4.1 Thinking",
+   "fullModel": "grok-web/grok-4.1-thinking",
+   "routedModel": "gw/grok-4.1-thinking",
+   "alias": "grok-4.1-thinking",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 256000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "grok-web",
+   "model": "grok-4.2",
+   "name": "Grok 4.2 (4.20 Beta)",
+   "fullModel": "grok-web/grok-4.2",
+   "routedModel": "gw/grok-4.2",
+   "alias": "grok-4.2",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 256000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "groq",
+   "model": "llama-3.3-70b-versatile",
+   "name": "Llama 3.3 70B",
+   "fullModel": "groq/llama-3.3-70b-versatile",
+   "routedModel": "groq/llama-3.3-70b-versatile",
+   "alias": "llama-3.3-70b-versatile",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 128000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "groq",
+   "model": "whisper-large-v3",
+   "name": "Whisper Large v3",
+   "fullModel": "groq/whisper-large-v3",
+   "routedModel": "groq/whisper-large-v3",
+   "alias": "whisper-large-v3",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "groq",
+   "model": "whisper-large-v3-turbo",
+   "name": "Whisper Large v3 Turbo",
+   "fullModel": "groq/whisper-large-v3-turbo",
+   "routedModel": "groq/whisper-large-v3-turbo",
+   "alias": "whisper-large-v3-turbo",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "groq",
+   "model": "distil-whisper-large-v3-en",
+   "name": "Distil Whisper Large v3 EN",
+   "fullModel": "groq/distil-whisper-large-v3-en",
+   "routedModel": "groq/distil-whisper-large-v3-en",
+   "alias": "distil-whisper-large-v3-en",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "huggingface",
+   "model": "stabilityai/stable-diffusion-xl-base-1.0",
+   "name": "SDXL Base 1.0",
+   "fullModel": "huggingface/stabilityai/stable-diffusion-xl-base-1.0",
+   "routedModel": "hf/stabilityai/stable-diffusion-xl-base-1.0",
+   "alias": "stabilityai/stable-diffusion-xl-base-1.0",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "huggingface",
+   "model": "openai/whisper-large-v3",
+   "name": "Whisper Large v3 (HF)",
+   "fullModel": "huggingface/openai/whisper-large-v3",
+   "routedModel": "hf/openai/whisper-large-v3",
+   "alias": "openai/whisper-large-v3",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "huggingface",
+   "model": "openai/whisper-small",
+   "name": "Whisper Small (HF)",
+   "fullModel": "huggingface/openai/whisper-small",
+   "routedModel": "hf/openai/whisper-small",
+   "alias": "openai/whisper-small",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "if",
+   "model": "qwen3-coder-plus",
+   "name": "Qwen3 Coder Plus",
+   "fullModel": "if/qwen3-coder-plus",
+   "routedModel": "if/qwen3-coder-plus",
+   "alias": "qwen3-coder-plus",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "if",
+   "model": "qwen3-vl-plus",
+   "name": "Qwen3 VL Plus",
+   "fullModel": "if/qwen3-vl-plus",
+   "routedModel": "if/qwen3-vl-plus",
+   "alias": "qwen3-vl-plus",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 262144,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "if",
+   "model": "qwen3-235b-a22b-instruct",
+   "name": "Qwen3 235B A22B Instruct",
+   "fullModel": "if/qwen3-235b-a22b-instruct",
+   "routedModel": "if/qwen3-235b-a22b-instruct",
+   "alias": "qwen3-235b-a22b-instruct",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 262144,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "if",
+   "model": "iflow-rome-30ba3b",
+   "name": "iFlow ROME",
+   "fullModel": "if/iflow-rome-30ba3b",
+   "routedModel": "if/iflow-rome-30ba3b",
+   "alias": "iflow-rome-30ba3b",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "kgw",
+   "model": "kwaipilot/kat-coder-pro-v2.5:free",
+   "name": "Kat Coder Pro v2.5 (Free)",
+   "fullModel": "kgw/kwaipilot/kat-coder-pro-v2.5:free",
+   "routedModel": "kgw/kwaipilot/kat-coder-pro-v2.5:free",
+   "alias": "kwaipilot/kat-coder-pro-v2.5:free",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "kgw",
+   "model": "kilo-auto/frontier",
+   "name": "Kilo Auto Frontier",
+   "fullModel": "kgw/kilo-auto/frontier",
+   "routedModel": "kgw/kilo-auto/frontier",
+   "alias": "kilo-auto/frontier",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "kgw",
+   "model": "kilo-auto/balanced",
+   "name": "Kilo Auto Balanced",
+   "fullModel": "kgw/kilo-auto/balanced",
+   "routedModel": "kgw/kilo-auto/balanced",
+   "alias": "kilo-auto/balanced",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "kc",
+   "model": "anthropic/claude-sonnet-4-20250514",
+   "name": "Claude Sonnet 4",
+   "fullModel": "kc/anthropic/claude-sonnet-4-20250514",
+   "routedModel": "kc/anthropic/claude-sonnet-4-20250514",
+   "alias": "anthropic/claude-sonnet-4-20250514",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "kc",
+   "model": "anthropic/claude-opus-4-20250514",
+   "name": "Claude Opus 4",
+   "fullModel": "kc/anthropic/claude-opus-4-20250514",
+   "routedModel": "kc/anthropic/claude-opus-4-20250514",
+   "alias": "anthropic/claude-opus-4-20250514",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "kimchi",
+   "model": "kimi-k2.7",
+   "name": "Kimi-K2.7",
+   "fullModel": "kimchi/kimi-k2.7",
+   "routedModel": "kimchi/kimi-k2.7",
+   "alias": "kimi-k2.7",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 262144,
+    "maxOutput": 262144
+   }
+  },
+  {
+   "provider": "kimchi",
+   "model": "nemotron-3-ultra-fp4",
+   "name": "Nemotron 3 Ultra FP4",
+   "fullModel": "kimchi/nemotron-3-ultra-fp4",
+   "routedModel": "kimchi/nemotron-3-ultra-fp4",
+   "alias": "nemotron-3-ultra-fp4",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 128000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "kimi",
+   "model": "k3",
+   "name": "Kimi K3 (Code)",
+   "fullModel": "kimi/k3",
+   "routedModel": "kimi/k3",
+   "alias": "k3",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1048576,
+    "maxOutput": 131072
+   }
+  },
+  {
+   "provider": "kimi",
+   "model": "kimi-for-coding",
+   "name": "Kimi for Coding",
+   "fullModel": "kimi/kimi-for-coding",
+   "routedModel": "kimi/kimi-for-coding",
+   "alias": "kimi-for-coding",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 262144,
+    "maxOutput": 65536
+   }
+  },
+  {
+   "provider": "kimi",
+   "model": "kimi-for-coding-highspeed",
+   "name": "Kimi for Coding Highspeed",
+   "fullModel": "kimi/kimi-for-coding-highspeed",
+   "routedModel": "kimi/kimi-for-coding-highspeed",
+   "alias": "kimi-for-coding-highspeed",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 262144,
+    "maxOutput": 65536
+   }
+  },
+  {
+   "provider": "kimi",
+   "model": "kimi-latest",
+   "name": "Kimi Latest",
+   "fullModel": "kimi/kimi-latest",
+   "routedModel": "kimi/kimi-latest",
+   "alias": "kimi-latest",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 262144,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "kr",
+   "model": "deepseek-3.2",
+   "name": "DeepSeek 3.2",
+   "fullModel": "kr/deepseek-3.2",
+   "routedModel": "kr/deepseek-3.2",
+   "alias": "deepseek-3.2",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 128000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "longcat-intl",
+   "model": "LongCat-2.5-Preview",
+   "name": "LongCat 2.5 Preview",
+   "fullModel": "longcat-intl/LongCat-2.5-Preview",
+   "routedModel": "longcat-intl/LongCat-2.5-Preview",
+   "alias": "LongCat-2.5-Preview",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 131072
+   }
+  },
+  {
+   "provider": "longcat",
+   "model": "LongCat-2.5-Preview",
+   "name": "LongCat 2.5 Preview",
+   "fullModel": "longcat/LongCat-2.5-Preview",
+   "routedModel": "longcat/LongCat-2.5-Preview",
+   "alias": "LongCat-2.5-Preview",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 131072
+   }
+  },
+  {
+   "provider": "mmf",
+   "model": "mimo-auto",
+   "name": "MiMo Auto",
+   "fullModel": "mmf/mimo-auto",
+   "routedModel": "mmf/mimo-auto",
+   "alias": "mimo-auto",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 262144,
+    "maxOutput": 131072
+   }
+  },
+  {
+   "provider": "minimax-cn",
+   "model": "speech-2.8-hd",
+   "name": "Speech 2.8 HD",
+   "fullModel": "minimax-cn/speech-2.8-hd",
+   "routedModel": "minimax-cn/speech-2.8-hd",
+   "alias": "speech-2.8-hd",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "minimax-cn",
+   "model": "speech-2.8-turbo",
+   "name": "Speech 2.8 Turbo",
+   "fullModel": "minimax-cn/speech-2.8-turbo",
+   "routedModel": "minimax-cn/speech-2.8-turbo",
+   "alias": "speech-2.8-turbo",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "minimax-cn",
+   "model": "speech-01-hd",
+   "name": "Speech 01 HD",
+   "fullModel": "minimax-cn/speech-01-hd",
+   "routedModel": "minimax-cn/speech-01-hd",
+   "alias": "speech-01-hd",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "minimax-cn",
+   "model": "speech-01-turbo",
+   "name": "Speech 01 Turbo",
+   "fullModel": "minimax-cn/speech-01-turbo",
+   "routedModel": "minimax-cn/speech-01-turbo",
+   "alias": "speech-01-turbo",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "minimax-free",
+   "model": "MiniMax-M3.1-Flash-Preview",
+   "name": "MiniMax M3.1 Flash Preview",
+   "fullModel": "minimax-free/MiniMax-M3.1-Flash-Preview",
+   "routedModel": "minimax-free/MiniMax-M3.1-Flash-Preview",
+   "alias": "MiniMax-M3.1-Flash-Preview",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 512000
+   }
+  },
+  {
+   "provider": "minimax",
+   "model": "minimax-image-01",
+   "name": "MiniMax Image 01",
+   "fullModel": "minimax/minimax-image-01",
+   "routedModel": "minimax/minimax-image-01",
+   "alias": "minimax-image-01",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "minimax",
+   "model": "speech-2.8-hd",
+   "name": "Speech 2.8 HD",
+   "fullModel": "minimax/speech-2.8-hd",
+   "routedModel": "minimax/speech-2.8-hd",
+   "alias": "speech-2.8-hd",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "minimax",
+   "model": "speech-2.8-turbo",
+   "name": "Speech 2.8 Turbo",
+   "fullModel": "minimax/speech-2.8-turbo",
+   "routedModel": "minimax/speech-2.8-turbo",
+   "alias": "speech-2.8-turbo",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "minimax",
+   "model": "speech-01-hd",
+   "name": "Speech 01 HD",
+   "fullModel": "minimax/speech-01-hd",
+   "routedModel": "minimax/speech-01-hd",
+   "alias": "speech-01-hd",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "minimax",
+   "model": "speech-01-turbo",
+   "name": "Speech 01 Turbo",
+   "fullModel": "minimax/speech-01-turbo",
+   "routedModel": "minimax/speech-01-turbo",
+   "alias": "speech-01-turbo",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "morph",
+   "model": "morph-qwen35-397b",
+   "name": "Qwen 3.5 397B (Morph)",
+   "fullModel": "morph/morph-qwen35-397b",
+   "routedModel": "morph/morph-qwen35-397b",
+   "alias": "morph-qwen35-397b",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 262144,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "morph",
+   "model": "morph-minimax27-230b",
+   "name": "MiniMax M2.7 (Morph)",
+   "fullModel": "morph/morph-minimax27-230b",
+   "routedModel": "morph/morph-minimax27-230b",
+   "alias": "morph-minimax27-230b",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 200000,
+    "maxOutput": 131072
+   }
+  },
+  {
+   "provider": "morph",
+   "model": "morph-qwen36-27b",
+   "name": "Qwen 3.6 27B (Morph)",
+   "fullModel": "morph/morph-qwen36-27b",
+   "routedModel": "morph/morph-qwen36-27b",
+   "alias": "morph-qwen36-27b",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 262144,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "morph",
+   "model": "morph-dsv4flash",
+   "name": "DeepSeek V4 Flash (Morph)",
+   "fullModel": "morph/morph-dsv4flash",
+   "routedModel": "morph/morph-dsv4flash",
+   "alias": "morph-dsv4flash",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "nanobanana",
+   "model": "nanobanana-flash",
+   "name": "NanoBanana Flash",
+   "fullModel": "nanobanana/nanobanana-flash",
+   "routedModel": "nb/nanobanana-flash",
+   "alias": "nanobanana-flash",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "nvidia",
+   "model": "nvidia/nv-embedqa-e5-v5",
+   "name": "NV EmbedQA E5 v5",
+   "fullModel": "nvidia/nvidia/nv-embedqa-e5-v5",
+   "routedModel": "nvidia/nvidia/nv-embedqa-e5-v5",
+   "alias": "nvidia/nv-embedqa-e5-v5",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "nvidia",
+   "model": "nvidia/parakeet-ctc-1.1b-asr",
+   "name": "Parakeet CTC 1.1B",
+   "fullModel": "nvidia/nvidia/parakeet-ctc-1.1b-asr",
+   "routedModel": "nvidia/nvidia/parakeet-ctc-1.1b-asr",
+   "alias": "nvidia/parakeet-ctc-1.1b-asr",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "nvidia",
+   "model": "fastpitch",
+   "name": "FastPitch",
+   "fullModel": "nvidia/fastpitch",
+   "routedModel": "nvidia/fastpitch",
+   "alias": "fastpitch",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "nvidia",
+   "model": "tacotron2",
+   "name": "Tacotron2",
+   "fullModel": "nvidia/tacotron2",
+   "routedModel": "nvidia/tacotron2",
+   "alias": "tacotron2",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "ollama",
+   "model": "qwen3.5",
+   "name": "Qwen3.5",
+   "fullModel": "ollama/qwen3.5",
+   "routedModel": "ollama/qwen3.5",
+   "alias": "qwen3.5",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 65536
+   }
+  },
+  {
+   "provider": "openai",
+   "model": "whisper-1",
+   "name": "Whisper 1",
+   "fullModel": "openai/whisper-1",
+   "routedModel": "openai/whisper-1",
+   "alias": "whisper-1",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "openai",
+   "model": "gpt-image-2.5",
+   "name": "GPT Image 2.5",
+   "fullModel": "openai/gpt-image-2.5",
+   "routedModel": "openai/gpt-image-2.5",
+   "alias": "gpt-image-2.5",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "openai",
+   "model": "dall-e-3",
+   "name": "DALL-E 3",
+   "fullModel": "openai/dall-e-3",
+   "routedModel": "openai/dall-e-3",
+   "alias": "dall-e-3",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "openai",
+   "model": "dall-e-2",
+   "name": "DALL-E 2",
+   "fullModel": "openai/dall-e-2",
+   "routedModel": "openai/dall-e-2",
+   "alias": "dall-e-2",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "opencode-go",
+   "model": "longcat-2.5-preview-free",
+   "name": "LongCat 2.5 Preview (Free)",
+   "fullModel": "opencode-go/longcat-2.5-preview-free",
+   "routedModel": "ocg/longcat-2.5-preview-free",
+   "alias": "longcat-2.5-preview-free",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 131072
+   }
+  },
+  {
+   "provider": "opencode-go",
+   "model": "space-bunny-free",
+   "name": "Space Bunny (Free)",
+   "fullModel": "opencode-go/space-bunny-free",
+   "routedModel": "ocg/space-bunny-free",
+   "alias": "space-bunny-free",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1048576,
+    "maxOutput": 524288
+   }
+  },
+  {
+   "provider": "opencode-go",
+   "model": "qwen3.5-plus",
+   "name": "Qwen 3.5 Plus",
+   "fullModel": "opencode-go/qwen3.5-plus",
+   "routedModel": "ocg/qwen3.5-plus",
+   "alias": "qwen3.5-plus",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 65536
+   }
+  },
+  {
+   "provider": "opencode-go",
+   "model": "omen-alpha",
+   "name": "Omen Alpha",
+   "fullModel": "opencode-go/omen-alpha",
+   "routedModel": "ocg/omen-alpha",
+   "alias": "omen-alpha",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "ocz",
+   "model": "qwen3.5-plus",
+   "name": "Qwen 3.5 Plus",
+   "fullModel": "ocz/qwen3.5-plus",
+   "routedModel": "ocz/qwen3.5-plus",
+   "alias": "qwen3.5-plus",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 65536
+   }
+  },
+  {
+   "provider": "ocz",
+   "model": "big-pickle",
+   "name": "Big Pickle",
+   "fullModel": "ocz/big-pickle",
+   "routedModel": "ocz/big-pickle",
+   "alias": "big-pickle",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 262144,
+    "maxOutput": 65536
+   }
+  },
+  {
+   "provider": "ocz",
+   "model": "union-alpha",
+   "name": "Union Alpha",
+   "fullModel": "ocz/union-alpha",
+   "routedModel": "ocz/union-alpha",
+   "alias": "union-alpha",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "ocz",
+   "model": "deepseek-v4-flash-free",
+   "name": "DeepSeek V4 Flash Free",
+   "fullModel": "ocz/deepseek-v4-flash-free",
+   "routedModel": "ocz/deepseek-v4-flash-free",
+   "alias": "deepseek-v4-flash-free",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 384000
+   }
+  },
+  {
+   "provider": "ocz",
+   "model": "mimo-v2.6-flash-free",
+   "name": "MiMo V2.6 Flash Free",
+   "fullModel": "ocz/mimo-v2.6-flash-free",
+   "routedModel": "ocz/mimo-v2.6-flash-free",
+   "alias": "mimo-v2.6-flash-free",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 1048576,
+    "maxOutput": 131072
+   }
+  },
+  {
+   "provider": "ocz",
+   "model": "mimo-v2.5-free",
+   "name": "MiMo V2.5 Free",
+   "fullModel": "ocz/mimo-v2.5-free",
+   "routedModel": "ocz/mimo-v2.5-free",
+   "alias": "mimo-v2.5-free",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1048576,
+    "maxOutput": 65536
+   }
+  },
+  {
+   "provider": "ocz",
+   "model": "ling-3.0-flash-fin-free",
+   "name": "Ling 3.0 Flash Fin Free",
+   "fullModel": "ocz/ling-3.0-flash-fin-free",
+   "routedModel": "ocz/ling-3.0-flash-fin-free",
+   "alias": "ling-3.0-flash-fin-free",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 131072,
+    "maxOutput": 32768
+   }
+  },
+  {
+   "provider": "ocz",
+   "model": "nemotron-3-ultra-free",
+   "name": "Nemotron 3 Ultra Free",
+   "fullModel": "ocz/nemotron-3-ultra-free",
+   "routedModel": "ocz/nemotron-3-ultra-free",
+   "alias": "nemotron-3-ultra-free",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 262144,
+    "maxOutput": 65536
+   }
+  },
+  {
+   "provider": "ocz",
+   "model": "muse-spark-1.3-contributor-free",
+   "name": "Muse Spark 1.3 Contributor Free",
+   "fullModel": "ocz/muse-spark-1.3-contributor-free",
+   "routedModel": "ocz/muse-spark-1.3-contributor-free",
+   "alias": "muse-spark-1.3-contributor-free",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1048576,
+    "maxOutput": 131072
+   }
+  },
+  {
+   "provider": "ocz",
+   "model": "muse-spark-1.2-contributor-free",
+   "name": "Muse Spark 1.2 Contributor Free",
+   "fullModel": "ocz/muse-spark-1.2-contributor-free",
+   "routedModel": "ocz/muse-spark-1.2-contributor-free",
+   "alias": "muse-spark-1.2-contributor-free",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1048576,
+    "maxOutput": 131072
+   }
+  },
+  {
+   "provider": "oc",
+   "model": "muse-spark-1.3-contributor-free",
+   "name": "Muse Spark 1.3 Contributor Free",
+   "fullModel": "oc/muse-spark-1.3-contributor-free",
+   "routedModel": "oc/muse-spark-1.3-contributor-free",
+   "alias": "muse-spark-1.3-contributor-free",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1048576,
+    "maxOutput": 131072
+   }
+  },
+  {
+   "provider": "oc",
+   "model": "mimo-v2.6-flash-free",
+   "name": "MiMo V2.6 Flash Free",
+   "fullModel": "oc/mimo-v2.6-flash-free",
+   "routedModel": "oc/mimo-v2.6-flash-free",
+   "alias": "mimo-v2.6-flash-free",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 1048576,
+    "maxOutput": 131072
+   }
+  },
+  {
+   "provider": "oc",
+   "model": "jev-1.13-free",
+   "name": "Jev 1.13 Free",
+   "fullModel": "oc/jev-1.13-free",
+   "routedModel": "oc/jev-1.13-free",
+   "alias": "jev-1.13-free",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "openrouter",
+   "model": "openai/dall-e-3",
+   "name": "DALL-E 3 (via OpenRouter)",
+   "fullModel": "openrouter/openai/dall-e-3",
+   "routedModel": "openrouter/openai/dall-e-3",
+   "alias": "openai/dall-e-3",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "openrouter",
+   "model": "google/imagen-3.0-generate-002",
+   "name": "Imagen 3 (via OpenRouter)",
+   "fullModel": "openrouter/google/imagen-3.0-generate-002",
+   "routedModel": "openrouter/google/imagen-3.0-generate-002",
+   "alias": "google/imagen-3.0-generate-002",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "openrouter",
+   "model": "typesafe/jev-1.13",
+   "name": "Jev 1.13 (via OpenRouter)",
+   "fullModel": "openrouter/typesafe/jev-1.13",
+   "routedModel": "openrouter/typesafe/jev-1.13",
+   "alias": "typesafe/jev-1.13",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "perplexity-web",
+   "model": "pplx-auto",
+   "name": "Perplexity Auto (Free)",
+   "fullModel": "perplexity-web/pplx-auto",
+   "routedModel": "pw/pplx-auto",
+   "alias": "pplx-auto",
+   "caps": {
+    "vision": false,
+    "search": true,
+    "reasoning": false,
+    "contextWindow": 128000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "perplexity-web",
+   "model": "pplx-sonar",
+   "name": "Perplexity Sonar",
+   "fullModel": "perplexity-web/pplx-sonar",
+   "routedModel": "pw/pplx-sonar",
+   "alias": "pplx-sonar",
+   "caps": {
+    "vision": false,
+    "search": true,
+    "reasoning": false,
+    "contextWindow": 128000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "perplexity-web",
+   "model": "pplx-gpt",
+   "name": "GPT-5.4 (via Perplexity)",
+   "fullModel": "perplexity-web/pplx-gpt",
+   "routedModel": "pw/pplx-gpt",
+   "alias": "pplx-gpt",
+   "caps": {
+    "vision": false,
+    "search": true,
+    "reasoning": false,
+    "contextWindow": 128000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "perplexity-web",
+   "model": "pplx-gemini",
+   "name": "Gemini 3.1 Pro (via Perplexity)",
+   "fullModel": "perplexity-web/pplx-gemini",
+   "routedModel": "pw/pplx-gemini",
+   "alias": "pplx-gemini",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": false,
+    "contextWindow": 1048576,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "perplexity-web",
+   "model": "pplx-sonnet",
+   "name": "Claude Sonnet 4.6 (via Perplexity)",
+   "fullModel": "perplexity-web/pplx-sonnet",
+   "routedModel": "pw/pplx-sonnet",
+   "alias": "pplx-sonnet",
+   "caps": {
+    "vision": false,
+    "search": true,
+    "reasoning": false,
+    "contextWindow": 128000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "perplexity-web",
+   "model": "pplx-opus",
+   "name": "Claude Opus 4.6 (via Perplexity)",
+   "fullModel": "perplexity-web/pplx-opus",
+   "routedModel": "pw/pplx-opus",
+   "alias": "pplx-opus",
+   "caps": {
+    "vision": false,
+    "search": true,
+    "reasoning": false,
+    "contextWindow": 128000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "perplexity-web",
+   "model": "pplx-nemotron",
+   "name": "Nemotron 3 Super (via Perplexity)",
+   "fullModel": "perplexity-web/pplx-nemotron",
+   "routedModel": "pw/pplx-nemotron",
+   "alias": "pplx-nemotron",
+   "caps": {
+    "vision": false,
+    "search": true,
+    "reasoning": false,
+    "contextWindow": 128000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "qdc",
+   "model": "auto",
+   "name": "Auto",
+   "fullModel": "qdc/auto",
+   "routedModel": "qdc/auto",
+   "alias": "auto",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 128000
+   }
+  },
+  {
+   "provider": "qdc",
+   "model": "qmodel_38max",
+   "name": "Qwen3.8-Max",
+   "fullModel": "qdc/qmodel_38max",
+   "routedModel": "qdc/qmodel_38max",
+   "alias": "qmodel_38max",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 65536
+   }
+  },
+  {
+   "provider": "qdc",
+   "model": "qmodel_latest",
+   "name": "Qwen3.7-Max",
+   "fullModel": "qdc/qmodel_latest",
+   "routedModel": "qdc/qmodel_latest",
+   "alias": "qmodel_latest",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 65536
+   }
+  },
+  {
+   "provider": "qdc",
+   "model": "qmodel",
+   "name": "Qwen3.7-Plus",
+   "fullModel": "qdc/qmodel",
+   "routedModel": "qdc/qmodel",
+   "alias": "qmodel",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 65536
+   }
+  },
+  {
+   "provider": "qdc",
+   "model": "q37fmodel",
+   "name": "Qwen3.7-Flash",
+   "fullModel": "qdc/q37fmodel",
+   "routedModel": "qdc/q37fmodel",
+   "alias": "q37fmodel",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 65536
+   }
+  },
+  {
+   "provider": "qdc",
+   "model": "kmodel_latest",
+   "name": "Kimi-K3",
+   "fullModel": "qdc/kmodel_latest",
+   "routedModel": "qdc/kmodel_latest",
+   "alias": "kmodel_latest",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 65536
+   }
+  },
+  {
+   "provider": "qdc",
+   "model": "kmodel",
+   "name": "Kimi-K2.7-Code",
+   "fullModel": "qdc/kmodel",
+   "routedModel": "qdc/kmodel",
+   "alias": "kmodel",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 256000,
+    "maxOutput": 65536
+   }
+  },
+  {
+   "provider": "qdc",
+   "model": "gmodel",
+   "name": "GLM-5.3",
+   "fullModel": "qdc/gmodel",
+   "routedModel": "qdc/gmodel",
+   "alias": "gmodel",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 128000
+   }
+  },
+  {
+   "provider": "qdc",
+   "model": "gfmodel",
+   "name": "GLM-5.3-Flash",
+   "fullModel": "qdc/gfmodel",
+   "routedModel": "qdc/gfmodel",
+   "alias": "gfmodel",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 128000
+   }
+  },
+  {
+   "provider": "qdc",
+   "model": "gm51model",
+   "name": "GLM-5.2",
+   "fullModel": "qdc/gm51model",
+   "routedModel": "qdc/gm51model",
+   "alias": "gm51model",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 48000
+   }
+  },
+  {
+   "provider": "qdc",
+   "model": "dmodel",
+   "name": "DeepSeek-V4-Pro",
+   "fullModel": "qdc/dmodel",
+   "routedModel": "qdc/dmodel",
+   "alias": "dmodel",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 65536
+   }
+  },
+  {
+   "provider": "qdc",
+   "model": "dfmodel",
+   "name": "DeepSeek-V4-Flash",
+   "fullModel": "qdc/dfmodel",
+   "routedModel": "qdc/dfmodel",
+   "alias": "dfmodel",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 65536
+   }
+  },
+  {
+   "provider": "qdc",
+   "model": "mmodel",
+   "name": "MiniMax-M3",
+   "fullModel": "qdc/mmodel",
+   "routedModel": "qdc/mmodel",
+   "alias": "mmodel",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 512000
+   }
+  },
+  {
+   "provider": "recraft",
+   "model": "recraftv3",
+   "name": "Recraft V3",
+   "fullModel": "recraft/recraftv3",
+   "routedModel": "recraft/recraftv3",
+   "alias": "recraftv3",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "recraft",
+   "model": "recraftv2",
+   "name": "Recraft V2",
+   "fullModel": "recraft/recraftv2",
+   "routedModel": "recraft/recraftv2",
+   "alias": "recraftv2",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "runwayml",
+   "model": "gen4_image",
+   "name": "Gen-4 Image",
+   "fullModel": "runwayml/gen4_image",
+   "routedModel": "runway/gen4_image",
+   "alias": "gen4_image",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "runwayml",
+   "model": "gen4_image_turbo",
+   "name": "Gen-4 Image Turbo",
+   "fullModel": "runwayml/gen4_image_turbo",
+   "routedModel": "runway/gen4_image_turbo",
+   "alias": "gen4_image_turbo",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "runwayml",
+   "model": "gen4_turbo",
+   "name": "Gen-4 Turbo",
+   "fullModel": "runwayml/gen4_turbo",
+   "routedModel": "runway/gen4_turbo",
+   "alias": "gen4_turbo",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "runwayml",
+   "model": "gen3a_turbo",
+   "name": "Gen-3 Alpha Turbo",
+   "fullModel": "runwayml/gen3a_turbo",
+   "routedModel": "runway/gen3a_turbo",
+   "alias": "gen3a_turbo",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "sdwebui",
+   "model": "stable-diffusion-v1-5",
+   "name": "Stable Diffusion v1.5",
+   "fullModel": "sdwebui/stable-diffusion-v1-5",
+   "routedModel": "sdwebui/stable-diffusion-v1-5",
+   "alias": "stable-diffusion-v1-5",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "sdwebui",
+   "model": "sdxl-base-1.0",
+   "name": "SDXL Base 1.0",
+   "fullModel": "sdwebui/sdxl-base-1.0",
+   "routedModel": "sdwebui/sdxl-base-1.0",
+   "alias": "sdxl-base-1.0",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "selfhosted-embedding",
+   "model": "embedding",
+   "name": "Self-hosted embedding model",
+   "fullModel": "selfhosted-embedding/embedding",
+   "routedModel": "selfhosted-embedding/embedding",
+   "alias": "embedding",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "selfhosted-stt",
+   "model": "whisper-1",
+   "name": "Whisper (self-hosted)",
+   "fullModel": "selfhosted-stt/whisper-1",
+   "routedModel": "selfhosted-stt/whisper-1",
+   "alias": "whisper-1",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "selfhosted-tts",
+   "model": "kokoro",
+   "name": "Kokoro (self-hosted)",
+   "fullModel": "selfhosted-tts/kokoro",
+   "routedModel": "selfhosted-tts/kokoro",
+   "alias": "kokoro",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "sensenova",
+   "model": "sensenova-u1.5-lite",
+   "name": "SenseNova U1.5 Lite",
+   "fullModel": "sensenova/sensenova-u1.5-lite",
+   "routedModel": "sensenova/sensenova-u1.5-lite",
+   "alias": "sensenova-u1.5-lite",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "sensenova",
+   "model": "sensenova-u1-fast",
+   "name": "SenseNova U1 Fast",
+   "fullModel": "sensenova/sensenova-u1-fast",
+   "routedModel": "sensenova/sensenova-u1-fast",
+   "alias": "sensenova-u1-fast",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "siliconflow-cn",
+   "model": "Kwai-Kolors/Kolors",
+   "name": "Kolors",
+   "fullModel": "siliconflow-cn/Kwai-Kolors/Kolors",
+   "routedModel": "sfcn/Kwai-Kolors/Kolors",
+   "alias": "Kwai-Kolors/Kolors",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "siliconflow-cn",
+   "model": "zai-org/Z-Image-Turbo",
+   "name": "Z-Image Turbo",
+   "fullModel": "siliconflow-cn/zai-org/Z-Image-Turbo",
+   "routedModel": "sfcn/zai-org/Z-Image-Turbo",
+   "alias": "zai-org/Z-Image-Turbo",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "siliconflow-cn",
+   "model": "Qwen/Qwen-Image",
+   "name": "Qwen Image",
+   "fullModel": "siliconflow-cn/Qwen/Qwen-Image",
+   "routedModel": "sfcn/Qwen/Qwen-Image",
+   "alias": "Qwen/Qwen-Image",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 262144,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "siliconflow-cn",
+   "model": "Wan-AI/Wan2.2-T2V-A14B",
+   "name": "Wan2.2 T2V",
+   "fullModel": "siliconflow-cn/Wan-AI/Wan2.2-T2V-A14B",
+   "routedModel": "sfcn/Wan-AI/Wan2.2-T2V-A14B",
+   "alias": "Wan-AI/Wan2.2-T2V-A14B",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "siliconflow-cn",
+   "model": "Wan-AI/Wan2.2-I2V-A14B",
+   "name": "Wan2.2 I2V",
+   "fullModel": "siliconflow-cn/Wan-AI/Wan2.2-I2V-A14B",
+   "routedModel": "sfcn/Wan-AI/Wan2.2-I2V-A14B",
+   "alias": "Wan-AI/Wan2.2-I2V-A14B",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "siliconflow",
+   "model": "inclusionAI/Ling-flash-2.0",
+   "name": "Ling Flash 2.0",
+   "fullModel": "siliconflow/inclusionAI/Ling-flash-2.0",
+   "routedModel": "siliconflow/inclusionAI/Ling-flash-2.0",
+   "alias": "inclusionAI/Ling-flash-2.0",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 128000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "stability-ai",
+   "model": "stable-image-ultra",
+   "name": "Stable Image Ultra",
+   "fullModel": "stability-ai/stable-image-ultra",
+   "routedModel": "stability/stable-image-ultra",
+   "alias": "stable-image-ultra",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "stability-ai",
+   "model": "stable-image-core",
+   "name": "Stable Image Core",
+   "fullModel": "stability-ai/stable-image-core",
+   "routedModel": "stability/stable-image-core",
+   "alias": "stable-image-core",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "stability-ai",
+   "model": "sd3.5-large",
+   "name": "Stable Diffusion 3.5 Large",
+   "fullModel": "stability-ai/sd3.5-large",
+   "routedModel": "stability/sd3.5-large",
+   "alias": "sd3.5-large",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "stability-ai",
+   "model": "sd3.5-large-turbo",
+   "name": "Stable Diffusion 3.5 Large Turbo",
+   "fullModel": "stability-ai/sd3.5-large-turbo",
+   "routedModel": "stability/sd3.5-large-turbo",
+   "alias": "sd3.5-large-turbo",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "stability-ai",
+   "model": "sd3.5-medium",
+   "name": "Stable Diffusion 3.5 Medium",
+   "fullModel": "stability-ai/sd3.5-medium",
+   "routedModel": "stability/sd3.5-medium",
+   "alias": "sd3.5-medium",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "step-cn",
+   "model": "step-1o-turbo-vision",
+   "name": "Step-1o Turbo Vision",
+   "fullModel": "step-cn/step-1o-turbo-vision",
+   "routedModel": "step-cn/step-1o-turbo-vision",
+   "alias": "step-1o-turbo-vision",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 32000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "step-cn",
+   "model": "stepaudio-3-tts",
+   "name": "StepAudio 3 TTS",
+   "fullModel": "step-cn/stepaudio-3-tts",
+   "routedModel": "step-cn/stepaudio-3-tts",
+   "alias": "stepaudio-3-tts",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "step-cn",
+   "model": "stepaudio-2.5-tts",
+   "name": "StepAudio 2.5 TTS",
+   "fullModel": "step-cn/stepaudio-2.5-tts",
+   "routedModel": "step-cn/stepaudio-2.5-tts",
+   "alias": "stepaudio-2.5-tts",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "step-cn",
+   "model": "step-tts-2",
+   "name": "Step TTS 2",
+   "fullModel": "step-cn/step-tts-2",
+   "routedModel": "step-cn/step-tts-2",
+   "alias": "step-tts-2",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 128000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "step-cn",
+   "model": "step-tts-mini",
+   "name": "Step TTS Mini",
+   "fullModel": "step-cn/step-tts-mini",
+   "routedModel": "step-cn/step-tts-mini",
+   "alias": "step-tts-mini",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 128000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "step-cn",
+   "model": "stepaudio-2.5-asr",
+   "name": "StepAudio 2.5 ASR",
+   "fullModel": "step-cn/stepaudio-2.5-asr",
+   "routedModel": "step-cn/stepaudio-2.5-asr",
+   "alias": "stepaudio-2.5-asr",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "stepp-cn",
+   "model": "step-router-v1",
+   "name": "Step Router V1",
+   "fullModel": "stepp-cn/step-router-v1",
+   "routedModel": "stepp-cn/step-router-v1",
+   "alias": "step-router-v1",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 256000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "stepp-cn",
+   "model": "stepaudio-2.5-tts",
+   "name": "StepAudio 2.5 TTS",
+   "fullModel": "stepp-cn/stepaudio-2.5-tts",
+   "routedModel": "stepp-cn/stepaudio-2.5-tts",
+   "alias": "stepaudio-2.5-tts",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "stepp",
+   "model": "step-router-v1",
+   "name": "Step Router V1",
+   "fullModel": "stepp/step-router-v1",
+   "routedModel": "stepp/step-router-v1",
+   "alias": "step-router-v1",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 256000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "stepp",
+   "model": "stepaudio-2.5-tts",
+   "name": "StepAudio 2.5 TTS",
+   "fullModel": "stepp/stepaudio-2.5-tts",
+   "routedModel": "stepp/stepaudio-2.5-tts",
+   "alias": "stepaudio-2.5-tts",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "step",
+   "model": "step-1o-turbo-vision",
+   "name": "Step-1o Turbo Vision",
+   "fullModel": "step/step-1o-turbo-vision",
+   "routedModel": "step/step-1o-turbo-vision",
+   "alias": "step-1o-turbo-vision",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 32000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "step",
+   "model": "stepaudio-3-tts",
+   "name": "StepAudio 3 TTS",
+   "fullModel": "step/stepaudio-3-tts",
+   "routedModel": "step/stepaudio-3-tts",
+   "alias": "stepaudio-3-tts",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "step",
+   "model": "stepaudio-2.5-tts",
+   "name": "StepAudio 2.5 TTS",
+   "fullModel": "step/stepaudio-2.5-tts",
+   "routedModel": "step/stepaudio-2.5-tts",
+   "alias": "stepaudio-2.5-tts",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "step",
+   "model": "step-tts-2",
+   "name": "Step TTS 2",
+   "fullModel": "step/step-tts-2",
+   "routedModel": "step/step-tts-2",
+   "alias": "step-tts-2",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 128000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "step",
+   "model": "step-tts-mini",
+   "name": "Step TTS Mini",
+   "fullModel": "step/step-tts-mini",
+   "routedModel": "step/step-tts-mini",
+   "alias": "step-tts-mini",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 128000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "step",
+   "model": "stepaudio-2.5-asr",
+   "name": "StepAudio 2.5 ASR",
+   "fullModel": "step/stepaudio-2.5-asr",
+   "routedModel": "step/stepaudio-2.5-asr",
+   "alias": "stepaudio-2.5-asr",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "hunyuan",
+   "model": "hunyuan-turbos-latest",
+   "name": "Hunyuan TurboS Latest",
+   "fullModel": "hunyuan/hunyuan-turbos-latest",
+   "routedModel": "hunyuan/hunyuan-turbos-latest",
+   "alias": "hunyuan-turbos-latest",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 262144,
+    "maxOutput": 262144
+   }
+  },
+  {
+   "provider": "hunyuan",
+   "model": "hunyuan-t1-latest",
+   "name": "Hunyuan T1 Latest",
+   "fullModel": "hunyuan/hunyuan-t1-latest",
+   "routedModel": "hunyuan/hunyuan-t1-latest",
+   "alias": "hunyuan-t1-latest",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 262144,
+    "maxOutput": 262144
+   }
+  },
+  {
+   "provider": "together",
+   "model": "BAAI/bge-large-en-v1.5",
+   "name": "BGE Large EN v1.5",
+   "fullModel": "together/BAAI/bge-large-en-v1.5",
+   "routedModel": "together/BAAI/bge-large-en-v1.5",
+   "alias": "BAAI/bge-large-en-v1.5",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "together",
+   "model": "togethercomputer/m2-bert-80M-8k-retrieval",
+   "name": "M2 BERT 80M 8K",
+   "fullModel": "together/togethercomputer/m2-bert-80M-8k-retrieval",
+   "routedModel": "together/togethercomputer/m2-bert-80M-8k-retrieval",
+   "alias": "togethercomputer/m2-bert-80M-8k-retrieval",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "tokenbom",
+   "model": "claude-4.8-opus",
+   "name": "Claude Opus 4.8",
+   "fullModel": "tokenbom/claude-4.8-opus",
+   "routedModel": "tokenbom/claude-4.8-opus",
+   "alias": "claude-4.8-opus",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "tokenbom",
+   "model": "claude-4.7-opus",
+   "name": "Claude Opus 4.7",
+   "fullModel": "tokenbom/claude-4.7-opus",
+   "routedModel": "tokenbom/claude-4.7-opus",
+   "alias": "claude-4.7-opus",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "tokenbom",
+   "model": "claude-4.6-opus",
+   "name": "Claude Opus 4.6",
+   "fullModel": "tokenbom/claude-4.6-opus",
+   "routedModel": "tokenbom/claude-4.6-opus",
+   "alias": "claude-4.6-opus",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "tokenharbor",
+   "model": "deepseek-v4.1-flash:free",
+   "name": "DeepSeek V4.1 Flash (Free)",
+   "fullModel": "tokenharbor/deepseek-v4.1-flash:free",
+   "routedModel": "tokenharbor/deepseek-v4.1-flash:free",
+   "alias": "deepseek-v4.1-flash:free",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 384000
+   }
+  },
+  {
+   "provider": "tokenharbor",
+   "model": "qwen3.8-flash:free",
+   "name": "Qwen3.8 Flash (Free)",
+   "fullModel": "tokenharbor/qwen3.8-flash:free",
+   "routedModel": "tokenharbor/qwen3.8-flash:free",
+   "alias": "qwen3.8-flash:free",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 131072
+   }
+  },
+  {
+   "provider": "tokenharbor",
+   "model": "mimo-v2.6-flash:free",
+   "name": "MiMo V2.6 Flash (Free)",
+   "fullModel": "tokenharbor/mimo-v2.6-flash:free",
+   "routedModel": "tokenharbor/mimo-v2.6-flash:free",
+   "alias": "mimo-v2.6-flash:free",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 1048576,
+    "maxOutput": 131072
+   }
+  },
+  {
+   "provider": "tokenrouter",
+   "model": "MiniMax-Hailuo-2.3",
+   "name": "Minimax Hailuo 2.3",
+   "fullModel": "tokenrouter/MiniMax-Hailuo-2.3",
+   "routedModel": "tokenrouter/MiniMax-Hailuo-2.3",
+   "alias": "MiniMax-Hailuo-2.3",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 200000,
+    "maxOutput": 131072
+   }
+  },
+  {
+   "provider": "tokenrouter",
+   "model": "bytedance-seed/seedream-4.5",
+   "name": "Seedream 4.5",
+   "fullModel": "tokenrouter/bytedance-seed/seedream-4.5",
+   "routedModel": "tokenrouter/bytedance-seed/seedream-4.5",
+   "alias": "bytedance-seed/seedream-4.5",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "tokenrouter",
+   "model": "bytedance-seed/seedream-5.0-lite",
+   "name": "Seedream 5.0 Lite",
+   "fullModel": "tokenrouter/bytedance-seed/seedream-5.0-lite",
+   "routedModel": "tokenrouter/bytedance-seed/seedream-5.0-lite",
+   "alias": "bytedance-seed/seedream-5.0-lite",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "tokenrouter",
+   "model": "bytedance-seed/seedream-5.0-pro",
+   "name": "Seedream 5.0 Pro",
+   "fullModel": "tokenrouter/bytedance-seed/seedream-5.0-pro",
+   "routedModel": "tokenrouter/bytedance-seed/seedream-5.0-pro",
+   "alias": "bytedance-seed/seedream-5.0-pro",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "tokenrouter",
+   "model": "happyhorse-1.0-t2v",
+   "name": "Happyhorse 1.0 T2V",
+   "fullModel": "tokenrouter/happyhorse-1.0-t2v",
+   "routedModel": "tokenrouter/happyhorse-1.0-t2v",
+   "alias": "happyhorse-1.0-t2v",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "tokenrouter",
+   "model": "kling-v2-6",
+   "name": "Kling V2 6",
+   "fullModel": "tokenrouter/kling-v2-6",
+   "routedModel": "tokenrouter/kling-v2-6",
+   "alias": "kling-v2-6",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 128000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "tokenrouter",
+   "model": "kling-v3",
+   "name": "Kling V3",
+   "fullModel": "tokenrouter/kling-v3",
+   "routedModel": "tokenrouter/kling-v3",
+   "alias": "kling-v3",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 128000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "tokenrouter",
+   "model": "kling-v3-omni",
+   "name": "Kling V3 Omni",
+   "fullModel": "tokenrouter/kling-v3-omni",
+   "routedModel": "tokenrouter/kling-v3-omni",
+   "alias": "kling-v3-omni",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 128000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "tr",
+   "model": "auto",
+   "name": "Auto (Server Picks)",
+   "fullModel": "tr/auto",
+   "routedModel": "tr/auto",
+   "alias": "auto",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "tr",
+   "model": "work",
+   "name": "Work (Fast)",
+   "fullModel": "tr/work",
+   "routedModel": "tr/work",
+   "alias": "work",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "tr",
+   "model": "gemini-3-flash-solo",
+   "name": "Gemini 3 Flash",
+   "fullModel": "tr/gemini-3-flash-solo",
+   "routedModel": "tr/gemini-3-flash-solo",
+   "alias": "gemini-3-flash-solo",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 1048576,
+    "maxOutput": 65536
+   }
+  },
+  {
+   "provider": "trae-free",
+   "model": "Doubao-Seed-Code",
+   "name": "Doubao Seed Code",
+   "fullModel": "trae-free/Doubao-Seed-Code",
+   "routedModel": "trae-free/Doubao-Seed-Code",
+   "alias": "Doubao-Seed-Code",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 256000,
+    "maxOutput": 32768
+   }
+  },
+  {
+   "provider": "trae-free",
+   "model": "qwen-3.5",
+   "name": "Qwen 3.5",
+   "fullModel": "trae-free/qwen-3.5",
+   "routedModel": "trae-free/qwen-3.5",
+   "alias": "qwen-3.5",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 262144,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "v1m",
+   "model": "rev-latest",
+   "name": "v1m Rev Latest (Calibrated)",
+   "fullModel": "v1m/rev-latest",
+   "routedModel": "v1m/rev-latest",
+   "alias": "rev-latest",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "v1m",
+   "model": "v1m-decision-engine",
+   "name": "v1m Decision Engine",
+   "fullModel": "v1m/v1m-decision-engine",
+   "routedModel": "v1m/v1m-decision-engine",
+   "alias": "v1m-decision-engine",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "venice",
+   "model": "venice-uncensored-1-2",
+   "name": "Venice Uncensored 1.2",
+   "fullModel": "venice/venice-uncensored-1-2",
+   "routedModel": "venice/venice-uncensored-1-2",
+   "alias": "venice-uncensored-1-2",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 128000,
+    "maxOutput": 8192
+   }
+  },
+  {
+   "provider": "venice",
+   "model": "zai-org-glm-5",
+   "name": "GLM-5",
+   "fullModel": "venice/zai-org-glm-5",
+   "routedModel": "venice/zai-org-glm-5",
+   "alias": "zai-org-glm-5",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 200000,
+    "maxOutput": 128000
+   }
+  },
+  {
+   "provider": "venice",
+   "model": "text-embedding-bge-m3",
+   "name": "BGE-M3 Embedding",
+   "fullModel": "venice/text-embedding-bge-m3",
+   "routedModel": "venice/text-embedding-bge-m3",
+   "alias": "text-embedding-bge-m3",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "venice",
+   "model": "text-embedding-qwen3-8b",
+   "name": "Qwen3 8B Embedding",
+   "fullModel": "venice/text-embedding-qwen3-8b",
+   "routedModel": "venice/text-embedding-qwen3-8b",
+   "alias": "text-embedding-qwen3-8b",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 262144,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "venice",
+   "model": "venice-sd35",
+   "name": "Venice SD3.5",
+   "fullModel": "venice/venice-sd35",
+   "routedModel": "venice/venice-sd35",
+   "alias": "venice-sd35",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "venice",
+   "model": "flux-2-pro",
+   "name": "FLUX.2 Pro",
+   "fullModel": "venice/flux-2-pro",
+   "routedModel": "venice/flux-2-pro",
+   "alias": "flux-2-pro",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "volcengine-ark",
+   "model": "Doubao-Seed-2.0-lite",
+   "name": "Doubao-Seed-2.0-lite",
+   "fullModel": "volcengine-ark/Doubao-Seed-2.0-lite",
+   "routedModel": "ark/Doubao-Seed-2.0-lite",
+   "alias": "Doubao-Seed-2.0-lite",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 256000,
+    "maxOutput": 131072
+   }
+  },
+  {
+   "provider": "volcengine-ark",
+   "model": "Doubao-Seed-Code",
+   "name": "Doubao-Seed-Code",
+   "fullModel": "volcengine-ark/Doubao-Seed-Code",
+   "routedModel": "ark/Doubao-Seed-Code",
+   "alias": "Doubao-Seed-Code",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 256000,
+    "maxOutput": 32768
+   }
+  },
+  {
+   "provider": "ws",
+   "model": "swe-1.5-fast",
+   "name": "SWE-1.5 Fast",
+   "fullModel": "ws/swe-1.5-fast",
+   "routedModel": "ws/swe-1.5-fast",
+   "alias": "swe-1.5-fast",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "ws",
+   "model": "swe-1.5",
+   "name": "SWE-1.5",
+   "fullModel": "ws/swe-1.5",
+   "routedModel": "ws/swe-1.5",
+   "alias": "swe-1.5",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "ws",
+   "model": "claude-sonnet-4.6-thinking-1m",
+   "name": "Claude Sonnet 4.6 Thinking 1M",
+   "fullModel": "ws/claude-sonnet-4.6-thinking-1m",
+   "routedModel": "ws/claude-sonnet-4.6-thinking-1m",
+   "alias": "claude-sonnet-4.6-thinking-1m",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "ws",
+   "model": "claude-sonnet-4.6-1m",
+   "name": "Claude Sonnet 4.6 1M",
+   "fullModel": "ws/claude-sonnet-4.6-1m",
+   "routedModel": "ws/claude-sonnet-4.6-1m",
+   "alias": "claude-sonnet-4.6-1m",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.5-none-fast",
+   "name": "GPT-5.5 None Fast",
+   "fullModel": "ws/gpt-5.5-none-fast",
+   "routedModel": "ws/gpt-5.5-none-fast",
+   "alias": "gpt-5.5-none-fast",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 1050000,
+    "maxOutput": 128000
+   }
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.5-none",
+   "name": "GPT-5.5 None",
+   "fullModel": "ws/gpt-5.5-none",
+   "routedModel": "ws/gpt-5.5-none",
+   "alias": "gpt-5.5-none",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 1050000,
+    "maxOutput": 128000
+   }
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.4-none-fast",
+   "name": "GPT-5.4 None Fast",
+   "fullModel": "ws/gpt-5.4-none-fast",
+   "routedModel": "ws/gpt-5.4-none-fast",
+   "alias": "gpt-5.4-none-fast",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 1050000,
+    "maxOutput": 128000
+   }
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.4-none",
+   "name": "GPT-5.4 None",
+   "fullModel": "ws/gpt-5.4-none",
+   "routedModel": "ws/gpt-5.4-none",
+   "alias": "gpt-5.4-none",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 1050000,
+    "maxOutput": 128000
+   }
+  },
+  {
+   "provider": "ws",
+   "model": "gpt-5.2-none",
+   "name": "GPT-5.2 None",
+   "fullModel": "ws/gpt-5.2-none",
+   "routedModel": "ws/gpt-5.2-none",
+   "alias": "gpt-5.2-none",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 400000,
+    "maxOutput": 128000
+   }
+  },
+  {
+   "provider": "ws",
+   "model": "gemini-3.0-flash-high",
+   "name": "Gemini 3 Flash High",
+   "fullModel": "ws/gemini-3.0-flash-high",
+   "routedModel": "ws/gemini-3.0-flash-high",
+   "alias": "gemini-3.0-flash-high",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 1048576,
+    "maxOutput": 65536
+   }
+  },
+  {
+   "provider": "ws",
+   "model": "gemini-3.0-flash-medium",
+   "name": "Gemini 3 Flash Medium",
+   "fullModel": "ws/gemini-3.0-flash-medium",
+   "routedModel": "ws/gemini-3.0-flash-medium",
+   "alias": "gemini-3.0-flash-medium",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 1048576,
+    "maxOutput": 65536
+   }
+  },
+  {
+   "provider": "ws",
+   "model": "gemini-3.0-flash-low",
+   "name": "Gemini 3 Flash Low",
+   "fullModel": "ws/gemini-3.0-flash-low",
+   "routedModel": "ws/gemini-3.0-flash-low",
+   "alias": "gemini-3.0-flash-low",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 1048576,
+    "maxOutput": 65536
+   }
+  },
+  {
+   "provider": "ws",
+   "model": "gemini-3.0-flash-minimal",
+   "name": "Gemini 3 Flash Minimal",
+   "fullModel": "ws/gemini-3.0-flash-minimal",
+   "routedModel": "ws/gemini-3.0-flash-minimal",
+   "alias": "gemini-3.0-flash-minimal",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 1048576,
+    "maxOutput": 65536
+   }
+  },
+  {
+   "provider": "ws",
+   "model": "deepseek-v4",
+   "name": "DeepSeek V4",
+   "fullModel": "ws/deepseek-v4",
+   "routedModel": "ws/deepseek-v4",
+   "alias": "deepseek-v4",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": true,
+    "contextWindow": 1000000,
+    "maxOutput": 384000
+   }
+  },
+  {
+   "provider": "xai",
+   "model": "grok-4.2",
+   "name": "Grok 4.2",
+   "fullModel": "xai/grok-4.2",
+   "routedModel": "xai/grok-4.2",
+   "alias": "grok-4.2",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 256000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "xai",
+   "model": "grok-2-image-1212",
+   "name": "Grok 2 Image",
+   "fullModel": "xai/grok-2-image-1212",
+   "routedModel": "xai/grok-2-image-1212",
+   "alias": "grok-2-image-1212",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "xai",
+   "model": "grok-imagine-video",
+   "name": "Grok Imagine Video",
+   "fullModel": "xai/grok-imagine-video",
+   "routedModel": "xai/grok-imagine-video",
+   "alias": "grok-imagine-video",
+   "caps": {
+    "vision": true,
+    "search": true,
+    "reasoning": true,
+    "contextWindow": 256000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "xiaomi-tokenplan",
+   "model": "mimo-v2.6-pro-claude",
+   "name": "MiMo V2.6 Pro (Claude Native)",
+   "fullModel": "xiaomi-tokenplan/mimo-v2.6-pro-claude",
+   "routedModel": "xmtp/mimo-v2.6-pro-claude",
+   "alias": "mimo-v2.6-pro-claude",
+   "caps": {
+    "vision": true,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 1048576,
+    "maxOutput": 131072
+   }
+  },
+  {
+   "provider": "openai-tts-voices",
+   "model": "alloy",
+   "name": "Alloy",
+   "fullModel": "openai-tts-voices/alloy",
+   "routedModel": "openai-tts-voices/alloy",
+   "alias": "alloy",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "openai-tts-voices",
+   "model": "ash",
+   "name": "Ash",
+   "fullModel": "openai-tts-voices/ash",
+   "routedModel": "openai-tts-voices/ash",
+   "alias": "ash",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "openai-tts-voices",
+   "model": "ballad",
+   "name": "Ballad",
+   "fullModel": "openai-tts-voices/ballad",
+   "routedModel": "openai-tts-voices/ballad",
+   "alias": "ballad",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "openai-tts-voices",
+   "model": "cedar",
+   "name": "Cedar",
+   "fullModel": "openai-tts-voices/cedar",
+   "routedModel": "openai-tts-voices/cedar",
+   "alias": "cedar",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "openai-tts-voices",
+   "model": "coral",
+   "name": "Coral",
+   "fullModel": "openai-tts-voices/coral",
+   "routedModel": "openai-tts-voices/coral",
+   "alias": "coral",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "openai-tts-voices",
+   "model": "echo",
+   "name": "Echo",
+   "fullModel": "openai-tts-voices/echo",
+   "routedModel": "openai-tts-voices/echo",
+   "alias": "echo",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "openai-tts-voices",
+   "model": "fable",
+   "name": "Fable",
+   "fullModel": "openai-tts-voices/fable",
+   "routedModel": "openai-tts-voices/fable",
+   "alias": "fable",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "openai-tts-voices",
+   "model": "marin",
+   "name": "Marin",
+   "fullModel": "openai-tts-voices/marin",
+   "routedModel": "openai-tts-voices/marin",
+   "alias": "marin",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "openai-tts-voices",
+   "model": "nova",
+   "name": "Nova",
+   "fullModel": "openai-tts-voices/nova",
+   "routedModel": "openai-tts-voices/nova",
+   "alias": "nova",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "openai-tts-voices",
+   "model": "onyx",
+   "name": "Onyx",
+   "fullModel": "openai-tts-voices/onyx",
+   "routedModel": "openai-tts-voices/onyx",
+   "alias": "onyx",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "openai-tts-voices",
+   "model": "sage",
+   "name": "Sage",
+   "fullModel": "openai-tts-voices/sage",
+   "routedModel": "openai-tts-voices/sage",
+   "alias": "sage",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "openai-tts-voices",
+   "model": "shimmer",
+   "name": "Shimmer",
+   "fullModel": "openai-tts-voices/shimmer",
+   "routedModel": "openai-tts-voices/shimmer",
+   "alias": "shimmer",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "openai-tts-voices",
+   "model": "verse",
+   "name": "Verse",
+   "fullModel": "openai-tts-voices/verse",
+   "routedModel": "openai-tts-voices/verse",
+   "alias": "verse",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "openrouter-tts-voices",
+   "model": "alloy",
+   "name": "Alloy",
+   "fullModel": "openrouter-tts-voices/alloy",
+   "routedModel": "openrouter-tts-voices/alloy",
+   "alias": "alloy",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "openrouter-tts-voices",
+   "model": "ash",
+   "name": "Ash",
+   "fullModel": "openrouter-tts-voices/ash",
+   "routedModel": "openrouter-tts-voices/ash",
+   "alias": "ash",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "openrouter-tts-voices",
+   "model": "ballad",
+   "name": "Ballad",
+   "fullModel": "openrouter-tts-voices/ballad",
+   "routedModel": "openrouter-tts-voices/ballad",
+   "alias": "ballad",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "openrouter-tts-voices",
+   "model": "cedar",
+   "name": "Cedar",
+   "fullModel": "openrouter-tts-voices/cedar",
+   "routedModel": "openrouter-tts-voices/cedar",
+   "alias": "cedar",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "openrouter-tts-voices",
+   "model": "coral",
+   "name": "Coral",
+   "fullModel": "openrouter-tts-voices/coral",
+   "routedModel": "openrouter-tts-voices/coral",
+   "alias": "coral",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "openrouter-tts-voices",
+   "model": "echo",
+   "name": "Echo",
+   "fullModel": "openrouter-tts-voices/echo",
+   "routedModel": "openrouter-tts-voices/echo",
+   "alias": "echo",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "openrouter-tts-voices",
+   "model": "fable",
+   "name": "Fable",
+   "fullModel": "openrouter-tts-voices/fable",
+   "routedModel": "openrouter-tts-voices/fable",
+   "alias": "fable",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "openrouter-tts-voices",
+   "model": "marin",
+   "name": "Marin",
+   "fullModel": "openrouter-tts-voices/marin",
+   "routedModel": "openrouter-tts-voices/marin",
+   "alias": "marin",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "openrouter-tts-voices",
+   "model": "nova",
+   "name": "Nova",
+   "fullModel": "openrouter-tts-voices/nova",
+   "routedModel": "openrouter-tts-voices/nova",
+   "alias": "nova",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "openrouter-tts-voices",
+   "model": "onyx",
+   "name": "Onyx",
+   "fullModel": "openrouter-tts-voices/onyx",
+   "routedModel": "openrouter-tts-voices/onyx",
+   "alias": "onyx",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "openrouter-tts-voices",
+   "model": "sage",
+   "name": "Sage",
+   "fullModel": "openrouter-tts-voices/sage",
+   "routedModel": "openrouter-tts-voices/sage",
+   "alias": "sage",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "openrouter-tts-voices",
+   "model": "shimmer",
+   "name": "Shimmer",
+   "fullModel": "openrouter-tts-voices/shimmer",
+   "routedModel": "openrouter-tts-voices/shimmer",
+   "alias": "shimmer",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "openrouter-tts-voices",
+   "model": "verse",
+   "name": "Verse",
+   "fullModel": "openrouter-tts-voices/verse",
+   "routedModel": "openrouter-tts-voices/verse",
+   "alias": "verse",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "elevenlabs-tts-models",
+   "model": "eleven_flash_v2_5",
+   "name": "Flash v2.5 (Fastest)",
+   "fullModel": "elevenlabs-tts-models/eleven_flash_v2_5",
+   "routedModel": "elevenlabs-tts-models/eleven_flash_v2_5",
+   "alias": "eleven_flash_v2_5",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "elevenlabs-tts-models",
+   "model": "eleven_turbo_v2_5",
+   "name": "Turbo v2.5 (Fast)",
+   "fullModel": "elevenlabs-tts-models/eleven_turbo_v2_5",
+   "routedModel": "elevenlabs-tts-models/eleven_turbo_v2_5",
+   "alias": "eleven_turbo_v2_5",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "elevenlabs-tts-models",
+   "model": "eleven_monolingual_v1",
+   "name": "Monolingual v1 (English)",
+   "fullModel": "elevenlabs-tts-models/eleven_monolingual_v1",
+   "routedModel": "elevenlabs-tts-models/eleven_monolingual_v1",
+   "alias": "eleven_monolingual_v1",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "edge-tts",
+   "model": "en-US-AriaNeural",
+   "name": "Aria (en-US)",
+   "fullModel": "edge-tts/en-US-AriaNeural",
+   "routedModel": "edge-tts/en-US-AriaNeural",
+   "alias": "en-US-AriaNeural",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "edge-tts",
+   "model": "en-US-GuyNeural",
+   "name": "Guy (en-US)",
+   "fullModel": "edge-tts/en-US-GuyNeural",
+   "routedModel": "edge-tts/en-US-GuyNeural",
+   "alias": "en-US-GuyNeural",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "edge-tts",
+   "model": "en-GB-SoniaNeural",
+   "name": "Sonia (en-GB)",
+   "fullModel": "edge-tts/en-GB-SoniaNeural",
+   "routedModel": "edge-tts/en-GB-SoniaNeural",
+   "alias": "en-GB-SoniaNeural",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "edge-tts",
+   "model": "vi-VN-HoaiMyNeural",
+   "name": "Hoai My (vi-VN)",
+   "fullModel": "edge-tts/vi-VN-HoaiMyNeural",
+   "routedModel": "edge-tts/vi-VN-HoaiMyNeural",
+   "alias": "vi-VN-HoaiMyNeural",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "edge-tts",
+   "model": "vi-VN-NamMinhNeural",
+   "name": "Nam Minh (vi-VN)",
+   "fullModel": "edge-tts/vi-VN-NamMinhNeural",
+   "routedModel": "edge-tts/vi-VN-NamMinhNeural",
+   "alias": "vi-VN-NamMinhNeural",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "edge-tts",
+   "model": "zh-CN-XiaoxiaoNeural",
+   "name": "Xiaoxiao (zh-CN)",
+   "fullModel": "edge-tts/zh-CN-XiaoxiaoNeural",
+   "routedModel": "edge-tts/zh-CN-XiaoxiaoNeural",
+   "alias": "zh-CN-XiaoxiaoNeural",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "edge-tts",
+   "model": "zh-CN-YunxiNeural",
+   "name": "Yunxi (zh-CN)",
+   "fullModel": "edge-tts/zh-CN-YunxiNeural",
+   "routedModel": "edge-tts/zh-CN-YunxiNeural",
+   "alias": "zh-CN-YunxiNeural",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "edge-tts",
+   "model": "fr-FR-DeniseNeural",
+   "name": "Denise (fr-FR)",
+   "fullModel": "edge-tts/fr-FR-DeniseNeural",
+   "routedModel": "edge-tts/fr-FR-DeniseNeural",
+   "alias": "fr-FR-DeniseNeural",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "edge-tts",
+   "model": "de-DE-KatjaNeural",
+   "name": "Katja (de-DE)",
+   "fullModel": "edge-tts/de-DE-KatjaNeural",
+   "routedModel": "edge-tts/de-DE-KatjaNeural",
+   "alias": "de-DE-KatjaNeural",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "edge-tts",
+   "model": "ja-JP-NanamiNeural",
+   "name": "Nanami (ja-JP)",
+   "fullModel": "edge-tts/ja-JP-NanamiNeural",
+   "routedModel": "edge-tts/ja-JP-NanamiNeural",
+   "alias": "ja-JP-NanamiNeural",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "edge-tts",
+   "model": "ko-KR-SunHiNeural",
+   "name": "SunHi (ko-KR)",
+   "fullModel": "edge-tts/ko-KR-SunHiNeural",
+   "routedModel": "edge-tts/ko-KR-SunHiNeural",
+   "alias": "ko-KR-SunHiNeural",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "local-device",
+   "model": "default",
+   "name": "System Default Voice",
+   "fullModel": "local-device/default",
+   "routedModel": "local-device/default",
+   "alias": "default",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "af",
+   "name": "Afrikaans",
+   "fullModel": "google-tts/af",
+   "routedModel": "google-tts/af",
+   "alias": "af",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "ar",
+   "name": "Arabic",
+   "fullModel": "google-tts/ar",
+   "routedModel": "google-tts/ar",
+   "alias": "ar",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "bg",
+   "name": "Bulgarian",
+   "fullModel": "google-tts/bg",
+   "routedModel": "google-tts/bg",
+   "alias": "bg",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "bn",
+   "name": "Bengali",
+   "fullModel": "google-tts/bn",
+   "routedModel": "google-tts/bn",
+   "alias": "bn",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "bs",
+   "name": "Bosnian",
+   "fullModel": "google-tts/bs",
+   "routedModel": "google-tts/bs",
+   "alias": "bs",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "ca",
+   "name": "Catalan",
+   "fullModel": "google-tts/ca",
+   "routedModel": "google-tts/ca",
+   "alias": "ca",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "cs",
+   "name": "Czech",
+   "fullModel": "google-tts/cs",
+   "routedModel": "google-tts/cs",
+   "alias": "cs",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "cy",
+   "name": "Welsh",
+   "fullModel": "google-tts/cy",
+   "routedModel": "google-tts/cy",
+   "alias": "cy",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "da",
+   "name": "Danish",
+   "fullModel": "google-tts/da",
+   "routedModel": "google-tts/da",
+   "alias": "da",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "de",
+   "name": "German",
+   "fullModel": "google-tts/de",
+   "routedModel": "google-tts/de",
+   "alias": "de",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "el",
+   "name": "Greek",
+   "fullModel": "google-tts/el",
+   "routedModel": "google-tts/el",
+   "alias": "el",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "en",
+   "name": "English",
+   "fullModel": "google-tts/en",
+   "routedModel": "google-tts/en",
+   "alias": "en",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "eo",
+   "name": "Esperanto",
+   "fullModel": "google-tts/eo",
+   "routedModel": "google-tts/eo",
+   "alias": "eo",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "es",
+   "name": "Spanish",
+   "fullModel": "google-tts/es",
+   "routedModel": "google-tts/es",
+   "alias": "es",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "et",
+   "name": "Estonian",
+   "fullModel": "google-tts/et",
+   "routedModel": "google-tts/et",
+   "alias": "et",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "fi",
+   "name": "Finnish",
+   "fullModel": "google-tts/fi",
+   "routedModel": "google-tts/fi",
+   "alias": "fi",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "fr",
+   "name": "French",
+   "fullModel": "google-tts/fr",
+   "routedModel": "google-tts/fr",
+   "alias": "fr",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "gu",
+   "name": "Gujarati",
+   "fullModel": "google-tts/gu",
+   "routedModel": "google-tts/gu",
+   "alias": "gu",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "hi",
+   "name": "Hindi",
+   "fullModel": "google-tts/hi",
+   "routedModel": "google-tts/hi",
+   "alias": "hi",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "hr",
+   "name": "Croatian",
+   "fullModel": "google-tts/hr",
+   "routedModel": "google-tts/hr",
+   "alias": "hr",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "hu",
+   "name": "Hungarian",
+   "fullModel": "google-tts/hu",
+   "routedModel": "google-tts/hu",
+   "alias": "hu",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "hy",
+   "name": "Armenian",
+   "fullModel": "google-tts/hy",
+   "routedModel": "google-tts/hy",
+   "alias": "hy",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "id",
+   "name": "Indonesian",
+   "fullModel": "google-tts/id",
+   "routedModel": "google-tts/id",
+   "alias": "id",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "is",
+   "name": "Icelandic",
+   "fullModel": "google-tts/is",
+   "routedModel": "google-tts/is",
+   "alias": "is",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "it",
+   "name": "Italian",
+   "fullModel": "google-tts/it",
+   "routedModel": "google-tts/it",
+   "alias": "it",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "ja",
+   "name": "Japanese",
+   "fullModel": "google-tts/ja",
+   "routedModel": "google-tts/ja",
+   "alias": "ja",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "jw",
+   "name": "Javanese",
+   "fullModel": "google-tts/jw",
+   "routedModel": "google-tts/jw",
+   "alias": "jw",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "km",
+   "name": "Khmer",
+   "fullModel": "google-tts/km",
+   "routedModel": "google-tts/km",
+   "alias": "km",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "kn",
+   "name": "Kannada",
+   "fullModel": "google-tts/kn",
+   "routedModel": "google-tts/kn",
+   "alias": "kn",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "ko",
+   "name": "Korean",
+   "fullModel": "google-tts/ko",
+   "routedModel": "google-tts/ko",
+   "alias": "ko",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "la",
+   "name": "Latin",
+   "fullModel": "google-tts/la",
+   "routedModel": "google-tts/la",
+   "alias": "la",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "lv",
+   "name": "Latvian",
+   "fullModel": "google-tts/lv",
+   "routedModel": "google-tts/lv",
+   "alias": "lv",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "mk",
+   "name": "Macedonian",
+   "fullModel": "google-tts/mk",
+   "routedModel": "google-tts/mk",
+   "alias": "mk",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "ml",
+   "name": "Malayalam",
+   "fullModel": "google-tts/ml",
+   "routedModel": "google-tts/ml",
+   "alias": "ml",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "mr",
+   "name": "Marathi",
+   "fullModel": "google-tts/mr",
+   "routedModel": "google-tts/mr",
+   "alias": "mr",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "my",
+   "name": "Myanmar (Burmese)",
+   "fullModel": "google-tts/my",
+   "routedModel": "google-tts/my",
+   "alias": "my",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "ne",
+   "name": "Nepali",
+   "fullModel": "google-tts/ne",
+   "routedModel": "google-tts/ne",
+   "alias": "ne",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "nl",
+   "name": "Dutch",
+   "fullModel": "google-tts/nl",
+   "routedModel": "google-tts/nl",
+   "alias": "nl",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "no",
+   "name": "Norwegian",
+   "fullModel": "google-tts/no",
+   "routedModel": "google-tts/no",
+   "alias": "no",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "pl",
+   "name": "Polish",
+   "fullModel": "google-tts/pl",
+   "routedModel": "google-tts/pl",
+   "alias": "pl",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "pt",
+   "name": "Portuguese",
+   "fullModel": "google-tts/pt",
+   "routedModel": "google-tts/pt",
+   "alias": "pt",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "ro",
+   "name": "Romanian",
+   "fullModel": "google-tts/ro",
+   "routedModel": "google-tts/ro",
+   "alias": "ro",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "ru",
+   "name": "Russian",
+   "fullModel": "google-tts/ru",
+   "routedModel": "google-tts/ru",
+   "alias": "ru",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "si",
+   "name": "Sinhala",
+   "fullModel": "google-tts/si",
+   "routedModel": "google-tts/si",
+   "alias": "si",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "sk",
+   "name": "Slovak",
+   "fullModel": "google-tts/sk",
+   "routedModel": "google-tts/sk",
+   "alias": "sk",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "sq",
+   "name": "Albanian",
+   "fullModel": "google-tts/sq",
+   "routedModel": "google-tts/sq",
+   "alias": "sq",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "sr",
+   "name": "Serbian",
+   "fullModel": "google-tts/sr",
+   "routedModel": "google-tts/sr",
+   "alias": "sr",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "su",
+   "name": "Sundanese",
+   "fullModel": "google-tts/su",
+   "routedModel": "google-tts/su",
+   "alias": "su",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "sv",
+   "name": "Swedish",
+   "fullModel": "google-tts/sv",
+   "routedModel": "google-tts/sv",
+   "alias": "sv",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "sw",
+   "name": "Swahili",
+   "fullModel": "google-tts/sw",
+   "routedModel": "google-tts/sw",
+   "alias": "sw",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "ta",
+   "name": "Tamil",
+   "fullModel": "google-tts/ta",
+   "routedModel": "google-tts/ta",
+   "alias": "ta",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "te",
+   "name": "Telugu",
+   "fullModel": "google-tts/te",
+   "routedModel": "google-tts/te",
+   "alias": "te",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "th",
+   "name": "Thai",
+   "fullModel": "google-tts/th",
+   "routedModel": "google-tts/th",
+   "alias": "th",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "tl",
+   "name": "Filipino",
+   "fullModel": "google-tts/tl",
+   "routedModel": "google-tts/tl",
+   "alias": "tl",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "tr",
+   "name": "Turkish",
+   "fullModel": "google-tts/tr",
+   "routedModel": "google-tts/tr",
+   "alias": "tr",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "uk",
+   "name": "Ukrainian",
+   "fullModel": "google-tts/uk",
+   "routedModel": "google-tts/uk",
+   "alias": "uk",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "ur",
+   "name": "Urdu",
+   "fullModel": "google-tts/ur",
+   "routedModel": "google-tts/ur",
+   "alias": "ur",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "vi",
+   "name": "Vietnamese",
+   "fullModel": "google-tts/vi",
+   "routedModel": "google-tts/vi",
+   "alias": "vi",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "zh-CN",
+   "name": "Chinese (Simplified)",
+   "fullModel": "google-tts/zh-CN",
+   "routedModel": "google-tts/zh-CN",
+   "alias": "zh-CN",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "google-tts",
+   "model": "zh-TW",
+   "name": "Chinese (Traditional)",
+   "fullModel": "google-tts/zh-TW",
+   "routedModel": "google-tts/zh-TW",
+   "alias": "zh-TW",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gemini-tts-voices",
+   "model": "Zephyr",
+   "name": "Zephyr",
+   "fullModel": "gemini-tts-voices/Zephyr",
+   "routedModel": "gemini-tts-voices/Zephyr",
+   "alias": "Zephyr",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gemini-tts-voices",
+   "model": "Puck",
+   "name": "Puck",
+   "fullModel": "gemini-tts-voices/Puck",
+   "routedModel": "gemini-tts-voices/Puck",
+   "alias": "Puck",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gemini-tts-voices",
+   "model": "Charon",
+   "name": "Charon",
+   "fullModel": "gemini-tts-voices/Charon",
+   "routedModel": "gemini-tts-voices/Charon",
+   "alias": "Charon",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gemini-tts-voices",
+   "model": "Kore",
+   "name": "Kore",
+   "fullModel": "gemini-tts-voices/Kore",
+   "routedModel": "gemini-tts-voices/Kore",
+   "alias": "Kore",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gemini-tts-voices",
+   "model": "Fenrir",
+   "name": "Fenrir",
+   "fullModel": "gemini-tts-voices/Fenrir",
+   "routedModel": "gemini-tts-voices/Fenrir",
+   "alias": "Fenrir",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gemini-tts-voices",
+   "model": "Leda",
+   "name": "Leda",
+   "fullModel": "gemini-tts-voices/Leda",
+   "routedModel": "gemini-tts-voices/Leda",
+   "alias": "Leda",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gemini-tts-voices",
+   "model": "Orus",
+   "name": "Orus",
+   "fullModel": "gemini-tts-voices/Orus",
+   "routedModel": "gemini-tts-voices/Orus",
+   "alias": "Orus",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gemini-tts-voices",
+   "model": "Aoede",
+   "name": "Aoede",
+   "fullModel": "gemini-tts-voices/Aoede",
+   "routedModel": "gemini-tts-voices/Aoede",
+   "alias": "Aoede",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gemini-tts-voices",
+   "model": "Callirrhoe",
+   "name": "Callirrhoe",
+   "fullModel": "gemini-tts-voices/Callirrhoe",
+   "routedModel": "gemini-tts-voices/Callirrhoe",
+   "alias": "Callirrhoe",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gemini-tts-voices",
+   "model": "Autonoe",
+   "name": "Autonoe",
+   "fullModel": "gemini-tts-voices/Autonoe",
+   "routedModel": "gemini-tts-voices/Autonoe",
+   "alias": "Autonoe",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gemini-tts-voices",
+   "model": "Enceladus",
+   "name": "Enceladus",
+   "fullModel": "gemini-tts-voices/Enceladus",
+   "routedModel": "gemini-tts-voices/Enceladus",
+   "alias": "Enceladus",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gemini-tts-voices",
+   "model": "Iapetus",
+   "name": "Iapetus",
+   "fullModel": "gemini-tts-voices/Iapetus",
+   "routedModel": "gemini-tts-voices/Iapetus",
+   "alias": "Iapetus",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gemini-tts-voices",
+   "model": "Umbriel",
+   "name": "Umbriel",
+   "fullModel": "gemini-tts-voices/Umbriel",
+   "routedModel": "gemini-tts-voices/Umbriel",
+   "alias": "Umbriel",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gemini-tts-voices",
+   "model": "Algieba",
+   "name": "Algieba",
+   "fullModel": "gemini-tts-voices/Algieba",
+   "routedModel": "gemini-tts-voices/Algieba",
+   "alias": "Algieba",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gemini-tts-voices",
+   "model": "Despina",
+   "name": "Despina",
+   "fullModel": "gemini-tts-voices/Despina",
+   "routedModel": "gemini-tts-voices/Despina",
+   "alias": "Despina",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gemini-tts-voices",
+   "model": "Erinome",
+   "name": "Erinome",
+   "fullModel": "gemini-tts-voices/Erinome",
+   "routedModel": "gemini-tts-voices/Erinome",
+   "alias": "Erinome",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gemini-tts-voices",
+   "model": "Algenib",
+   "name": "Algenib",
+   "fullModel": "gemini-tts-voices/Algenib",
+   "routedModel": "gemini-tts-voices/Algenib",
+   "alias": "Algenib",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gemini-tts-voices",
+   "model": "Rasalgethi",
+   "name": "Rasalgethi",
+   "fullModel": "gemini-tts-voices/Rasalgethi",
+   "routedModel": "gemini-tts-voices/Rasalgethi",
+   "alias": "Rasalgethi",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gemini-tts-voices",
+   "model": "Laomedeia",
+   "name": "Laomedeia",
+   "fullModel": "gemini-tts-voices/Laomedeia",
+   "routedModel": "gemini-tts-voices/Laomedeia",
+   "alias": "Laomedeia",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gemini-tts-voices",
+   "model": "Achernar",
+   "name": "Achernar",
+   "fullModel": "gemini-tts-voices/Achernar",
+   "routedModel": "gemini-tts-voices/Achernar",
+   "alias": "Achernar",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gemini-tts-voices",
+   "model": "Alnilam",
+   "name": "Alnilam",
+   "fullModel": "gemini-tts-voices/Alnilam",
+   "routedModel": "gemini-tts-voices/Alnilam",
+   "alias": "Alnilam",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gemini-tts-voices",
+   "model": "Schedar",
+   "name": "Schedar",
+   "fullModel": "gemini-tts-voices/Schedar",
+   "routedModel": "gemini-tts-voices/Schedar",
+   "alias": "Schedar",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gemini-tts-voices",
+   "model": "Gacrux",
+   "name": "Gacrux",
+   "fullModel": "gemini-tts-voices/Gacrux",
+   "routedModel": "gemini-tts-voices/Gacrux",
+   "alias": "Gacrux",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gemini-tts-voices",
+   "model": "Pulcherrima",
+   "name": "Pulcherrima",
+   "fullModel": "gemini-tts-voices/Pulcherrima",
+   "routedModel": "gemini-tts-voices/Pulcherrima",
+   "alias": "Pulcherrima",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gemini-tts-voices",
+   "model": "Achird",
+   "name": "Achird",
+   "fullModel": "gemini-tts-voices/Achird",
+   "routedModel": "gemini-tts-voices/Achird",
+   "alias": "Achird",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gemini-tts-voices",
+   "model": "Zubenelgenubi",
+   "name": "Zubenelgenubi",
+   "fullModel": "gemini-tts-voices/Zubenelgenubi",
+   "routedModel": "gemini-tts-voices/Zubenelgenubi",
+   "alias": "Zubenelgenubi",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gemini-tts-voices",
+   "model": "Vindemiatrix",
+   "name": "Vindemiatrix",
+   "fullModel": "gemini-tts-voices/Vindemiatrix",
+   "routedModel": "gemini-tts-voices/Vindemiatrix",
+   "alias": "Vindemiatrix",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gemini-tts-voices",
+   "model": "Sadachbia",
+   "name": "Sadachbia",
+   "fullModel": "gemini-tts-voices/Sadachbia",
+   "routedModel": "gemini-tts-voices/Sadachbia",
+   "alias": "Sadachbia",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gemini-tts-voices",
+   "model": "Sadaltager",
+   "name": "Sadaltager",
+   "fullModel": "gemini-tts-voices/Sadaltager",
+   "routedModel": "gemini-tts-voices/Sadaltager",
+   "alias": "Sadaltager",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  },
+  {
+   "provider": "gemini-tts-voices",
+   "model": "Sulafat",
+   "name": "Sulafat",
+   "fullModel": "gemini-tts-voices/Sulafat",
+   "routedModel": "gemini-tts-voices/Sulafat",
+   "alias": "Sulafat",
+   "caps": {
+    "vision": false,
+    "search": false,
+    "reasoning": false,
+    "contextWindow": 200000,
+    "maxOutput": 64000
+   }
+  }
+ ],
+ "skippedZero": [
+  {
+   "provider": "ag",
+   "model": "gemini-3.1-pro-low",
+   "base": "gemini31pro",
+   "src": "gateway:apinex"
+  },
+  {
+   "provider": "apinex",
+   "model": "gemini-3.1-pro",
+   "base": "gemini31pro",
+   "src": "gateway:apinex"
+  },
+  {
+   "provider": "byteplus",
+   "model": "kimi-k2-thinking-251104",
+   "base": "kimik2thinking251104",
+   "src": "litellm"
+  },
+  {
+   "provider": "byteplus",
+   "model": "glm-4-7-251222",
+   "base": "glm47251222",
+   "src": "litellm"
+  },
+  {
+   "provider": "dv",
+   "model": "gemini-3.1-pro-high",
+   "base": "gemini31pro",
+   "src": "gateway:apinex"
+  },
+  {
+   "provider": "dv",
+   "model": "gemini-3.1-pro-low",
+   "base": "gemini31pro",
+   "src": "gateway:apinex"
+  },
+  {
+   "provider": "mistral",
+   "model": "codestral-latest",
+   "base": "codestrallatest",
+   "src": "litellm"
+  },
+  {
+   "provider": "ocz",
+   "model": "gemini-3.1-pro",
+   "base": "gemini31pro",
+   "src": "gateway:apinex"
+  },
+  {
+   "provider": "tr",
+   "model": "gemini-3.1-pro",
+   "base": "gemini31pro",
+   "src": "gateway:apinex"
+  },
+  {
+   "provider": "ws",
+   "model": "gemini-3.1-pro-high",
+   "base": "gemini31pro",
+   "src": "gateway:apinex"
+  },
+  {
+   "provider": "ws",
+   "model": "gemini-3.1-pro-low",
+   "base": "gemini31pro",
+   "src": "gateway:apinex"
+  }
+ ]
+}

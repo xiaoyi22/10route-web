@@ -1,0 +1,41 @@
+diff --git a/src/styles.css b/src/styles.css
+index e355280..031b94e 100644
+--- a/src/styles.css
++++ b/src/styles.css
+@@ -39,6 +39,9 @@
+   --token-cache: #69c9b1;
+   --token-created: #bf9af5;
+   --token-tps: #79cfdf;
++  --latency-fast: #00d9b0;
++  --latency-warning: #ffc400;
++  --latency-slow: #ff9900;
+ }
+ 
+ [data-theme="light"] {
+@@ -62,6 +65,9 @@
+   --token-cache: #087660;
+   --token-created: #7944b5;
+   --token-tps: #087484;
++  --latency-fast: #007963;
++  --latency-warning: #896300;
++  --latency-slow: #a65200;
+ }
+ 
+ * { box-sizing: border-box; letter-spacing: 0; }
+@@ -728,11 +734,14 @@ input::placeholder, textarea::placeholder { color: var(--dim); opacity: 1; }
+ .log-token-lines { grid-area: values; display: flex; flex-direction: column; gap: 1px; }
+ .log-token-lines > span, .log-token-cache { display: inline-flex; align-items: center; gap: 5px; }
+ .log-token-lines b { font-weight: 600; }
++.log-token-trigger, .token-details-tooltip { --token-input: var(--latency-warning); --token-output: var(--latency-slow); --token-cache: var(--latency-fast); }
++.logs-table .status.healthy { color: var(--latency-fast); }
++.logs-table .status.warning, .logs-table .status.unknown { color: var(--latency-warning); }
++.logs-table .status.error { color: var(--latency-slow); }
+ .log-token-cache { grid-area: cache; color: var(--token-cache); font-size: 12px; }
+ .log-token-info { grid-area: info; display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; color: var(--dim); opacity: .72; }
+ .log-token-trigger:hover .log-token-info, .log-token-trigger:focus-visible .log-token-info { color: var(--accent); opacity: 1; }
+-.log-latency { --latency-fast: #00d9b0; --latency-warning: #ffc400; --latency-slow: #ff9900; position: relative; display: grid; grid-template-columns: 52px max-content; column-gap: 6px; padding-left: 12px; align-items: center; justify-content: start; white-space: nowrap; font: 12px/18px var(--font-sans); font-variant-numeric: tabular-nums; }
+-[data-theme="light"] .log-latency { --latency-fast: #007963; --latency-warning: #896300; --latency-slow: #a65200; }
++.log-latency { position: relative; display: grid; grid-template-columns: 52px max-content; column-gap: 6px; padding-left: 12px; align-items: center; justify-content: start; white-space: nowrap; font: 12px/18px var(--font-sans); font-variant-numeric: tabular-nums; }
+ .log-latency::before { content: ""; position: absolute; left: 0; top: 1px; bottom: 1px; width: 4px; border-radius: 2px; background: var(--latency-bar, var(--dim)); }
+ .log-latency-fast { --latency-bar: var(--latency-fast); }
+ .log-latency-warning { --latency-bar: var(--latency-warning); }

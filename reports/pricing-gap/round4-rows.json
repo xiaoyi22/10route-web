@@ -1,0 +1,722 @@
+[
+ {
+  "provider": "fireworks",
+  "model": "nomic-ai/nomic-embed-text-v1.5",
+  "kind": "embedding",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "gemini",
+  "model": "gemini-embedding-2-preview",
+  "kind": "embedding",
+  "litKey": "gemini-embedding-2-preview",
+  "input": 0.19999999999999998,
+  "output": 0,
+  "src": "litellm"
+ },
+ {
+  "provider": "gemini",
+  "model": "gemini-embedding-001",
+  "kind": "embedding",
+  "litKey": "gemini-embedding-001",
+  "input": 0.15,
+  "output": 0,
+  "src": "litellm"
+ },
+ {
+  "provider": "gemini",
+  "model": "text-embedding-005",
+  "kind": "embedding",
+  "litKey": "text-embedding-005",
+  "input": 0.09999999999999999,
+  "output": 0,
+  "src": "litellm"
+ },
+ {
+  "provider": "gemini",
+  "model": "text-embedding-004",
+  "kind": "embedding",
+  "litKey": "text-embedding-004",
+  "input": 0.09999999999999999,
+  "output": 0,
+  "src": "litellm"
+ },
+ {
+  "provider": "gemini",
+  "model": "gemini-2.5-flash-native-audio-preview-09-17",
+  "kind": "tts",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "gemini",
+  "model": "gemini-3.1-flash-tts-preview",
+  "kind": "tts",
+  "litKey": "gemini/gemini-3.1-flash-tts-preview",
+  "input": 1,
+  "output": 20,
+  "src": "litellm"
+ },
+ {
+  "provider": "gemini",
+  "model": "gemini-2.5-flash-preview-tts",
+  "kind": "tts",
+  "litKey": "gemini/gemini-2.5-flash-preview-tts",
+  "input": 0.5,
+  "output": 10,
+  "src": "litellm"
+ },
+ {
+  "provider": "gemini",
+  "model": "gemini-2.5-pro-preview-tts",
+  "kind": "tts",
+  "litKey": "gemini-2.5-pro-preview-tts",
+  "input": 1,
+  "output": 20,
+  "src": "litellm"
+ },
+ {
+  "provider": "gemini",
+  "model": "embedding-001",
+  "kind": "embedding",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "gh",
+  "model": "text-embedding-3-small",
+  "kind": "embedding",
+  "litKey": "azure/text-embedding-3-small",
+  "input": 0.022,
+  "output": 0,
+  "src": "litellm"
+ },
+ {
+  "provider": "gh",
+  "model": "text-embedding-3-large",
+  "kind": "embedding",
+  "litKey": "azure/text-embedding-3-large",
+  "input": 0.143,
+  "output": 0,
+  "src": "litellm"
+ },
+ {
+  "provider": "mistral",
+  "model": "mistral-embed",
+  "kind": "embedding",
+  "litKey": "mistral/mistral-embed",
+  "input": 0.09999999999999999,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "nebius",
+  "model": "Qwen/Qwen3-Embedding-8B",
+  "kind": "embedding",
+  "litKey": "llamagate/qwen3-embedding-8b",
+  "input": 0.02,
+  "output": 0,
+  "src": "litellm"
+ },
+ {
+  "provider": "nvidia",
+  "model": "nvidia/nv-embedqa-e5-v5",
+  "kind": "embedding",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "openai",
+  "model": "text-embedding-3-large",
+  "kind": "embedding",
+  "litKey": "azure/text-embedding-3-large",
+  "input": 0.143,
+  "output": 0,
+  "src": "litellm"
+ },
+ {
+  "provider": "openai",
+  "model": "text-embedding-3-small",
+  "kind": "embedding",
+  "litKey": "azure/text-embedding-3-small",
+  "input": 0.022,
+  "output": 0,
+  "src": "litellm"
+ },
+ {
+  "provider": "openai",
+  "model": "text-embedding-ada-002",
+  "kind": "embedding",
+  "litKey": "azure/text-embedding-ada-002",
+  "input": 0.11,
+  "output": 0,
+  "src": "litellm"
+ },
+ {
+  "provider": "openai",
+  "model": "tts-1",
+  "kind": "tts",
+  "litKey": "azure/tts-1",
+  "input": 15,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "openai",
+  "model": "tts-1-hd",
+  "kind": "tts",
+  "litKey": "azure/tts-1-hd",
+  "input": 33,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "openai",
+  "model": "gpt-4o-mini-tts",
+  "kind": "tts",
+  "litKey": "azure/gpt-4o-mini-tts",
+  "input": 0.6,
+  "output": 10,
+  "src": "litellm"
+ },
+ {
+  "provider": "openrouter",
+  "model": "openai/text-embedding-3-large",
+  "kind": "embedding",
+  "litKey": "azure/text-embedding-3-large",
+  "input": 0.143,
+  "output": 0,
+  "src": "litellm"
+ },
+ {
+  "provider": "openrouter",
+  "model": "openai/text-embedding-3-small",
+  "kind": "embedding",
+  "litKey": "azure/text-embedding-3-small",
+  "input": 0.022,
+  "output": 0,
+  "src": "litellm"
+ },
+ {
+  "provider": "openrouter",
+  "model": "openai/text-embedding-ada-002",
+  "kind": "embedding",
+  "litKey": "azure/text-embedding-ada-002",
+  "input": 0.11,
+  "output": 0,
+  "src": "litellm"
+ },
+ {
+  "provider": "openrouter",
+  "model": "qwen/qwen3-embedding-8b",
+  "kind": "embedding",
+  "litKey": "llamagate/qwen3-embedding-8b",
+  "input": 0.02,
+  "output": 0,
+  "src": "litellm"
+ },
+ {
+  "provider": "openrouter",
+  "model": "perplexity/pplx-embed-v1-4b",
+  "kind": "embedding",
+  "litKey": "perplexity/pplx-embed-v1-4b",
+  "input": 0.03,
+  "output": 0,
+  "src": "litellm"
+ },
+ {
+  "provider": "openrouter",
+  "model": "perplexity/pplx-embed-v1-0.6b",
+  "kind": "embedding",
+  "litKey": "perplexity/pplx-embed-v1-0.6b",
+  "input": 0.004,
+  "output": 0,
+  "src": "litellm"
+ },
+ {
+  "provider": "openrouter",
+  "model": "nvidia/llama-nemotron-embed-vl-1b-v2:free",
+  "kind": "embedding",
+  "litKey": null,
+  "input": 0,
+  "output": 0,
+  "src": "free"
+ },
+ {
+  "provider": "openrouter",
+  "model": "openai/gpt-4o-mini-tts",
+  "kind": "tts",
+  "litKey": "azure/gpt-4o-mini-tts",
+  "input": 0.6,
+  "output": 10,
+  "src": "litellm"
+ },
+ {
+  "provider": "openrouter",
+  "model": "openai/tts-1-hd",
+  "kind": "tts",
+  "litKey": "azure/tts-1-hd",
+  "input": 33,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "openrouter",
+  "model": "openai/tts-1",
+  "kind": "tts",
+  "litKey": "azure/tts-1",
+  "input": 15,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "selfhosted-embedding",
+  "model": "embedding",
+  "kind": "embedding",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "step-cn",
+  "model": "stepaudio-3-tts",
+  "kind": "tts",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "step-cn",
+  "model": "stepaudio-2.5-tts",
+  "kind": "tts",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "step-cn",
+  "model": "step-tts-2",
+  "kind": "tts",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "step-cn",
+  "model": "step-tts-mini",
+  "kind": "tts",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "step-cn",
+  "model": "stepaudio-2.5-asr",
+  "kind": "tts",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "stepp-cn",
+  "model": "stepaudio-2.5-tts",
+  "kind": "tts",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "stepp",
+  "model": "stepaudio-2.5-tts",
+  "kind": "tts",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "step",
+  "model": "stepaudio-3-tts",
+  "kind": "tts",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "step",
+  "model": "stepaudio-2.5-tts",
+  "kind": "tts",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "step",
+  "model": "step-tts-2",
+  "kind": "tts",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "step",
+  "model": "step-tts-mini",
+  "kind": "tts",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "step",
+  "model": "stepaudio-2.5-asr",
+  "kind": "tts",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "together",
+  "model": "BAAI/bge-large-en-v1.5",
+  "kind": "embedding",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "venice",
+  "model": "text-embedding-3-large",
+  "kind": "embedding",
+  "litKey": "azure/text-embedding-3-large",
+  "input": 0.143,
+  "output": 0,
+  "src": "litellm"
+ },
+ {
+  "provider": "venice",
+  "model": "text-embedding-bge-m3",
+  "kind": "embedding",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "venice",
+  "model": "text-embedding-qwen3-8b",
+  "kind": "embedding",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "voyage-ai",
+  "model": "voyage-3-large",
+  "kind": "embedding",
+  "litKey": "voyage/voyage-3-large",
+  "input": 0.18,
+  "output": 0,
+  "src": "litellm"
+ },
+ {
+  "provider": "voyage-ai",
+  "model": "voyage-3.5",
+  "kind": "embedding",
+  "litKey": "voyage/voyage-3.5",
+  "input": 0.06,
+  "output": 0,
+  "src": "litellm"
+ },
+ {
+  "provider": "voyage-ai",
+  "model": "voyage-3.5-lite",
+  "kind": "embedding",
+  "litKey": "voyage/voyage-3.5-lite",
+  "input": 0.02,
+  "output": 0,
+  "src": "litellm"
+ },
+ {
+  "provider": "voyage-ai",
+  "model": "voyage-code-3",
+  "kind": "embedding",
+  "litKey": "voyage/voyage-code-3",
+  "input": 0.18,
+  "output": 0,
+  "src": "litellm"
+ },
+ {
+  "provider": "voyage-ai",
+  "model": "voyage-finance-2",
+  "kind": "embedding",
+  "litKey": "voyage/voyage-finance-2",
+  "input": 0.12,
+  "output": 0,
+  "src": "litellm"
+ },
+ {
+  "provider": "voyage-ai",
+  "model": "voyage-law-2",
+  "kind": "embedding",
+  "litKey": "voyage/voyage-law-2",
+  "input": 0.12,
+  "output": 0,
+  "src": "litellm"
+ },
+ {
+  "provider": "voyage-ai",
+  "model": "voyage-multilingual-2",
+  "kind": "embedding",
+  "litKey": "voyage/voyage-multilingual-2",
+  "input": 0.12,
+  "output": 0,
+  "src": "litellm"
+ },
+ {
+  "provider": "xiaomi-mimo",
+  "model": "mimo-v2.5-tts",
+  "kind": "tts",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "xiaomi-tokenplan",
+  "model": "mimo-v2.5-tts",
+  "kind": "tts",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "xiaomi-tokenplan",
+  "model": "mimo-v2.5-tts-voiceclone",
+  "kind": "tts",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "xiaomi-tokenplan",
+  "model": "mimo-v2.5-tts-voicedesign",
+  "kind": "tts",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "openai-tts-models",
+  "model": "gpt-4o-mini-tts",
+  "kind": "tts",
+  "litKey": "azure/gpt-4o-mini-tts",
+  "input": 0.6,
+  "output": 10,
+  "src": "litellm"
+ },
+ {
+  "provider": "openai-tts-models",
+  "model": "tts-1-hd",
+  "kind": "tts",
+  "litKey": "azure/tts-1-hd",
+  "input": 33,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "openai-tts-models",
+  "model": "tts-1",
+  "kind": "tts",
+  "litKey": "azure/tts-1",
+  "input": 15,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "openrouter-tts-models",
+  "model": "openai/gpt-4o-mini-tts",
+  "kind": "tts",
+  "litKey": "azure/gpt-4o-mini-tts",
+  "input": 0.6,
+  "output": 10,
+  "src": "litellm"
+ },
+ {
+  "provider": "openrouter-tts-models",
+  "model": "openai/tts-1-hd",
+  "kind": "tts",
+  "litKey": "azure/tts-1-hd",
+  "input": 33,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "openrouter-tts-models",
+  "model": "openai/tts-1",
+  "kind": "tts",
+  "litKey": "azure/tts-1",
+  "input": 15,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "edge-tts",
+  "model": "en-US-AriaNeural",
+  "kind": "tts",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "edge-tts",
+  "model": "en-US-GuyNeural",
+  "kind": "tts",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "edge-tts",
+  "model": "en-GB-SoniaNeural",
+  "kind": "tts",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "edge-tts",
+  "model": "vi-VN-HoaiMyNeural",
+  "kind": "tts",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "edge-tts",
+  "model": "vi-VN-NamMinhNeural",
+  "kind": "tts",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "edge-tts",
+  "model": "zh-CN-XiaoxiaoNeural",
+  "kind": "tts",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "edge-tts",
+  "model": "zh-CN-YunxiNeural",
+  "kind": "tts",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "edge-tts",
+  "model": "fr-FR-DeniseNeural",
+  "kind": "tts",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "edge-tts",
+  "model": "de-DE-KatjaNeural",
+  "kind": "tts",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "edge-tts",
+  "model": "ja-JP-NanamiNeural",
+  "kind": "tts",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "edge-tts",
+  "model": "ko-KR-SunHiNeural",
+  "kind": "tts",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ },
+ {
+  "provider": "gemini-tts-models",
+  "model": "gemini-3.1-flash-tts-preview",
+  "kind": "tts",
+  "litKey": "gemini/gemini-3.1-flash-tts-preview",
+  "input": 1,
+  "output": 20,
+  "src": "litellm"
+ },
+ {
+  "provider": "gemini-tts-models",
+  "model": "gemini-2.5-flash-preview-tts",
+  "kind": "tts",
+  "litKey": "gemini/gemini-2.5-flash-preview-tts",
+  "input": 0.5,
+  "output": 10,
+  "src": "litellm"
+ },
+ {
+  "provider": "gemini-tts-models",
+  "model": "gemini-2.5-pro-preview-tts",
+  "kind": "tts",
+  "litKey": "gemini-2.5-pro-preview-tts",
+  "input": 1,
+  "output": 20,
+  "src": "litellm"
+ },
+ {
+  "provider": "xiaomi-mimo-tts-models",
+  "model": "mimo-v2.5-tts",
+  "kind": "tts",
+  "litKey": null,
+  "input": null,
+  "output": null,
+  "src": "litellm"
+ }
+]

@@ -1,0 +1,28 @@
+{
+  "base": "http://192.168.11.150:4317",
+  "live": true,
+  "passed": false,
+  "checks": [
+    "名称、类型、状态、延迟排序通过，未知延迟始终置后"
+  ],
+  "http": [
+    200,
+    200,
+    200,
+    200,
+    502,
+    502
+  ],
+  "errors": [],
+  "networkErrors": [
+    {
+      "path": "/api/hermes/proxy/delay",
+      "status": 502
+    },
+    {
+      "path": "/api/hermes/proxy/delay",
+      "status": 502
+    }
+  ],
+  "failure": "Real delay API must return HTTP 200"
+}

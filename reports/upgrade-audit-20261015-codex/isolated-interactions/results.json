@@ -1,0 +1,32 @@
+{
+  "base": "http://127.0.0.1:4328",
+  "checks": [
+    "publication initially selected",
+    "browser saves distribution with JSON 200",
+    "publication change survives reload",
+    "saved allowlist retains other model",
+    "model search works",
+    "discard restores saved publication",
+    "balance preference initially matches database",
+    "browser saves balance preference with JSON 200",
+    "balance preference survives reload",
+    "quota tab switches",
+    "balance tab switches",
+    "automatic refresh preference survives reload",
+    "no uncaught browser exceptions"
+  ],
+  "errors": [],
+  "writes": [
+    {
+      "path": "/api/models/distribution",
+      "method": "PUT"
+    },
+    {
+      "path": "/api/channel-balances",
+      "method": "PATCH"
+    }
+  ],
+  "distributionRestored": true,
+  "balanceRestored": true,
+  "passed": true
+}

@@ -1,0 +1,8 @@
+diff --git a/src/styles.css b/src/styles.css
+--- a/src/styles.css
++++ b/src/styles.css
+@@ -555,3 +555,3 @@
+ .distribution-selected > p { margin: 12px 0; font-size: 12px; line-height: 1.7; }
+-.distribution-selected ul { list-style: none; margin: 0; padding: 0 10px 0 0; max-height: min(560px, 60vh); overflow-y: auto; scrollbar-gutter: stable; }
++.distribution-selected ul { list-style: none; margin: 0; padding: 0 16px 0 0; max-height: min(560px, 60vh); overflow-y: auto; scrollbar-gutter: stable; scrollbar-width: thin; scrollbar-color: var(--dim) transparent; }
+ .distribution-selected li { display: flex; align-items: center; gap: 12px; padding: 14px 0; border-top: 1px solid var(--border); }

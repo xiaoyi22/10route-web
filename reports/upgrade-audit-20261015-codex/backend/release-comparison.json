@@ -1,0 +1,1085 @@
+{
+  "control": {
+    "numPassedTests": 5323,
+    "numFailedTests": 247,
+    "numPendingTests": 60
+  },
+  "rescue": {
+    "numPassedTests": 5631,
+    "numFailedTests": 35,
+    "numPendingTests": 60
+  },
+  "regressions": [],
+  "fixedAssertions": [
+    {
+      "file": "translator/bugs-toClaude-context.test.js",
+      "test": "OpenAI \u2192 Claude context mapping tool_choice=none is not turned into auto"
+    },
+    {
+      "file": "translator/golden-response-stream.test.js",
+      "test": "GOLDEN response stream: OpenAI-Responses (codex) \u2192 OpenAI error event \u2192 error chunk (fallback id/created)"
+    },
+    {
+      "file": "unit/antigravity-quota-policy.test.js",
+      "test": "AG P1-2 quota reset honored (no early probing) AG 429 with 3h reset locks the model ~3h, not the 30-minute cap"
+    },
+    {
+      "file": "unit/antigravity-quota-policy.test.js",
+      "test": "AG P1-2 quota reset honored (no early probing) AG 429 with 5h window (typical) locks full window"
+    },
+    {
+      "file": "unit/antigravity-quota-policy.test.js",
+      "test": "AG P1-2 quota reset honored (no early probing) absurd far-future AG reset (30d) is clamped to the generic cap and warns"
+    },
+    {
+      "file": "unit/channel-balances-preferences-repo.test.js",
+      "test": "channel balance preferences in the real settings store exports the helper through the database and localDb boundaries"
+    },
+    {
+      "file": "unit/channel-balances-preferences-repo.test.js",
+      "test": "channel balance preferences in the real settings store persists hide and show without changing routing, credentials or other settings"
+    },
+    {
+      "file": "unit/channel-balances-preferences-repo.test.js",
+      "test": "channel balance preferences in the real settings store preserves concurrent toggles of different channels and unrelated settings"
+    },
+    {
+      "file": "unit/channel-balances-preferences-repo.test.js",
+      "test": "channel balance preferences in the real settings store rejects invalid input without writing preferences"
+    },
+    {
+      "file": "unit/channel-balances-public.test.js",
+      "test": "public welfare channel balances does not mistake object prototype names for allowlisted upstream hosts"
+    },
+    {
+      "file": "unit/channel-balances-public.test.js",
+      "test": "public welfare channel balances recognizes the audited api.bxacc.xyz host without trusting the display name"
+    },
+    {
+      "file": "unit/channel-balances-public.test.js",
+      "test": "public welfare channel balances recognizes the audited pmcat.top host without trusting the display name"
+    },
+    {
+      "file": "unit/channel-balances-public.test.js",
+      "test": "public welfare channel balances recognizes the audited api.feixingwawa.cn host without trusting the display name"
+    },
+    {
+      "file": "unit/channel-balances-public.test.js",
+      "test": "public welfare channel balances recognizes the audited grok-heavy.878.indevs.in host without trusting the display name"
+    },
+    {
+      "file": "unit/channel-balances-public.test.js",
+      "test": "public welfare channel balances recognizes the audited x-api.cfd host without trusting the display name"
+    },
+    {
+      "file": "unit/channel-balances-public.test.js",
+      "test": "public welfare channel balances recognizes the audited api.xn--xwr.site host without trusting the display name"
+    },
+    {
+      "file": "unit/channel-balances-public.test.js",
+      "test": "public welfare channel balances recognizes the audited api.fengwind.com host without trusting the display name"
+    },
+    {
+      "file": "unit/channel-balances-public.test.js",
+      "test": "public welfare channel balances recognizes the audited anyrouter.top host without trusting the display name"
+    },
+    {
+      "file": "unit/channel-balances-public.test.js",
+      "test": "public welfare channel balances keeps unlimited NewAPI keys separate from wallets and suppresses negative remaining"
+    },
+    {
+      "file": "unit/channel-balances-public.test.js",
+      "test": "public welfare channel balances preserves finite NewAPI raw quota and expiry without converting it to money"
+    },
+    {
+      "file": "unit/channel-balances-public.test.js",
+      "test": "public welfare channel balances rejects fake NewAPI success shapes and invalid unlimited flags"
+    },
+    {
+      "file": "unit/channel-balances-public.test.js",
+      "test": "public welfare channel balances uses the trailing-slash NewAPI endpoint and existing strict proxy"
+    },
+    {
+      "file": "unit/channel-balances-public.test.js",
+      "test": "public welfare channel balances uses Sub2API usage for XWR without inventing a wallet or querying models"
+    },
+    {
+      "file": "unit/channel-balances-public.test.js",
+      "test": "public welfare channel balances normalizes modern Fengwind wallet, key limits and upstream channels independently"
+    },
+    {
+      "file": "unit/channel-balances-public.test.js",
+      "test": "public welfare channel balances rejects unsupported Fengwind schema versions or missing wallet units"
+    },
+    {
+      "file": "unit/channel-balances-public.test.js",
+      "test": "public welfare channel balances hides Fengwind upstream 503 without inventing a zero balance"
+    },
+    {
+      "file": "unit/channel-balances-public.test.js",
+      "test": "public welfare channel balances does not treat the legacy hundred-million billing cap as an actual wallet"
+    },
+    {
+      "file": "unit/channel-balances-public.test.js",
+      "test": "public welfare channel balances hides unsupported and disabled nodes without sending keys"
+    },
+    {
+      "file": "unit/channel-balances-route.test.js",
+      "test": "channel balances route provides query-free metadata for the channel controls"
+    },
+    {
+      "file": "unit/channel-balances-route.test.js",
+      "test": "channel balances route saves a single channel toggle and returns metadata without balance requests"
+    },
+    {
+      "file": "unit/channel-balances-route.test.js",
+      "test": "channel balances route rejects malformed bodies, invalid types and settings mass assignment"
+    },
+    {
+      "file": "unit/channel-balances-route.test.js",
+      "test": "channel balances route rejects an unknown channel and redacts storage errors"
+    },
+    {
+      "file": "unit/channel-balances-route.test.js",
+      "test": "channel balances route returns a private non-cacheable snapshot and forwards forced refresh"
+    },
+    {
+      "file": "unit/channel-balances-route.test.js",
+      "test": "channel balances route does not leak database or credential errors"
+    },
+    {
+      "file": "unit/channel-balances-visibility.test.js",
+      "test": "channel balance display and query preferences preserves the current default and returns safe selectable metadata"
+    },
+    {
+      "file": "unit/channel-balances-visibility.test.js",
+      "test": "channel balance display and query preferences omits a hidden channel before proxy resolution, upstream GET or cache access"
+    },
+    {
+      "file": "unit/channel-balances-visibility.test.js",
+      "test": "channel balance display and query preferences makes no requests when all channels are hidden and still permits re-enabling"
+    },
+    {
+      "file": "unit/channel-balances-visibility.test.js",
+      "test": "channel balance display and query preferences metadata-only reads used for saving never query any upstream"
+    },
+    {
+      "file": "unit/channel-balances-visibility.test.js",
+      "test": "channel balance display and query preferences does not return a hidden channel's previously cached amount"
+    },
+    {
+      "file": "unit/channel-balances-visibility.test.js",
+      "test": "channel balance display and query preferences treats stale node IDs and malformed saved lists safely without hiding new nodes"
+    },
+    {
+      "file": "unit/channel-balances-visibility.test.js",
+      "test": "channel balance display and query preferences fails closed before querying when preferences cannot be read"
+    },
+    {
+      "file": "unit/channel-balances-visibility.test.js",
+      "test": "channel balance display and query preferences hides failed connections while preserving successful keys in the same channel"
+    },
+    {
+      "file": "unit/channel-balances-visibility.test.js",
+      "test": "channel balance display and query preferences hides successful responses that contain no remaining balance or quota"
+    },
+    {
+      "file": "unit/channel-balances-visibility.test.js",
+      "test": "channel balance display and query preferences preserves a real remaining quota of 0"
+    },
+    {
+      "file": "unit/channel-balances-visibility.test.js",
+      "test": "channel balance display and query preferences preserves a real remaining quota of -3"
+    },
+    {
+      "file": "unit/channel-balances-visibility.test.js",
+      "test": "channel balance display and query preferences automatically restores a failed channel after a successful refresh"
+    },
+    {
+      "file": "unit/channel-balances.test.js",
+      "test": "channel balance normalization identifies only known HTTPS compatible nodes without trusting their names"
+    },
+    {
+      "file": "unit/channel-balances.test.js",
+      "test": "channel balance normalization separates a USD wallet from every subscription and reset time"
+    },
+    {
+      "file": "unit/channel-balances.test.js",
+      "test": "channel balance normalization does not call a subscription key's remaining amount a wallet balance"
+    },
+    {
+      "file": "unit/channel-balances.test.js",
+      "test": "channel balance normalization preserves missing balances and missing weekly limits as unknown"
+    },
+    {
+      "file": "unit/channel-balances.test.js",
+      "test": "channel balance normalization keeps genuine zero balances and zero limits"
+    },
+    {
+      "file": "unit/channel-balances.test.js",
+      "test": "channel balance normalization keeps multiple subscriptions and all returned time windows"
+    },
+    {
+      "file": "unit/channel-balances.test.js",
+      "test": "channel balance normalization labels aiapi subscription funding and preserves CNY without inventing wallet data"
+    },
+    {
+      "file": "unit/channel-balances.test.js",
+      "test": "channel balance normalization does not call mixed funding a wallet and does not coerce null into zero"
+    },
+    {
+      "file": "unit/channel-balances.test.js",
+      "test": "channel balance normalization rejects invalid upstream JSON shapes and currency values"
+    },
+    {
+      "file": "unit/channel-balances.test.js",
+      "test": "channel balance requests keeps RelayFor visible with its verified login restriction without sending model keys to session endpoints"
+    },
+    {
+      "file": "unit/channel-balances.test.js",
+      "test": "channel balance requests does not display inactive RelayFor connections as needing website login"
+    },
+    {
+      "file": "unit/channel-balances.test.js",
+      "test": "channel balance requests makes only authenticated GET requests with a timeout, no redirects, and strict proxy configuration"
+    },
+    {
+      "file": "unit/channel-balances.test.js",
+      "test": "channel balance requests uses aiapi's real /v1/usage endpoint instead of generic New API paths"
+    },
+    {
+      "file": "unit/channel-balances.test.js",
+      "test": "channel balance requests shares in-flight queries and caches requests with a forced refresh floor"
+    },
+    {
+      "file": "unit/channel-balances.test.js",
+      "test": "channel balance requests invalidates cached amounts when a connection's API key changes"
+    },
+    {
+      "file": "unit/channel-balances.test.js",
+      "test": "channel balance requests keeps the last successful balance and its timestamp when refresh fails"
+    },
+    {
+      "file": "unit/channel-balances.test.js",
+      "test": "channel balance requests does not reuse an old balance after the key changes and exposes the failure"
+    },
+    {
+      "file": "unit/channel-balances.test.js",
+      "test": "channel balance requests never sends a key to unsupported nodes, disabled connections, or unrelated providers"
+    },
+    {
+      "file": "unit/channel-balances.test.js",
+      "test": "channel balance requests deduplicates shared subscriptions across Nexa keys without summing wallets or currencies"
+    },
+    {
+      "file": "unit/channel-balances.test.js",
+      "test": "channel balance requests preserves a wallet result when subscription querying is disabled"
+    },
+    {
+      "file": "unit/channel-balances.test.js",
+      "test": "channel balance requests preserves subscription remaining data when the wallet query fails"
+    },
+    {
+      "file": "unit/channel-balances.test.js",
+      "test": "channel balance requests hides valid responses with no wallet, remaining amount or subscription balance"
+    },
+    {
+      "file": "unit/channel-balances.test.js",
+      "test": "channel balance requests hides unavailable amounts rather than showing false zeros on HTTP errors"
+    },
+    {
+      "file": "unit/channel-balances.test.js",
+      "test": "channel balance requests does not return credentials, proxy secrets, or provider-specific fields"
+    },
+    {
+      "file": "unit/compatible-node-toggle.test.js",
+      "test": "buildModelsList \u2014 compatible-node dashboard toggle must subtract (Fengwind regression) hides upstream models the user toggled off in the dashboard, keeps toggled-on ones"
+    },
+    {
+      "file": "unit/compatible-node-toggle.test.js",
+      "test": "buildModelsList \u2014 compatible-node dashboard toggle must subtract (Fengwind regression) fetches compatible provider catalogs concurrently"
+    },
+    {
+      "file": "unit/force-stream.test.js",
+      "test": "resolveForceStream is off when the connection carries no forceStream flag"
+    },
+    {
+      "file": "unit/force-stream.test.js",
+      "test": "resolveForceStream is on for a node-wide forceStream"
+    },
+    {
+      "file": "unit/force-stream.test.js",
+      "test": "resolveForceStream is on for a per-model forceStream key"
+    },
+    {
+      "file": "unit/force-stream.test.js",
+      "test": "resolveForceStream only treats an explicit boolean true as on"
+    },
+    {
+      "file": "unit/force-stream.test.js",
+      "test": "resolveForceStream applies to anthropic-compatible nodes too"
+    },
+    {
+      "file": "unit/force-stream.test.js",
+      "test": "resolveForceStream never touches non-compatible providers (registry providers own their flag)"
+    },
+    {
+      "file": "unit/force-stream.test.js",
+      "test": "DefaultExecutor.transformRequest forceStream wiring adds stream:true to the upstream body when the node is force-streamed"
+    },
+    {
+      "file": "unit/openai-responses-nonstream.test.js",
+      "test": "non-stream Responses upstream for a Chat client (opencode-go responses-only ids) converts the Responses body into a chat.completion with content and cache-aware usage"
+    },
+    {
+      "file": "unit/openai-responses-tool-metadata.test.js",
+      "test": "Responses-to-Chat: chat-style tool messages keep metadata carries assistant tool_calls and tool tool_call_id through"
+    },
+    {
+      "file": "unit/openai-responses-tool-metadata.test.js",
+      "test": "Responses-to-Chat: chat-style tool messages keep metadata accepts Responses-item-shaped tool entries inside chat-style input"
+    },
+    {
+      "file": "unit/openai-responses-tool-metadata.test.js",
+      "test": "Responses-to-Chat: chat-style tool messages keep metadata fills empty tool responses for tool_calls without a result (abort-retry tail)"
+    },
+    {
+      "file": "unit/openai-to-claude.test.js",
+      "test": "openaiToClaudeRequest tool_choice handling maps string tool_choice values"
+    },
+    {
+      "file": "unit/protocol-nonstream-integrity.test.js",
+      "test": "non-streaming protocol integrity aggregates native Claude text, tools and cache usage in forced streaming"
+    },
+    {
+      "file": "unit/protocol-nonstream-integrity.test.js",
+      "test": "non-streaming protocol integrity converts forced Claude SSE to OpenAI without losing content"
+    },
+    {
+      "file": "unit/protocol-nonstream-integrity.test.js",
+      "test": "non-streaming protocol integrity aggregates unexpected Claude SSE on the ordinary JSON path"
+    },
+    {
+      "file": "unit/protocol-nonstream-integrity.test.js",
+      "test": "non-streaming protocol integrity rejects truncated Chat SSE instead of manufacturing a stop"
+    },
+    {
+      "file": "unit/protocol-nonstream-integrity.test.js",
+      "test": "non-streaming protocol integrity preserves multiple choices in Chat SSE aggregation"
+    },
+    {
+      "file": "unit/protocol-nonstream-integrity.test.js",
+      "test": "non-streaming protocol integrity does not mark an SSE error successful on the ordinary JSON path"
+    },
+    {
+      "file": "unit/protocol-nonstream-integrity.test.js",
+      "test": "non-streaming protocol integrity does not mark a failed Responses stream successful"
+    },
+    {
+      "file": "unit/protocol-nonstream-integrity.test.js",
+      "test": "non-streaming protocol integrity preserves Responses CRLF framing and complete terminal envelopes"
+    },
+    {
+      "file": "unit/protocol-nonstream-integrity.test.js",
+      "test": "non-streaming protocol integrity preserves Responses incomplete reason and usage"
+    },
+    {
+      "file": "unit/protocol-nonstream-integrity.test.js",
+      "test": "non-streaming protocol integrity marks Responses streams without terminal events failed"
+    },
+    {
+      "file": "unit/protocol-nonstream-integrity.test.js",
+      "test": "non-streaming protocol integrity preserves incomplete as length for a Chat client"
+    },
+    {
+      "file": "unit/protocol-nonstream-integrity.test.js",
+      "test": "non-streaming protocol integrity preserves mislabeled JSON fallback"
+    },
+    {
+      "file": "unit/protocol-nonstream-integrity.test.js",
+      "test": "non-streaming protocol integrity unwraps a gateway Chat completion envelope with application/json"
+    },
+    {
+      "file": "unit/protocol-nonstream-integrity.test.js",
+      "test": "non-streaming protocol integrity unwraps a gateway Chat completion envelope with text/event-stream"
+    },
+    {
+      "file": "unit/protocol-nonstream-integrity.test.js",
+      "test": "non-streaming protocol integrity aggregates wrapped Chat SSE via handleNonStreamingResponse"
+    },
+    {
+      "file": "unit/protocol-nonstream-integrity.test.js",
+      "test": "non-streaming protocol integrity aggregates wrapped Chat SSE via handleForcedSSEToJson"
+    },
+    {
+      "file": "unit/protocol-nonstream-integrity.test.js",
+      "test": "non-streaming protocol integrity retains a complete message sent inside a wrapped SSE event"
+    },
+    {
+      "file": "unit/protocol-nonstream-integrity.test.js",
+      "test": "non-streaming protocol integrity keeps separate tool calls in a wrapped complete message"
+    },
+    {
+      "file": "unit/protocol-nonstream-integrity.test.js",
+      "test": "non-streaming protocol integrity rejects a truncated wrapped stream and an empty wrapped stream"
+    },
+    {
+      "file": "unit/protocol-nonstream-integrity.test.js",
+      "test": "non-streaming protocol integrity preserves wrapped upstream errors with application/json"
+    },
+    {
+      "file": "unit/protocol-nonstream-integrity.test.js",
+      "test": "non-streaming protocol integrity preserves wrapped upstream errors with text/event-stream"
+    },
+    {
+      "file": "unit/protocol-nonstream-integrity.test.js",
+      "test": "non-streaming protocol integrity does not hide an outer failure behind a nested completion"
+    },
+    {
+      "file": "unit/protocol-nonstream-integrity.test.js",
+      "test": "non-streaming protocol integrity does not double-count cached tokens in Responses to Chat JSON"
+    },
+    {
+      "file": "unit/protocol-nonstream-integrity.test.js",
+      "test": "non-streaming protocol integrity preserves cache counters when Chat JSON becomes Claude"
+    },
+    {
+      "file": "unit/protocol-nonstream-integrity.test.js",
+      "test": "non-streaming protocol integrity converts ordinary Responses SSE to Claude JSON"
+    },
+    {
+      "file": "unit/protocol-stream-integrity.test.js",
+      "test": "new audit streaming contracts Claude upstream errors survive conversion to OpenAI"
+    },
+    {
+      "file": "unit/protocol-stream-integrity.test.js",
+      "test": "new audit streaming contracts OpenAI upstream errors survive conversion to Claude"
+    },
+    {
+      "file": "unit/protocol-stream-integrity.test.js",
+      "test": "new audit streaming contracts native OpenAI does not silently turn a truncated stream into success"
+    },
+    {
+      "file": "unit/protocol-stream-integrity.test.js",
+      "test": "new audit streaming contracts registered Responses accepts incomplete as a terminal state"
+    },
+    {
+      "file": "unit/protocol-stream-integrity.test.js",
+      "test": "new audit streaming contracts compatible Responses routing detects missing terminal events"
+    },
+    {
+      "file": "unit/protocol-stream-integrity.test.js",
+      "test": "new audit streaming contracts translated Claude usage includes the final OpenAI usage-only chunk"
+    },
+    {
+      "file": "unit/protocol-stream-integrity.test.js",
+      "test": "new audit streaming contracts native OpenAI retains a nonempty secondary choice"
+    },
+    {
+      "file": "unit/protocol-stream-integrity.test.js",
+      "test": "new audit streaming contracts Chat to Responses does not complete a truncated reply"
+    },
+    {
+      "file": "unit/protocol-stream-integrity.test.js",
+      "test": "new audit streaming contracts Chat length becomes Responses incomplete rather than completed"
+    },
+    {
+      "file": "unit/protocol-stream-integrity.test.js",
+      "test": "new audit streaming contracts Responses upstream failure is an error, not normal assistant text"
+    },
+    {
+      "file": "unit/protocol-stream-integrity.test.js",
+      "test": "new audit streaming contracts OpenAI none still forbids tools after Claude request conversion"
+    },
+    {
+      "file": "unit/protocol-stream-integrity.test.js",
+      "test": "new audit streaming contracts Claude none still forbids tools after OpenAI request conversion"
+    },
+    {
+      "file": "unit/protocol-stream-integrity.test.js",
+      "test": "new audit streaming contracts OpenAI sequential-tool constraint survives Claude request conversion"
+    },
+    {
+      "file": "unit/protocol-stream-integrity.test.js",
+      "test": "new audit streaming contracts Claude sequential-tool constraint survives OpenAI request conversion"
+    },
+    {
+      "file": "unit/protocol-stream-integrity.test.js",
+      "test": "new audit streaming contracts handles a final error line without a newline"
+    },
+    {
+      "file": "unit/protocol-stream-integrity.test.js",
+      "test": "new audit streaming contracts handles final DONE without a newline without duplicating it"
+    },
+    {
+      "file": "unit/protocol-stream-integrity.test.js",
+      "test": "new audit streaming contracts rejects truncated Responses upstream when converted to Chat"
+    },
+    {
+      "file": "unit/protocol-stream-integrity.test.js",
+      "test": "new audit streaming contracts does not clear account errors for failed upstream SSE"
+    },
+    {
+      "file": "unit/protocol-stream-sync-regression.test.js",
+      "test": "streaming and synchronous HTTP regression contracts control: synchronous aggregation supports valid multiline SSE"
+    },
+    {
+      "file": "unit/protocol-stream-sync-regression.test.js",
+      "test": "streaming and synchronous HTTP regression contracts unwraps wrapped-json over HTTP with force=false for chat"
+    },
+    {
+      "file": "unit/protocol-stream-sync-regression.test.js",
+      "test": "streaming and synchronous HTTP regression contracts unwraps wrapped-json over HTTP with force=false for claude"
+    },
+    {
+      "file": "unit/protocol-stream-sync-regression.test.js",
+      "test": "streaming and synchronous HTTP regression contracts unwraps wrapped-sse over HTTP with force=false for chat"
+    },
+    {
+      "file": "unit/protocol-stream-sync-regression.test.js",
+      "test": "streaming and synchronous HTTP regression contracts unwraps wrapped-sse over HTTP with force=true for chat"
+    },
+    {
+      "file": "unit/protocol-stream-sync-regression.test.js",
+      "test": "streaming and synchronous HTTP regression contracts unwraps wrapped-sse over HTTP with force=true for claude"
+    },
+    {
+      "file": "unit/protocol-stream-sync-regression.test.js",
+      "test": "streaming and synchronous HTTP regression contracts unwraps wrapped-sse over HTTP with force=true for responses"
+    },
+    {
+      "file": "unit/protocol-stream-sync-regression.test.js",
+      "test": "streaming and synchronous HTTP regression contracts valid multiline SSE must preserve content for chat streaming client"
+    },
+    {
+      "file": "unit/protocol-stream-sync-regression.test.js",
+      "test": "streaming and synchronous HTTP regression contracts valid multiline SSE must preserve content for claude streaming client"
+    },
+    {
+      "file": "unit/protocol-stream-sync-regression.test.js",
+      "test": "streaming and synchronous HTTP regression contracts control: synchronous aggregation rejects corrupted event"
+    },
+    {
+      "file": "unit/protocol-stream-sync-regression.test.js",
+      "test": "streaming and synchronous HTTP regression contracts corrupted event must fail chat streaming client even with later finish"
+    },
+    {
+      "file": "unit/protocol-stream-sync-regression.test.js",
+      "test": "streaming and synchronous HTTP regression contracts corrupted event must fail claude streaming client even with later finish"
+    },
+    {
+      "file": "unit/protocol-stream-sync-regression.test.js",
+      "test": "streaming and synchronous HTTP regression contracts Responses missing terminal with DONE must not record success"
+    },
+    {
+      "file": "unit/protocol-stream-sync-regression.test.js",
+      "test": "streaming and synchronous HTTP regression contracts control: forced streaming preserves truncated tool finish"
+    },
+    {
+      "file": "unit/protocol-stream-sync-regression.test.js",
+      "test": "streaming and synchronous HTTP regression contracts native synchronous reply must preserve truncated tool finish"
+    },
+    {
+      "file": "unit/protocol-stream-sync-regression.test.js",
+      "test": "streaming and synchronous HTTP regression contracts native Responses incomplete tool reply must remain length after full handling"
+    },
+    {
+      "file": "unit/protocol-stream-sync-regression.test.js",
+      "test": "streaming and synchronous HTTP regression contracts preserves exceptional tool finish and normalizes legacy finish: content_filter"
+    },
+    {
+      "file": "unit/protocol-stream-sync-regression.test.js",
+      "test": "streaming and synchronous HTTP regression contracts regular synchronous handling preserves Responses cache details for Chat"
+    },
+    {
+      "file": "unit/protocol-stream-sync-regression.test.js",
+      "test": "streaming and synchronous HTTP regression contracts forced Responses SSE aggregation must preserve cache details for Chat"
+    },
+    {
+      "file": "unit/protocol-stream-sync-regression.test.js",
+      "test": "streaming and synchronous HTTP regression contracts keeps legacy flat cache counters in forced Responses aggregation"
+    },
+    {
+      "file": "unit/protocol-stream-sync-regression.test.js",
+      "test": "streaming and synchronous HTTP regression contracts synchronous failure saves one error detail: bad-json"
+    },
+    {
+      "file": "unit/protocol-stream-sync-regression.test.js",
+      "test": "streaming and synchronous HTTP regression contracts synchronous failure saves one error detail: error-json"
+    },
+    {
+      "file": "unit/protocol-stream-sync-regression.test.js",
+      "test": "streaming and synchronous HTTP regression contracts synchronous failure saves one error detail: empty-sse"
+    },
+    {
+      "file": "unit/protocol-stream-sync-regression.test.js",
+      "test": "streaming and synchronous HTTP regression contracts synchronous failure saves one error detail: corrupted"
+    },
+    {
+      "file": "unit/sse-event-framing.test.js",
+      "test": "SSE event framing across network chunks preserves split UTF-8 and multiline data with \"\\n\" for openai"
+    },
+    {
+      "file": "unit/sse-event-framing.test.js",
+      "test": "SSE event framing across network chunks preserves split UTF-8 and multiline data with \"\\n\" for claude"
+    },
+    {
+      "file": "unit/sse-event-framing.test.js",
+      "test": "SSE event framing across network chunks preserves split UTF-8 and multiline data with \"\\r\\n\" for openai"
+    },
+    {
+      "file": "unit/sse-event-framing.test.js",
+      "test": "SSE event framing across network chunks preserves split UTF-8 and multiline data with \"\\r\\n\" for claude"
+    },
+    {
+      "file": "unit/sse-event-framing.test.js",
+      "test": "SSE event framing across network chunks preserves split UTF-8 and multiline data with \"\\r\" for openai"
+    },
+    {
+      "file": "unit/sse-event-framing.test.js",
+      "test": "SSE event framing across network chunks preserves split UTF-8 and multiline data with \"\\r\" for claude"
+    },
+    {
+      "file": "unit/sse-event-framing.test.js",
+      "test": "SSE event framing across network chunks retains the final multiline event without a trailing separator"
+    },
+    {
+      "file": "unit/sse-event-framing.test.js",
+      "test": "SSE event framing across network chunks keeps Ollama NDJSON framing and its terminal usage"
+    },
+    {
+      "file": "unit/stream-cancel-done.test.js",
+      "test": "stream cancellation after terminal SSE recognizes DONE split across chunks and CRLF delimiters"
+    },
+    {
+      "file": "unit/stream-cancel-done.test.js",
+      "test": "stream cancellation after terminal SSE does not mistake DONE inside content for a terminal frame"
+    },
+    {
+      "file": "unit/stream-cancel-usage.test.js",
+      "test": "stream usage on client abort preserves response.completed when the client closes before transport EOF"
+    },
+    {
+      "file": "unit/stream-cancel-usage.test.js",
+      "test": "stream usage on client abort preserves response.failed when the client closes before transport EOF"
+    },
+    {
+      "file": "unit/stream-cancel-usage.test.js",
+      "test": "stream usage on client abort reports estimated usage when the client aborts mid-stream"
+    },
+    {
+      "file": "unit/stream-complete-on-done-sentinel.test.js",
+      "test": "a completed stream is recorded as success even if the client hangs up right after [DONE] (#48) B. cancel() only treats a pre-[DONE] cancel as a disconnect"
+    },
+    {
+      "file": "unit/stream-complete-on-done-sentinel.test.js",
+      "test": "a completed stream is recorded as success even if the client hangs up right after [DONE] (#48) C. the detail row is latched: a later abort cannot overwrite a completed answer"
+    },
+    {
+      "file": "unit/stream-detail-finalization.test.js",
+      "test": "stream terminal detail and usage settlement keeps a Responses completion successful when upstream transport closes after its terminal event"
+    },
+    {
+      "file": "unit/stream-detail-finalization.test.js",
+      "test": "stream terminal detail and usage settlement keeps partial upstream usage and TTFT on a genuine interrupted Chat stream"
+    },
+    {
+      "file": "unit/stream-detail-finalization.test.js",
+      "test": "stream terminal detail and usage settlement keeps a completed response successful when the client closes after its terminal event"
+    },
+    {
+      "file": "unit/stream-detail-finalization.test.js",
+      "test": "stream terminal detail and usage settlement settles normally from upstream tail usage rather than retaining the finish-chunk estimate"
+    },
+    {
+      "file": "unit/stream-detail-finalization.test.js",
+      "test": "stream terminal detail and usage settlement keeps usage-only Chat tail chunks with choices []"
+    },
+    {
+      "file": "unit/stream-detail-finalization.test.js",
+      "test": "stream terminal detail and usage settlement keeps usage-only Chat tail chunks with choices [ { index: +0, delta: {}, \u2026(1) } ]"
+    },
+    {
+      "file": "unit/stream-detail-finalization.test.js",
+      "test": "stream terminal detail and usage settlement does not replace measured usage when the finish chunk itself omits usage"
+    },
+    {
+      "file": "unit/stream-detail-finalization.test.js",
+      "test": "stream terminal detail and usage settlement keeps partial usage when a Claude client receives a genuine interrupted Chat upstream"
+    },
+    {
+      "file": "unit/stream-detail-finalization.test.js",
+      "test": "stream terminal detail and usage settlement records usage only once when completion is called repeatedly"
+    },
+    {
+      "file": "unit/stream-detail-finalization.test.js",
+      "test": "stream terminal detail and usage settlement marks a partial-content estimate rather than presenting it as upstream usage"
+    },
+    {
+      "file": "unit/stream-detail-finalization.test.js",
+      "test": "stream terminal detail and usage settlement preserves a real upstream 429 reason through storage and conversation redaction"
+    },
+    {
+      "file": "unit/stream-detail-finalization.test.js",
+      "test": "stream terminal detail and usage settlement redacts credentials and query strings from persisted error metadata"
+    },
+    {
+      "file": "unit/stream-truncation.test.js",
+      "test": "the request-detail row agrees (source guards) books a truncated stream as truncated, not success"
+    },
+    {
+      "file": "unit/stream-usage-provenance.test.js",
+      "test": "upstream usage takes precedence over estimates replaces an estimate when actual tail usage arrives, even when actual counts are lower"
+    },
+    {
+      "file": "unit/stream-usage-provenance.test.js",
+      "test": "upstream usage takes precedence over estimates does not overwrite measured usage with an estimated finish chunk"
+    },
+    {
+      "file": "unit/streaming-abort-detail-row.test.js",
+      "test": "an in-flight streaming request is not recorded as a success (#48) still records a completed stream as success"
+    },
+    {
+      "file": "unit/streaming-abort-detail-row.test.js",
+      "test": "an aborted stream updates its row instead of leaving a stub (#48) hooks the abort through the terminal-frame builder"
+    },
+    {
+      "file": "unit/usage-chart-cache.test.js",
+      "test": "token/cache chart data returns hourly input/output/cache series and preserves total/model contracts"
+    },
+    {
+      "file": "unit/usage-chart-cache.test.js",
+      "test": "token/cache chart data uses daily input/output/cache totals and complete history for creation"
+    },
+    {
+      "file": "unit/usage-chart-cache.test.js",
+      "test": "token/cache chart data serves all four series through the chart API"
+    },
+    {
+      "file": "unit/usage-chart-cache.test.js",
+      "test": "token/cache chart data leaves missing historical creation unknown without altering retained daily totals"
+    },
+    {
+      "file": "unit/usage-chart-cache.test.js",
+      "test": "token/cache chart data does not present absent token payloads as a measured zero"
+    },
+    {
+      "file": "unit/usage-dashboard-import-exclusion.test.js",
+      "test": "getUsageDashboard imported-row handling keeps measured post-TTFT speed above 300 tok/s and supports output_tokens"
+    },
+    {
+      "file": "unit/usage-output-speed.test.js",
+      "test": "details output speed aggregation above: node and model use the same duration"
+    },
+    {
+      "file": "unit/usage-output-speed.test.js",
+      "test": "details output speed aggregation boundary301: node and model use the same duration"
+    },
+    {
+      "file": "unit/usage-output-speed.test.js",
+      "test": "details output speed aggregation missing: node and model use the same duration"
+    },
+    {
+      "file": "unit/usage-output-speed.test.js",
+      "test": "details output speed aggregation zero-ttft: node and model use the same duration"
+    },
+    {
+      "file": "unit/usage-output-speed.test.js",
+      "test": "details output speed aggregation negative-ttft: node and model use the same duration"
+    },
+    {
+      "file": "unit/usage-output-speed.test.js",
+      "test": "details output speed aggregation short: node and model use the same duration"
+    },
+    {
+      "file": "unit/usage-output-speed.test.js",
+      "test": "details output speed aggregation reversed: node and model use the same duration"
+    },
+    {
+      "file": "unit/usage-output-speed.test.js",
+      "test": "details output speed aggregation minimum: node and model use the same duration"
+    },
+    {
+      "file": "unit/usage-output-speed.test.js",
+      "test": "history output speed aggregation above: node and model use the same duration"
+    },
+    {
+      "file": "unit/usage-output-speed.test.js",
+      "test": "history output speed aggregation boundary301: node and model use the same duration"
+    },
+    {
+      "file": "unit/usage-output-speed.test.js",
+      "test": "history output speed aggregation missing: node and model use the same duration"
+    },
+    {
+      "file": "unit/usage-output-speed.test.js",
+      "test": "history output speed aggregation zero-ttft: node and model use the same duration"
+    },
+    {
+      "file": "unit/usage-output-speed.test.js",
+      "test": "history output speed aggregation negative-ttft: node and model use the same duration"
+    },
+    {
+      "file": "unit/usage-output-speed.test.js",
+      "test": "history output speed aggregation short: node and model use the same duration"
+    },
+    {
+      "file": "unit/usage-output-speed.test.js",
+      "test": "history output speed aggregation reversed: node and model use the same duration"
+    },
+    {
+      "file": "unit/usage-output-speed.test.js",
+      "test": "history output speed aggregation minimum: node and model use the same duration"
+    },
+    {
+      "file": "unit/usage-output-speed.test.js",
+      "test": "history output speed aggregation legacy history with first-packet timing keeps post-packet speed"
+    },
+    {
+      "file": "unit/usage-output-speed.test.js",
+      "test": "serves corrected model speed through the real dashboard HTTP route"
+    },
+    {
+      "file": "unit/verify-password-lockout.test.js",
+      "test": "password verification shares login lockout locks after five wrong passwords and skips verification while locked"
+    },
+    {
+      "file": "unit/verify-password-lockout.test.js",
+      "test": "password verification shares login lockout shares failures across both endpoints"
+    },
+    {
+      "file": "unit/verify-password-lockout.test.js",
+      "test": "password verification shares login lockout shares failures across both endpoints"
+    },
+    {
+      "file": "unit/verify-password-lockout.test.js",
+      "test": "password verification shares login lockout clears earlier failures after successful verification"
+    },
+    {
+      "file": "unit/verify-password-lockout.test.js",
+      "test": "password verification shares login lockout counts invalid JSON without disclosing internal errors"
+    }
+  ],
+  "remainingFailures": [
+    {
+      "file": "translator/bugs-toClaude-context.test.js",
+      "test": "OpenAI \u2192 Claude context mapping assistant reasoning_content becomes a thinking block",
+      "control": "failed",
+      "message": "AssertionError: reasoning_content lost: expected '{\"model\":\"m\",\"max_tokens\":64000,\"stre\u2026' to contain 'my hidden reasoning'\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/translator/bugs-toClaude-context.test.js:28:59\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2956:64"
+    },
+    {
+      "file": "translator/golden-request.test.js",
+      "test": "GOLDEN request: OpenAI \u2192 Kiro full body (image base64 + tool_result)",
+      "control": "failed",
+      "message": "Error: Snapshot `GOLDEN request: OpenAI \u2192 Kiro > full body (image base64 + tool_result) 1` mismatched\n    at assertMatchResult (file:///home/meet/10router/tests/node_modules/vitest/dist/chunks/test.DNmyFkvJ.js:4027:23)\n    at Proxy.<anonymous> (file:///home/meet/10router/tests/node_modules/vitest/dist/chunks/test.DNmyFkvJ.js:3883:10)\n    at Proxy.<anonymous> (file:///home/meet/10router/tests/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///home/meet/10router/tests/node_modules/chai/index.js:1700:25)\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/translator/golden-request.test.js:101:24\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)"
+    },
+    {
+      "file": "unit/claude-header-forwarding.test.js",
+      "test": "proxyAwareFetch \u2014 api.anthropic.com routing routes api.anthropic.com to gotScraping (non-streaming) and returns ok response",
+      "control": "failed",
+      "message": "AssertionError: expected \"vi.fn()\" to be called once, but got 0 times\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/claude-header-forwarding.test.js:262:25\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+    },
+    {
+      "file": "unit/codex-image-fetch.test.js",
+      "test": "CodexExecutor image handling fetches 1MB remote image and inlines it as base64 data URI",
+      "control": "failed",
+      "message": "AssertionError: expected false to be true // Object.is equality\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/codex-image-fetch.test.js:81:70\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+    },
+    {
+      "file": "unit/codex-image-fetch.test.js",
+      "test": "CodexExecutor image handling execute() prefetches images before sending to upstream",
+      "control": "failed",
+      "message": "AssertionError: expected false to be true // Object.is equality\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/codex-image-fetch.test.js:159:70\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+    },
+    {
+      "file": "unit/combo-autoswitch.test.js",
+      "test": "detectRequiredCapabilities web_search tool -> search",
+      "control": "failed",
+      "message": "AssertionError: expected false to be true // Object.is equality\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/combo-autoswitch.test.js:42:29\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2956:64"
+    },
+    {
+      "file": "unit/combo-autoswitch.test.js",
+      "test": "reorderByCapabilities keeps order when no model matches",
+      "control": "failed",
+      "message": "AssertionError: expected [ 'deepseek/deepseek-chat', \u2026(1) ] to be [ 'deepseek/deepseek-chat', \u2026(1) ] // Object.is equality\n\nIf it should pass with deep equality, replace \"toBe\" with \"toStrictEqual\"\n\nExpected: [ 'deepseek/deepseek-chat', \u2026(1) ]\nReceived: serializes to the same string\n\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/combo-autoswitch.test.js:71:17\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2956:64"
+    },
+    {
+      "file": "unit/db-concurrent.test.js",
+      "test": "DB Concurrency \u2014 atomic safety 100 parallel saveRequestUsage \u2192 no count loss",
+      "control": "failed",
+      "message": "AssertionError: expected 2 to be 100 // Object.is equality\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/db-concurrent.test.js:40:33\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+    },
+    {
+      "file": "unit/db-concurrent.test.js",
+      "test": "DB Concurrency \u2014 atomic safety mixed concurrent: usage + details + connections + aliases",
+      "control": "failed",
+      "message": "AssertionError: expected 12 to be 50 // Object.is equality\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/db-concurrent.test.js:88:49\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+    },
+    {
+      "file": "unit/db-concurrent.test.js",
+      "test": "DB Concurrency \u2014 atomic safety daily summary aggregates correctly under parallel writes",
+      "control": "failed",
+      "message": "AssertionError: expected 2 to be 50 // Object.is equality\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/db-concurrent.test.js:167:24\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+    },
+    {
+      "file": "unit/executor-const-guard.test.js",
+      "test": "antigravity retry (intentional change: 429=6, 503=3) 429 attempts = 6",
+      "control": "failed",
+      "message": "AssertionError: expected 3 to be 6 // Object.is equality\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/executor-const-guard.test.js:43:57\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2956:64"
+    },
+    {
+      "file": "unit/image-fetch-hardening.test.js",
+      "test": "fetchImageAsBase64 hardening accepts valid PNG from public host",
+      "control": "failed",
+      "message": "AssertionError: expected null not to be null\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/image-fetch-hardening.test.js:58:19\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+    },
+    {
+      "file": "unit/kimchi.test.js",
+      "test": "kimchi registry entry is an oauth provider auto-listed via byCategory",
+      "control": "failed",
+      "message": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'freeTier'\n- 'oauth'\n\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/kimchi.test.js:30:12\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2956:64"
+    },
+    {
+      "file": "unit/kiro-terminal-integrity.test.js",
+      "test": "Kiro terminal integrity recovery surfaces retry HTTP failures as SSE after heartbeat commits headers",
+      "control": "failed",
+      "message": "Error: STACK_TRACE_ERROR\n    at task (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1784:27)\n    at Object.<anonymous> (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1817:16)\n    at Object.<anonymous> (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1563:28)\n    at chain (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:599:14)\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/kiro-terminal-integrity.test.js:707:3\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1889:40\n    at runWithSuite (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2258:8)\n    at Object.collect (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1889:10)\n    at Object.collect (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1893:54)\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)"
+    },
+    {
+      "file": "unit/kiro-terminal-integrity.test.js",
+      "test": "Kiro terminal integrity recovery bounds the retry HTTP error body",
+      "control": "failed",
+      "message": "Error: STACK_TRACE_ERROR\n    at task (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1784:27)\n    at Object.<anonymous> (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1817:16)\n    at Object.<anonymous> (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1563:28)\n    at chain (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:599:14)\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/kiro-terminal-integrity.test.js:723:3\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1889:40\n    at runWithSuite (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2258:8)\n    at Object.collect (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1889:10)\n    at Object.collect (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1893:54)\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)"
+    },
+    {
+      "file": "unit/mimo-free.live.test.js",
+      "test": "MiMo Free anti-abuse gate (live) chat WITH Chrome User-Agent \u2192 200",
+      "control": "failed",
+      "message": "AssertionError: expected 400 to be 200 // Object.is equality\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/mimo-free.live.test.js:58:22\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+    },
+    {
+      "file": "unit/oauth-cursor-auto-import.test.js",
+      "test": "GET /api/oauth/cursor/auto-import returns not-found when no macOS cursor db paths are accessible",
+      "control": "failed",
+      "message": "AssertionError: expected 'Cursor database not found. Checked lo\u2026' to contain 'Cursor database not found in known ma\u2026'\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/oauth-cursor-auto-import.test.js:74:33\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+    },
+    {
+      "file": "unit/oauth-cursor-auto-import.test.js",
+      "test": "GET /api/oauth/cursor/auto-import returns descriptive error if macOS db file exists but cannot be opened",
+      "control": "failed",
+      "message": "AssertionError: the given combination of arguments (undefined and string) is invalid for this assertion. You can use an array, a map, an object, a set, a string, or a weakset instead of a string\n    at Proxy.<anonymous> (file:///home/meet/10router/tests/node_modules/@vitest/expect/dist/index.js:1319:15)\n    at Proxy.<anonymous> (file:///home/meet/10router/tests/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///home/meet/10router/tests/node_modules/chai/index.js:1700:25)\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/oauth-cursor-auto-import.test.js:84:33\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+    },
+    {
+      "file": "unit/oauth-cursor-auto-import.test.js",
+      "test": "GET /api/oauth/cursor/auto-import extracts tokens using exact keys",
+      "control": "failed",
+      "message": "AssertionError: expected false to be true // Object.is equality\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/oauth-cursor-auto-import.test.js:101:33\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+    },
+    {
+      "file": "unit/oauth-cursor-auto-import.test.js",
+      "test": "GET /api/oauth/cursor/auto-import unwraps JSON-encoded string values",
+      "control": "failed",
+      "message": "AssertionError: expected false to be true // Object.is equality\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/oauth-cursor-auto-import.test.js:118:33\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+    },
+    {
+      "file": "unit/oauth-cursor-auto-import.test.js",
+      "test": "GET /api/oauth/cursor/auto-import falls back to fuzzy key matching on macOS when exact keys are missing",
+      "control": "failed",
+      "message": "AssertionError: expected false to be true // Object.is equality\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/oauth-cursor-auto-import.test.js:142:33\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+    },
+    {
+      "file": "unit/oauth-cursor-auto-import.test.js",
+      "test": "GET /api/oauth/cursor/auto-import returns login-prompt error when tokens are missing even after fallback",
+      "control": "failed",
+      "message": "AssertionError: the given combination of arguments (undefined and string) is invalid for this assertion. You can use an array, a map, an object, a set, a string, or a weakset instead of a string\n    at Proxy.<anonymous> (file:///home/meet/10router/tests/node_modules/@vitest/expect/dist/index.js:1319:15)\n    at Proxy.<anonymous> (file:///home/meet/10router/tests/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///home/meet/10router/tests/node_modules/chai/index.js:1700:25)\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/oauth-cursor-auto-import.test.js:156:33\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+    },
+    {
+      "file": "unit/oauth-cursor-auto-import.test.js",
+      "test": "GET /api/oauth/cursor/auto-import linux uses single hardcoded path and original error message",
+      "control": "failed",
+      "message": "AssertionError: expected 'Cursor database not found. Checked lo\u2026' to be 'Cursor database not found. Make sure \u2026' // Object.is equality\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/oauth-cursor-auto-import.test.js:169:33\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+    },
+    {
+      "file": "unit/oauth-cursor-auto-import.test.js",
+      "test": "GET /api/oauth/cursor/auto-import unsupported platform returns 400",
+      "control": "failed",
+      "message": "AssertionError: expected 200 to be 400 // Object.is equality\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/oauth-cursor-auto-import.test.js:181:29\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+    },
+    {
+      "file": "unit/openai-to-claude.test.js",
+      "test": "openaiToClaudeResponse omits empty Read pages tool argument before emitting Claude input deltas",
+      "control": "failed",
+      "message": "AssertionError: expected undefined to be defined\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/openai-to-claude.test.js:199:24\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2956:64"
+    },
+    {
+      "file": "unit/request-details-tab.test.js",
+      "test": "request details \u2014 tab crash-risk cases oversized field \u2192 stored truncated + reparseable (no circular)",
+      "control": "failed",
+      "message": "TypeError: Cannot read properties of null (reading 'request')\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/request-details-tab.test.js:97:16\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+    },
+    {
+      "file": "unit/request-details-tab.test.js",
+      "test": "getDistinctProviders \u2014 providers route (no full-row parse) returns unique provider list without parsing data blobs",
+      "control": "failed",
+      "message": "AssertionError: expected [ 'openai' ] to include 'anthropic'\n    at Proxy.<anonymous> (file:///home/meet/10router/tests/node_modules/@vitest/expect/dist/index.js:1319:15)\n    at Proxy.<anonymous> (file:///home/meet/10router/tests/node_modules/@vitest/expect/dist/index.js:1156:15)\n    at Proxy.methodWrapper (file:///home/meet/10router/tests/node_modules/chai/index.js:1700:25)\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/request-details-tab.test.js:167:18\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20"
+    },
+    {
+      "file": "unit/translator-helpers-edge.test.js",
+      "test": "normalizeClaudePassthrough \u2014 haiku adaptive thinking (docs 11 \u00a71) hoists mid-conversation system messages into top-level system",
+      "control": "failed",
+      "message": "AssertionError: expected undefined to deeply equal [ { type: 'text', text: 'be brief' } ]\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/translator-helpers-edge.test.js:24:24\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2956:64"
+    },
+    {
+      "file": "unit/translator-request-normalization.test.js",
+      "test": "request normalization claudeToOpenAIRequest flattens text-only content arrays into string",
+      "control": "failed",
+      "message": "AssertionError: expected [ { type: 'text', text: 'hi' }, \u2026(1) ] to be 'hi\\nthere' // Object.is equality\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/translator-request-normalization.test.js:24:40\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2956:64"
+    },
+    {
+      "file": "unit/translator-request-normalization.test.js",
+      "test": "request normalization filterToOpenAIFormat flattens text-only arrays to string",
+      "control": "failed",
+      "message": "AssertionError: expected [ { type: 'text', text: 'a' }, \u2026(1) ] to be 'a\\nb' // Object.is equality\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/translator-request-normalization.test.js:65:40\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2956:64"
+    },
+    {
+      "file": "unit/translator-request-normalization.test.js",
+      "test": "request normalization translateRequest keeps /v1/messages Claude->OpenAI text payloads string-safe",
+      "control": "failed",
+      "message": "AssertionError: expected 'object' to be 'string' // Object.is equality\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/translator-request-normalization.test.js:95:40\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2956:64"
+    },
+    {
+      "file": "unit/translator-request-normalization.test.js",
+      "test": "request normalization parseSSELine supports provider raw NDJSON stream lines",
+      "control": "failed",
+      "message": "AssertionError: expected null to deeply equal { model: 'gpt-oss:120b', \u2026(2) }\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/translator-request-normalization.test.js:175:20\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2956:64"
+    },
+    {
+      "file": "unit/windsurf-executor.test.js",
+      "test": "WindsurfExecutor class constructor wires config from PROVIDERS.windsurf",
+      "control": "failed",
+      "message": "AssertionError: expected 'https://server.codeium.com/exa.langua\u2026' to contain 'server.self-serve.windsurf.com'\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/windsurf-executor.test.js:168:31\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2956:64"
+    },
+    {
+      "file": "unit/windsurf-executor.test.js",
+      "test": "WindsurfExecutor class buildUrl returns the GetChatMessage endpoint",
+      "control": "failed",
+      "message": "AssertionError: expected 'https://server.codeium.com/exa.langua\u2026' to be 'https://server.self-serve.windsurf.co\u2026' // Object.is equality\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/windsurf-executor.test.js:190:27\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2956:64"
+    },
+    {
+      "file": "unit/windsurf-executor.test.js",
+      "test": "WindsurfExecutor class PROVIDERS.windsurf baseUrl is the chat endpoint (registry in sync)",
+      "control": "failed",
+      "message": "AssertionError: expected 'https://server.codeium.com/exa.langua\u2026' to be 'https://server.self-serve.windsurf.co\u2026' // Object.is equality\n    at /home/meet/10router-codex-rescue-20261015-091650/tests/unit/windsurf-executor.test.js:194:40\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:302:11\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:26\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2326:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2323:10)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2305:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2272:10)\n    at file:///home/meet/10router/tests/node_modules/@vitest/runner/dist/chunk-artifact.js:2956:64"
+    }
+  ],
+  "suiteLoadFailures": [
+    {
+      "file": "unit/db-benchmark.test.js",
+      "message": "Cannot find package 'lowdb' imported from /home/meet/10router-codex-rescue-20261015-091650/tests/unit/db-benchmark.test.js"
+    },
+    {
+      "file": "unit/embeddings.cloud.test.js",
+      "message": "Cannot find module '/cloud/src/handlers/embeddings.js' imported from /home/meet/10router-codex-rescue-20261015-091650/tests/unit/embeddings.cloud.test.js"
+    }
+  ]
+}

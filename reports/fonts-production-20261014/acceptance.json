@@ -1,0 +1,88 @@
+{
+  "base": "http://192.168.11.150:4317",
+  "passed": true,
+  "checks": [
+    {
+      "theme": "light",
+      "selector": "#main h1",
+      "fonts": [
+        {
+          "familyName": "SF Pro Display + .PingFang SC0",
+          "postScriptName": "SuperPingFangV1",
+          "isCustomFont": true,
+          "glyphCount": 4
+        }
+      ]
+    },
+    {
+      "theme": "light",
+      "selector": "#font-probe",
+      "fonts": [
+        {
+          "familyName": "SuperSFMonoV1",
+          "postScriptName": "SuperSFMonoV1",
+          "isCustomFont": true,
+          "glyphCount": 19
+        }
+      ]
+    },
+    {
+      "theme": "dark",
+      "selector": "#main h1",
+      "fonts": [
+        {
+          "familyName": "SF Pro Display + .PingFang SC0",
+          "postScriptName": "SuperPingFangV1",
+          "isCustomFont": true,
+          "glyphCount": 4
+        }
+      ]
+    },
+    {
+      "theme": "dark",
+      "selector": "#font-probe",
+      "fonts": [
+        {
+          "familyName": "SuperSFMonoV1",
+          "postScriptName": "SuperSFMonoV1",
+          "isCustomFont": true,
+          "glyphCount": 19
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "url": "http://192.168.11.150:4317/fonts/SuperPingFangV1.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    },
+    {
+      "url": "http://192.168.11.150:4317/fonts/SuperSFMonoV1.woff2",
+      "status": 200,
+      "type": "font/woff2"
+    }
+  ],
+  "modelWidths": [
+    144,
+    144,
+    144,
+    144,
+    144,
+    144,
+    144,
+    144,
+    144,
+    144,
+    144,
+    144,
+    144,
+    144,
+    144,
+    144,
+    144,
+    144,
+    144,
+    144
+  ]
+}

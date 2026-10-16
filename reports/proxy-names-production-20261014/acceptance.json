@@ -1,0 +1,16 @@
+{
+  "base": "http://192.168.11.150:4317",
+  "passed": true,
+  "http": [
+    200,
+    200,
+    200,
+    200
+  ],
+  "checks": [
+    "7891 entrance ai-谷歌; 7892 entrance AI-优选; historical labels absent",
+    "Watch headings match entrance labels",
+    "7891 proxy pool ai-谷歌; selected residential node unchanged"
+  ],
+  "errors": []
+}

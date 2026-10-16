@@ -1,0 +1,259 @@
+{
+ "gemini": {
+  "gemini-embedding-2-preview": {
+   "input": 0.2,
+   "output": 0,
+   "cached": 0
+  },
+  "gemini-embedding-001": {
+   "input": 0.15,
+   "output": 0,
+   "cached": 0
+  },
+  "text-embedding-004": {
+   "input": 0.1,
+   "output": 0,
+   "cached": 0
+  },
+  "text-embedding-005": {
+   "input": 0.1,
+   "output": 0,
+   "cached": 0
+  },
+  "gemini-3.1-flash-tts-preview": {
+   "input": 1,
+   "output": 20,
+   "cached": 0
+  },
+  "gemini-2.5-flash-preview-tts": {
+   "input": 0.5,
+   "output": 10,
+   "cached": 0
+  },
+  "gemini-2.5-pro-preview-tts": {
+   "input": 1,
+   "output": 20,
+   "cached": 0
+  }
+ },
+ "openai": {
+  "text-embedding-3-large": {
+   "input": 0.13,
+   "output": 0,
+   "cached": 0
+  },
+  "text-embedding-3-small": {
+   "input": 0.02,
+   "output": 0,
+   "cached": 0
+  },
+  "text-embedding-ada-002": {
+   "input": 0.1,
+   "output": 0,
+   "cached": 0
+  },
+  "tts-1": {
+   "input": 15,
+   "output": 15,
+   "cached": 0
+  },
+  "tts-1-hd": {
+   "input": 30,
+   "output": 30,
+   "cached": 0
+  },
+  "gpt-4o-mini-tts": {
+   "input": 0.6,
+   "output": 0.6,
+   "cached": 0
+  }
+ },
+ "gh": {
+  "text-embedding-3-large": {
+   "input": 0.13,
+   "output": 0,
+   "cached": 0
+  },
+  "text-embedding-3-small": {
+   "input": 0.02,
+   "output": 0,
+   "cached": 0
+  },
+  "text-embedding-ada-002": {
+   "input": 0.1,
+   "output": 0,
+   "cached": 0
+  }
+ },
+ "venice": {
+  "text-embedding-3-large": {
+   "input": 0.13,
+   "output": 0,
+   "cached": 0
+  },
+  "text-embedding-3-small": {
+   "input": 0.02,
+   "output": 0,
+   "cached": 0
+  },
+  "text-embedding-ada-002": {
+   "input": 0.1,
+   "output": 0,
+   "cached": 0
+  }
+ },
+ "openrouter": {
+  "openai/text-embedding-3-large": {
+   "input": 0.13,
+   "output": 0,
+   "cached": 0
+  },
+  "openai/text-embedding-3-small": {
+   "input": 0.02,
+   "output": 0,
+   "cached": 0
+  },
+  "openai/text-embedding-ada-002": {
+   "input": 0.1,
+   "output": 0,
+   "cached": 0
+  },
+  "qwen/qwen3-embedding-8b": {
+   "input": 0.02,
+   "output": 0,
+   "cached": 0
+  },
+  "perplexity/pplx-embed-v1-4b": {
+   "input": 0.03,
+   "output": 0,
+   "cached": 0
+  },
+  "perplexity/pplx-embed-v1-0.6b": {
+   "input": 0.004,
+   "output": 0,
+   "cached": 0
+  },
+  "nvidia/llama-nemotron-embed-vl-1b-v2:free": {
+   "input": 0,
+   "output": 0,
+   "cached": 0
+  },
+  "openai/tts-1": {
+   "input": 15,
+   "output": 15,
+   "cached": 0
+  },
+  "openai/tts-1-hd": {
+   "input": 30,
+   "output": 30,
+   "cached": 0
+  },
+  "openai/gpt-4o-mini-tts": {
+   "input": 0.6,
+   "output": 0.6,
+   "cached": 0
+  }
+ },
+ "mistral": {
+  "mistral-embed": {
+   "input": 0.1,
+   "output": 0,
+   "cached": 0
+  }
+ },
+ "nebius": {
+  "Qwen/Qwen3-Embedding-8B": {
+   "input": 0.02,
+   "output": 0,
+   "cached": 0
+  }
+ },
+ "voyage-ai": {
+  "voyage-3-large": {
+   "input": 0.18,
+   "output": 0,
+   "cached": 0
+  },
+  "voyage-3.5": {
+   "input": 0.06,
+   "output": 0,
+   "cached": 0
+  },
+  "voyage-3.5-lite": {
+   "input": 0.02,
+   "output": 0,
+   "cached": 0
+  },
+  "voyage-code-3": {
+   "input": 0.12,
+   "output": 0,
+   "cached": 0
+  },
+  "voyage-finance-2": {
+   "input": 0.12,
+   "output": 0,
+   "cached": 0
+  },
+  "voyage-law-2": {
+   "input": 0.12,
+   "output": 0,
+   "cached": 0
+  },
+  "voyage-multilingual-2": {
+   "input": 0.12,
+   "output": 0,
+   "cached": 0
+  }
+ },
+ "openai-tts-models": {
+  "tts-1": {
+   "input": 15,
+   "output": 15,
+   "cached": 0
+  },
+  "tts-1-hd": {
+   "input": 30,
+   "output": 30,
+   "cached": 0
+  },
+  "gpt-4o-mini-tts": {
+   "input": 0.6,
+   "output": 0.6,
+   "cached": 0
+  }
+ },
+ "openrouter-tts-models": {
+  "openai/tts-1": {
+   "input": 15,
+   "output": 15,
+   "cached": 0
+  },
+  "openai/tts-1-hd": {
+   "input": 30,
+   "output": 30,
+   "cached": 0
+  },
+  "openai/gpt-4o-mini-tts": {
+   "input": 0.6,
+   "output": 0.6,
+   "cached": 0
+  }
+ },
+ "gemini-tts-models": {
+  "gemini-3.1-flash-tts-preview": {
+   "input": 1,
+   "output": 20,
+   "cached": 0
+  },
+  "gemini-2.5-flash-preview-tts": {
+   "input": 0.5,
+   "output": 10,
+   "cached": 0
+  },
+  "gemini-2.5-pro-preview-tts": {
+   "input": 1,
+   "output": 20,
+   "cached": 0
+  }
+ }
+}

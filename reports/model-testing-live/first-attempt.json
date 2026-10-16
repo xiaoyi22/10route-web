@@ -1,0 +1,21 @@
+{
+  "base": "http://127.0.0.1:4326",
+  "http": {
+    "login": 200,
+    "page": 200,
+    "test": 500
+  },
+  "errors": [
+    "Failed to load resource: the server responded with a status of 502 (Bad Gateway)",
+    "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+  ],
+  "writes": [
+    "/api/models/test"
+  ],
+  "model": "nexa/gpt-6.1-sol",
+  "result": {
+    "ok": false,
+    "error": "The operation was aborted due to timeout"
+  },
+  "failure": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   'Failed to load resource: the server responded with a status of 502 (Bad Gateway)',\n+   'Failed to load resource: the server responded with a status of 500 (Internal Server Error)'\n+ ]\n- []\n"
+}

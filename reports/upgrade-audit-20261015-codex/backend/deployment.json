@@ -1,0 +1,54 @@
+{
+  "backup": "/home/meet/backups/10router/codex-deploy-20261015-102952",
+  "root": "/home/meet/10router",
+  "rescue": "/home/meet/10router-codex-rescue-20261015-091650",
+  "buildId": "OUkZ8WE01hNGWpzvVrSd0",
+  "version": "1.4.1-test.1",
+  "archiveSha256": "dce13794d11a068387a44570970d67d06443b50f97d4f5b7852eb8d6ff2c71a6",
+  "previousPid": "3874382",
+  "state": "deployed-verified",
+  "startedAt": "2026-10-15T02:31:17.904569+00:00",
+  "attempt": 2,
+  "healthProbeChange": "Use health/version for readiness then a 45s full /v1/models call; original production returned 200 after 30.638s, exceeding initial probe per-request timeout of 3s",
+  "modelsProbe": {
+    "status": 200,
+    "json": true,
+    "models": 38,
+    "elapsedSeconds": 6.245
+  },
+  "pid": "47886",
+  "health": {
+    "ok": true,
+    "driver": "better-sqlite3",
+    "lastDriverError": null
+  },
+  "versionResponse": {
+    "currentVersion": "1.4.1-test.1",
+    "latestVersion": null,
+    "hasUpdate": false,
+    "installChannel": "",
+    "releaseUrl": null,
+    "diskVersion": null,
+    "updateCheck": true
+  },
+  "restartedAt": "2026-10-15T02:36:46.774716+00:00",
+  "distributionSummary": {
+    "mode": "allowlist",
+    "configuredModels": 39
+  },
+  "verifiedAt": "2026-10-15T02:38:44.944845+00:00",
+  "browser": {
+    "apiPassed": 18,
+    "pagesPassed": 19,
+    "uncaughtErrors": 0,
+    "blockedWrites": 3
+  },
+  "rollbackCommand": "python3 /home/meet/backups/10router/codex-deploy-20261015-102952/rollback.py",
+  "journalSummary": {
+    "lines": 35,
+    "errors": 0,
+    "controllerAlreadyClosed": 0,
+    "fatal": 0,
+    "moduleMissing": 0
+  }
+}

@@ -1,0 +1,9 @@
+diff --git a/src/pages/CorePages.jsx b/src/pages/CorePages.jsx
+--- a/src/pages/CorePages.jsx
++++ b/src/pages/CorePages.jsx
+@@ -226,4 +226,4 @@
+   if (entry.imported) return '导入记录';
+   const tokens = requestTokens(entry.tokens);
+-  return [tokens.input, tokens.output, tokens.cached, tokens.created].some(value => typeof value === 'number' && value > 0) ? '按量计费（推断）' : UNRECORDED;
++  return [tokens.input, tokens.output, tokens.cached, tokens.created].some(value => typeof value === 'number' && value > 0) ? '按量计费' : UNRECORDED;
+ }

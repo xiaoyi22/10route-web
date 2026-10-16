@@ -1,0 +1,16 @@
+{
+  "productionHeadUnchanged": true,
+  "productionDiffUnchanged": true,
+  "productionStatusUnchanged": true,
+  "stoppedAuditProcesses": [
+    {
+      "pid": 33059,
+      "role": "e2e-instance.json"
+    },
+    {
+      "pid": 33065,
+      "role": "fake-instance.json"
+    }
+  ],
+  "finishedAt": "2026-10-15T02:18:29.249879+00:00"
+}

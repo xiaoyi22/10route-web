@@ -1,0 +1,7 @@
+{
+  "release": "/home/meet/.local/share/10router-web/releases/20261015-113549-billing",
+  "previous": "/home/meet/.local/share/10router-web/releases/20261015-111337-scrollbar",
+  "backup": "/home/meet/backups/10router-web/20261015-113549-billing",
+  "state": "deployed-http-verified",
+  "scope": "Frontend billing inference; backend unchanged"
+}

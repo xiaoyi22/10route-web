@@ -1,0 +1,59 @@
+{
+  "base": "http://127.0.0.1:4335",
+  "stage": "真实目录与修复后路由的隔离联合验收",
+  "checks": [
+    "真实模型总目录保留 0 倍率并显示免费",
+    "真实 Qoder 当前倍率、优惠时间、参考账号及查询时间与接口一致，无重复折扣",
+    "两家供应商详情在桌面、手机及深浅主题均显示积分信息，无页面横向溢出",
+    "浏览器无未捕获异常，验收没有发起推理、签到或配置写入"
+  ],
+  "simulatedChecks": [
+    "美国浏览器时区下，模拟北京时间跨 23:00 与 08:00，无需重开页面即更新免费状态",
+    "模拟 Qoder 查询失败清除当前价格声明，手动刷新后恢复真实目录数据",
+    "模拟跨 Qoder 错峰边界自动重查服务端，2× 更新为已折扣的 0.4×，不重复折扣",
+    "模拟更换参考账号后重新取价，显示新账号来源，不沿用旧账号价格"
+  ],
+  "http": [
+    {
+      "path": "/api/health",
+      "status": 200
+    },
+    {
+      "path": "/api/auth/status",
+      "status": 200
+    },
+    {
+      "path": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "path": "/api/models",
+      "status": 200
+    },
+    {
+      "path": "/api/models/custom",
+      "status": 200
+    },
+    {
+      "path": "/api/providers",
+      "status": 200
+    },
+    {
+      "path": "/api/providers/{account}/models",
+      "status": 200
+    }
+  ],
+  "errors": [],
+  "writes": [],
+  "screenshots": [
+    "qoder-1440-light.png",
+    "qoder-1440-dark.png",
+    "qoder-375-light.png",
+    "qoder-375-dark.png",
+    "codebuddy-cn-1440-light.png",
+    "codebuddy-cn-1440-dark.png",
+    "codebuddy-cn-375-light.png",
+    "codebuddy-cn-375-dark.png"
+  ],
+  "passed": true
+}

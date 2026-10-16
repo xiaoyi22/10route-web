@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "checks": [
+    "record-based IQ counts, not latest model count",
+    "automatic refresh, new failure and recovery retain historical failures",
+    "manual snapshot does not invent persisted checks; reload is stable",
+    "provider, same-name model, detection type, search and configured/all scope",
+    "summary covers matching models rather than only the current page",
+    "empty, ungraded-only and all-failed histories do not fabricate a success rate"
+  ],
+  "errors": [],
+  "writes": [
+    "/api/models/test"
+  ]
+}

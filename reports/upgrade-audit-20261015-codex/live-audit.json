@@ -1,0 +1,298 @@
+{
+  "base": "http://192.168.11.150:4317",
+  "startedAt": "2026-10-15T01:04:02.437Z",
+  "api": [
+    {
+      "path": "/api/health",
+      "status": 200,
+      "type": "application/json",
+      "json": true
+    },
+    {
+      "path": "/api/providers",
+      "status": 200,
+      "type": "application/json",
+      "json": true
+    },
+    {
+      "path": "/api/provider-nodes",
+      "status": 200,
+      "type": "application/json",
+      "json": true
+    },
+    {
+      "path": "/api/models",
+      "status": 200,
+      "type": "application/json",
+      "json": true
+    },
+    {
+      "path": "/api/models/custom",
+      "status": 200,
+      "type": "application/json",
+      "json": true
+    },
+    {
+      "path": "/api/models/disabled",
+      "status": 200,
+      "type": "application/json",
+      "json": true
+    },
+    {
+      "path": "/api/models/distribution",
+      "status": 404,
+      "type": "text/html; charset=utf-8",
+      "json": false
+    },
+    {
+      "path": "/api/channel-balances",
+      "status": 404,
+      "type": "text/html; charset=utf-8",
+      "json": false
+    },
+    {
+      "path": "/api/iq-monitor",
+      "status": 200,
+      "type": "application/json",
+      "json": true
+    },
+    {
+      "path": "/api/usage/stats",
+      "status": 200,
+      "type": "application/json",
+      "json": true
+    },
+    {
+      "path": "/api/usage/chart",
+      "status": 200,
+      "type": "application/json",
+      "json": true
+    },
+    {
+      "path": "/api/usage/request-details",
+      "status": 200,
+      "type": "application/json",
+      "json": true
+    },
+    {
+      "path": "/api/usage/quotas",
+      "status": 200,
+      "type": "application/json",
+      "json": true
+    },
+    {
+      "path": "/api/combos",
+      "status": 200,
+      "type": "application/json",
+      "json": true
+    },
+    {
+      "path": "/api/keys",
+      "status": 200,
+      "type": "application/json",
+      "json": true
+    },
+    {
+      "path": "/api/settings",
+      "status": 200,
+      "type": "application/json",
+      "json": true
+    },
+    {
+      "path": "/api/pricing",
+      "status": 200,
+      "type": "application/json",
+      "json": true
+    },
+    {
+      "path": "/api/proxy-pools",
+      "status": 200,
+      "type": "application/json",
+      "json": true
+    }
+  ],
+  "pages": [
+    {
+      "route": "overview",
+      "errors": [],
+      "failedApi": [],
+      "status": 200,
+      "nonJsonMessage": false,
+      "overflow": false
+    },
+    {
+      "route": "providers",
+      "errors": [],
+      "failedApi": [],
+      "status": 200,
+      "nonJsonMessage": false,
+      "overflow": false
+    },
+    {
+      "route": "authorization",
+      "errors": [],
+      "failedApi": [],
+      "status": 200,
+      "nonJsonMessage": false,
+      "overflow": false
+    },
+    {
+      "route": "endpoint",
+      "errors": [],
+      "failedApi": [],
+      "status": 200,
+      "nonJsonMessage": false,
+      "overflow": false
+    },
+    {
+      "route": "models",
+      "errors": [],
+      "failedApi": [],
+      "status": 200,
+      "nonJsonMessage": false,
+      "overflow": false
+    },
+    {
+      "route": "combos",
+      "errors": [],
+      "failedApi": [],
+      "status": 200,
+      "nonJsonMessage": false,
+      "overflow": false
+    },
+    {
+      "route": "distribution",
+      "errors": [],
+      "failedApi": [
+        {
+          "path": "/api/models/distribution",
+          "status": 404
+        }
+      ],
+      "status": 200,
+      "nonJsonMessage": false,
+      "overflow": false
+    },
+    {
+      "route": "proxy",
+      "errors": [],
+      "failedApi": [],
+      "status": 200,
+      "nonJsonMessage": false,
+      "overflow": false
+    },
+    {
+      "route": "balances",
+      "errors": [],
+      "failedApi": [
+        {
+          "path": "/api/channel-balances",
+          "status": 404
+        }
+      ],
+      "status": 200,
+      "nonJsonMessage": false,
+      "overflow": false
+    },
+    {
+      "route": "checkins",
+      "errors": [],
+      "failedApi": [],
+      "status": 200,
+      "nonJsonMessage": false,
+      "overflow": false
+    },
+    {
+      "route": "usage",
+      "errors": [],
+      "failedApi": [],
+      "status": 200,
+      "nonJsonMessage": false,
+      "overflow": false
+    },
+    {
+      "route": "logs",
+      "errors": [],
+      "failedApi": [],
+      "status": 200,
+      "nonJsonMessage": false,
+      "overflow": false
+    },
+    {
+      "route": "monitor",
+      "errors": [],
+      "failedApi": [],
+      "status": 200,
+      "nonJsonMessage": false,
+      "overflow": false
+    },
+    {
+      "route": "chain-health",
+      "errors": [],
+      "failedApi": [],
+      "status": 200,
+      "nonJsonMessage": false,
+      "overflow": false
+    },
+    {
+      "route": "system",
+      "errors": [],
+      "failedApi": [],
+      "status": 200,
+      "nonJsonMessage": false,
+      "overflow": false
+    },
+    {
+      "route": "pricing",
+      "errors": [],
+      "failedApi": [],
+      "status": 200,
+      "nonJsonMessage": false,
+      "overflow": false
+    },
+    {
+      "route": "proxy-pools",
+      "errors": [],
+      "failedApi": [],
+      "status": 200,
+      "nonJsonMessage": false,
+      "overflow": false
+    },
+    {
+      "route": "settings",
+      "errors": [],
+      "failedApi": [],
+      "status": 200,
+      "nonJsonMessage": false,
+      "overflow": false
+    },
+    {
+      "route": "translator",
+      "errors": [],
+      "failedApi": [
+        {
+          "path": "/api/models/distribution",
+          "status": 404
+        }
+      ],
+      "status": 200,
+      "nonJsonMessage": false,
+      "overflow": false
+    }
+  ],
+  "blockedWrites": [
+    {
+      "method": "POST",
+      "path": "/api/hermes/egress-ip"
+    },
+    {
+      "method": "POST",
+      "path": "/api/hermes/egress-ip"
+    },
+    {
+      "method": "POST",
+      "path": "/api/hermes/egress-ip"
+    }
+  ],
+  "finishedAt": "2026-10-15T01:05:00.355Z"
+}

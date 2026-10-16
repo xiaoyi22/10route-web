@@ -1,0 +1,52 @@
+{
+  "model": "nexa/gpt-6.1-sol",
+  "thinkingLevel": "high",
+  "data": "isolated snapshot of real gateway",
+  "assertions": [
+    "HTTP 200; high thinking bypasses model-name allowlist mismatch; history persists; schedule unchanged"
+  ],
+  "http": 200,
+  "result": {
+    "status": 200,
+    "latencyMs": 28522,
+    "connectionId": "2c6d9bae-0e83-4b32-a3b8-5f42e526db6c",
+    "iq": {
+      "expected": "21",
+      "modelAnswered": "21",
+      "correct": true
+    },
+    "ok": true,
+    "error": null,
+    "content": "IQ-ANSWER: 21",
+    "monitorRow": {
+      "provider": "openai-compatible-chat-b145b409-4639-4a4e-9906-a9a16962ef17",
+      "model": "gpt-6.1-sol",
+      "excludedConnectionIds": [],
+      "thinkingLevel": "high",
+      "check": "iq",
+      "at": 1791957319209,
+      "manual": true,
+      "persisted": true,
+      "status": "correct",
+      "score": 100,
+      "answers": [
+        {
+          "question": "在一个黑色的袋子里放有三种口味的糖果，每种糖果有两种不同的形状(圆形和五角星形，不同的形状靠手感可以分辨)。现已知不同口味的糖和不同形状的数量统计如下表。参赛者需要在活动前决定摸出的糖果数目，那么，最少取出多少个糖果才能保证手中同时拥有不同形状的苹果味和桃子味的糖?(同时手中有圆形苹果味匹配五角星桃子味糖果，或者有圆形桃子味匹配五角星苹果味糖果都满足要求)\n苹果味 桃子味 西瓜味\n圆形 7 9 8\n五角星形 7 6 4\n最后一行只输出：IQ-ANSWER: <你的答案数字>",
+          "answer": "21",
+          "status": "correct",
+          "latencyMs": 28522,
+          "connectionId": "2c6d9bae-0e83-4b32-a3b8-5f42e526db6c",
+          "iq": {
+            "expected": "21",
+            "modelAnswered": "21",
+            "correct": true
+          },
+          "ok": true,
+          "error": null,
+          "content": "IQ-ANSWER: 21",
+          "httpStatus": 200
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,243 @@
+{
+  "base": "http://192.168.11.150:4317",
+  "passed": true,
+  "failure": "",
+  "checks": [
+    {
+      "label": "1080p/overview/dark",
+      "failures": [],
+      "bodySize": 14,
+      "smallCells": [],
+      "inspected": 236,
+      "pageOverflow": false
+    },
+    {
+      "label": "1080p/overview/light",
+      "failures": [],
+      "bodySize": 14,
+      "smallCells": [],
+      "inspected": 236,
+      "pageOverflow": false
+    },
+    {
+      "label": "1080p/logs/dark",
+      "failures": [],
+      "bodySize": 14,
+      "smallCells": [],
+      "inspected": 448,
+      "pageOverflow": false
+    },
+    {
+      "label": "1080p/logs/light",
+      "failures": [],
+      "bodySize": 14,
+      "smallCells": [],
+      "inspected": 448,
+      "pageOverflow": false
+    },
+    {
+      "label": "1080p/providers/dark",
+      "failures": [],
+      "bodySize": 14,
+      "smallCells": [],
+      "inspected": 240,
+      "pageOverflow": false
+    },
+    {
+      "label": "1080p/providers/light",
+      "failures": [],
+      "bodySize": 14,
+      "smallCells": [],
+      "inspected": 240,
+      "pageOverflow": false
+    },
+    {
+      "label": "1080p/models/dark",
+      "failures": [],
+      "bodySize": 14,
+      "smallCells": [],
+      "inspected": 231,
+      "pageOverflow": false
+    },
+    {
+      "label": "1080p/models/light",
+      "failures": [],
+      "bodySize": 14,
+      "smallCells": [],
+      "inspected": 231,
+      "pageOverflow": false
+    },
+    {
+      "label": "1080p/settings/dark",
+      "failures": [],
+      "bodySize": 14,
+      "smallCells": [],
+      "inspected": 59,
+      "pageOverflow": false
+    },
+    {
+      "label": "1080p/settings/light",
+      "failures": [],
+      "bodySize": 14,
+      "smallCells": [],
+      "inspected": 59,
+      "pageOverflow": false
+    },
+    {
+      "label": "125-percent/logs/dark",
+      "failures": [],
+      "bodySize": 14,
+      "smallCells": [],
+      "inspected": 448,
+      "pageOverflow": false
+    },
+    {
+      "label": "125-percent/logs/light",
+      "failures": [],
+      "bodySize": 14,
+      "smallCells": [],
+      "inspected": 448,
+      "pageOverflow": false
+    },
+    {
+      "label": "125-percent/providers/dark",
+      "failures": [],
+      "bodySize": 14,
+      "smallCells": [],
+      "inspected": 240,
+      "pageOverflow": false
+    },
+    {
+      "label": "125-percent/providers/light",
+      "failures": [],
+      "bodySize": 14,
+      "smallCells": [],
+      "inspected": 240,
+      "pageOverflow": false
+    },
+    {
+      "label": "150-percent/logs/dark",
+      "failures": [],
+      "bodySize": 14,
+      "smallCells": [],
+      "inspected": 448,
+      "pageOverflow": false
+    },
+    {
+      "label": "150-percent/logs/light",
+      "failures": [],
+      "bodySize": 14,
+      "smallCells": [],
+      "inspected": 448,
+      "pageOverflow": false
+    },
+    {
+      "label": "150-percent/providers/dark",
+      "failures": [],
+      "bodySize": 14,
+      "smallCells": [],
+      "inspected": 240,
+      "pageOverflow": false
+    },
+    {
+      "label": "150-percent/providers/light",
+      "failures": [],
+      "bodySize": 14,
+      "smallCells": [],
+      "inspected": 240,
+      "pageOverflow": false
+    },
+    {
+      "label": "mobile/logs/dark",
+      "failures": [],
+      "bodySize": 14,
+      "smallCells": [],
+      "inspected": 443,
+      "pageOverflow": false
+    },
+    {
+      "label": "mobile/logs/light",
+      "failures": [],
+      "bodySize": 14,
+      "smallCells": [],
+      "inspected": 443,
+      "pageOverflow": false
+    },
+    {
+      "label": "mobile/providers/dark",
+      "failures": [],
+      "bodySize": 14,
+      "smallCells": [],
+      "inspected": 235,
+      "pageOverflow": false
+    },
+    {
+      "label": "mobile/providers/light",
+      "failures": [],
+      "bodySize": 14,
+      "smallCells": [],
+      "inspected": 235,
+      "pageOverflow": false
+    }
+  ],
+  "errors": [],
+  "writes": [],
+  "apiStatuses": [
+    {
+      "pathname": "/api/providers",
+      "status": 200
+    },
+    {
+      "pathname": "/api/usage/request-details",
+      "status": 200
+    },
+    {
+      "pathname": "/api/providers",
+      "status": 200
+    },
+    {
+      "pathname": "/api/providers",
+      "status": 200
+    },
+    {
+      "pathname": "/api/providers",
+      "status": 200
+    },
+    {
+      "pathname": "/api/providers",
+      "status": 200
+    },
+    {
+      "pathname": "/api/usage/request-details",
+      "status": 200
+    },
+    {
+      "pathname": "/api/providers",
+      "status": 200
+    },
+    {
+      "pathname": "/api/providers",
+      "status": 200
+    },
+    {
+      "pathname": "/api/usage/request-details",
+      "status": 200
+    },
+    {
+      "pathname": "/api/providers",
+      "status": 200
+    },
+    {
+      "pathname": "/api/providers",
+      "status": 200
+    },
+    {
+      "pathname": "/api/usage/request-details",
+      "status": 200
+    },
+    {
+      "pathname": "/api/providers",
+      "status": 200
+    }
+  ]
+}

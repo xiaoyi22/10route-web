@@ -10,15 +10,23 @@
     "/api/models/test"
   ],
   "checks": [
-    "Base model and independent high effort; persisted history, status and summary updated; automatic config preserved",
+    "Base model and independent effort; persisted history, status and summary updated; automatic config preserved",
+    "Nonempty final text is visible in single detection details and retained after reload",
     "Status and manual history retained after reload"
   ],
   "result": {
     "ok": true,
+    "error": null,
     "status": "incorrect",
     "thinkingLevel": "high",
-    "latencyMs": 31480,
-    "at": 1791960422631
+    "latencyMs": 13929,
+    "at": 1792024574770,
+    "content": "IQ-ANSWER: 29",
+    "iq": {
+      "expected": "21",
+      "modelAnswered": "29",
+      "correct": false
+    }
   },
   "passed": true
 }

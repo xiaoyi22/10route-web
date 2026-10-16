@@ -1,0 +1,19 @@
+{
+  "command": "DATA_DIR=/tmp/model-credit-validation/data MITM_DNS_BYPASS=0 vitest run --exclude '**/real/**' --maxWorkers=2",
+  "total": 5727,
+  "passed": 5632,
+  "failed": 35,
+  "pending": 60,
+  "knownFailureEntries": 37,
+  "newFailureEntries": [],
+  "missingBaselineEntries": [
+    "tests/unit/usage-dashboard-import-exclusion.test.js :: getUsageDashboard imported-row handling dampens burst-buffered requests (speed > 300 tok/s) by falling back to total latency and supports output_tokens"
+  ],
+  "replacementTestPassed": true,
+  "gatePassed": false,
+  "focusedTestsAfterFullRun": {
+    "total": 2,
+    "passed": 2
+  },
+  "note": "原门禁因任务开始前已修改的测试名称缺失而失败；未修改基线。最初缺少 DATA_DIR 的测试进程已终止，其日志没有生产数据目录路径命中。"
+}

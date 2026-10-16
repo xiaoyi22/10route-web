@@ -1,0 +1,45 @@
+{
+  "results": [
+    {
+      "width": 1440,
+      "theme": "dark",
+      "scrollbarWidth": "thin",
+      "paddingRight": 16,
+      "scrollable": true,
+      "gap": 26,
+      "pageOverflow": false,
+      "scrolled": 250
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "scrollbarWidth": "thin",
+      "paddingRight": 16,
+      "scrollable": true,
+      "gap": 26,
+      "pageOverflow": false,
+      "scrolled": 250
+    },
+    {
+      "width": 375,
+      "theme": "dark",
+      "scrollbarWidth": "thin",
+      "paddingRight": 16,
+      "scrollable": true,
+      "gap": 26,
+      "pageOverflow": false,
+      "scrolled": 250
+    },
+    {
+      "width": 375,
+      "theme": "light",
+      "scrollbarWidth": "thin",
+      "paddingRight": 16,
+      "scrollable": true,
+      "gap": 26,
+      "pageOverflow": false,
+      "scrolled": 250
+    }
+  ],
+  "errors": []
+}

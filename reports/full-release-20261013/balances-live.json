@@ -1,0 +1,26 @@
+{
+  "base": "http://192.168.11.150:4317",
+  "http": {
+    "auth": 200,
+    "health": 200,
+    "login": 200,
+    "page": 200,
+    "/api/channel-balances": 200,
+    "/api/usage/quotas": 200,
+    "autoQuota": 200
+  },
+  "checks": [
+    "真实数据、配额一分钟自动读取、余额标签不连带查询、关闭后停止、后台暂停、离开页面停止、两种主题四种屏宽"
+  ],
+  "queries": [
+    "http://192.168.11.150:4317/api/channel-balances",
+    "http://192.168.11.150:4317/api/usage/quotas",
+    "http://192.168.11.150:4317/api/usage/quotas?refresh=1"
+  ],
+  "errors": [],
+  "writes": [],
+  "screenshots": [
+    "reports/balances-auto-20261013/live/dark.png",
+    "reports/balances-auto-20261013/live/light.png"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "base": "http://192.168.11.150:4317",
+  "mode": "real-gateway-read-only-acceptance",
+  "providers": 27,
+  "accounts": 36,
+  "accountView": {
+    "provider": "sensenova",
+    "accounts": 2
+  },
+  "checks": [
+    "providers: 真实账号全选计数、三种代理配置入口、深浅主题与四种屏宽通过",
+    "providers/sensenova: 真实账号全选计数、三种代理配置入口、深浅主题与四种屏宽通过"
+  ],
+  "writes": [],
+  "errors": [],
+  "http": {
+    "health": 200,
+    "auth": 200,
+    "login": 200,
+    "providers": 200,
+    "nodes": 200,
+    "page": 200
+  }
+}

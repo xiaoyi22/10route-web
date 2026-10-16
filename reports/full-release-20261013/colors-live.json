@@ -1,0 +1,8 @@
+{
+  "checks": [
+    "dark: success/warning/error, token input/output/cache, portal tooltip colors passed",
+    "light: success/warning/error, token input/output/cache, portal tooltip colors passed"
+  ],
+  "errors": [],
+  "writes": []
+}

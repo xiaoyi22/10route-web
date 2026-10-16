@@ -1,0 +1,75 @@
+{
+  "purpose": "Original customized runtime sources already on production; apply only when reconstructing its base from Git HEAD, before the incremental recovery patch. Not part of new source changes.",
+  "sha256": "107055de78d6e1bee8d43d8e4b680bf1571c42458e8d5887647eba4944ab5f10",
+  "baseHead": "baae1a49a64bfa72764ea614eeaa85ce45c54adf",
+  "files": [
+    {
+      "path": "custom-server.js",
+      "sha256": "060f0f2d853ba593a39382ad3fbaaab4dfd17bd1a0ac6d8c810f4cf16a55f4ae"
+    },
+    {
+      "path": "src/app/api/host-management/route.js",
+      "sha256": "efe2cfacd503220aa15dc7464e78c638828e676b9a14efaaee4528af44c828f0"
+    },
+    {
+      "path": "src/app/api/iq-monitor/route.js",
+      "sha256": "3dcfd71d2749f12ee898b09c0955edbf85acda0a353cfea55b02dcd00bb3320b"
+    },
+    {
+      "path": "src/app/api/iq-monitor/tick/route.js",
+      "sha256": "f154afed521eaa9ba51d843b5be14bcb23cd962374a5ed77225d7022bcd0660e"
+    },
+    {
+      "path": "src/app/api/models/test/ping.js",
+      "sha256": "0755f64b6a2f49d65e78c819a3b7102742001a419fe5527491a3b2862f8c0d6a"
+    },
+    {
+      "path": "src/app/api/models/test/route.js",
+      "sha256": "66acda7fe3cb19b570f5ab39c627ca2aea4ec8ce4238b719bf44b59fe1080888"
+    },
+    {
+      "path": "src/app/api/settings/route.js",
+      "sha256": "4f45e76af0bd80d68c354ec453861d5f63d2c069d74019648089644fd73d4071"
+    },
+    {
+      "path": "src/dashboardGuard.js",
+      "sha256": "96e17852a19fa467eabcac0df3a0ff6218fe6c44462a2a49302286b282193d69"
+    },
+    {
+      "path": "src/lib/db/repos/settingsRepo.js",
+      "sha256": "cfd6041d853c72cdef5440bf5df12ab8cb025099acbf05e2c97a646c15fe7e6d"
+    },
+    {
+      "path": "src/lib/iqMonitor/core.js",
+      "sha256": "cf9e56afb60cb484c578cdf5da82970b141e2c7fdde81a103fa32b383f5c5e6e"
+    },
+    {
+      "path": "src/lib/iqMonitor/probe.js",
+      "sha256": "a09c4b4873670dfdaa1765535fad9c71e5d4149211ebfafcafeac887d0da20f1"
+    },
+    {
+      "path": "src/lib/iqMonitor/service.js",
+      "sha256": "44950da53063edd41c05c406a6e4ba9a5db300b03d970ad031eb6a0ec5f38806"
+    },
+    {
+      "path": "src/sse/handlers/chat.js",
+      "sha256": "282ec0d45fc19740b5ac8dc0f7b17de9f1c53d069f551e243c13d61872010478"
+    },
+    {
+      "path": "src/sse/handlers/fetch.js",
+      "sha256": "6aac97b8c63a6a89129681a76a393b1235e71dbaa806f842c16ee6ccf199a203"
+    },
+    {
+      "path": "src/sse/handlers/imageGeneration.js",
+      "sha256": "78bf3a9e5082b536c27abc933dd87ae316a4fe7d103b42b49c5557fe41121e8d"
+    },
+    {
+      "path": "src/sse/handlers/search.js",
+      "sha256": "0eae81310db3a68ca529cdd1775e692792bcb0f3f9135128adc7672d273c07f4"
+    },
+    {
+      "path": "src/sse/handlers/tts.js",
+      "sha256": "1b55a34d9e5274445857d8843718dc7a8d03dd2f031de0b2d4646db4e7c262d3"
+    }
+  ]
+}

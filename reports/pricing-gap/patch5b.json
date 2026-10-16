@@ -1,0 +1,60 @@
+{
+ "cu": {
+  "claude-4.5-opus-high-thinking": {
+   "input": 5,
+   "output": 25,
+   "cached": 0.5
+  },
+  "claude-4.5-opus-high": {
+   "input": 5,
+   "output": 25,
+   "cached": 0.5
+  },
+  "claude-4.5-opus": {
+   "input": 5,
+   "output": 25,
+   "cached": 0.5
+  },
+  "claude-4.6-opus-max": {
+   "input": 5,
+   "output": 25,
+   "cached": 0.5
+  },
+  "claude-4.6-sonnet-medium-thinking": {
+   "input": 3,
+   "output": 15,
+   "cached": 0.30000000000000004
+  }
+ },
+ "dv": {
+  "claude-sonnet-4.6-thinking-1m": {
+   "input": 3,
+   "output": 15,
+   "cached": 0.30000000000000004
+  }
+ },
+ "tokenbom": {
+  "claude-4.8-opus": {
+   "input": 5,
+   "output": 25,
+   "cached": 0.5
+  },
+  "claude-4.7-opus": {
+   "input": 5,
+   "output": 25,
+   "cached": 0.5
+  },
+  "claude-4.6-opus": {
+   "input": 5,
+   "output": 25,
+   "cached": 0.5
+  }
+ },
+ "ws": {
+  "claude-sonnet-4.6-thinking-1m": {
+   "input": 3,
+   "output": 15,
+   "cached": 0.30000000000000004
+  }
+ }
+}

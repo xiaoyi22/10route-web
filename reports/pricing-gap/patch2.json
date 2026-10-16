@@ -1,0 +1,136 @@
+{
+ "apinex": {
+  "free/claude-opus-4.6": {
+   "input": 0,
+   "output": 0,
+   "cached": 0
+  },
+  "free/claude-sonnet-4.6": {
+   "input": 0,
+   "output": 0,
+   "cached": 0
+  },
+  "free/deepseek-v4-flash-0731": {
+   "input": 0,
+   "output": 0,
+   "cached": 0
+  },
+  "free/deepseek-v4-pro-0813": {
+   "input": 0,
+   "output": 0,
+   "cached": 0
+  },
+  "free/deepseek-v4.1-flash": {
+   "input": 0,
+   "output": 0,
+   "cached": 0
+  },
+  "free/gemini-3.1-pro": {
+   "input": 0,
+   "output": 0,
+   "cached": 0
+  },
+  "free/gemini-3.8-flash": {
+   "input": 0,
+   "output": 0,
+   "cached": 0
+  },
+  "free/glm-5.3-flash": {
+   "input": 0,
+   "output": 0,
+   "cached": 0
+  },
+  "free/gpt-6-luna": {
+   "input": 0,
+   "output": 0,
+   "cached": 0
+  },
+  "free/hy4": {
+   "input": 0,
+   "output": 0,
+   "cached": 0
+  },
+  "free/kimi-k2.8": {
+   "input": 0,
+   "output": 0,
+   "cached": 0
+  },
+  "free/kimi-k3": {
+   "input": 0,
+   "output": 0,
+   "cached": 0
+  },
+  "free/mimo-v2.6-flash": {
+   "input": 0,
+   "output": 0,
+   "cached": 0
+  },
+  "free/mimo-v2.6-pro": {
+   "input": 0,
+   "output": 0,
+   "cached": 0
+  },
+  "free/minimax-m3": {
+   "input": 0,
+   "output": 0,
+   "cached": 0
+  },
+  "free/minimax-m3.1": {
+   "input": 0,
+   "output": 0,
+   "cached": 0
+  },
+  "free/muse-spark-1.3": {
+   "input": 0,
+   "output": 0,
+   "cached": 0
+  },
+  "free/qwen-3.8-max": {
+   "input": 0,
+   "output": 0,
+   "cached": 0
+  }
+ },
+ "cx": {
+  "gpt-6-astra[1m]": {
+   "input": 10,
+   "output": 50,
+   "cached": 1,
+   "reasoning": 50,
+   "cache_creation": 12.5
+  },
+  "gpt-6-sol[1m]": {
+   "input": 2,
+   "output": 10,
+   "cached": 0.2
+  },
+  "gpt-6-luna[1m]": {
+   "input": 0.1,
+   "output": 0.5,
+   "cached": 0.010000000000000002,
+   "reasoning": 0.5,
+   "cache_creation": 0.125
+  },
+  "gpt-5.6-sol[1m]": {
+   "input": 5,
+   "output": 30,
+   "cached": 0.5,
+   "cache_creation": 6.25,
+   "reasoning": 30
+  },
+  "gpt-5.6-terra[1m]": {
+   "input": 2,
+   "output": 12,
+   "cached": 0.2,
+   "cache_creation": 2.5,
+   "reasoning": 12
+  },
+  "gpt-5.6-luna[1m]": {
+   "input": 0.2,
+   "output": 1.2,
+   "cached": 0.02,
+   "cache_creation": 0.25,
+   "reasoning": 1.2
+  }
+ }
+}

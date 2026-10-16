@@ -1,0 +1,16 @@
+{
+  "http": {
+    "login": 200,
+    "page": 200,
+    "logs": 200
+  },
+  "rows": 20,
+  "withResponseModel": 20,
+  "expectedMismatchBadges": 0,
+  "assertions": [
+    "live API preserves responseModel",
+    "badge visibility matches actual model comparison",
+    "request details shows upstream model"
+  ],
+  "errors": []
+}
