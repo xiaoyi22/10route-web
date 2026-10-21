@@ -1,0 +1,81 @@
+{
+  "base": "http://192.168.11.150:4317",
+  "http": [
+    {
+      "path": "/api/health",
+      "status": 200
+    },
+    {
+      "path": "/api/auth/status",
+      "status": 200
+    },
+    {
+      "path": "/api/provider-nodes",
+      "status": 200
+    },
+    {
+      "path": "/api/providers",
+      "status": 200
+    },
+    {
+      "path": "/api/providers/9a25a32f-eac7-462e-aec6-aac41af1a079/models",
+      "status": 200
+    },
+    {
+      "path": "/api/providers/b7157088-5acb-44eb-a0a3-e9d15af241c9/models",
+      "status": 200
+    },
+    {
+      "path": "/api/models/distribution",
+      "status": 200
+    },
+    {
+      "path": "/api/providers/9a25a32f-eac7-462e-aec6-aac41af1a079",
+      "status": 200
+    },
+    {
+      "path": "/api/providers/b7157088-5acb-44eb-a0a3-e9d15af241c9",
+      "status": 200
+    },
+    {
+      "path": "/api/providers",
+      "status": 200
+    },
+    {
+      "path": "/api/models/distribution",
+      "status": 200
+    }
+  ],
+  "writes": [
+    {
+      "path": "/api/providers/9a25a32f-eac7-462e-aec6-aac41af1a079",
+      "body": {
+        "providerSpecificData": {
+          "enabledModels": [
+            "gpt-5.6-luna",
+            "gpt-5.6-sol",
+            "gpt-5.6-terra",
+            "gpt-6-astra",
+            "gpt-6-luna",
+            "gpt-6-sol",
+            "gpt-6.1-sol"
+          ]
+        }
+      }
+    },
+    {
+      "path": "/api/providers/b7157088-5acb-44eb-a0a3-e9d15af241c9",
+      "body": {
+        "providerSpecificData": {
+          "enabledModels": [
+            "deepseek-v4.1-flash"
+          ]
+        }
+      }
+    }
+  ],
+  "errors": [],
+  "productionWrites": true,
+  "passed": true,
+  "publishedCount": 40
+}

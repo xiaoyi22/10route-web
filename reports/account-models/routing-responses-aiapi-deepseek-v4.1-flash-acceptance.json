@@ -1,0 +1,22 @@
+{
+  "base": "http://192.168.11.150:20128",
+  "publishedModelHttp": 200,
+  "requests": [
+    {
+      "model": "aiapi/deepseek-v4.1-flash",
+      "stream": false,
+      "account": "DP",
+      "endpoint": "/v1/responses",
+      "http": 200,
+      "elapsedMs": 2336,
+      "answer": "OK",
+      "completed": true,
+      "logId": "2026-10-21T02:06:58.733Z-k716ty-deepseek-v4-1-flash",
+      "connectionId": "b7157088-5acb-44eb-a0a3-e9d15af241c9",
+      "logStatus": "success"
+    }
+  ],
+  "passed": true,
+  "initialLogCheckFailure": "真实请求日志记录成功调用",
+  "followupLogVerification": "???????????????????????"
+}

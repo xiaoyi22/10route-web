@@ -1,0 +1,17 @@
+{
+  "env": { "PREVIEW_URL": "http://192.168.11.150:4317", "HERMES_BROWSER_EXE": "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe" },
+  "output": "live-suite3-results.json",
+  "concurrency": 3,
+  "portBase": 4395,
+  "tests": [
+    { "name": "p-production-smoke", "file": "tests/production-smoke.mjs", "selfStart": true },
+    { "name": "p-real-backend-browser", "file": "tests/real-backend-browser.mjs", "selfStart": true },
+    { "name": "p-provider-model-cards-live", "file": "tests/provider-model-cards-live-browser.mjs", "selfStart": true, "previewUrl": "http://192.168.11.150:4317" },
+    { "name": "p-request-speed-live", "file": "tests/request-speed-live-browser.mjs", "selfStart": true, "previewUrl": "http://192.168.11.150:4317" },
+    { "name": "p-account-models-deployment-live", "file": "tests/account-models-deployment-live-browser.mjs", "selfStart": true },
+    { "name": "p-upgrade-audit-live", "file": "tests/upgrade-audit-live-browser.mjs", "selfStart": true },
+    { "name": "p-providers-new-key-browser", "file": "tests/providers-new-key-browser.mjs", "previewUrl": "http://127.0.0.1:4395" },
+    { "name": "p-upstream-models-ui-browser", "file": "tests/upstream-models-ui-browser.mjs", "previewUrl": "http://127.0.0.1:4396" },
+    { "name": "p-media-browser", "file": "tests/media-browser.mjs", "selfStart": true, "previewUrl": "http://192.168.11.150:4317" }
+  ]
+}

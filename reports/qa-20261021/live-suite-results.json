@@ -1,0 +1,86 @@
+[
+  {
+    "name": "r-browser",
+    "file": "tests/browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 17468
+  },
+  {
+    "name": "r-core-browser",
+    "file": "tests/core-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 44774
+  },
+  {
+    "name": "r-theme-browser",
+    "file": "tests/theme-browser.mjs",
+    "ok": false,
+    "code": 1,
+    "ms": 5875
+  },
+  {
+    "name": "r-readability-browser",
+    "file": "tests/readability-browser.mjs",
+    "ok": false,
+    "code": 1,
+    "ms": 24417
+  },
+  {
+    "name": "r-ui-display-browser",
+    "file": "tests/ui-display-browser.mjs",
+    "ok": false,
+    "code": 1,
+    "ms": 4596
+  },
+  {
+    "name": "r-usage-log-browser",
+    "file": "tests/usage-log-browser.mjs",
+    "ok": false,
+    "code": 1,
+    "ms": 37527
+  },
+  {
+    "name": "r-tps-browser",
+    "file": "tests/tps-browser.mjs",
+    "ok": false,
+    "code": 1,
+    "ms": 10407
+  },
+  {
+    "name": "r-interaction-browser",
+    "file": "tests/interaction-browser.mjs",
+    "ok": false,
+    "code": 1,
+    "ms": 41075
+  },
+  {
+    "name": "r-provider-errors-browser",
+    "file": "tests/provider-errors-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 12874
+  },
+  {
+    "name": "r-models-disabled-browser",
+    "file": "tests/models-disabled-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 24514
+  },
+  {
+    "name": "r-balances-cards-browser",
+    "file": "tests/balances-cards-browser.mjs",
+    "ok": false,
+    "code": 1,
+    "ms": 10912
+  },
+  {
+    "name": "r-proxy-performance",
+    "file": "tests/proxy-performance.mjs",
+    "ok": false,
+    "code": 1,
+    "ms": 27080
+  }
+]

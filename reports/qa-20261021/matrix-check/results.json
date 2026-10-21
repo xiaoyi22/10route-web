@@ -1,0 +1,41 @@
+{
+  "base": "http://127.0.0.1:4317",
+  "generatedAt": "2026-10-21T06:52:06.435Z",
+  "done": 1,
+  "catalog": {
+    "cases": 488,
+    "ui": 288,
+    "selected": 1
+  },
+  "counts": {
+    "passed": 0,
+    "failed": 0,
+    "pending": 1
+  },
+  "groups": [
+    {
+      "group": "Combo Models",
+      "passed": 0,
+      "failed": 0,
+      "pending": 1,
+      "total": 1
+    }
+  ],
+  "results": [
+    {
+      "id": "COMBOS-07",
+      "group": "Combo Models",
+      "route": "/dashboard/combos",
+      "category": "search",
+      "title": "Combo Models: search",
+      "risk": "read-only",
+      "endpoint": "/api/combos",
+      "preconditions": "真实网关用例须登录授权账户；写操作仅可在隔离数据库执行。",
+      "steps": "Search for a known item and a non-match, then clear the query.",
+      "expected": "The observed behavior matches the stated contract; no uncaught browser error or unrelated side effect occurs.",
+      "origin": "reconstructed-from-source-and-mem0-summary",
+      "status": "pending",
+      "reason": "本页不适用： 无数据行可搜索"
+    }
+  ]
+}

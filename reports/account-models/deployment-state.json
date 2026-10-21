@@ -1,0 +1,33 @@
+{
+  "taskdir": "/home/meet/10router-web-account-models-20261021-095251",
+  "backup": "/home/meet/backups/10router-web/account-models-20261021-095251",
+  "stage": "frontend-and-config-deployed",
+  "gatewayBackup": "C:/Users/Administrator/.codex/credentials/10router-backups/account-models.bak-2026-10-21T01-53-31-546Z.json",
+  "release": "/home/meet/.local/share/10router-web/releases/20261021-095519",
+  "releaseBackup": "/home/meet/backups/10router-web/20261021-095519",
+  "accounts": [
+    {
+      "id": "9a25a32f-eac7-462e-aec6-aac41af1a079",
+      "name": "aiapi-Default",
+      "models": [
+        "gpt-5.6-luna",
+        "gpt-5.6-sol",
+        "gpt-5.6-terra",
+        "gpt-6-astra",
+        "gpt-6-luna",
+        "gpt-6-sol",
+        "gpt-6.1-sol"
+      ]
+    },
+    {
+      "id": "b7157088-5acb-44eb-a0a3-e9d15af241c9",
+      "name": "DP",
+      "models": [
+        "deepseek-v4.1-flash"
+      ]
+    }
+  ],
+  "provider": "openai-compatible-responses-a2706957-ab8c-4d30-ae6e-5e52544c5e2d",
+  "commit": "dc44d70a63befa89f40c045e72084fb042f05e5d",
+  "sourceCommit": "534239660e40f7432d8164d9583b7d9c9f79fa9a"
+}

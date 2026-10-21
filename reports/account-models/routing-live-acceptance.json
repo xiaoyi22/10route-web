@@ -1,0 +1,18 @@
+{
+  "base": "http://192.168.11.150:20128",
+  "publishedModelHttp": 200,
+  "requests": [
+    {
+      "model": "aiapi/deepseek-v4.1-flash",
+      "stream": false,
+      "account": "DP",
+      "http": 429,
+      "elapsedMs": 2474,
+      "answer": "",
+      "completed": true,
+      "error": "{\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"[openai-compatible-responses-a2706957-ab8c-4d30-ae6e-5e52544c5e2d/deepseek-v4.1-flash] [429]: {\\\"ok\\\":false,\\\"service\\\":\\\"gateway\\\",\\\"errorCode\\\":\\\"server_busy\\\",\\\"message\\\":\\\"当前请求较多，服务繁忙，请稍后重试。\\\",\\\"error\\\":{\\\"message\\\":\\\"当前请求较多，服务繁忙，请稍后重试。\\\",\\\"type\\\":\\\"server_error\\\",\\\"param\\\":null,\\\"code\\\":\\\"server_busy\\\"},\\\"trace_id\\\":\\\"rust-request-1792548063065041696\\\",\\\"stage\\\":\\\"service.response\\\",\\\"gatewayFailure\\\":{\\\"category\\\":\\\"service_error\\\",\\\"code\\\":\\\"server_busy\\\",\\\"message\\\":\\\"当前请求较多，服务繁忙，请稍后重试。\\\"}}\\n\\n提示：上游触发了限流（HTTP 429），非账号异常，已按上游提示自动冷却并稍后自动恢复；期间可切换其他模型或渠道，或稍候重试。 (reset after 4s)\"}}"
+    }
+  ],
+  "passed": false,
+  "failure": "{\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"[openai-compatible-responses-a2706957-ab8c-4d30-ae6e-5e52544c5e2d/deepseek-v4.1-flash] [429]: {\\\"ok\\\":false,\\\"service\\\":\\\"gateway\\\",\\\"errorCode\\\":\\\"server_busy\\\",\\\"message\\\":\\\"当前请求较多，服务繁忙，请稍后重试。\\\",\\\"error\\\":{\\\"message\\\":\\\"当前请求较多，服务繁忙，请稍后重试。\\\",\\\"type\\\":\\\"server_error\\\",\\\"param\\\":null,\\\"code\\\":\\\"server_busy\\\"},\\\"trace_id\\\":\\\"rust-request-1792548063065041696\\\",\\\"stage\\\":\\\"service.response\\\",\\\"gatewayFailure\\\":{\\\"category\\\":\\\"service\n\n429 !== 200\n"
+}

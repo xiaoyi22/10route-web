@@ -1,0 +1,58 @@
+[
+  {
+    "name": "r2-interaction-browser",
+    "file": "tests/interaction-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 24794,
+    "detail": "# r2-interaction-browser @ 2026-10-21T06:17:10.698Z | PASS: 6 log typography/theme/viewport checks; success default and failure refresh; theme keyboard/system/persistence/draft; initial health, cached navigation and retry; reduced motion; no browser errors"
+  },
+  {
+    "name": "r2-usage-log-browser",
+    "file": "tests/usage-log-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 38288,
+    "detail": "# r2-usage-log-browser @ 2026-10-21T06:17:10.698Z | PASS: scoped token/cache totals, pending period, prices, detail, request-log columns, five-second polling, filters/page preserved, disabled polling, persisted switches, four viewport widths."
+  },
+  {
+    "name": "r2-tps-browser",
+    "file": "tests/tps-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 18992,
+    "detail": "# r2-tps-browser @ 2026-10-21T06:17:49.801Z | PASS: streaming/end-to-end/burst TPS, unknown imported or missing timing, detail formula, CSV parity and responsive layout."
+  },
+  {
+    "name": "r2-balances-cards-browser",
+    "file": "tests/balances-cards-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 54697,
+    "detail": "# r2-balances-cards-browser @ 2026-10-21T06:18:09.607Z | PASS fixture quota cards (simulated data): family windows, resource segments/totals/history, fixed height, 32-row dialog, unknown/unlimited, Escape/focus, four widths/light-dark, wallet/refresh/search | PASS lazy routes: core pages, monitor, combos, overview/usage charts, return to quota cards"
+  },
+  {
+    "name": "r2-ui-display-browser",
+    "file": "tests/ui-display-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 88307,
+    "detail": "PASS: 1080p-200 light: search bounds, scroll, Chinese input, keyboard and four pages. | PASS: 1080p-200 dark: search bounds, scroll, Chinese input, keyboard and four pages. | PASS: 1080p-150-toolbar light: search bounds, scroll, Chinese input, keyboard and four pages. | PASS: 1080p-150-toolbar dark: search bounds, scroll, Chinese input, keyboard and four pages. | PASS: mobile light: search bounds,"
+  },
+  {
+    "name": "r2-provider-batch-browser",
+    "file": "tests/provider-batch-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 15419,
+    "detail": "批量测试跳过停用账号，200/valid=false 保留失败，重试只发送失败账号 | 批量代理池绑定包含停用账号；部分失败可重试，成功账号不重复写入，优先级和启用状态保持 | 批量连接专用代理及恢复继承全局规则持久化正确 | 账号层全选、半选、筛选范围、取消选择与取消代理窗口正确 | 两层批量工具栏及代理窗口通过深浅主题与四种屏宽检查 | PASS: isolated bulk provider operations; no uncaught browser errors"
+  },
+  {
+    "name": "r2-theme-browser",
+    "file": "tests/theme-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 131255,
+    "detail": "# r2-theme-browser @ 2026-10-21T06:17:10.696Z | PASS: 1080p: theme colors, contrast, chart, open dialogs, persistence and repeated/system switching | PASS: 1080p-125: theme colors, contrast, chart, open dialogs, persistence and repeated/system switching | PASS: 1080p-150: theme colors, contrast, chart, open dialogs, persistence and repeated/system switching | PASS: mobile: theme colors, contrast, "
+  }
+]

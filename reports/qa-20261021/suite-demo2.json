@@ -1,0 +1,18 @@
+{
+  "env": { "PREVIEW_URL": "http://127.0.0.1:4340", "HERMES_BROWSER_EXE": "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe" },
+  "output": "demo-suite2-results.json",
+  "tests": [
+    { "name": "r-browser", "file": "tests/browser.mjs", "previewUrl": "http://127.0.0.1:4317" },
+    { "name": "r-core-browser", "file": "tests/core-browser.mjs", "previewUrl": "http://127.0.0.1:4317" },
+    { "name": "r-theme-browser", "file": "tests/theme-browser.mjs", "previewUrl": "http://127.0.0.1:4318" },
+    { "name": "r-readability-browser", "file": "tests/readability-browser.mjs", "previewUrl": "http://127.0.0.1:4318" },
+    { "name": "r-ui-display-browser", "file": "tests/ui-display-browser.mjs", "previewUrl": "http://127.0.0.1:4318" },
+    { "name": "r-usage-log-browser", "file": "tests/usage-log-browser.mjs", "previewUrl": "http://127.0.0.1:4318" },
+    { "name": "r-tps-browser", "file": "tests/tps-browser.mjs", "previewUrl": "http://127.0.0.1:4318" },
+    { "name": "r-interaction-browser", "file": "tests/interaction-browser.mjs", "previewUrl": "http://127.0.0.1:4317" },
+    { "name": "r-provider-errors-browser", "file": "tests/provider-errors-browser.mjs", "previewUrl": "http://127.0.0.1:4318" },
+    { "name": "r-models-disabled-browser", "file": "tests/models-disabled-browser.mjs", "selfStart": true, "previewUrl": "http://127.0.0.1:4324" },
+    { "name": "r-balances-cards-browser", "file": "tests/balances-cards-browser.mjs", "selfStart": true, "previewUrl": "http://127.0.0.1:4322" },
+    { "name": "r-proxy-performance", "file": "tests/proxy-performance.mjs", "selfStart": true, "previewUrl": "http://127.0.0.1:4317" }
+  ]
+}

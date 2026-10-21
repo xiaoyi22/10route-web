@@ -1,0 +1,74 @@
+[
+  {
+    "name": "p-production-smoke",
+    "file": "tests/production-smoke.mjs",
+    "ok": false,
+    "code": 1,
+    "ms": 501,
+    "detail": "  expected: true,\r |   operator: '==',\r |   diff: 'simple'\r | }\r | \r | Node.js v24.21.0"
+  },
+  {
+    "name": "p-request-speed-live",
+    "file": "tests/request-speed-live-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 15466,
+    "detail": "# p-request-speed-live @ 2026-10-21T03:47:28.914Z | PASS: HTTP status/health/login/page/logs=200; 100 real rows, 39 above 300 tok/s; both themes match source metrics; no console errors or business writes."
+  },
+  {
+    "name": "p-real-backend-browser",
+    "file": "tests/real-backend-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 19800,
+    "detail": "# p-real-backend-browser @ 2026-10-21T03:47:28.412Z | PASS: real backend health/auth proxy, unauthenticated providers rejected, real login UI, desktop/mobile, no JS errors. Business data requires user login."
+  },
+  {
+    "name": "p-provider-model-cards-live",
+    "file": "tests/provider-model-cards-live-browser.mjs",
+    "ok": false,
+    "code": 1,
+    "ms": 19915,
+    "detail": "    at UtilityScript.<anonymous> (<anonymous>:1:44)\r |     at E:\\10reoute-web\\tests\\provider-model-cards-live-browser.mjs:52:27 {\r |   log: []\r | }\r | \r | Node.js v24.21.0"
+  },
+  {
+    "name": "p-account-models-deployment-live",
+    "file": "tests/account-models-deployment-live-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 13914,
+    "detail": "# p-account-models-deployment-live @ 2026-10-21T03:47:44.381Z | {\"base\":\"http://192.168.11.150:4317\",\"http\":[{\"path\":\"/api/health\",\"status\":200},{\"path\":\"/api/auth/status\",\"status\":200},{\"path\":\"/api/provider-nodes\",\"status\":200},{\"path\":\"/api/providers\",\"status\":200},{\"path\":\"/api/providers/9a25a32f-eac7-462e-aec6-aac41af1a079/models\",\"status\":200},{\"path\":\"/api/providers/b7157088-5acb-44eb-a0a3-"
+  },
+  {
+    "name": "p-providers-new-key-browser",
+    "file": "tests/providers-new-key-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 9558,
+    "detail": "# p-providers-new-key-browser @ 2026-10-21T03:47:48.331Z | {\"ok\":true,\"name\":\"新增 Key 1792554475753\"}"
+  },
+  {
+    "name": "p-upstream-models-ui-browser",
+    "file": "tests/upstream-models-ui-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 15791,
+    "detail": "# p-upstream-models-ui-browser @ 2026-10-21T03:47:58.297Z | 通过：筛选记忆、账号选择、搜索与全选、登记状态、导入失败重试及去重、空列表、桌面手机深浅主题，控制台无未捕获异常。"
+  },
+  {
+    "name": "p-media-browser",
+    "file": "tests/media-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 23126,
+    "detail": "# p-media-browser @ 2026-10-21T03:47:58.700Z | {\"realReads\":[\"Default vision settings are under System Settings, not Combos; actual vision and audio pools match; no settings writes\",\"All 24 registered TTS providers are selectable; real connections and gateway key names load\"],\"isolatedChecks\":[\"Pool add/reorder/save/reload, sibling preservation, save failure and concurrent-change rejection\",\"TTS a"
+  },
+  {
+    "name": "p-upgrade-audit-live",
+    "file": "tests/upgrade-audit-live-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 61812,
+    "detail": "# p-upgrade-audit-live @ 2026-10-21T03:47:48.213Z | {\"apiPassed\":18,\"apiTotal\":18,\"pagesPassed\":19,\"pagesTotal\":19,\"uncaughtErrors\":0,\"blockedWrites\":3,\"passed\":true}"
+  }
+]

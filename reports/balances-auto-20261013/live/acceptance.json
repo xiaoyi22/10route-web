@@ -1,5 +1,5 @@
 {
-  "base": "http://192.168.11.150:4317",
+  "base": "http://127.0.0.1:4320",
   "http": {
     "auth": 200,
     "health": 200,
@@ -13,9 +13,9 @@
     "真实数据、配额一分钟自动读取、余额标签不连带查询、关闭后停止、后台暂停、离开页面停止、两种主题四种屏宽"
   ],
   "queries": [
-    "http://192.168.11.150:4317/api/channel-balances",
-    "http://192.168.11.150:4317/api/usage/quotas",
-    "http://192.168.11.150:4317/api/usage/quotas?refresh=1"
+    "http://127.0.0.1:4320/api/channel-balances",
+    "http://127.0.0.1:4320/api/usage/quotas",
+    "http://127.0.0.1:4320/api/usage/quotas?refresh=1"
   ],
   "errors": [],
   "writes": [],

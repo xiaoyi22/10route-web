@@ -1,0 +1,711 @@
+diff --git a/scripts/fixture-server.mjs b/scripts/fixture-server.mjs
+index 56794db..db40a6d 100644
+--- a/scripts/fixture-server.mjs
++++ b/scripts/fixture-server.mjs
+@@ -264,6 +264,7 @@ export async function startFixtureServer() {
+       if (method === 'GET') return send(200, { connection });
+       if (method === 'DELETE') { providers.splice(index, 1); return send(200, { message: 'Connection deleted successfully' }); }
+       for (const field of ['name', 'priority', 'defaultModel', 'isActive']) if (body[field] !== undefined) connection[field] = body[field];
++      if (body.providerSpecificData) connection.providerSpecificData = { ...connection.providerSpecificData, ...body.providerSpecificData };
+       for (const field of ['proxyPoolId', 'connectionProxyEnabled', 'connectionProxyUrl', 'connectionNoProxy']) if (body[field] !== undefined) connection.providerSpecificData = { ...connection.providerSpecificData, [field]: body[field] };
+       if (body.apiKey) { connection.testStatus = 'active'; delete connection.lastError; }
+       return send(200, { connection });
+diff --git a/src/api/account-models.js b/src/api/account-models.js
+new file mode 100644
+index 0000000..e87d483
+--- /dev/null
++++ b/src/api/account-models.js
+@@ -0,0 +1,46 @@
++import { requestJson } from './client.js';
++
++export function supportsAccountModels(provider = '') {
++  return provider.startsWith('openai-compatible-') || provider.startsWith('anthropic-compatible-');
++}
++
++export function accountModelIds(result) {
++  if (result.warning) throw new Error(`上游模型列表未确认完整：${result.warning}`);
++  if (!Array.isArray(result.models)) throw new Error('上游返回的模型列表格式无效，已保留原模型范围');
++  const ids = result.models.map(item => typeof item === 'string' ? item : item?.id || item?.model || item?.name);
++  if (ids.some(id => typeof id !== 'string' || !id.trim())) throw new Error('上游包含无效模型，已保留原模型范围');
++  const unique = [...new Set(ids.map(id => id.trim()))];
++  if (!unique.length) throw new Error('上游返回空模型列表，已保留原模型范围');
++  return unique;
++}
++
++export async function fetchAccountModels(connection, send = requestJson) {
++  if (!supportsAccountModels(connection.provider)) throw new Error('此供应商暂不支持账号模型范围');
++  const result = await send(`/api/providers/${encodeURIComponent(connection.id)}/models`, { cache: 'no-store', signal: AbortSignal.timeout(20000) });
++  return accountModelIds(result);
++}
++
++export async function saveAccountModels(connection, models, send = requestJson) {
++  if (!supportsAccountModels(connection.provider)) throw new Error('此供应商暂不支持账号模型范围');
++  const enabledModels = models === null ? null : accountModelIds({ models });
++  await send(`/api/providers/${encodeURIComponent(connection.id)}`, {
++    method: 'PUT', body: JSON.stringify({ providerSpecificData: { enabledModels } }), signal: AbortSignal.timeout(20000),
++  });
++}
++
++export async function syncAccountModels(connections, onProgress, send = requestJson) {
++  const results = [];
++  for (const connection of connections) {
++    let result = { connection, status: 'skipped', reason: connection.isActive === false ? '已停用 · 已跳过' : '暂不支持账号范围 · 已跳过' };
++    if (connection.isActive !== false && supportsAccountModels(connection.provider)) {
++      try {
++        const models = await fetchAccountModels(connection, send);
++        await saveAccountModels(connection, models, send);
++        result = { connection, status: 'success', count: models.length };
++      } catch (error) { result = { connection, status: 'error', error }; }
++    }
++    results.push(result);
++    onProgress([...results]);
++  }
++  return results;
++}
+diff --git a/src/api/client.js b/src/api/client.js
+index 582c648..aa0d4e4 100644
+--- a/src/api/client.js
++++ b/src/api/client.js
+@@ -97,6 +97,7 @@ export function normalizeProviders(data) {
+       defaultModel: connection.defaultModel || '',
+       authType: connection.authType || '',
+       lastError: connection.lastError || '',
++      enabledModels: Array.isArray(connection.providerSpecificData?.enabledModels) ? connection.providerSpecificData.enabledModels : null,
+       nodeName: connection.providerSpecificData?.nodeName || '',
+       prefix: connection.providerSpecificData?.prefix || '',
+       baseUrl: connection.providerSpecificData?.baseUrl || '',
+diff --git a/src/components/UpstreamModels.jsx b/src/components/UpstreamModels.jsx
+index dae1018..bd1be45 100644
+--- a/src/components/UpstreamModels.jsx
++++ b/src/components/UpstreamModels.jsx
+@@ -1,10 +1,13 @@
+ import { useEffect, useRef, useState } from 'react';
+-import { Modal } from './Controls.jsx';
++import { Link } from 'react-router-dom';
++import { Modal, useResource } from './Controls.jsx';
+ import Icon from './Icon.jsx';
+ import { requestJson } from '../api/client.js';
+ import ProviderError from './ProviderError.jsx';
++import { supportsAccountModels, accountModelIds, saveAccountModels } from '../api/account-models.js';
+ 
+-export default function UpstreamModels({ supplier, connections, existing, onClose, onSaved }) {
++export default function UpstreamModels({ supplier, connections, existing, onClose, onSaved, onScopeSaved }) {
++  const distribution = useResource('/api/models/distribution');
+   const [connectionId, setConnectionId] = useState((connections.find(connection => connection.status === 'healthy') || connections[0])?.id || '');
+   const [models, setModels] = useState(null);
+   const [selected, setSelected] = useState([]);
+@@ -15,29 +18,53 @@ export default function UpstreamModels({ supplier, connections, existing, onClos
+   const [scope, setScope] = useState('all');
+   const [importedIds, setImportedIds] = useState([]);
+   const [progress, setProgress] = useState(null);
++  const [scopeNote, setScopeNote] = useState('');
++  const [syncOnImport, setSyncOnImport] = useState(true);
+   const selectAll = useRef(null);
+   const registered = new Set([...existing.map(model => model.upstreamId), ...importedIds]);
+   const account = connections.find(connection => connection.id === connectionId);
+   const accountStatus = { healthy: '历史测试正常', error: '历史测试异常', unknown: '未测试' };
+   async function fetchModels() {
+-    setBusy('fetch'); setError(''); setWarning(''); setModels(null); setSelected([]); setProgress(null);
++    setBusy('fetch'); setError(''); setWarning(''); setModels(null); setSelected([]); setProgress(null); setScopeNote('');
+     try {
+-      const result = await requestJson(`/api/providers/${encodeURIComponent(connectionId)}/models`, { cache: 'no-store' });
++      const result = await requestJson(`/api/providers/${encodeURIComponent(connectionId)}/models`, { cache: 'no-store', signal: AbortSignal.timeout(20000) });
+       if (!Array.isArray(result.models)) throw new Error('上游返回的模型列表格式无效');
++      if (supportsAccountModels(account?.provider) && result.models.length) accountModelIds({ models: result.models });
+       const items = result.models.map(item => {
+         const id = typeof item === 'string' ? item : item?.id || item?.model || item?.name;
+         if (!id || typeof id !== 'string') return null;
+-        return { id, name: item?.display_name || item?.displayName || item?.name || id };
++        return { id: id.trim(), name: item?.display_name || item?.displayName || item?.name || id };
+       }).filter(Boolean);
+       setModels([...new Map(items.map(item => [item.id, item])).values()]);
+       setWarning(result.warning || '');
+     } catch (failure) { setError(failure); }
+     finally { setBusy(''); }
+   }
++  async function persistScope() {
++    const ids = accountModelIds({ models, warning });
++    await saveAccountModels(account, ids);
++    setScopeNote(`已同步 ${account.name} 的 ${ids.length} 个模型；下游发布范围保持原设置。`);
++    onScopeSaved?.();
++  }
++  async function syncScope() {
++    setBusy('scope'); setError(''); setScopeNote('');
++    try { await persistScope(); }
++    catch (failure) { setError(failure); }
++    finally { setBusy(''); }
++  }
++  function publication(id) {
++    if (!registered.has(id)) return '未登记';
++    if (distribution.error) return '发布状态读取失败';
++    if (!distribution.data) return '正在读取发布状态';
++    const route = `${supplier.prefix || supplier.id}/${id}`;
++    const available = !distribution.data.catalog || distribution.data.catalog.some(model => model.id === route);
++    return available && (distribution.data.mode !== 'allowlist' || distribution.data.models?.includes(route)) ? '已发布' : '未发布';
++  }
+   async function importModels() {
+     setBusy('import'); setError(''); setProgress({ done: 0, total: selected.length });
+     let imported = 0;
+     try {
++      if (supportsAccountModels(account?.provider) && syncOnImport) await persistScope();
+       for (const id of selected) {
+         const model = models.find(item => item.id === id);
+         await requestJson('/api/models/custom', { method: 'POST', body: JSON.stringify({ providerAlias: supplier.id, id, name: model.name, type: 'llm', enabled: true }) });
+@@ -47,7 +74,7 @@ export default function UpstreamModels({ supplier, connections, existing, onClos
+         setSelected(previous => previous.filter(value => value !== id));
+       }
+     } catch (failure) { setError(failure); }
+-    finally { if (imported) onSaved(); setBusy(''); }
++    finally { if (imported) { onSaved(); distribution.refresh(); } setBusy(''); }
+   }
+   const shown = models?.filter(model => `${model.id} ${model.name}`.toLowerCase().includes(query.toLowerCase()) && (scope === 'all' || (scope === 'registered' ? registered.has(model.id) : !registered.has(model.id)))) || [];
+   const available = shown.filter(model => !registered.has(model.id));
+@@ -56,19 +83,23 @@ export default function UpstreamModels({ supplier, connections, existing, onClos
+   const registeredCount = models?.filter(model => registered.has(model.id)).length || 0;
+   return <Modal title={`获取上游模型 · ${supplier.name}`} className="upstream-models-dialog" busy={!!busy} onClose={onClose}>
+     <div className="upstream-models-content">
+-      <div className="upstream-account"><label>查询账号<select value={connectionId} disabled={!!busy} onChange={event => { setConnectionId(event.target.value); setModels(null); setSelected([]); setError(''); setWarning(''); setProgress(null); }}>{connections.map(connection => <option key={connection.id} value={connection.id}>{connection.name} · {accountStatus[connection.status] || '未测试'}</option>)}</select></label>
++      <div className="upstream-account"><label>查询账号<select value={connectionId} disabled={!!busy} onChange={event => { setConnectionId(event.target.value); setModels(null); setSelected([]); setError(''); setWarning(''); setProgress(null); setScopeNote(''); }}>{connections.map(connection => <option key={connection.id} value={connection.id}>{connection.name} · {accountStatus[connection.status] || '未测试'}</option>)}</select></label>
+         <button className="button" disabled={!!busy || !connectionId} onClick={fetchModels}><Icon name="refresh"/>{busy === 'fetch' ? '正在获取模型…' : '获取模型列表'}</button>
+       </div>
+       {error && <ProviderError error={error} authType={account?.authType}/>}{warning && <p className="inline-note" role="status">{warning}</p>}
++      {supportsAccountModels(account?.provider) && models && <div className="account-scope-sync"><button type="button" className="button" disabled={!!busy || !models.length || !!warning} onClick={syncScope}><Icon name="refresh"/>{busy === 'scope' ? '正在同步…' : '同步此账号模型范围'}</button><p className="proxy-note">将完整查询结果保存为此账号的允许模型。上游返回全站目录时，请在「编辑连接」中手动限定。</p></div>}
++      {scopeNote && <p className="success-message" role="status">{scopeNote}</p>}
+       {busy === 'fetch' && <p className="upstream-empty" role="status">正在读取 {account?.name} 的模型列表…</p>}
+       {models === null && !busy && !error && <div className="upstream-empty"><Icon name="server"/><strong>{account?.name || '暂无查询账号'}</strong><span>{accountStatus[account?.status] || '未测试'}</span></div>}
+       {models && <>
+         <div className="upstream-counts" role="status"><span>上游模型 <strong>{models.length}</strong></span><span>待导入 <strong>{models.length - registeredCount}</strong></span><span>已登记 <strong>{registeredCount}</strong></span><span>已选择 <strong>{selected.length}</strong></span></div>
+         <div className="upstream-filters"><div className="filter-search"><Icon name="search"/><input aria-label="搜索上游模型" placeholder="搜索模型 ID 或名称…" value={query} onChange={event => setQuery(event.target.value)}/></div><select aria-label="登记状态" value={scope} onChange={event => setScope(event.target.value)}><option value="all">全部模型</option><option value="new">待导入</option><option value="registered">已登记</option></select></div>
+         <div className="upstream-selection"><label className="checkbox-filter"><input ref={selectAll} type="checkbox" disabled={!!busy || !available.length} checked={!!available.length && selectedVisible === available.length} onChange={event => setSelected(previous => event.target.checked ? [...new Set([...previous, ...available.map(model => model.id)])] : previous.filter(id => !available.some(model => model.id === id)))}/>选择当前结果（{available.length}）</label><span className="muted">显示 {shown.length} 个</span></div>
+-        <div className="table-shell upstream-model-list"><table><caption className="sr-only">上游模型及登记状态</caption><thead><tr><th>选择</th><th>模型</th><th>登记状态</th></tr></thead><tbody>{shown.map(model => <tr key={model.id} className={selected.includes(model.id) ? 'upstream-selected' : ''}><td><input type="checkbox" aria-label={`导入 ${model.id}`} disabled={!!busy || registered.has(model.id)} checked={selected.includes(model.id)} onChange={event => setSelected(previous => event.target.checked ? [...previous, model.id] : previous.filter(id => id !== model.id))}/></td><td><div className="upstream-model-name"><strong>{model.name}</strong><code>{model.id}</code></div></td><td><span className={`status ${registered.has(model.id) ? 'healthy' : 'unknown'}`}>{registered.has(model.id) ? '已登记' : selected.includes(model.id) ? '已选择' : '待导入'}</span></td></tr>)}{!shown.length && <tr><td colSpan="3" className="table-empty">{models.length ? '没有匹配的模型' : '上游返回了空模型列表'}</td></tr>}</tbody></table></div>
++        <div className="table-shell upstream-model-list"><table><caption className="sr-only">上游模型及登记状态</caption><thead><tr><th>选择</th><th>模型</th><th>登记 / 下游发布</th></tr></thead><tbody>{shown.map(model => <tr key={model.id} className={selected.includes(model.id) ? 'upstream-selected' : ''}><td><input type="checkbox" aria-label={`导入 ${model.id}`} disabled={!!busy || registered.has(model.id)} checked={selected.includes(model.id)} onChange={event => setSelected(previous => event.target.checked ? [...previous, model.id] : previous.filter(id => id !== model.id))}/></td><td><div className="upstream-model-name"><strong>{model.name}</strong><code>{model.id}</code></div></td><td><span className={`status ${registered.has(model.id) ? 'healthy' : 'unknown'}`}>{registered.has(model.id) ? '已登记' : selected.includes(model.id) ? '已选择' : '待导入'}</span><small className="upstream-publication">下游：{publication(model.id)}</small></td></tr>)}{!shown.length && <tr><td colSpan="3" className="table-empty">{models.length ? '没有匹配的模型' : '上游返回了空模型列表'}</td></tr>}</tbody></table></div>
+       </>}
+-      {progress && <p className={busy === 'import' || progress.done !== progress.total ? 'inline-note' : 'success-message'} role="status">{busy === 'import' ? `正在导入 ${progress.done} / ${progress.total} 个模型…` : progress.done === progress.total ? `已导入 ${progress.done} 个模型，已向下游发布。` : `已导入 ${progress.done} / ${progress.total} 个模型，剩余 ${selected.length} 个未导入。`}</p>}
++      {progress && <p className={busy === 'import' || progress.done !== progress.total ? 'inline-note' : 'success-message'} role="status">{busy === 'import' ? `正在导入 ${progress.done} / ${progress.total} 个模型…` : progress.done === progress.total ? `已导入 ${progress.done} 个模型，请在「下游分发」确认发布范围。` : `已导入 ${progress.done} / ${progress.total} 个模型，剩余 ${selected.length} 个未导入。`}</p>}
++      {supportsAccountModels(account?.provider) && models && <label className="checkbox-filter"><input type="checkbox" checked={syncOnImport} disabled={!!busy} onChange={event => setSyncOnImport(event.target.checked)}/>导入时同步此账号模型范围（完整查询结果）</label>}
++      <p className="proxy-note">登记模型、账号模型范围和下游发布分别保存。<Link to="/dashboard/distribution" aria-disabled={!!busy} onClick={event => { if (busy) event.preventDefault(); else onClose(); }}>前往下游分发</Link></p>
+       <div className="dialog-actions"><span className="muted upstream-selected-count">已选择 {selected.length} 个{selected.length > selectedVisible ? ` · 当前结果外 ${selected.length - selectedVisible} 个` : ''}</span><button className="button" disabled={!!busy} onClick={onClose}>{progress?.done ? '完成' : '取消'}</button><button className="button primary" disabled={!!busy || !selected.length} onClick={importModels}><Icon name="download"/>{busy === 'import' ? '正在导入…' : `导入所选模型${selected.length ? `（${selected.length}）` : ''}`}</button></div>
+     </div>
+   </Modal>;
+diff --git a/src/pages/CorePages.jsx b/src/pages/CorePages.jsx
+index 2434a19..697ffd8 100644
+--- a/src/pages/CorePages.jsx
++++ b/src/pages/CorePages.jsx
+@@ -117,7 +117,7 @@ export function EndpointPage() {
+   </>;
+ }
+ 
+-export function ModelsPage({ providerId = '' }) {
++export function ModelsPage({ providerId = '', onConnectionsChanged }) {
+   const builtIn = useResource('/api/models');
+   const custom = useResource('/api/models/custom');
+   const providers = useResource('/api/providers');
+@@ -196,7 +196,7 @@ export function ModelsPage({ providerId = '' }) {
+       {testResult && !testResult.running && <><p className="inline-note">耗时 {formatNumber(testResult.latencyMs)} ms · {formatDate(testResult.at)}{testResult.status ? ` · HTTP ${testResult.status}` : ''}</p>{testResult.note && <p className="inline-note">{testResult.note}</p>}{!testResult.ok && <ProviderError error={{ message: typeof testResult.error === 'string' ? testResult.error : JSON.stringify(testResult.error), status: testResult.status }}/>}</>}
+       <div className="dialog-actions"><button className="button" disabled={testResult?.running} onClick={() => setTestModel(null)}>关闭</button><button className="button primary" disabled={testResult?.running} onClick={() => runModelTest(testModel)}>{testResult?.running ? '正在测试…' : '重新测试'}</button></div>
+     </Modal>}
+-    {upstream && <UpstreamModels supplier={providerInfo(providerId, nodes.data?.nodes)} connections={upstreamConnections} existing={scoped} onClose={() => setUpstream(false)} onSaved={refreshModels}/>}
++    {upstream && <UpstreamModels supplier={providerInfo(providerId, nodes.data?.nodes)} connections={upstreamConnections} existing={scoped} onClose={() => setUpstream(false)} onSaved={refreshModels} onScopeSaved={() => { providers.refresh(); onConnectionsChanged?.(); }}/>}
+     {removingModel && <ConfirmDelete title="删除自定义模型" name={removingModel.id} url={`/api/models/custom?${new URLSearchParams({ providerAlias: removingModel.provider, id: removingModel.upstreamId, type: removingModel.type || 'llm' })}`} onClose={() => setRemovingModel(null)} onDeleted={refreshModels}/>}
+     <div className="section-toolbar">
+       {!providerId && <div className="period-tabs" aria-label="模型范围">{[['connected', '已接入供应商'], ['all', '全部目录']].map(([value, name]) => <button key={value} type="button" aria-pressed={scope === value} className={scope === value ? 'selected' : ''} onClick={() => { setScope(value); setProvider(''); setPage(1); }}>{name}</button>)}</div>}
+diff --git a/src/pages/ProvidersPage.jsx b/src/pages/ProvidersPage.jsx
+index cc459db..0fb358d 100644
+--- a/src/pages/ProvidersPage.jsx
++++ b/src/pages/ProvidersPage.jsx
+@@ -12,6 +12,7 @@ import { ModelsPage } from './CorePages.jsx';
+ import { proxyBinding } from '../api/hermes.js';
+ import { usePreferences } from '../store/preferences.js';
+ import { runProviderBatch } from '../api/provider-batch.js';
++import { supportsAccountModels, fetchAccountModels, accountModelIds, syncAccountModels } from '../api/account-models.js';
+ 
+ const labels = { healthy: '历史测试正常', error: '连接异常', disabled: '已停用', unknown: '未测试 / 未知' };
+ 
+@@ -22,29 +23,51 @@ export function ProviderEditor({ connection, initialProvider, onClose, onSaved,
+   const [form, setForm] = useState({ provider: connection?.provider || (providerOptions.some(([id]) => id === initialProvider) || initialProvider?.includes('-compatible-') ? initialProvider : providerOptions[0]?.[0] || 'openai'), name: connection?.name || '', priority: connection?.priority ?? 1, defaultModel: connection?.defaultModel || '', apiKey: '' });
+   const [busy, setBusy] = useState(false);
+   const [error, setError] = useState('');
++  const [restricted, setRestricted] = useState(!!connection?.enabledModels?.length);
++  const [modelText, setModelText] = useState((connection?.enabledModels || []).join('\n'));
++  const [fetchingModels, setFetchingModels] = useState(false);
++  const [modelNote, setModelNote] = useState('');
++  const hasModelScope = connection && supportsAccountModels(connection.provider);
+   const canReplaceKey = ['apikey', 'api_key'].includes(connection?.authType);
+   const set = (key, value) => setForm(previous => ({ ...previous, [key]: value }));
++  async function loadModels() {
++    setFetchingModels(true); setError(''); setModelNote('');
++    try {
++      const models = await fetchAccountModels(connection);
++      setModelText(models.join('\n')); setRestricted(true);
++      setModelNote(`已获取 ${models.length} 个模型，保存连接后生效。请核对上游列表是否按此 key 限定。`);
++    } catch (failure) { setError(failure.message); }
++    finally { setFetchingModels(false); }
++  }
+   async function save(event) {
+     event.preventDefault();
+-    setBusy(true);
+     setError('');
+     const body = { name: form.name.trim(), priority: Number(form.priority), defaultModel: form.defaultModel.trim() };
+     if (!connection) Object.assign(body, { provider: form.provider, apiKey: form.apiKey.trim() });
+     else if (canReplaceKey && form.apiKey.trim()) body.apiKey = form.apiKey.trim();
+     try {
++      if (hasModelScope) body.providerSpecificData = { enabledModels: restricted ? accountModelIds({ models: modelText.split('\n').map(id => id.trim()).filter(Boolean) }) : null };
++      setBusy(true);
+       await requestJson(connection ? `/api/providers/${encodeURIComponent(connection.id)}` : '/api/providers', { method: connection ? 'PUT' : 'POST', body: JSON.stringify(body) });
+       onSaved(form.provider);
+       onClose();
+     } catch (failure) { setError(failure.message); }
+     finally { setBusy(false); }
+   }
+-  return <Modal title={connection ? '编辑连接' : '新增 API Key 连接'} onClose={onClose} busy={busy}><form className="editor-form" onSubmit={save}>
++  return <Modal title={connection ? '编辑连接' : '新增 API Key 连接'} onClose={onClose} busy={busy || fetchingModels}><form className="editor-form" onSubmit={save}>
+     {!connection && <label>供应商<select value={form.provider} onChange={event => set('provider', event.target.value)}>{providerOptions.map(([id, name]) => <option key={id} value={id}>{name}</option>)}{includeCustomProviders && (nodes.data?.nodes || []).map(node => <option key={node.id} value={node.id}>{node.name} · {node.prefix}</option>)}</select></label>}
+     {!connection && nodes.error && <ErrorBlock message={`自定义节点读取失败：${nodes.error}`} onRetry={nodes.refresh}/>}
+     <label>连接名称<input value={form.name} onChange={event => set('name', event.target.value)} maxLength={100} required autoFocus/></label>
+     <div className="form-columns"><label>优先级<input type="number" min="1" max="999" step="1" value={form.priority} onChange={event => set('priority', event.target.value)} required/></label><label>默认模型<input value={form.defaultModel} onChange={event => set('defaultModel', event.target.value)} placeholder="默认"/></label></div>
+-    {(!connection || canReplaceKey) && <label>{connection ? '替换 API Key' : '上游 API Key'}<input type="password" autoComplete="new-password" value={form.apiKey} onChange={event => set('apiKey', event.target.value)} required={!connection} placeholder={connection ? '留空保留现有密钥' : '输入上游密钥'}/></label>}
+-    {error && <ErrorBlock message={error}/>}<div className="dialog-actions"><button type="button" className="button" disabled={busy} onClick={onClose}>取消</button><button className="button primary" disabled={busy} type="submit"><Icon name="check"/>{busy ? '正在保存…' : '保存连接'}</button></div>
++    {(!connection || canReplaceKey) && <label>{connection ? '替换 API Key' : '上游 API Key'}<input type="password" autoComplete="new-password" value={form.apiKey} disabled={busy || fetchingModels} onChange={event => set('apiKey', event.target.value)} required={!connection} placeholder={connection ? '留空保留现有密钥' : '输入上游密钥'}/></label>}
++    {hasModelScope && <fieldset className="plain-fieldset account-model-scope" disabled={busy || fetchingModels}>
++      <label>账号模型范围<select value={restricted ? 'restricted' : 'all'} onChange={event => setRestricted(event.target.value === 'restricted')}><option value="all">未限定 · 沿用供应商模型</option><option value="restricted">仅允许以下模型</option></select></label>
++      {restricted && <label>允许的上游模型<textarea rows={6} value={modelText} onChange={event => setModelText(event.target.value)} placeholder="每行一个完整上游模型 ID，不含供应商前缀" required/></label>}
++      <button type="button" className="button" disabled={!!form.apiKey.trim()} onClick={loadModels}><Icon name="refresh"/>{fetchingModels ? '正在获取…' : '从此账号获取模型范围'}</button>
++      <p className="proxy-note">{form.apiKey.trim() ? '请先保存替换的 key，再获取新账号的模型范围。' : '请求只会分配给允许该模型的账号。上游返回全站目录时，请手动修正范围；模型发布仍在「下游分发」管理。'}</p>
++      {modelNote && <p className="inline-note" role="status">{modelNote}</p>}
++    </fieldset>}
++    {error && <ErrorBlock message={error}/>}<div className="dialog-actions"><button type="button" className="button" disabled={busy || fetchingModels} onClick={onClose}>取消</button><button className="button primary" disabled={busy || fetchingModels} type="submit"><Icon name="check"/>{busy ? '正在保存…' : '保存连接'}</button></div>
+   </form></Modal>;
+ }
+ 
+@@ -52,7 +75,7 @@ function BatchResults({ results, title, total, busy }) {
+   const failed = results.filter(result => result.status === 'error');
+   return <div className="provider-batch-results" aria-label={title}>
+     <p role="status">{title}：{busy ? `已处理 ${results.length} / ${total}，` : ''}成功 {results.filter(result => result.status === 'success').length}，失败 {failed.length}，跳过 {results.filter(result => result.status === 'skipped').length}</p>
+-    {results.length > 0 && <details open={failed.length > 0}><summary>查看逐项结果</summary><ul>{results.map(result => <li key={result.connection.id}><strong>{result.connection.name}</strong><span className={`status ${result.status === 'success' ? 'healthy' : result.status === 'error' ? 'error' : 'disabled'}`}>{result.status === 'success' ? '成功' : result.status === 'error' ? '失败' : '已停用 · 跳过测试'}</span>{result.status === 'error' && <ProviderError error={result.error} authType={result.connection.authType}/>}</li>)}</ul></details>}
++    {results.length > 0 && <details open={failed.length > 0}><summary>查看逐项结果</summary><ul>{results.map(result => <li key={result.connection.id}><strong>{result.connection.name}</strong><span className={`status ${result.status === 'success' ? 'healthy' : result.status === 'error' ? 'error' : 'disabled'}`}>{result.status === 'success' ? (result.count === undefined ? '成功' : `成功 · ${result.count} 个模型`) : result.status === 'error' ? '失败' : result.reason || '已停用 · 跳过测试'}</span>{result.status === 'error' && <ProviderError error={result.error} authType={result.connection.authType}/>}</li>)}</ul></details>}
+   </div>;
+ }
+ 
+@@ -100,7 +123,7 @@ function ProxyBindingLink({ proxy, data }) {
+ }
+ 
+ function ConnectionDetail({ connection, info, proxy, hermes, onClose }) {
+-  const fields = [['供应商', info.name], ['连接名称', connection.name], ['连接 ID', connection.id], ['认证方式', connection.authType === 'oauth' ? 'OAuth' : connection.authType || '—'], ['优先级', connection.priority], ['默认模型', connection.defaultModel || '默认'], ['最后测试', formatDate(connection.lastTested)], ['接口地址', info.baseUrl ? safeProxyUrl(info.baseUrl) : '内置供应商接口'], ['当前代理来源', proxy.title], ['当前代理地址', proxy.address], ['代理类型', proxy.type || '—'], ['绕过代理规则', proxy.noProxy || '未配置'], ['代理失败处理', proxy.strict ? '强制代理，失败不回退直连' : '由后端代理规则处理']];
++  const fields = [['供应商', info.name], ['连接名称', connection.name], ['连接 ID', connection.id], ['认证方式', connection.authType === 'oauth' ? 'OAuth' : connection.authType || '—'], ['优先级', connection.priority], ['默认模型', connection.defaultModel || '默认'], ...(supportsAccountModels(connection.provider) ? [['账号模型范围', connection.enabledModels?.length ? connection.enabledModels.join('、') : '未限定 · 沿用供应商模型']] : []), ['最后测试', formatDate(connection.lastTested)], ['接口地址', info.baseUrl ? safeProxyUrl(info.baseUrl) : '内置供应商接口'], ['当前代理来源', proxy.title], ['当前代理地址', proxy.address], ['代理类型', proxy.type || '—'], ['绕过代理规则', proxy.noProxy || '未配置'], ['代理失败处理', proxy.strict ? '强制代理，失败不回退直连' : '由后端代理规则处理']];
+   return <Modal title={`连接详情 · ${connection.name}`} onClose={onClose}>{connection.lastError && <ProviderError error={connection.lastError} authType={connection.authType}/>}<dl className="request-details">{fields.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl><ProxyBindingLink proxy={proxy} data={hermes}/><p className="proxy-note">当前代理配置；具体请求可能按绕过规则直连。实际出口节点由代理服务决定。</p>{proxy.warning && <ErrorBlock message={proxy.warning}/>}</Modal>;
+ }
+ 
+@@ -132,7 +155,9 @@ export function ProvidersPage() {
+   const [selectedIds, setSelectedIds] = useState(new Set());
+   const [batchResults, setBatchResults] = useState([]);
+   const [batchTotal, setBatchTotal] = useState(0);
+-  useEffect(() => { setSelectedIds(new Set()); setBatchResults([]); }, [selectedId, query, healthyOnly]);
++  const [modelResults, setModelResults] = useState([]);
++  const [modelTotal, setModelTotal] = useState(0);
++  useEffect(() => { setSelectedIds(new Set()); setBatchResults([]); setModelResults([]); }, [selectedId, query, healthyOnly]);
+   const proxy = connection => connectionProxy(connection, pools.error ? null : pools.data?.proxyPools, settings.error ? null : settings.data);
+   const matching = connection => `${connection.name} ${providerInfo(connection.provider, nodes.data?.nodes, connection).name} ${connection.provider}`.toLowerCase().includes(deferredQuery.toLowerCase()) && (!healthyOnly || connection.status === 'healthy');
+   const shownGroups = groups.filter(group => group.connections.some(matching) || (!group.connections.length && !healthyOnly && `${group.name} ${group.prefix}`.toLowerCase().includes(deferredQuery.toLowerCase())));
+@@ -153,9 +178,15 @@ export function ProvidersPage() {
+   function refresh() { resource.refresh(); nodes.refresh(); pools.refresh(); settings.refresh(); hermes.refresh(); }
+   async function testSelected(targets) {
+     setBusy('batch-test'); setError(''); setMessage(''); setBatchResults([]); setBatchTotal(targets.length);
++    setModelResults([]);
+     try { await runProviderBatch(targets, 'test', null, setBatchResults); }
+     finally { setBusy(null); resource.refresh(); }
+   }
++  async function syncSelectedModels() {
++    setBusy('sync-models'); setError(''); setMessage(''); setBatchResults([]); setModelResults([]); setModelTotal(selectedConnections.length);
++    try { await syncAccountModels(selectedConnections, setModelResults); }
++    finally { setBusy(null); resource.refresh(); }
++  }
+   async function act(connection, action) {
+     setBusy(connection.id);
+     setError('');
+@@ -183,8 +214,9 @@ export function ProvidersPage() {
+     <section className="panel"><div className="table-toolbar"><div className="filter-search"><Icon name="search"/><input aria-label="搜索供应商" placeholder="搜索供应商或账号连接…" value={query} disabled={!!busy} onChange={event => setQuery(event.target.value)}/></div><label className="checkbox-filter"><input type="checkbox" aria-label="仅显示正常连接" checked={healthyOnly} disabled={!!busy} onChange={event => setHealthyOnly(event.target.checked)}/>仅正常连接</label>
+         {/* 详情页的筛选直接说明后果：新加的 Key 还没测过，跟着被藏起来会像没保存成功。 */}
+         {selectedId && healthyOnly && (selected?.connections || []).length > shownConnections.length && <button type="button" className="text-button" aria-label="显示全部账号连接" disabled={!!busy} onClick={() => setHealthyOnly(false)}>已隐藏 {(selected?.connections || []).length - shownConnections.length} 个未测试或异常账号（新加的 Key 默认在这里），点此显示全部</button>}</div>
+-      {managementEnabled && <div className="provider-batch-toolbar"><span>{selectedId ? `已选 ${selectedConnections.length} 个账号` : `已选 ${selectedItems.length} 个供应商 · ${selectedConnections.length} 个账号`}</span><div className="provider-batch-actions"><button className="button" disabled={selectionDisabled || !selectedConnections.some(connection => connection.isActive)} onClick={() => testSelected(selectedConnections)}><Icon name="play"/>批量测试</button><button className="button" disabled={selectionDisabled || !selectedConnections.length || pools.loading || settings.loading || !!pools.error || !!settings.error} onClick={() => setProxyEditor(selectedConnections)}><Icon name="globe"/>批量绑定代理</button>{batchResults.some(result => result.status === 'error') && <button className="button" disabled={selectionDisabled} onClick={() => testSelected(batchResults.filter(result => result.status === 'error').map(result => result.connection))}>重试失败项</button>}<button className="text-button" disabled={selectionDisabled || !selectedItems.length} onClick={() => setSelectedIds(new Set())}>取消选择</button></div><small>{selectedId ? '全选当前筛选中的账号。' : '选择供应商将包含其全部账号。'} 测试会跳过已停用账号。</small></div>}
++      {managementEnabled && <div className="provider-batch-toolbar"><span>{selectedId ? `已选 ${selectedConnections.length} 个账号` : `已选 ${selectedItems.length} 个供应商 · ${selectedConnections.length} 个账号`}</span><div className="provider-batch-actions"><button className="button" disabled={selectionDisabled || !selectedConnections.some(connection => connection.isActive)} onClick={() => testSelected(selectedConnections)}><Icon name="play"/>批量测试</button><button className="button" disabled={selectionDisabled || !selectedConnections.some(connection => connection.isActive && supportsAccountModels(connection.provider))} onClick={syncSelectedModels}><Icon name="refresh"/>同步模型范围</button><button className="button" disabled={selectionDisabled || !selectedConnections.length || pools.loading || settings.loading || !!pools.error || !!settings.error} onClick={() => setProxyEditor(selectedConnections)}><Icon name="globe"/>批量绑定代理</button>{batchResults.some(result => result.status === 'error') && <button className="button" disabled={selectionDisabled} onClick={() => testSelected(batchResults.filter(result => result.status === 'error').map(result => result.connection))}>重试失败项</button>}<button className="text-button" disabled={selectionDisabled || !selectedItems.length} onClick={() => setSelectedIds(new Set())}>取消选择</button></div><small>{selectedId ? '全选当前筛选中的账号。' : '选择供应商将包含其全部账号。'} 测试会跳过已停用账号。同步会替换所选兼容账号的模型范围，上游返回全站目录时请手动编辑。</small></div>}
+       {(busy === 'batch-test' || batchResults.length > 0) && <BatchResults results={batchResults} title="批量测试结果" total={batchTotal} busy={busy === 'batch-test'}/>}
++      {(busy === 'sync-models' || modelResults.length > 0) && <BatchResults results={modelResults} title="模型范围同步结果" total={modelTotal} busy={busy === 'sync-models'}/>}
+       {!selectedId ? <div className="table-shell"><table><caption className="sr-only">供应商分组列表</caption><thead><tr>{selectionHeader}<th>供应商 / 节点</th><th>账号连接</th><th>历史测试 / 启用</th><th>异常原因</th><th>当前代理</th><th>详情</th></tr></thead><tbody>{resource.loading && !resource.data ? <tr><td colSpan={managementEnabled ? 7 : 6} className="table-empty">正在加载供应商…</td></tr> : shownGroups.map(group => {
+         const paths = [...new Set(group.connections.map(connection => { const path = proxy(connection); return `${path.title} · ${path.address}`; }))];
+         const failures = [...new Set(group.connections.filter(connection => connection.lastError || connection.status === 'error').map(connection => providerFailure(connection.lastError, connection.authType).label))];
+@@ -194,12 +226,12 @@ export function ProvidersPage() {
+         <div className="table-shell"><table><caption className="sr-only">供应商账号连接列表</caption><thead><tr>{selectionHeader}<th>账号连接</th><th>测试状态</th><th>优先级</th><th>当前代理</th><th>启用</th><th>操作</th></tr></thead><tbody>{shownConnections.map(connection => {
+           const path = proxy(connection);
+           const failure = connection.lastError ? providerFailure(connection.lastError, connection.authType) : null;
+-          return <tr key={connection.id}>{managementEnabled && <td className="provider-selection"><input type="checkbox" aria-label={`选择账号 ${connection.name}`} checked={selectedIds.has(connection.id)} disabled={selectionDisabled} onChange={event => select(connection.id, event.target.checked)}/></td>}<td><button className="connection-name connection-open" onClick={() => setDetail(connection)}><ProviderIcon provider={connection.provider}/><div><strong>{connection.name}</strong><small>{connection.authType === 'oauth' ? 'OAuth' : 'API Key'} · {formatDate(connection.lastTested)}</small></div></button></td><td className="provider-test-status"><span className={`status ${connection.status}`}><span className="dot"/>{connection.status === 'error' && failure ? failure.label : labels[connection.status]}</span>{failure && <><small>{connection.status === 'disabled' ? `历史异常：${failure.label}。` : ''}{failure.hint}</small><button className="text-button" onClick={() => setDetail(connection)}><Icon name="eye"/>查看错误详情</button></>}</td><td>{connection.priority}</td><td className="proxy-cell"><strong>{path.title}</strong><span>{path.address}</span><ProxyBindingLink proxy={path} data={hermes.error ? null : hermes.data}/>{path.warning && <small className="error-message">绑定失效 · 按回退规则</small>}</td><td><label className="toggle-control"><input type="checkbox" role="switch" aria-label={`启用 ${connection.name}`} checked={connection.isActive} disabled={!managementEnabled || !!busy || resource.loading} onChange={() => act(connection, 'toggle')}/><span aria-hidden="true" className="toggle-track"/></label></td><td><div className="row-actions"><IconButton icon="eye" label={`查看连接 ${connection.name}`} onClick={() => setDetail(connection)}/>{managementEnabled && <><IconButton icon="globe" label={`代理 ${connection.name}`} disabled={!!busy || pools.loading || settings.loading || !!pools.error || !!settings.error} onClick={() => setProxyEditor([connection])}/><IconButton icon="play" label={`测试 ${connection.name}`} disabled={!!busy || resource.loading || !connection.isActive} onClick={() => act(connection, 'test')}/><IconButton icon="edit" label={`编辑 ${connection.name}`} disabled={!!busy} onClick={() => setEditor(connection)}/><IconButton icon="trash" label={`删除 ${connection.name}`} disabled={!!busy} onClick={() => setRemoving(connection)}/></>}</div></td></tr>;
++          return <tr key={connection.id}>{managementEnabled && <td className="provider-selection"><input type="checkbox" aria-label={`选择账号 ${connection.name}`} checked={selectedIds.has(connection.id)} disabled={selectionDisabled} onChange={event => select(connection.id, event.target.checked)}/></td>}<td><button className="connection-name connection-open" onClick={() => setDetail(connection)}><ProviderIcon provider={connection.provider}/><div><strong>{connection.name}</strong><small>{connection.authType === 'oauth' ? 'OAuth' : 'API Key'} · {formatDate(connection.lastTested)}</small>{supportsAccountModels(connection.provider) && <small>{connection.enabledModels?.length ? `仅允许 ${connection.enabledModels.length} 个模型` : '模型范围未限定'}</small>}</div></button></td><td className="provider-test-status"><span className={`status ${connection.status}`}><span className="dot"/>{connection.status === 'error' && failure ? failure.label : labels[connection.status]}</span>{failure && <><small>{connection.status === 'disabled' ? `历史异常：${failure.label}。` : ''}{failure.hint}</small><button className="text-button" onClick={() => setDetail(connection)}><Icon name="eye"/>查看错误详情</button></>}</td><td>{connection.priority}</td><td className="proxy-cell"><strong>{path.title}</strong><span>{path.address}</span><ProxyBindingLink proxy={path} data={hermes.error ? null : hermes.data}/>{path.warning && <small className="error-message">绑定失效 · 按回退规则</small>}</td><td><label className="toggle-control"><input type="checkbox" role="switch" aria-label={`启用 ${connection.name}`} checked={connection.isActive} disabled={!managementEnabled || !!busy || resource.loading} onChange={() => act(connection, 'toggle')}/><span aria-hidden="true" className="toggle-track"/></label></td><td><div className="row-actions"><IconButton icon="eye" label={`查看连接 ${connection.name}`} onClick={() => setDetail(connection)}/>{managementEnabled && <><IconButton icon="globe" label={`代理 ${connection.name}`} disabled={!!busy || pools.loading || settings.loading || !!pools.error || !!settings.error} onClick={() => setProxyEditor([connection])}/><IconButton icon="play" label={`测试 ${connection.name}`} disabled={!!busy || resource.loading || !connection.isActive} onClick={() => act(connection, 'test')}/><IconButton icon="edit" label={`编辑 ${connection.name}`} disabled={!!busy} onClick={() => setEditor(connection)}/><IconButton icon="trash" label={`删除 ${connection.name}`} disabled={!!busy} onClick={() => setRemoving(connection)}/></>}</div></td></tr>;
+         })}{!shownConnections.length && <tr><td colSpan={managementEnabled ? 7 : 6} className="table-empty">{healthyOnly ? (selected.connections || []).length ? '「仅正常连接」已打开，未测试和异常账号都被隐藏（新加的 Key 默认在其中）。' : '没有匹配的账号连接' : '没有匹配的账号连接'}{healthyOnly && (selected.connections || []).length > 0 && <button type="button" className="text-button" onClick={() => setHealthyOnly(false)}>显示全部账号</button>}</td></tr>}</tbody></table></div>
+       </> : <p className="empty-state">{resource.loading ? '正在加载供应商…' : resource.error ? '供应商读取失败' : '供应商不存在或已移除'}</p>}
+       <div className="table-footer"><span>{selectedId ? `${shownConnections.length} 个账号连接` : `${shownGroups.length} 个供应商 / 节点`}</span><span>代理为当前配置，历史测试不代表实时可用性</span></div>
+     </section>
+-    {selected && <ModelsPage key={selected.id} providerId={selected.id}/>}
++    {selected && <ModelsPage key={selected.id} providerId={selected.id} onConnectionsChanged={resource.refresh}/>}
+     {editor && <ProviderEditor connection={editor.id ? editor : null} initialProvider={editor.provider} onClose={() => setEditor(null)} onSaved={showSaved}/>} 
+     {proxyEditor && <ProxyEditor connections={proxyEditor} pools={pools.data?.proxyPools || []} onClose={() => setProxyEditor(null)} onSaved={results => { resource.refresh(); const count = results.filter(result => result.status === 'success').length; if (count) setMessage(`已保存 ${count} 个账号的代理配置`); }}/>}
+     {activeDetail && <ConnectionDetail connection={activeDetail} info={providerInfo(activeDetail.provider, nodes.data?.nodes, activeDetail)} proxy={proxy(activeDetail)} hermes={hermes.error ? null : hermes.data} onClose={() => setDetail(null)}/>}
+diff --git a/src/styles.css b/src/styles.css
+index 0e1e858..8554409 100644
+--- a/src/styles.css
++++ b/src/styles.css
+@@ -667,6 +667,11 @@ input::placeholder, textarea::placeholder { color: var(--dim); opacity: 1; }
+ .form-dialog::backdrop { background: #0008; }
+ .dialog-body { padding: 22px; }
+ .editor-form { display: flex; flex-direction: column; gap: 18px; }
++.account-model-scope textarea { width: 100%; min-width: 0; padding: 9px 10px; border: 1px solid var(--border); border-radius: 4px; background: var(--panel); color: var(--text); resize: vertical; }
++.account-model-scope .proxy-note, .account-model-scope .inline-note { margin: 0; }
++.account-scope-sync { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
++.account-scope-sync .proxy-note { flex: 1 1 200px; margin: 0; }
++.upstream-publication { display: block; margin-top: 6px; color: var(--muted); }
+ .editor-form label, .log-filters label { display: flex; flex-direction: column; min-width: 0; gap: 7px; color: var(--muted); font-size: 12px; }
+ .editor-form input, .editor-form select, .log-filters input, .log-filters select { min-width: 0; width: 100%; padding: 9px 10px; min-height: 39px; border: 1px solid var(--border); border-radius: 4px; background: var(--panel); color: var(--text); }
+ .form-columns { display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: 16px; }
+@@ -686,7 +691,8 @@ input::placeholder, textarea::placeholder { color: var(--dim); opacity: 1; }
+ .upstream-model-list { max-height: 340px; overflow-y: auto; border: 1px solid var(--border); border-radius: 4px; }
+ .upstream-model-list table { width: 100%; min-width: 0; table-layout: fixed; }
+ .upstream-model-list th:first-child { width: 56px; }
+-.upstream-model-list th:last-child { width: 90px; }
++.upstream-model-list th:last-child { width: 132px; }
++.upstream-model-list th:last-child, .upstream-model-list td:last-child { white-space: normal; overflow-wrap: anywhere; }
+ .upstream-model-list th { position: sticky; top: 0; background: var(--panel); z-index: 1; }
+ .upstream-model-list input { width: 16px; height: 16px; accent-color: var(--accent); }
+ .upstream-model-list .upstream-selected { background: var(--hover); }
+@@ -701,7 +707,7 @@ input::placeholder, textarea::placeholder { color: var(--dim); opacity: 1; }
+   .upstream-selection { flex-wrap: wrap; }
+   .upstream-model-list { max-height: 280px; }
+   .upstream-model-list th:first-child { width: 44px; }
+-  .upstream-model-list th:last-child { width: 76px; }
++  .upstream-model-list th:last-child { width: 104px; }
+   .upstream-model-list th, .upstream-model-list td { padding: 10px 6px; }
+   .upstream-selected-count { flex-basis: 100%; }
+ }
+diff --git a/tests/account-models-browser.mjs b/tests/account-models-browser.mjs
+new file mode 100644
+index 0000000..f8bd71e
+--- /dev/null
++++ b/tests/account-models-browser.mjs
+@@ -0,0 +1,110 @@
++import assert from 'node:assert/strict';
++import { mkdir } from 'node:fs/promises';
++import { chromium } from 'playwright';
++
++const base = process.env.PREVIEW_URL || 'http://127.0.0.1:4331';
++const provider = 'openai-compatible-chat-scopes';
++const connections = [
++  { id: 'dp', provider, name: 'DP', authType: 'apikey', isActive: true, providerSpecificData: { enabledModels: ['old-dp'], proxyPoolId: 'keep-proxy' } },
++  { id: 'default', provider, name: 'Default', authType: 'apikey', isActive: true, providerSpecificData: { enabledModels: ['old-gpt'] } },
++  { id: 'disabled', provider, name: 'Disabled', authType: 'apikey', isActive: false },
++];
++const listings = { dp: ['deepseek'], default: ['gpt'] };
++const saved = [{ providerAlias: provider, id: 'deepseek', name: 'deepseek', enabled: true, type: 'llm' }];
++const writes = [];
++const errors = [];
++const browser = await chromium.launch({ channel: 'msedge', headless: true });
++try {
++  const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
++  assert.equal((await context.request.post(base + '/api/auth/login', { data: { password: 'linear-demo' } })).status(), 200);
++  const page = await context.newPage();
++  page.setDefaultTimeout(15000);
++  page.on('pageerror', error => errors.push(error.message));
++  await page.route('**/api/providers', route => route.fulfill({ json: { connections } }));
++  await page.route('**/api/provider-nodes', route => route.fulfill({ json: { nodes: [{ id: provider, name: 'Scope supplier', prefix: 'scopes', type: 'openai-compatible' }] } }));
++  await page.route('**/api/providers/*', async route => {
++    const id = new URL(route.request().url()).pathname.split('/').pop();
++    const connection = connections.find(item => item.id === id);
++    assert(connection);
++    if (route.request().method() === 'PUT') {
++      const body = route.request().postDataJSON();
++      writes.push({ id, body });
++      connection.providerSpecificData = { ...connection.providerSpecificData, ...body.providerSpecificData };
++      if (body.name) connection.name = body.name;
++    }
++    return route.fulfill({ json: { connection } });
++  });
++  await page.route('**/api/providers/*/models', route => {
++    const id = new URL(route.request().url()).pathname.split('/').at(-2);
++    return route.fulfill({ json: { models: listings[id] || [] } });
++  });
++  await page.route('**/api/models', route => route.fulfill({ json: { models: [] } }));
++  await page.route('**/api/models/custom', route => {
++    if (route.request().method() === 'POST') saved.push(route.request().postDataJSON());
++    return route.fulfill({ json: { models: saved } });
++  });
++  await page.route('**/api/models/distribution', route => {
++    assert.equal(route.request().method(), 'GET', '账号范围操作不得修改下游发布');
++    return route.fulfill({ json: { mode: 'allowlist', models: ['scopes/gpt'], catalog: [...saved.map(model => ({ id: `scopes/${model.id}` })), { id: 'scopes/gpt' }] } });
++  });
++  await page.goto(base + '/dashboard/providers/' + provider);
++  await page.getByLabel('仅显示正常连接').uncheck();
++  for (const name of ['DP', 'Default', 'Disabled']) await page.getByLabel(`选择账号 ${name}`, { exact: true }).check();
++  await page.getByRole('button', { name: '同步模型范围', exact: true }).click();
++  await page.getByText('模型范围同步结果：成功 2，失败 0，跳过 1', { exact: true }).waitFor();
++  assert.deepEqual(writes.map(write => [write.id, write.body.providerSpecificData.enabledModels]), [['dp', ['deepseek']], ['default', ['gpt']]]);
++  assert.equal(connections[0].providerSpecificData.proxyPoolId, 'keep-proxy');
++  await page.reload();
++  await page.getByRole('button', { name: '编辑 DP', exact: true }).click();
++  const dialog = page.getByRole('dialog');
++  assert.equal(await dialog.getByRole('textbox', { name: '允许的上游模型', exact: true }).inputValue(), 'deepseek');
++  listings.dp = [];
++  const beforeEmpty = writes.length;
++  await dialog.getByRole('button', { name: '从此账号获取模型范围', exact: true }).click();
++  await dialog.getByText('上游返回空模型列表，已保留原模型范围', { exact: true }).waitFor();
++  assert.equal(await dialog.getByRole('textbox', { name: '允许的上游模型', exact: true }).inputValue(), 'deepseek');
++  assert.equal(writes.length, beforeEmpty);
++  await dialog.getByRole('textbox', { name: '允许的上游模型', exact: true }).fill('deepseek\ncommon\ndeepseek');
++  await dialog.getByRole('button', { name: '保存连接', exact: true }).click();
++  await dialog.waitFor({ state: 'hidden' });
++  assert.deepEqual(connections[0].providerSpecificData.enabledModels, ['deepseek', 'common']);
++  await page.getByRole('button', { name: '编辑 DP', exact: true }).click();
++  await dialog.getByRole('combobox', { name: '账号模型范围', exact: true }).selectOption('all');
++  await dialog.getByRole('button', { name: '保存连接', exact: true }).click();
++  await dialog.waitFor({ state: 'hidden' });
++  assert.equal(connections[0].providerSpecificData.enabledModels, null);
++  await page.getByRole('button', { name: '编辑 DP', exact: true }).click();
++  await dialog.getByRole('combobox', { name: '账号模型范围', exact: true }).selectOption('restricted');
++  await dialog.getByRole('textbox', { name: '允许的上游模型', exact: true }).fill('deepseek');
++  await dialog.getByLabel('替换 API Key', { exact: true }).fill('not-a-real-key');
++  assert(await dialog.getByRole('button', { name: '从此账号获取模型范围', exact: true }).isDisabled());
++  await dialog.getByLabel('替换 API Key', { exact: true }).fill('');
++  await mkdir('reports/account-models', { recursive: true });
++  for (const width of [1440, 375, 320]) {
++    await page.setViewportSize({ width, height: 1000 });
++    for (const theme of ['light', 'dark']) {
++      await page.evaluate(theme => { document.documentElement.dataset.theme = theme; }, theme);
++      assert(await dialog.evaluate(element => element.scrollWidth <= element.clientWidth), `编辑弹窗溢出：${width}/${theme}`);
++      await page.screenshot({ path: `reports/account-models/editor-${width}-${theme}.png` });
++    }
++  }
++  await dialog.getByRole('button', { name: '取消', exact: true }).click();
++  await page.setViewportSize({ width: 1440, height: 1000 });
++  listings.dp = ['deepseek', 'common'];
++  await page.getByRole('button', { name: '获取上游模型', exact: true }).click();
++  await dialog.getByRole('combobox', { name: '查询账号', exact: true }).selectOption('dp');
++  await dialog.getByRole('button', { name: '获取模型列表', exact: true }).click();
++  await dialog.getByLabel('导入 common', { exact: true }).check();
++  await dialog.getByRole('button', { name: '导入所选模型（1）', exact: true }).click();
++  await dialog.getByText('已导入 1 个模型，请在「下游分发」确认发布范围。', { exact: true }).waitFor();
++  assert.deepEqual(connections[0].providerSpecificData.enabledModels, ['deepseek', 'common'], '导入一个模型也应保存完整账号范围');
++  assert(saved.some(model => model.id === 'common'));
++  assert.equal(await dialog.getByText('下游：未发布', { exact: true }).count(), 2);
++  await dialog.getByRole('combobox', { name: '查询账号', exact: true }).selectOption('default');
++  await dialog.getByRole('button', { name: '获取模型列表', exact: true }).click();
++  await dialog.getByRole('button', { name: '同步此账号模型范围', exact: true }).click();
++  await dialog.getByText('已同步 Default 的 1 个模型；下游发布范围保持原设置。', { exact: true }).waitFor();
++  assert.deepEqual(connections[1].providerSpecificData.enabledModels, ['gpt']);
++  assert.deepEqual(errors, []);
++  console.log(JSON.stringify({ passed: true, checks: ['逐key批量同步及跳过停用账号', '空列表不写入且保留草稿', '手动范围保存与解除', '替换key禁止查询旧key', '导入时保存完整账号范围', '登记与发布状态分开', '桌面手机深浅主题无溢出', '无未捕获异常'], writes: writes.length }));
++} finally { await browser.close(); }
+diff --git a/tests/account-models-live-browser.mjs b/tests/account-models-live-browser.mjs
+new file mode 100644
+index 0000000..3045806
+--- /dev/null
++++ b/tests/account-models-live-browser.mjs
+@@ -0,0 +1,104 @@
++import assert from 'node:assert/strict';
++import { readFile, mkdir, writeFile } from 'node:fs/promises';
++import { parseEnv } from 'node:util';
++import { resolve } from 'node:path';
++import { chromium } from 'playwright';
++
++const base = process.env.PREVIEW_URL || 'http://127.0.0.1:4332';
++const browser = await chromium.launch({ channel: 'msedge', headless: true, args: ['--no-proxy-server'] });
++const report = { base, mode: '真实读取，配置写入由浏览器拦截', http: [], writes: [], errors: [] };
++try {
++  const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
++  const read = async path => {
++    const response = await context.request.get(base + path);
++    report.http.push({ path, status: response.status() });
++    assert.equal(response.status(), 200, path);
++    return response.json();
++  };
++  assert.equal((await read('/api/health')).driver, 'better-sqlite3');
++  assert.notEqual((await read('/api/auth/status')).demo, true);
++  const loginPath = process.env.TENROUTER_TEST_LOGIN_ENV || resolve(process.env.USERPROFILE, '.codex/credentials/10router-web.env');
++  const env = parseEnv(await readFile(loginPath, 'utf8'));
++  const login = await context.request.post(base + '/api/auth/login', { data: { password: env.TENROUTER_TEST_PASSWORD.trim() } });
++  report.http.push({ path: '/api/auth/login', status: login.status() });
++  assert.equal(login.status(), 200);
++  const nodes = (await read('/api/provider-nodes')).nodes;
++  const node = nodes.find(node => node.prefix === 'aiapi');
++  assert(node, 'aiapi 节点存在');
++  const connections = (await read('/api/providers')).connections;
++  const dp = connections.find(connection => connection.provider === node.id && connection.name === 'DP');
++  const normal = connections.find(connection => connection.provider === node.id && connection.name === 'aiapi-Default');
++  assert(dp && normal, '真实账号存在');
++  const initialDistribution = await read('/api/models/distribution');
++  const shadow = new Map();
++  const page = await context.newPage();
++  page.setDefaultTimeout(25000);
++  page.on('pageerror', error => report.errors.push(error.message));
++  page.on('response', response => {
++    const path = new URL(response.url()).pathname;
++    if (/^\/api\/providers\/[^/]+\/models$/.test(path)) report.http.push({ path, status: response.status() });
++  });
++  await page.route('**/api/**', async route => {
++    const request = route.request();
++    const path = new URL(request.url()).pathname;
++    if (['GET', 'HEAD'].includes(request.method())) {
++      if (path === '/api/providers' && shadow.size) {
++        const response = await route.fetch();
++        const data = await response.json();
++        data.connections = data.connections.map(connection => shadow.get(connection.id) || connection);
++        return route.fulfill({ response, json: data });
++      }
++      return route.continue();
++    }
++    if (request.method() === 'PUT' && /^\/api\/providers\/[^/]+$/.test(path)) {
++      const id = path.split('/').pop();
++      const original = shadow.get(id) || connections.find(connection => connection.id === id);
++      assert(original);
++      const body = request.postDataJSON();
++      assert.deepEqual(Object.keys(body), ['providerSpecificData']);
++      assert.deepEqual(Object.keys(body.providerSpecificData), ['enabledModels']);
++      report.writes.push({ account: original.name, path, enabledModels: body.providerSpecificData.enabledModels, intercepted: true });
++      const connection = { ...original, providerSpecificData: { ...original.providerSpecificData, ...body.providerSpecificData } };
++      shadow.set(id, connection);
++      return route.fulfill({ json: { connection } });
++    }
++    report.errors.push(`意外写入已拦截：${request.method()} ${path}`);
++    return route.abort();
++  });
++  const entry = await page.goto(base + '/dashboard/providers/' + node.id);
++  assert.equal(entry.status(), 200);
++  await page.getByLabel('仅显示正常连接', { exact: true }).uncheck();
++  await page.getByRole('button', { name: '编辑 DP', exact: true }).click();
++  const dialog = page.getByRole('dialog');
++  await dialog.getByRole('button', { name: '从此账号获取模型范围', exact: true }).click();
++  await dialog.getByText(/已获取 \d+ 个模型，保存连接后生效/).waitFor();
++  assert.equal(await dialog.getByRole('textbox', { name: '允许的上游模型', exact: true }).inputValue(), 'deepseek-v4.1-flash');
++  assert.equal(report.writes.length, 0, '获取只修改草稿');
++  await dialog.getByRole('button', { name: '取消', exact: true }).click();
++  for (const name of ['DP', 'aiapi-Default']) await page.getByLabel(`选择账号 ${name}`, { exact: true }).check();
++  await page.getByRole('button', { name: '同步模型范围', exact: true }).click();
++  await page.getByText('模型范围同步结果：成功 2，失败 0，跳过 0', { exact: true }).waitFor();
++  assert.equal(report.writes.length, 2);
++  const dpWrite = report.writes.find(write => write.account === 'DP');
++  const normalWrite = report.writes.find(write => write.account === 'aiapi-Default');
++  assert.deepEqual(dpWrite.enabledModels, ['deepseek-v4.1-flash']);
++  assert.equal(normalWrite.enabledModels.length, 7);
++  assert(normalWrite.enabledModels.every(model => model.startsWith('gpt-')));
++  await page.getByRole('button', { name: '获取上游模型', exact: true }).click();
++  await dialog.getByRole('combobox', { name: '查询账号', exact: true }).selectOption(dp.id);
++  await dialog.getByRole('button', { name: '获取模型列表', exact: true }).click();
++  await dialog.getByText('下游：未发布', { exact: true }).waitFor();
++  await dialog.getByRole('button', { name: '同步此账号模型范围', exact: true }).click();
++  await dialog.getByText('已同步 DP 的 1 个模型；下游发布范围保持原设置。', { exact: true }).waitFor();
++  const current = (await read('/api/providers')).connections;
++  for (const original of [dp, normal]) assert.deepEqual(current.find(connection => connection.id === original.id).providerSpecificData?.enabledModels, original.providerSpecificData?.enabledModels, '生产账号配置保持原值');
++  const finalDistribution = await read('/api/models/distribution');
++  assert.deepEqual({ mode: finalDistribution.mode, models: finalDistribution.models }, { mode: initialDistribution.mode, models: initialDistribution.models }, '生产发布配置保持原值');
++  assert.deepEqual(report.errors, []);
++  assert(report.http.filter(item => item.path.endsWith('/models')).every(item => item.status === 200));
++  await mkdir('reports/account-models', { recursive: true });
++  await page.screenshot({ path: 'reports/account-models/real-data-import.png' });
++  report.passed = true;
++  await writeFile('reports/account-models/live-acceptance.json', JSON.stringify(report, null, 2));
++  console.log(JSON.stringify(report));
++} finally { await browser.close(); }
+diff --git a/tests/account-models.test.mjs b/tests/account-models.test.mjs
+new file mode 100644
+index 0000000..11fdb14
+--- /dev/null
++++ b/tests/account-models.test.mjs
+@@ -0,0 +1,73 @@
++import assert from 'node:assert/strict';
++import test from 'node:test';
++import { accountModelIds, supportsAccountModels, fetchAccountModels, saveAccountModels, syncAccountModels } from '../src/api/account-models.js';
++import { normalizeProviders } from '../src/api/client.js';
++
++const provider = 'openai-compatible-chat-aiapi';
++const dp = { id: 'dp', provider, isActive: true };
++
++test('账号模型范围只作用于支持筛选的兼容节点，列表保留范围而不暴露凭据', () => {
++  assert(supportsAccountModels(provider));
++  assert(supportsAccountModels('anthropic-compatible-test'));
++  assert(!supportsAccountModels('antigravity'));
++  const [connection] = normalizeProviders({ connections: [{ ...dp, apiKey: 'private', providerSpecificData: { enabledModels: ['deepseek'], secret: 'private' } }] });
++  assert.deepEqual(connection.enabledModels, ['deepseek']);
++  assert(!JSON.stringify(connection).includes('private'));
++  assert.equal(normalizeProviders({ connections: [dp] })[0].enabledModels, null);
++});
++
++test('按精确上游 ID 解析并去重，拒绝空列表、部分损坏和回退目录', () => {
++  assert.deepEqual(accountModelIds({ models: ['deepseek', { id: 'gpt' }, { model: 'deepseek' }, { name: 'claude' }] }), ['deepseek', 'gpt', 'claude']);
++  for (const result of [{ models: [] }, { models: {} }, { models: ['deepseek', {}] }, { models: ['deepseek'], warning: '静态目录回退' }]) {
++    assert.throws(() => accountModelIds(result));
++  }
++});
++
++test('同供应商两把 key 分别读取模型，仅更新对应账号范围', async () => {
++  const writes = [];
++  const progress = [];
++  const send = async (url, options) => {
++    if (options.method === 'PUT') { writes.push({ url, body: JSON.parse(options.body) }); return {}; }
++    return { models: url.includes('/dp/') ? ['deepseek'] : ['gpt'] };
++  };
++  const results = await syncAccountModels([dp, { ...dp, id: 'default' }], value => progress.push(value.length), send);
++  assert.deepEqual(results.map(result => [result.status, result.count]), [['success', 1], ['success', 1]]);
++  assert.deepEqual(writes, [
++    { url: '/api/providers/dp', body: { providerSpecificData: { enabledModels: ['deepseek'] } } },
++    { url: '/api/providers/default', body: { providerSpecificData: { enabledModels: ['gpt'] } } },
++  ]);
++  assert.deepEqual(progress, [1, 2]);
++});
++
++test('空列表、权限错误、超时和写入失败逐账号报告，不覆盖旧范围且继续处理其他账号', async () => {
++  const stored = new Map(['empty', 'error', 'timeout', 'write-error', 'good'].map(id => [id, ['old-model']]));
++  const writes = [];
++  const send = async (url, options) => {
++    const id = url.split('/')[3];
++    if (options.method === 'PUT') {
++      if (id === 'write-error') throw new Error('HTTP 503');
++      writes.push(id); stored.set(id, JSON.parse(options.body).providerSpecificData.enabledModels); return {};
++    }
++    if (id === 'empty') return { models: [] };
++    if (id === 'error') throw new Error('HTTP 403');
++    if (id === 'timeout') throw new DOMException('超时', 'TimeoutError');
++    return { models: ['new-model'] };
++  };
++  const results = await syncAccountModels([...stored.keys()].map(id => ({ ...dp, id })), () => {}, send);
++  assert.deepEqual(results.map(result => result.status), ['error', 'error', 'error', 'error', 'success']);
++  assert.deepEqual(writes, ['good']);
++  for (const id of ['empty', 'error', 'timeout', 'write-error']) assert.deepEqual(stored.get(id), ['old-model']);
++});
++
++test('跳过停用账号和内置供应商，手动解除范围使用 null 且禁止保存空白名单', async () => {
++  let calls = 0;
++  const skipped = await syncAccountModels([{ ...dp, isActive: false }, { ...dp, provider: 'codex' }], () => {}, async () => { calls++; });
++  assert.equal(calls, 0);
++  assert(skipped.every(result => result.status === 'skipped'));
++  await saveAccountModels(dp, null, async (url, options) => {
++    calls++; assert.deepEqual(JSON.parse(options.body), { providerSpecificData: { enabledModels: null } });
++  });
++  assert.equal(calls, 1);
++  await assert.rejects(saveAccountModels(dp, [], async () => { throw new Error('不得发起空范围写入'); }), /空模型/);
++  await assert.rejects(fetchAccountModels({ provider: 'codex' }, async () => { throw new Error('不得查询'); }), /不支持/);
++});
+diff --git a/tests/upstream-models-ui-browser.mjs b/tests/upstream-models-ui-browser.mjs
+index 175e540..512d23c 100644
+--- a/tests/upstream-models-ui-browser.mjs
++++ b/tests/upstream-models-ui-browser.mjs
+@@ -39,6 +39,7 @@ try {
+     saved.push(body);
+     return route.fulfill({ status: 201, json: { model: body } });
+   });
++  await page.route('**/api/providers/good', route => route.fulfill({ json: { connection: connections[1] } }));
+   let listing = items;
+   const fetched = [];
+   await page.route('**/api/providers/*/models', route => {
+@@ -101,7 +102,7 @@ try {
+   assert.equal(await dialog.getByLabel('导入 new-b', { exact: true }).isChecked(), true);
+   failImport = false;
+   await dialog.getByRole('button', { name: '导入所选模型（1）', exact: true }).click();
+-  await dialog.getByText('已导入 1 个模型，已向下游发布。', { exact: true }).waitFor();
++  await dialog.getByText('已导入 1 个模型，请在「下游分发」确认发布范围。', { exact: true }).waitFor();
+   assert.deepEqual(posted, ['new-a', 'new-b', 'new-b']);
+   await dialog.getByLabel('登记状态').selectOption('registered');
+   assert.equal(await dialog.locator('tbody tr').count(), 3);

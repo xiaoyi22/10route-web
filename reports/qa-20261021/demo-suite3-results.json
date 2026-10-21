@@ -1,0 +1,98 @@
+[
+  {
+    "name": "c-monitor-browser",
+    "file": "tests/monitor-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 45657,
+    "detail": "# c-monitor-browser @ 2026-10-21T03:32:24.835Z | PASS: detection navigation, history/details, filters, explicit single tests, error grading, persisted model/account/question configuration, failed saves, stale/failed reads, and four responsive widths."
+  },
+  {
+    "name": "c-fingerprint-browser",
+    "file": "tests/fingerprint-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 45954,
+    "detail": "# c-fingerprint-browser @ 2026-10-21T03:32:24.833Z | {\"ok\":true,\"model\":\"claude-sonnet\",\"top\":\"1\\tgpt-5.5\\tGPT\\t100.0%\",\"history\":\"claude-sonnet | Claude Code | \\t2026/10/21 11:32:46\\t | 参考库未收录 | 英文提问 · 3 次请求 | \\tgpt-5.5\\t成功 | 0.38 s | \\t | 重测\",\"requests\":3,\"detectorStatus\":200}"
+  },
+  {
+    "name": "c-monitor-summary-browser",
+    "file": "tests/monitor-summary-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 46417,
+    "detail": "# c-monitor-summary-browser @ 2026-10-21T03:32:24.835Z | PASS: monitor recent counts, anomaly recovery, filters, pagination, reload and light/dark/mobile"
+  },
+  {
+    "name": "c-model-testing-browser",
+    "file": "tests/model-testing-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 61733,
+    "detail": "# c-model-testing-browser @ 2026-10-21T03:32:24.835Z | PASS 保存无账号模型不触发测试；保存并测试使用供应商前缀及完整上游 ID，显示成功与耗时说明；无效模型、权限、限流、代理、超时及 HTTP 200 业务失败均显示失败并保留原因；支持重试；刷新清除本次结果；停用模型及保存失败不测试；手机无页面溢出；内置供应商别名保存后保留原路由；测试中禁止重复操作；挂起请求触发客户端超时并可重试"
+  },
+  {
+    "name": "c-provider-batch-browser",
+    "file": "tests/provider-batch-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 43647,
+    "detail": "批量测试跳过停用账号，200/valid=false 保留失败，重试只发送失败账号 | 批量代理池绑定包含停用账号；部分失败可重试，成功账号不重复写入，优先级和启用状态保持 | 批量连接专用代理及恢复继承全局规则持久化正确 | 账号层全选、半选、筛选范围、取消选择与取消代理窗口正确 | 两层批量工具栏及代理窗口通过深浅主题与四种屏宽检查 | PASS: isolated bulk provider operations; no uncaught browser errors"
+  },
+  {
+    "name": "c-egress-browser",
+    "file": "tests/egress-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 49639,
+    "detail": "# c-egress-browser @ 2026-10-21T03:33:12.057Z | PASS: automatic egress, session persistence, scoped invalidation, failed refresh, navigation races and visibility/TTL"
+  },
+  {
+    "name": "c-balances-browser",
+    "file": "tests/balances-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 53466,
+    "detail": "# c-balances-browser @ 2026-10-21T03:33:11.640Z | PASS: quota/wallet tabs, independent searches, keyboard, URL reload, no refresh on switching, SF font stack, wallet semantics and seven responsive widths in both themes."
+  },
+  {
+    "name": "c-log-effort-display-browser",
+    "file": "tests/log-effort-display-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 15094,
+    "detail": "# c-log-effort-display-browser @ 2026-10-21T03:33:55.758Z | PASS: only explicitly recorded reasoning effort is shown; missing fields stay unrecorded."
+  },
+  {
+    "name": "c-font-browser",
+    "file": "tests/font-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 50529,
+    "detail": "# c-font-browser @ 2026-10-21T03:33:27.382Z | PASS: same-origin bundled fonts, actual custom Chinese/Latin glyphs in both themes and readable model columns"
+  },
+  {
+    "name": "c-balances-auto-browser",
+    "file": "tests/balances-auto-browser.mjs",
+    "ok": false,
+    "code": 1,
+    "ms": 14493,
+    "detail": "    '    - accept-encoding: gzip,deflate,br'\r |   ],\r |   name: 'Error'\r | }\r | \r | Node.js v24.21.0"
+  },
+  {
+    "name": "c-monitor-select-theme-browser",
+    "file": "tests/monitor-select-theme-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 24078,
+    "detail": "# c-monitor-select-theme-browser @ 2026-10-21T03:34:02.551Z | PASS: dark/light option contrast, native control schemes, automatic/single IQ selects, repeated/system switches, persisted theme and no configuration writes or model requests."
+  },
+  {
+    "name": "c-account-models-browser",
+    "file": "tests/account-models-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 21111,
+    "detail": "# c-account-models-browser @ 2026-10-21T03:34:05.925Z | {\"passed\":true,\"checks\":[\"逐key批量同步及跳过停用账号\",\"空列表不写入且保留草稿\",\"手动范围保存与解除\",\"替换key禁止查询旧key\",\"导入时保存完整账号范围\",\"登记与发布状态分开\",\"桌面手机深浅主题无溢出\",\"无未捕获异常\"],\"writes\":6}"
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "name": "u-balances-auto-browser",
+    "file": "tests/balances-auto-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 7853,
+    "detail": "# u-balances-auto-browser @ 2026-10-21T03:36:43.081Z | PASS: 7 checks; default-on, persistence, manual refresh, one/five-minute intervals, hidden tab, route leave, no overlapping requests, both themes and four widths; no console errors."
+  },
+  {
+    "name": "u-provider-errors-browser",
+    "file": "tests/provider-errors-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 12443,
+    "detail": "# u-provider-errors-browser @ 2026-10-21T03:36:43.082Z | PASS provider error overview, account details, test failure, upstream 401 session preservation, disabled history, desktop/mobile and both themes; no uncaught exceptions."
+  },
+  {
+    "name": "u-windhub-log-browser",
+    "file": "tests/windhub-log-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 5977,
+    "detail": "# u-windhub-log-browser @ 2026-10-21T03:36:51.743Z | PASS: measured/estimated usage, genuine failures, safe metadata and CSV agree"
+  },
+  {
+    "name": "u-endpoint-tooltip-browser",
+    "file": "tests/endpoint-tooltip-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 6074,
+    "detail": "# u-endpoint-tooltip-browser @ 2026-10-21T03:36:56.341Z | PASS: endpoint hover/focus/touch card, actual values, unknown history, Escape, details, CSV, themes and viewport bounds"
+  }
+]

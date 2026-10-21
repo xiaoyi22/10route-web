@@ -1,0 +1,114 @@
+[
+  {
+    "name": "c2-live-model-credits",
+    "file": "tests/model-credits-live-browser.mjs",
+    "ok": false,
+    "code": 1,
+    "ms": 31413,
+    "detail": "  \"errors\": [], |   \"writes\": [], |   \"screenshots\": [], |   \"passed\": false, |   \"failure\": \"AssertionError [ERR_ASSERTION]: 真实 Qoder 模型目录缺失\\n    at file:///E:/10reoute-web/tests/model-credits-live-browser.mjs:55:3\\n    at runNextTicks (node:internal/process/task_queues:65:5)\\n    at process.processImmediate (node:internal/timers:541:9)\" | }"
+  },
+  {
+    "name": "c2-live-distribution",
+    "file": "tests/distribution-live-browser.mjs",
+    "ok": false,
+    "code": 1,
+    "ms": 32046,
+    "detail": "  expected: 'all',\r |   operator: 'strictEqual',\r |   diff: 'simple'\r | }\r | \r | Node.js v24.21.0"
+  },
+  {
+    "name": "c2-live-overview",
+    "file": "tests/overview-live-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 56311,
+    "detail": "# c2-live-overview @ 2026-10-21T03:32:58.753Z | PASS: 真实 SSE 在途事件、空闲连接保持与注释心跳兼容通过；真实网关登录、概览只显示网关业务数据通过；周期切换、请求/Token 趋势切换通过；真实 RPM、输入/输出及总 TPM 与五个完整分钟计数一致，周期切换不改变窗口；受控边界验证：零值、低吞吐小数、当前分钟排除、缺失数据和过期提示通过；已恢复真实数据；自动刷新暂停、隐藏页停止轮询和返回刷新通过；六种屏宽（含 1080P）、深浅主题无页面横向溢出；独立概览不污染原有用量统计页 | 验收记录：C:\\Users\\Administrator\\.codex\\tmp\\overview\\2026-10-21T03-32-59-542Z"
+  },
+  {
+    "name": "c2-live-provider-routing",
+    "file": "tests/provider-routing-live-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 25323,
+    "detail": "  \"errors\": [], |   \"driver\": \"better-sqlite3\", |   \"connections\": 34, |   \"oauthConnections\": 10, |   \"oauthProviders\": 4 | }"
+  },
+  {
+    "name": "c2-live-monitor-interval",
+    "file": "tests/monitor-interval-live-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 12572,
+    "detail": "# c2-live-monitor-interval @ 2026-10-21T03:33:55.494Z | PASS: real-data interval validation, four viewport widths, no configuration changes or page errors."
+  },
+  {
+    "name": "c2-live-monitor-summary",
+    "file": "tests/monitor-summary-live-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 21738,
+    "detail": "# c2-live-monitor-summary @ 2026-10-21T03:33:55.065Z | PASS live: real IQ counts match latest backend snapshots across refresh, navigation and reload, with no model tests or writes"
+  },
+  {
+    "name": "c2-live-provider-batch",
+    "file": "tests/provider-batch-live-browser.mjs",
+    "ok": false,
+    "code": 1,
+    "ms": 55812,
+    "detail": "    \"  - waiting for locator('.provider-batch-toolbar').getByText('已选 21 个供应商 · 34 个账号', { exact: true }) to be visible\"\r |   ],\r |   name: 'TimeoutError'\r | }\r | \r | Node.js v24.21.0"
+  },
+  {
+    "name": "c2-live-checkins",
+    "file": "tests/checkins-live-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 18846,
+    "detail": "# c2-live-checkins @ 2026-10-21T03:34:08.067Z | {\"result\":\"PASS\",\"mode\":\"real-gateway-readonly\",\"pageHttp\":200,\"snapshotHttp\":200,\"loginHttp\":200,\"configured\":true,\"accounts\":7,\"history\":376,\"latestJobStatus\":\"failed\",\"consoleErrors\":0,\"browserWrites\":0,\"realCheckinRequests\":0}"
+  },
+  {
+    "name": "c2-live-billing-mode",
+    "file": "tests/billing-mode-live-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 10520,
+    "detail": "# c2-live-billing-mode @ 2026-10-21T03:34:16.805Z | {\"base\":\"http://192.168.11.150:4317\",\"cases\":false,\"errors\":[],\"values\":[\"按量计费\",\"按量计费\",\"按量计费\",\"按量计费\",\"按量计费\",\"按量计费\",\"按量计费\",\"按量计费\",\"按量计费\",\"按量计费\",\"按量计费\",\"按量计费\",\"按量计费\",\"按量计费\",\"按量计费\",\"按量计费\",\"按量计费\",\"按量计费\",\"按量计费\",\"按量计费\"],\"passed\":true}"
+  },
+  {
+    "name": "c2-live-endpoint-tooltip",
+    "file": "tests/endpoint-tooltip-live-browser.mjs",
+    "ok": false,
+    "code": 1,
+    "ms": 15248,
+    "detail": "  expected: true,\r |   operator: '==',\r |   diff: 'simple'\r | }\r | \r | Node.js v24.21.0"
+  },
+  {
+    "name": "c2-live-egress",
+    "file": "tests/egress-live-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 15630,
+    "detail": "# c2-live-egress @ 2026-10-21T03:34:26.618Z | PASS live: real egress on 3 ports, navigation/reload persistence, no node or business changes"
+  },
+  {
+    "name": "c2-live-system",
+    "file": "tests/system-live-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 19091,
+    "detail": "# c2-live-system @ 2026-10-21T03:34:42.170Z | PASS: 独立系统页面、侧栏选中状态、真实 Linux 数据与登录保护通过；采集故障保留旧快照并标注过期，重试恢复通过；暂停、加载中暂停、隐藏页面停止采集及返回刷新通过；四种屏宽与深浅主题布局通过；概览移除系统信息、离页停止采集及导航/刷新独立页面通过 | 验收记录：C:\\Users\\Administrator\\.codex\\tmp\\system-info\\2026-10-21T03-34-42-810Z"
+  },
+  {
+    "name": "c2-live-media-visual",
+    "file": "tests/media-visual-live.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 19679,
+    "detail": "# c2-live-media-visual @ 2026-10-21T03:34:42.249Z | 真实配置：两页、四种屏宽、深浅主题，无页面横向溢出 | 验收记录：C:\\Users\\Administrator\\.codex\\tmp\\full-integration\\media-controls\\2026-10-21T03-34-44-954Z"
+  },
+  {
+    "name": "c2-live-refresh",
+    "file": "tests/refresh-live-browser.mjs",
+    "ok": true,
+    "code": 0,
+    "ms": 59658,
+    "detail": "{ |   kind: 'period-switch', |   oldPeriodHidden: true, |   realPeriodMatched: 'today' | } | 验收记录：C:\\Users\\Administrator\\.codex\\tmp\\full-integration\\refresh-stability\\2026-10-21T03-34-33-931Z"
+  }
+]

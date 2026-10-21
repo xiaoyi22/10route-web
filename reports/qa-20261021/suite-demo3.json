@@ -1,0 +1,20 @@
+{
+  "env": { "PREVIEW_URL": "http://127.0.0.1:4360", "HERMES_BROWSER_EXE": "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe" },
+  "output": "demo-suite3-results.json",
+  "concurrency": 4,
+  "portBase": 4370,
+  "tests": [
+    { "name": "c-fingerprint-browser", "file": "tests/fingerprint-browser.mjs", "previewUrl": "http://127.0.0.1:4370" },
+    { "name": "c-model-testing-browser", "file": "tests/model-testing-browser.mjs", "previewUrl": "http://127.0.0.1:4371" },
+    { "name": "c-monitor-browser", "file": "tests/monitor-browser.mjs", "previewUrl": "http://127.0.0.1:4372" },
+    { "name": "c-monitor-summary-browser", "file": "tests/monitor-summary-browser.mjs", "previewUrl": "http://127.0.0.1:4373" },
+    { "name": "c-provider-batch-browser", "file": "tests/provider-batch-browser.mjs", "previewUrl": "http://127.0.0.1:4370" },
+    { "name": "c-balances-browser", "file": "tests/balances-browser.mjs", "previewUrl": "http://127.0.0.1:4371" },
+    { "name": "c-egress-browser", "file": "tests/egress-browser.mjs", "previewUrl": "http://127.0.0.1:4372" },
+    { "name": "c-font-browser", "file": "tests/font-browser.mjs", "previewUrl": "http://127.0.0.1:4373" },
+    { "name": "c-log-effort-display-browser", "file": "tests/log-effort-display-browser.mjs", "previewUrl": "http://127.0.0.1:4370" },
+    { "name": "c-monitor-select-theme-browser", "file": "tests/monitor-select-theme-browser.mjs", "previewUrl": "http://127.0.0.1:4371" },
+    { "name": "c-account-models-browser", "file": "tests/account-models-browser.mjs", "previewUrl": "http://127.0.0.1:4372" },
+    { "name": "c-balances-auto-browser", "file": "tests/balances-auto-browser.mjs", "previewUrl": "http://127.0.0.1:4373" }
+  ]
+}

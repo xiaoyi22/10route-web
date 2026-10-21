@@ -1,0 +1,19 @@
+{
+  "base": "http://192.168.11.150:20128",
+  "publishedModelHttp": 200,
+  "requests": [
+    {
+      "model": "aiapi/gpt-6.1-sol",
+      "stream": false,
+      "account": "aiapi-Default",
+      "http": 200,
+      "elapsedMs": 3029,
+      "answer": "OK",
+      "completed": true,
+      "logId": "2026-10-21T02:02:29.693Z-lq0g96-gpt-6-1-sol",
+      "connectionId": "9a25a32f-eac7-462e-aec6-aac41af1a079",
+      "logStatus": "success"
+    }
+  ],
+  "passed": true
+}

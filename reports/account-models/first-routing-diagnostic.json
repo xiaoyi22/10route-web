@@ -1,0 +1,43 @@
+[
+  {
+    "id": "1792547941524-rd37fhx39",
+    "model": "gpt-6.1-sol",
+    "connectionId": "9a25a32f-eac7-462e-aec6-aac41af1a079",
+    "status": "streaming",
+    "timestamp": "2026-10-21T01:59:01.525Z",
+    "endpoint": "/v1/responses",
+    "upstreamEndpoint": "/v1/responses"
+  },
+  {
+    "id": "2026-10-21T01:58:45.361Z-718jzs-deepseek-v4-1-flash",
+    "model": "deepseek-v4.1-flash",
+    "connectionId": "b7157088-5acb-44eb-a0a3-e9d15af241c9",
+    "status": "error",
+    "timestamp": "2026-10-21T01:58:40.359Z",
+    "endpoint": "/v1/chat/completions",
+    "upstreamEndpoint": "/v1/responses",
+    "error": {
+      "status": 429,
+      "code": "server_busy",
+      "message": "当前请求较多，服务繁忙，请稍后重试。"
+    }
+  },
+  {
+    "id": "1792547912732-jx66orlos",
+    "model": "gpt-6.1-sol",
+    "connectionId": "9a25a32f-eac7-462e-aec6-aac41af1a079",
+    "status": "success",
+    "timestamp": "2026-10-21T01:58:33.413Z",
+    "endpoint": "/v1/responses",
+    "upstreamEndpoint": "/v1/responses"
+  },
+  {
+    "id": "1792547877788-lltbz7xid",
+    "model": "gpt-6.1-sol",
+    "connectionId": "9a25a32f-eac7-462e-aec6-aac41af1a079",
+    "status": "success",
+    "timestamp": "2026-10-21T01:58:27.681Z",
+    "endpoint": "/v1/responses",
+    "upstreamEndpoint": "/v1/responses"
+  }
+]

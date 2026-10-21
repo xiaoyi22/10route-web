@@ -1,0 +1,52 @@
+{
+  "status": "verified-with-upstream-limitations",
+  "frontend": "http://192.168.11.150:4317",
+  "release": "/home/meet/.local/share/10router-web/releases/20261021-095519",
+  "sourceCommit": "534239660e40f7432d8164d9583b7d9c9f79fa9a",
+  "checks": [
+    {
+      "account": "DP",
+      "protocol": "Chat stream",
+      "model": "aiapi/deepseek-v4.1-flash",
+      "http": 200,
+      "answer": "OK",
+      "connectionId": "b7157088-5acb-44eb-a0a3-e9d15af241c9",
+      "logId": "1792548414048-83cjw73re"
+    },
+    {
+      "account": "DP",
+      "protocol": "Responses JSON",
+      "model": "aiapi/deepseek-v4.1-flash",
+      "http": 200,
+      "answer": "OK",
+      "connectionId": "b7157088-5acb-44eb-a0a3-e9d15af241c9",
+      "logId": "2026-10-21T02:06:58.733Z-k716ty-deepseek-v4-1-flash"
+    },
+    {
+      "account": "DP",
+      "protocol": "Responses stream",
+      "model": "aiapi/deepseek-v4.1-flash",
+      "http": 200,
+      "answer": "OK",
+      "connectionId": "b7157088-5acb-44eb-a0a3-e9d15af241c9",
+      "logId": "1792548594456-vw1qhb8t7"
+    },
+    {
+      "account": "aiapi-Default",
+      "protocol": "Chat JSON",
+      "model": "aiapi/gpt-6.1-sol",
+      "http": 200,
+      "answer": "OK",
+      "connectionId": "9a25a32f-eac7-462e-aec6-aac41af1a079",
+      "logId": "2026-10-21T02:02:29.693Z-lq0g96-gpt-6-1-sol"
+    }
+  ],
+  "publishedCount": 40,
+  "limitations": [
+    "DeepSeek 上游多次返回 HTTP 429 server_busy；Chat 非流式两次未通过。表中所列模式已成功，失败记录保留，网关后端未改动。"
+  ],
+  "backup": {
+    "release": "/home/meet/backups/10router-web/20261021-095519",
+    "gateway": "C:/Users/Administrator/.codex/credentials/10router-backups/account-models.bak-2026-10-21T01-53-31-546Z.json"
+  }
+}

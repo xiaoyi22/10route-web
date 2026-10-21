@@ -1,0 +1,14 @@
+{
+  "output": "retest-20261021-results.json",
+  "concurrency": 3,
+  "portBase": 4400,
+  "tests": [
+    { "name": "r2-theme-browser", "file": "tests/theme-browser.mjs" },
+    { "name": "r2-usage-log-browser", "file": "tests/usage-log-browser.mjs" },
+    { "name": "r2-interaction-browser", "file": "tests/interaction-browser.mjs" },
+    { "name": "r2-ui-display-browser", "file": "tests/ui-display-browser.mjs" },
+    { "name": "r2-tps-browser", "file": "tests/tps-browser.mjs" },
+    { "name": "r2-balances-cards-browser", "file": "tests/balances-cards-browser.mjs", "timeout": 420000 },
+    { "name": "r2-provider-batch-browser", "file": "tests/provider-batch-browser.mjs" }
+  ]
+}

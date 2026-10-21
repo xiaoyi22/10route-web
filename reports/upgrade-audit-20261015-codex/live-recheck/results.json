@@ -1,6 +1,6 @@
 {
   "base": "http://192.168.11.150:4317",
-  "startedAt": "2026-10-15T01:41:08.619Z",
+  "startedAt": "2026-10-21T03:47:48.968Z",
   "api": [
     {
       "path": "/api/health",
@@ -46,17 +46,17 @@
     },
     {
       "path": "/api/models/distribution",
-      "status": 404,
-      "type": "text/html; charset=utf-8",
-      "json": false,
-      "passed": false
+      "status": 200,
+      "type": "application/json",
+      "json": true,
+      "passed": true
     },
     {
       "path": "/api/channel-balances",
-      "status": 404,
-      "type": "text/html; charset=utf-8",
-      "json": false,
-      "passed": false
+      "status": 200,
+      "type": "application/json",
+      "json": true,
+      "passed": true
     },
     {
       "path": "/api/iq-monitor",
@@ -156,8 +156,7 @@
     },
     {
       "route": "/dashboard/distribution",
-      "passed": false,
-      "error": "/api/models/distribution HTTP 404"
+      "passed": true
     },
     {
       "route": "/dashboard/proxy",
@@ -165,8 +164,7 @@
     },
     {
       "route": "/dashboard/balances",
-      "passed": false,
-      "error": "/api/channel-balances HTTP 404"
+      "passed": true
     },
     {
       "route": "/dashboard/checkins",
@@ -206,12 +204,24 @@
     },
     {
       "route": "/dashboard/translator",
-      "passed": false,
-      "error": "/api/models/distribution HTTP 404"
+      "passed": true
     }
   ],
-  "blockedWrites": [],
+  "blockedWrites": [
+    {
+      "method": "POST",
+      "path": "/api/hermes/egress-ip"
+    },
+    {
+      "method": "POST",
+      "path": "/api/hermes/egress-ip"
+    },
+    {
+      "method": "POST",
+      "path": "/api/hermes/egress-ip"
+    }
+  ],
   "errors": [],
-  "finishedAt": "2026-10-15T01:41:39.082Z",
-  "passed": false
+  "finishedAt": "2026-10-21T03:48:49.996Z",
+  "passed": true
 }

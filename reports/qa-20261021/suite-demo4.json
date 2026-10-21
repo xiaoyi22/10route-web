@@ -1,0 +1,12 @@
+{
+  "env": { "HERMES_BROWSER_EXE": "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe" },
+  "output": "demo-suite4-results.json",
+  "concurrency": 2,
+  "portBase": 4384,
+  "tests": [
+    { "name": "u-balances-auto-browser", "file": "tests/balances-auto-browser.mjs", "previewUrl": "http://127.0.0.1:4384" },
+    { "name": "u-provider-errors-browser", "file": "tests/provider-errors-browser.mjs", "previewUrl": "http://127.0.0.1:4385" },
+    { "name": "u-windhub-log-browser", "file": "tests/windhub-log-browser.mjs", "previewUrl": "http://127.0.0.1:4386" },
+    { "name": "u-endpoint-tooltip-browser", "file": "tests/endpoint-tooltip-browser.mjs", "previewUrl": "http://127.0.0.1:4387" }
+  ]
+}

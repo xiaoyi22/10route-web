@@ -1,0 +1,19 @@
+{
+  "env": { "PREVIEW_URL": "http://192.168.11.150:4317" },
+  "tests": [
+    { "name": "live-overview", "file": "tests/overview-live-browser.mjs", "selfStart": true },
+    { "name": "live-model-credits", "file": "tests/model-credits-live-browser.mjs", "selfStart": true },
+    { "name": "live-distribution", "file": "tests/distribution-live-browser.mjs", "selfStart": true },
+    { "name": "live-provider-routing", "file": "tests/provider-routing-live-browser.mjs", "selfStart": true },
+    { "name": "live-provider-batch", "file": "tests/provider-batch-live-browser.mjs", "selfStart": true },
+    { "name": "live-monitor-summary", "file": "tests/monitor-summary-live-browser.mjs", "selfStart": true },
+    { "name": "live-monitor-interval", "file": "tests/monitor-interval-live-browser.mjs", "selfStart": true },
+    { "name": "live-checkins", "file": "tests/checkins-live-browser.mjs", "selfStart": true },
+    { "name": "live-billing-mode", "file": "tests/billing-mode-live-browser.mjs", "selfStart": true },
+    { "name": "live-egress", "file": "tests/egress-live-browser.mjs", "selfStart": true },
+    { "name": "live-endpoint-tooltip", "file": "tests/endpoint-tooltip-live-browser.mjs", "selfStart": true },
+    { "name": "live-refresh", "file": "tests/refresh-live-browser.mjs", "selfStart": true },
+    { "name": "live-system", "file": "tests/system-live-browser.mjs", "selfStart": true },
+    { "name": "live-media-visual", "file": "tests/media-visual-live.mjs", "selfStart": true }
+  ]
+}

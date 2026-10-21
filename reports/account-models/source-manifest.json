@@ -1,0 +1,68 @@
+[
+  {
+    "file": "src/api/account-models.js",
+    "added": true,
+    "before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "after": "a4c4818b98f7a66321b5e1f5eb6f827b3088bcb9255b222cfc177e0d384f8f44"
+  },
+  {
+    "file": "src/api/client.js",
+    "added": false,
+    "before": "4113a258a7f2c94e4a9d340894919f26a04eb0ab43a55275f3eba7d7d113a89b",
+    "after": "dded71f9a9fe220dd721d3fdd102a073506187fa15da0cb0f302fe296c3aad6b"
+  },
+  {
+    "file": "src/components/UpstreamModels.jsx",
+    "added": false,
+    "before": "89f4552f91eac8e71d5a13fe9d5398e9ef59e690b5514768f2a1287729f22bbd",
+    "after": "7a050284cb83811347ea006b0ea7880023264d986ed696c1ec774bc13930229d"
+  },
+  {
+    "file": "src/pages/ProvidersPage.jsx",
+    "added": false,
+    "before": "f57f18ad616add34500dcb5649ce5cda15d5a0286233cc977cd047e861681518",
+    "after": "32f0b9aa51a1fddb25be00ab1590bbb4609b6cd193fccc01c4a0e0b841d90ff0"
+  },
+  {
+    "file": "src/pages/CorePages.jsx",
+    "added": false,
+    "before": "e5432781465ceee563704da4169cd06034fc4b5baab50a8a10f3b180eec8c72c",
+    "after": "3e66b98e4946b87dc451a337a05e96f3c268cd2f55aa25dd34fe628c0681fe20"
+  },
+  {
+    "file": "src/styles.css",
+    "added": false,
+    "before": "ec49d9fc7bc3713e678dc6d1407be114beb5c1fcf13157e3de90ed522afedc7f",
+    "after": "945ff507bb73ecb6a2b8b0b870009f7974d9096b0d87361cab938dbb4ccdb818"
+  },
+  {
+    "file": "scripts/fixture-server.mjs",
+    "added": false,
+    "before": "0c6ab4eb59366ddab4ef5f669dcdd739e6f81cafb375633b06fec299a77d5191",
+    "after": "332e5b7c5ee9862371f51ae7804c2cfaedf5095ced2fba4fb68eb977877ef64d"
+  },
+  {
+    "file": "tests/account-models.test.mjs",
+    "added": true,
+    "before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "after": "eac8555b77dceb60a72b71bbcd7accc31c8c18db21578f1263fa2cf014bc166c"
+  },
+  {
+    "file": "tests/account-models-browser.mjs",
+    "added": true,
+    "before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "after": "8c28fde3f6e145a8279530ba8ba9124a4af093d47a7e0764e0d7e28e43f8db61"
+  },
+  {
+    "file": "tests/account-models-live-browser.mjs",
+    "added": true,
+    "before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "after": "8e9ad4c7359cac6ea6b78bddfd21ec250529694717f0655985c40c0d2d479d02"
+  },
+  {
+    "file": "tests/upstream-models-ui-browser.mjs",
+    "added": false,
+    "before": "0df16077fe4e43a52c99b767852ce30f66ade61b42755b627a04c628f7ec1071",
+    "after": "a4198265c602a98665a0366a2936472eee620331f82f84c546fdf5a784ff93ae"
+  }
+]

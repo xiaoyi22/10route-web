@@ -1,0 +1,22 @@
+{
+  "env": { "PREVIEW_URL": "http://192.168.11.150:4317" },
+  "output": "live-suite2-results.json",
+  "concurrency": 3,
+  "portBase": 4390,
+  "tests": [
+    { "name": "c2-live-overview", "file": "tests/overview-live-browser.mjs", "selfStart": true },
+    { "name": "c2-live-model-credits", "file": "tests/model-credits-live-browser.mjs", "selfStart": true },
+    { "name": "c2-live-distribution", "file": "tests/distribution-live-browser.mjs", "selfStart": true },
+    { "name": "c2-live-provider-routing", "file": "tests/provider-routing-live-browser.mjs", "selfStart": true },
+    { "name": "c2-live-provider-batch", "file": "tests/provider-batch-live-browser.mjs", "selfStart": true },
+    { "name": "c2-live-monitor-summary", "file": "tests/monitor-summary-live-browser.mjs", "selfStart": true },
+    { "name": "c2-live-monitor-interval", "file": "tests/monitor-interval-live-browser.mjs", "selfStart": true },
+    { "name": "c2-live-checkins", "file": "tests/checkins-live-browser.mjs", "selfStart": true },
+    { "name": "c2-live-billing-mode", "file": "tests/billing-mode-live-browser.mjs", "selfStart": true },
+    { "name": "c2-live-egress", "file": "tests/egress-live-browser.mjs", "selfStart": true },
+    { "name": "c2-live-endpoint-tooltip", "file": "tests/endpoint-tooltip-live-browser.mjs", "selfStart": true },
+    { "name": "c2-live-refresh", "file": "tests/refresh-live-browser.mjs", "selfStart": true },
+    { "name": "c2-live-system", "file": "tests/system-live-browser.mjs", "selfStart": true },
+    { "name": "c2-live-media-visual", "file": "tests/media-visual-live.mjs", "selfStart": true }
+  ]
+}
