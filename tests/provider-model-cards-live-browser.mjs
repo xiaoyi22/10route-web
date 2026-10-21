@@ -49,7 +49,16 @@ try {
   const firstId = await cards.first().locator('.model-name code').innerText();
   for (const label of ['复制模型', '测试模型', '编辑模型', '停用模型']) assert.equal(await cards.first().getByRole('button', { name: `${label} ${firstId}`, exact: true }).count(), 1);
   await cards.first().getByRole('button', { name: `复制模型 ${firstId}`, exact: true }).click();
-  assert.equal(await page.evaluate(() => navigator.clipboard.readText()), firstId);
+  // http 内网入口是非安全上下文：clipboard API 不存在时，按钮应降级为选中文本并给出提示，而不是谎报“已复制”。
+  const clipboard = await page.evaluate(() => ({ available: !!navigator.clipboard?.readText, secure: isSecureContext }));
+  if (clipboard.available) assert.equal(await page.evaluate(() => navigator.clipboard.readText()), firstId);
+  else {
+    // 降级后按钮的可访问名称变为「已选中文本」，按提示文案等待即可。
+    await page.locator('.copy-control .copy-hint').first().waitFor();
+    const hint = await page.locator('.copy-control .copy-hint').first().innerText();
+    assert.equal(hint, '已选中，请按 Ctrl+C');
+    assert.equal(await page.locator('.copy-control .error-message').count(), 0);
+  }
   await cards.first().getByRole('button', { name: `编辑模型 ${firstId}`, exact: true }).click();
   await page.getByRole('dialog').waitFor();
   await page.getByRole('button', { name: '取消', exact: true }).click();
