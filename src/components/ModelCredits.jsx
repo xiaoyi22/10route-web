@@ -45,13 +45,28 @@ export function useModelCredits(connections, revision, provider = '') {
   return { now, qoder, qoderCn };
 }
 
-export default function ModelCredits({ model, pricing, unavailable }) {
+export function ModelCreditsSource({ provider, pricing }) {
+  if (!isQoder(provider)) return null;
+  const live = providerId(provider) === 'qoder' ? pricing.qoder : pricing.qoderCn;
+  if (!live) return null;
+  return <div className="model-credit-source" aria-label="积分参考信息">
+    <span>参考账号：<strong>{live.account}</strong></span>
+    <span>查询时间：{live.updatedAt ? `${new Date(live.updatedAt).toLocaleTimeString('zh-CN', { hour12: false, timeZone: 'Asia/Shanghai' })}（北京时间）` : '尚未成功'}</span>
+    <small>网关可能选择其他账号</small>
+  </div>;
+}
+
+export default function ModelCredits({ model, pricing, unavailable, showSource = true }) {
   const live = isQoder(model.provider) ? providerId(model.provider) === 'qoder' ? pricing.qoder : pricing.qoderCn : undefined;
   const status = modelCreditStatus(model, { now: Math.max(pricing.now, live?.updatedAt || 0), live, unavailable });
   if (!status) return null;
   return <div className="model-credit" aria-label={`模型积分 ${model.id}`}>
-    <span className={`badge${status.free ? ' model-credit-free' : ''}`}>{status.label}</span>
+    <div className="model-credit-current"><span className={`badge${status.free ? ' model-credit-free' : ''}`}>{status.label}</span>{status.schedule && <small>{status.schedule.timezone}</small>}</div>
+    {status.schedule && <dl className="model-credit-periods" aria-label="峰谷积分倍率">{status.schedule.periods.map(period => <div key={period.label} className={period.active ? 'current' : ''}>
+      <dt>{period.label}{period.active && <span>当前</span>}</dt>
+      <dd><strong>{period.rate === 0 ? '免费' : `${period.rate}×`}</strong><small>{period.start}–{period.end < period.start ? '次日 ' : ''}{period.end}</small></dd>
+    </div>)}</dl>}
     {status.detail && <small>{status.detail}</small>}
-    {status.source && <small>{status.source}；网关可能选择其他账号</small>}
+    {showSource && status.source && <small>{status.source}；网关可能选择其他账号</small>}
   </div>;
 }

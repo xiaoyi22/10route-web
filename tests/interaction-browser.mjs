@@ -74,8 +74,9 @@ try {
   await page.keyboard.press('ArrowLeft');
   assert.equal(await page.getByRole('radio', { name: '深色', exact: true }).isChecked(), true);
   await page.getByRole('button', { name: '清除日志筛选', exact: true }).click();
+  const failureResponse = page.waitForResponse(response => new URL(response.url()).pathname === '/api/usage/request-details' && new URL(response.url()).searchParams.get('status') === 'error');
   await page.getByRole('button', { name: '失败', exact: true }).click();
-  await page.waitForResponse(response => new URL(response.url()).pathname === '/api/usage/request-details' && new URL(response.url()).searchParams.get('status') === 'error');
+  await failureResponse;
   assert.equal(await page.getByLabel('状态', { exact: true }).inputValue(), 'error');
   const refreshResponse = page.waitForResponse(response => new URL(response.url()).pathname === '/api/usage/request-details' && new URL(response.url()).searchParams.get('status') === 'error');
   await page.getByRole('button', { name: '刷新', exact: true }).click();

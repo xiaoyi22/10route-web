@@ -7,7 +7,7 @@ import { resolve } from 'node:path';
 import { normalizeProviders } from '../src/api/client.js';
 import { groupProviders } from '../src/api/providers.js';
 
-const { chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT_MODULE || 'C:/Users/20449/AppData/Local/Temp/hermes-e2e/.venv/Lib/site-packages/playwright/driver/package');
+const { chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const base = process.env.PREVIEW_URL || 'http://127.0.0.1:4317';
 const browser = await chromium.launch({ channel: process.env.BROWSER_CHANNEL || 'msedge', headless: true, args: ['--no-proxy-server'] });
 const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
@@ -64,17 +64,16 @@ try {
   for (const provider of oauth) {
     stage = provider.id;
     console.log(`核对供应商 ${provider.id}`);
-    const providerResponse = page.waitForResponse(response => new URL(response.url()).pathname === '/api/providers');
-    const settingsResponse = page.waitForResponse(response => new URL(response.url()).pathname === '/api/settings');
     assert.equal((await page.goto(base + '/dashboard/providers/' + encodeURIComponent(provider.id), { waitUntil: 'domcontentloaded' })).status(), 200);
-    const accountResponse = await providerResponse;
-    const configResponse = await settingsResponse;
+    const form = page.getByRole('form', { name: '账号调度' });
+    await form.waitFor();
+    // 页面响应体可能在后续导航后失效（No resource with given identifier），改为直接用请求上下文只读读取。
+    const accountResponse = await page.request.get(base + '/api/providers');
+    const configResponse = await page.request.get(base + '/api/settings');
     assert.equal(accountResponse.status(), 200);
     assert.equal(configResponse.status(), 200);
     const actual = await configResponse.json();
     const connections = normalizeProviders(await accountResponse.json()).filter(connection => provider.connections.some(expected => expected.id === connection.id));
-    const form = page.getByRole('form', { name: '账号调度' });
-    await form.waitFor();
     assert.equal(await form.count(), 1);
     const override = actual.providerStrategies?.[provider.id] || {};
     const enabled = override.fallbackStrategy === 'round-robin';

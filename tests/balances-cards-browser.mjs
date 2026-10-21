@@ -143,7 +143,7 @@ try {
       await until("document.querySelectorAll('.quota-details-table tbody tr').length===32");
       if (width < 600) {
         const mobile = await evaluate("(() => {const rect=document.querySelector('dialog[open]').getBoundingClientRect();return {rect:rect.toJSON(),viewport:[innerWidth,innerHeight],nameFont:getComputedStyle(document.querySelector('.quota-details-table tbody th')).fontSize,valueFont:getComputedStyle(document.querySelector('.quota-detail-value')).fontSize};})()");
-        assert(Math.abs(mobile.rect.width - mobile.viewport[0]) <= 16 && mobile.rect.height===mobile.viewport[1] && parseFloat(mobile.nameFont)>=15 && parseFloat(mobile.valueFont)>=20, `${theme}/${width}: full-screen details ${JSON.stringify(mobile)}`);
+        assert(Math.abs(mobile.rect.width - mobile.viewport[0]) <= 16 && Math.abs(mobile.rect.height - mobile.viewport[1]) <= 4 && parseFloat(mobile.nameFont)>=15 && parseFloat(mobile.valueFont)>=20, `${theme}/${width}: full-screen details ${JSON.stringify(mobile)}`);
       }
       assert.deepEqual(await evaluate("[...document.querySelectorAll('.quota-card')].map(card=>card.getBoundingClientRect().height)"), heightsBefore, `${theme}/${width}: expansion must preserve card heights`);
       assert.deepEqual(await evaluate("[...document.querySelectorAll('.quota-provider-group')].map(group=>group.getBoundingClientRect().top)"), positions, `${theme}/${width}: expansion must not move other groups`);

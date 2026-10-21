@@ -34,9 +34,9 @@ try {
   const go = async path => {
     await page.goto(`${base}${path}`);
     await page.getByRole('button', { name: '刷新模型', exact: true }).waitFor();
-    await page.waitForFunction(() => [...document.querySelectorAll('button')].some(button => button.textContent.trim()==='刷新模型' && !button.disabled) && !document.querySelector('.model-name')?.closest('tbody').innerText.includes('正在加载模型'));
+    await page.waitForFunction(() => [...document.querySelectorAll('button')].some(button => button.textContent.trim()==='刷新模型' && !button.disabled));
   };
-  const search = async id => { await page.getByLabel('搜索模型', { exact: true }).fill(id); await page.waitForFunction(id => [...document.querySelectorAll('tbody .model-name code')].some(item=>item.textContent===id), id); };
+  const search = async id => { await page.getByLabel('搜索模型', { exact: true }).fill(id); await page.waitForFunction(id => [...document.querySelectorAll('tbody .model-name code, .provider-model-card .model-name code')].some(item=>item.textContent===id), id); };
   if (!live) {
     // Match the real API: disabled built-ins disappear from its catalog response.
     await page.route('**/api/models', async route => {
@@ -71,7 +71,8 @@ try {
     for (const path of ['/dashboard/models', '/dashboard/providers/codebuddy-cn']) {
       await go(path); await search(id);
       await page.getByRole('button', { name: `启用模型 ${id}`, exact: true }).waitFor();
-      assert((await page.getByRole('table', { name: '已登记的模型目录，不代表上游实时可用性' }).locator('tbody').innerText()).includes('已停用'));
+      const catalog = path === '/dashboard/models' ? page.getByRole('table', { name: '已登记的模型目录，不代表上游实时可用性' }).locator('tbody') : page.getByRole('list', { name: '供应商模型目录' });
+      assert((await catalog.innerText()).includes('已停用'));
       await page.reload(); await search(id);
     }
     for (const width of [1440, 375]) {

@@ -10,7 +10,7 @@ import RequestEndpoint from '../components/RequestEndpoint.jsx';
 import TokenDetails from '../components/TokenDetails.jsx';
 import RequestLatency, { RequestTime } from '../components/RequestLatency.jsx';
 import ModelWithMismatch from '../components/ModelWithMismatch.jsx';
-import ModelCredits, { useModelCredits } from '../components/ModelCredits.jsx';
+import ModelCredits, { ModelCreditsSource, useModelCredits } from '../components/ModelCredits.jsx';
 import { modelCatalog, requestTokens, requestSpeed, responseModeLabel, requestUsageSource, requestErrorLabel, isModelMismatch } from '../api/data.js';
 import ModelEditor from '../components/ModelEditor.jsx';
 import UpstreamModels from '../components/UpstreamModels.jsx';
@@ -117,7 +117,7 @@ export function EndpointPage() {
   </>;
 }
 
-export function ModelsPage({ providerId = '' }) {
+export function ModelsPage({ providerId = '', onConnectionsChanged }) {
   const builtIn = useResource('/api/models');
   const custom = useResource('/api/models/custom');
   const providers = useResource('/api/providers');
@@ -196,18 +196,35 @@ export function ModelsPage({ providerId = '' }) {
       {testResult && !testResult.running && <><p className="inline-note">耗时 {formatNumber(testResult.latencyMs)} ms · {formatDate(testResult.at)}{testResult.status ? ` · HTTP ${testResult.status}` : ''}</p>{testResult.note && <p className="inline-note">{testResult.note}</p>}{!testResult.ok && <ProviderError error={{ message: typeof testResult.error === 'string' ? testResult.error : JSON.stringify(testResult.error), status: testResult.status }}/>}</>}
       <div className="dialog-actions"><button className="button" disabled={testResult?.running} onClick={() => setTestModel(null)}>关闭</button><button className="button primary" disabled={testResult?.running} onClick={() => runModelTest(testModel)}>{testResult?.running ? '正在测试…' : '重新测试'}</button></div>
     </Modal>}
-    {upstream && <UpstreamModels supplier={providerInfo(providerId, nodes.data?.nodes)} connections={upstreamConnections} existing={scoped} onClose={() => setUpstream(false)} onSaved={refreshModels}/>}
+    {upstream && <UpstreamModels supplier={providerInfo(providerId, nodes.data?.nodes)} connections={upstreamConnections} existing={scoped} onClose={() => setUpstream(false)} onSaved={refreshModels} onScopeSaved={() => { providers.refresh(); onConnectionsChanged?.(); }}/>}
     {removingModel && <ConfirmDelete title="删除自定义模型" name={removingModel.id} url={`/api/models/custom?${new URLSearchParams({ providerAlias: removingModel.provider, id: removingModel.upstreamId, type: removingModel.type || 'llm' })}`} onClose={() => setRemovingModel(null)} onDeleted={refreshModels}/>}
     <div className="section-toolbar">
       {!providerId && <div className="period-tabs" aria-label="模型范围">{[['connected', '已接入供应商'], ['all', '全部目录']].map(([value, name]) => <button key={value} type="button" aria-pressed={scope === value} className={scope === value ? 'selected' : ''} onClick={() => { setScope(value); setProvider(''); setPage(1); }}>{name}</button>)}</div>}
       <span className="muted">{initialLoading ? '正在读取…' : `${scoped.length} 个模型 · ${new Set(scoped.map(model => model.supplier.id)).size} 个供应商`}</span>
     </div>
-    <section className="panel"><div className="table-toolbar"><div className="filter-search"><Icon name="search"/><input aria-label="搜索模型" value={query} placeholder="搜索模型、供应商或路由 ID…" onChange={event => { setQuery(event.target.value); setPage(1); }}/></div><select className="filter-select" aria-label="模型供应商" value={provider} onChange={event => { setProvider(event.target.value); setPage(1); }}><option value="">所有供应商</option>{[...new Map(scoped.map(model => [model.supplier.id, model.supplier.name])).entries()].sort((a, b) => a[1].localeCompare(b[1])).map(([id, name]) => <option key={id} value={id}>{name}</option>)}</select></div>
+    <section className={providerId ? 'panel provider-model-catalog' : 'panel'}><div className="table-toolbar"><div className="filter-search"><Icon name="search"/><input aria-label="搜索模型" value={query} placeholder="搜索模型、供应商或路由 ID…" onChange={event => { setQuery(event.target.value); setPage(1); }}/></div>{!providerId && <select className="filter-select" aria-label="模型供应商" value={provider} onChange={event => { setProvider(event.target.value); setPage(1); }}><option value="">所有供应商</option>{[...new Map(scoped.map(model => [model.supplier.id, model.supplier.name])).entries()].sort((a, b) => a[1].localeCompare(b[1])).map(([id, name]) => <option key={id} value={id}>{name}</option>)}</select>}</div>
+      {providerId && <ModelCreditsSource provider={providerId} pricing={creditPricing}/>}
       {builtIn.error && <ErrorBlock message={`内置模型：${builtIn.error}`} onRetry={builtIn.refresh}/>}
       {custom.error && <ErrorBlock message={`自定义模型：${custom.error}`} onRetry={custom.refresh}/>}
       {providers.error && <ErrorBlock message={`连接列表：${providers.error}`} onRetry={providers.refresh}/>}
       {nodes.error && <ErrorBlock message={`自定义节点：${nodes.error}`} onRetry={nodes.refresh}/>}
+      {providerId ? <>
+        <p className="sr-only">已登记的模型目录，不代表上游实时可用性</p>
+        {initialLoading ? <p className="table-empty" role="status">正在加载模型…</p> : filtered.length ? <ul className="provider-model-grid" aria-label="供应商模型目录">{filtered.slice((currentPage - 1) * 20, currentPage * 20).map(model => <li className="provider-model-card" key={model.id}>
+          <div className="provider-model-card-heading">
+            <div className="model-name"><strong>{model.name}</strong><code>{model.id}</code></div>
+            <div className="row-actions"><CopyButton value={model.id} label={`复制模型 ${model.id}`}/>{managementEnabled && <><button type="button" className="button" aria-label={`测试模型 ${model.id}`} title={!model.enabled ? '请先启用模型' : !model.connected ? '请先启用供应商账号' : (model.type || 'llm') !== 'llm' ? '当前仅支持文本模型测试' : '发送一次真实模型调用'} disabled={loading || !!testResult?.running || !model.enabled || !model.connected || (model.type || 'llm') !== 'llm'} onClick={() => runModelTest(model)}>测试</button><IconButton icon="edit" label={`编辑模型 ${model.id}`} onClick={() => setEditor(model)}/><IconButton icon={model.enabled ? "hide" : "eye"} label={`${model.enabled ? "停用" : "启用"}模型 ${model.id}`} disabled={!!busyModel} onClick={() => toggleModel(model)}/>{model.custom && <IconButton icon="trash" label={`删除模型 ${model.id}`} onClick={() => setRemovingModel(model)}/>}</>}</div>
+          </div>
+          <ModelCredits model={model} pricing={creditPricing} unavailable={!!builtIn.error} showSource={false}/>
+          <div className="provider-model-card-meta">
+            <div className="capabilities">{model.caps.vision && <span className="badge">视觉</span>}{model.caps.reasoning && <span className="badge">推理</span>}{model.caps.search && <span className="badge">搜索</span>}</div>
+            <div className="provider-model-card-context"><span>上下文</span><span className="mono">{model.caps.contextWindow ? `${formatNumber(model.caps.contextWindow)} Token` : '未提供'}</span></div>
+          </div>
+          <div className="provider-model-card-status"><span>状态 <Status value={!model.enabled ? 'disabled' : model.connected ? 'healthy' : 'unknown'} label={!model.enabled ? '已停用' : model.connected ? '已接入' : '未接入'}/></span><span>本次测试 <Status value={modelTests[model.id]?.running ? 'unknown' : modelTests[model.id] ? modelTests[model.id].ok ? 'healthy' : 'error' : 'unknown'} label={modelTests[model.id]?.running ? '测试中…' : modelTests[model.id] ? modelTests[model.id].ok ? '调用成功' : '调用失败' : '未测试'}/></span></div>
+        </li>)}</ul> : <p className="table-empty" role="status">{failed ? '模型数据未完整加载' : '没有匹配的模型'}</p>}
+      </> : (
       <div className="table-shell"><table><caption className="sr-only">已登记的模型目录，不代表上游实时可用性</caption><thead><tr><th>模型 / 路由 ID</th><th>供应商</th><th>能力</th><th>上下文</th><th>状态 / 本次测试</th><th>操作</th></tr></thead><tbody>{initialLoading ? <tr><td colSpan="6" className="table-empty">正在加载模型…</td></tr> : filtered.length ? filtered.slice((currentPage - 1) * 20, currentPage * 20).map(model => <tr key={model.id}><td><div className="model-name"><strong>{model.name}</strong><code>{model.id}</code></div><ModelCredits model={model} pricing={creditPricing} unavailable={!!builtIn.error}/></td><td><div className="provider-link"><ProviderIcon provider={model.supplier.id}/><div>{model.hasConnections ? <Link to={`/dashboard/providers/${encodeURIComponent(model.supplier.id)}`}><strong>{model.supplier.name}</strong></Link> : <strong>{model.supplier.name}</strong>}<small>{model.supplier.custom ? '自定义节点' : '内置供应商'} · {model.supplier.prefix || model.provider}</small></div></div></td><td><div className="capabilities">{model.caps.vision && <span className="badge">视觉</span>}{model.caps.reasoning && <span className="badge">推理</span>}{model.caps.search && <span className="badge">搜索</span>}{!model.caps.vision && !model.caps.reasoning && !model.caps.search && <span className="muted">—</span>}</div></td><td className="mono muted">{formatNumber(model.caps.contextWindow)}</td><td><Status value={!model.enabled ? 'disabled' : model.connected ? 'healthy' : 'unknown'} label={!model.enabled ? '已停用' : model.connected ? '已接入' : '未接入'}/><div className="model-test-status"><Status value={modelTests[model.id]?.running ? 'unknown' : modelTests[model.id] ? modelTests[model.id].ok ? 'healthy' : 'error' : 'unknown'} label={modelTests[model.id]?.running ? '测试中…' : modelTests[model.id] ? modelTests[model.id].ok ? '调用成功' : '调用失败' : '未测试'}/></div></td><td><div className="row-actions"><CopyButton value={model.id} label={`复制模型 ${model.id}`}/>{managementEnabled && <><button type="button" className="button" aria-label={`测试模型 ${model.id}`} title={!model.enabled ? '请先启用模型' : !model.connected ? '请先启用供应商账号' : (model.type || 'llm') !== 'llm' ? '当前仅支持文本模型测试' : '发送一次真实模型调用'} disabled={loading || !!testResult?.running || !model.enabled || !model.connected || (model.type || 'llm') !== 'llm'} onClick={() => runModelTest(model)}>测试</button><IconButton icon="edit" label={`编辑模型 ${model.id}`} onClick={() => setEditor(model)}/><IconButton icon={model.enabled ? "hide" : "eye"} label={`${model.enabled ? "停用" : "启用"}模型 ${model.id}`} disabled={!!busyModel} onClick={() => toggleModel(model)}/>{model.custom && <IconButton icon="trash" label={`删除模型 ${model.id}`} onClick={() => setRemovingModel(model)}/>}</>}</div></td></tr>) : <tr><td colSpan="6" className="table-empty">{failed ? '模型数据未完整加载' : scope === 'connected' && !scoped.length ? '暂无已接入的模型' : '没有匹配的模型'}</td></tr>}</tbody></table></div>
+      )}
       <div className="table-footer"><span>{filtered.length} 个模型</span><div className="pagination"><IconButton icon="back" label="上一页模型" disabled={currentPage <= 1} onClick={() => setPage(currentPage - 1)}/><span>{currentPage} / {pages}</span><IconButton icon="arrow" label="下一页模型" disabled={currentPage >= pages} onClick={() => setPage(currentPage + 1)}/></div></div>
     </section>
   </>;

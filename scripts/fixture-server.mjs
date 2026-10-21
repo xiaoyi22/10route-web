@@ -264,6 +264,7 @@ export async function startFixtureServer() {
       if (method === 'GET') return send(200, { connection });
       if (method === 'DELETE') { providers.splice(index, 1); return send(200, { message: 'Connection deleted successfully' }); }
       for (const field of ['name', 'priority', 'defaultModel', 'isActive']) if (body[field] !== undefined) connection[field] = body[field];
+      if (body.providerSpecificData) connection.providerSpecificData = { ...connection.providerSpecificData, ...body.providerSpecificData };
       for (const field of ['proxyPoolId', 'connectionProxyEnabled', 'connectionProxyUrl', 'connectionNoProxy']) if (body[field] !== undefined) connection.providerSpecificData = { ...connection.providerSpecificData, [field]: body[field] };
       if (body.apiKey) { connection.testStatus = 'active'; delete connection.lastError; }
       return send(200, { connection });

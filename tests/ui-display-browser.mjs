@@ -54,7 +54,7 @@ try {
       assert.equal(await page.evaluate(() => document.characterSet), 'UTF-8');
       assert(!(await dialog.innerText()).includes('�'), 'Search contains replacement characters');
       assert.equal(await page.getByLabel('搜索页面').getAttribute('placeholder'), '搜索页面…');
-      assert.equal(await dialog.locator('.search-results a').count(), 19);
+      assert.equal(await dialog.locator('.search-results a').count(), 20);
       await page.waitForFunction(() => document.activeElement === document.querySelector('.search-input input'));
       assert.equal(await page.getByLabel('搜索页面').evaluate(element => element === document.activeElement), true);
       const bounds = await dialog.boundingBox();

@@ -5,7 +5,7 @@ import { providerInfo } from '../api/providers.js';
 import { ErrorBlock, IconButton, Modal, PageHeading, managementEnabled, useResource } from '../components/Controls.jsx';
 
 const fields = [['input', '输入'], ['output', '输出'], ['cached', '缓存读取'], ['cache_creation', '缓存写入'], ['reasoning', '推理']];
-const price = value => typeof value === 'number' && Number.isFinite(value) ? new Intl.NumberFormat('en-US', { maximumFractionDigits: 8 }).format(value) : '—';
+const priceCell = (value, label) => typeof value === 'number' && Number.isFinite(value) ? <span className="price-value">{new Intl.NumberFormat('en-US', { maximumFractionDigits: 8 }).format(value)}</span> : <span className="price-missing" aria-label={`${label}价格未设置`}>—</span>;
 
 function PriceEditor({ model, onClose, onSaved }) {
   const [provider, setProvider] = useState(model?.provider || '');
@@ -39,6 +39,7 @@ export function PricingPage() {
   const resource = useResource('/api/pricing');
   const [query, setQuery] = useState('');
   const [provider, setProvider] = useState('');
+  const [coverage, setCoverage] = useState('');
   const [page, setPage] = useState(1);
   const [editor, setEditor] = useState(null);
   const [resetting, setResetting] = useState(null);
@@ -47,7 +48,13 @@ export function PricingPage() {
   const [message, setMessage] = useState('');
   const models = useMemo(() => Object.entries(resource.data || {}).flatMap(([provider, models]) => Object.entries(models || {}).map(([name, rates]) => ({ provider, name, rates }))), [resource.data]);
   const suppliers = [...new Set(models.map(model => model.provider))].sort();
-  const filtered = models.filter(model => (!provider || model.provider === provider) && `${model.provider} ${model.name} ${providerInfo(model.provider).name}`.toLowerCase().includes(query.toLowerCase()));
+  const counted = model => fields.filter(([key]) => typeof model.rates[key] === 'number').length;
+  const complete = model => counted(model) === fields.length;
+  const partial = model => counted(model) > 0 && counted(model) < fields.length;
+  const filtered = models.filter(model => (!provider || model.provider === provider) && (!coverage || (coverage === 'complete' ? complete(model) : partial(model))) && `${model.provider} ${model.name} ${providerInfo(model.provider).name}`.toLowerCase().includes(query.toLowerCase()));
+  const completeCount = models.filter(complete).length;
+  const partialCount = models.filter(partial).length;
+  const supplierStats = Object.fromEntries(suppliers.map(id => { const group = models.filter(model => model.provider === id); return [id, { total: group.length, complete: group.filter(complete).length }]; }));
   const pages = Math.max(1, Math.ceil(filtered.length / 25));
   const currentPage = Math.min(page, pages);
   function saved(message) { setMessage(message); setError(''); resource.refresh(); }
@@ -61,10 +68,10 @@ export function PricingPage() {
   }
   return <>
     <PageHeading title="模型价格" subtitle="管理输入、输出与缓存计价"><button className="button" disabled={resource.loading || busy} onClick={resource.refresh}><Icon name="refresh"/>刷新</button>{managementEnabled && <button className="button primary" onClick={() => setEditor({})}><Icon name="plus"/>添加价格</button>}</PageHeading>
-    <div className="admin-summary"><div><span className="admin-eyebrow">计价目录</span><strong>{resource.data ? models.length : '—'} <small>个模型</small></strong></div><div><span className="admin-eyebrow">供应商</span><strong>{resource.data ? suppliers.length : '—'}</strong></div><p>美元 / 百万 Token<br/><span>用于网关费用估算，实际账单以供应商为准。</span></p></div>
+    <div className="admin-summary"><div><span className="admin-eyebrow">计价目录</span><strong>{resource.data ? models.length : '—'} <small>个模型</small></strong></div><div><span className="admin-eyebrow">五项齐全</span><strong>{resource.data ? completeCount : '—'} <small>待补 {partialCount}</small></strong></div><div><span className="admin-eyebrow">供应商</span><strong>{resource.data ? suppliers.length : '—'}</strong></div><p>美元 / 百万 Token<br/><span>用于网关费用估算，实际账单以供应商为准。</span></p></div>
     {resource.error && <ErrorBlock message={resource.error} onRetry={resource.refresh}/>}{error && !resetting && <ErrorBlock message={error}/>}{message && <p className="admin-success" role="status"><Icon name="check"/>{message}</p>}
-    <div className="admin-toolbar"><div className="filter-search"><Icon name="search"/><input type="search" aria-label="搜索价格" placeholder="搜索模型或供应商…" value={query} onChange={event => { setQuery(event.target.value); setPage(1); }}/></div><label className="admin-select">供应商<select aria-label="价格供应商" value={provider} onChange={event => { setProvider(event.target.value); setPage(1); }}><option value="">全部供应商</option>{suppliers.map(id => <option key={id} value={id}>{providerInfo(id).name} · {id}</option>)}</select></label></div>
-    <div className="table-shell"><table className="admin-price-table"><caption className="sr-only">模型价格，每百万 Token 美元</caption><thead><tr><th>模型 / 供应商</th>{fields.map(([key, label]) => <th key={key}>{label}</th>)}{managementEnabled && <th>操作</th>}</tr></thead><tbody>{filtered.slice((currentPage - 1) * 25, currentPage * 25).map(model => <tr key={`${model.provider}/${model.name}`}><td><div className="model-name"><strong>{model.name}</strong><small>{providerInfo(model.provider).name} · {model.provider}</small></div></td>{fields.map(([key, label]) => <td className="mono" key={key} data-label={label}>{price(model.rates[key])}</td>)}{managementEnabled && <td><div className="row-actions"><IconButton icon="edit" label={`编辑价格 ${model.provider}/${model.name}`} onClick={() => setEditor(model)}/><IconButton icon="refresh" label={`恢复默认价格 ${model.provider}/${model.name}`} onClick={() => { setError(''); setResetting(model); }}/></div></td>}</tr>)}{!filtered.length && <tr><td colSpan="7" className="table-empty">{resource.loading ? '正在读取价格…' : resource.error ? '价格读取失败' : '暂无匹配的模型价格'}</td></tr>}</tbody></table></div>
+    <div className="admin-toolbar"><div className="filter-search"><Icon name="search"/><input type="search" aria-label="搜索价格" placeholder="搜索模型或供应商…" value={query} onChange={event => { setQuery(event.target.value); setPage(1); }}/></div><div className="coverage-filter" role="group" aria-label="按价格完整度筛选">{[['', '全部', models.length], ['complete', '五项齐全', completeCount], ['partial', '缺项', partialCount]].map(([id, label, count]) => <button key={id} type="button" aria-pressed={coverage === id} onClick={() => { setCoverage(id); setPage(1); }}>{label}<span>{count}</span></button>)}</div><label className="admin-select">供应商<select aria-label="价格供应商" value={provider} onChange={event => { setProvider(event.target.value); setPage(1); }}><option value="">全部供应商</option>{suppliers.map(id => <option key={id} value={id}>{providerInfo(id).name} · {id} · {supplierStats[id].complete}/{supplierStats[id].total}</option>)}</select></label></div>
+    <div className="table-shell"><table className="admin-price-table"><caption className="sr-only">模型价格，每百万 Token 美元</caption><thead><tr><th>模型 / 供应商</th>{fields.map(([key, label]) => <th key={key}>{label}</th>)}{managementEnabled && <th>操作</th>}</tr></thead><tbody>{filtered.slice((currentPage - 1) * 25, currentPage * 25).map(model => <tr key={`${model.provider}/${model.name}`}><td><div className="model-name"><strong>{model.name}</strong><small>{providerInfo(model.provider).name} · {model.provider}</small></div></td>{fields.map(([key, label]) => <td className="mono" key={key} data-label={label}>{priceCell(model.rates[key], label)}</td>)}{managementEnabled && <td><div className="row-actions"><IconButton icon="edit" label={`编辑价格 ${model.provider}/${model.name}`} onClick={() => setEditor(model)}/><IconButton icon="refresh" label={`恢复默认价格 ${model.provider}/${model.name}`} onClick={() => { setError(''); setResetting(model); }}/></div></td>}</tr>)}{!filtered.length && <tr><td colSpan="7" className="table-empty">{resource.loading ? '正在读取价格…' : resource.error ? '价格读取失败' : '暂无匹配的模型价格'}</td></tr>}</tbody></table></div>
     <div className="table-footer"><span>{filtered.length} 个模型 · 缺少价格显示 —</span><div className="pagination"><IconButton icon="back" label="上一页价格" disabled={currentPage <= 1} onClick={() => setPage(currentPage - 1)}/><span>{currentPage} / {pages}</span><IconButton icon="arrow" label="下一页价格" disabled={currentPage >= pages} onClick={() => setPage(currentPage + 1)}/></div></div>
     {editor && <PriceEditor model={editor.name ? editor : null} onClose={() => setEditor(null)} onSaved={saved}/>}
     {resetting && <Modal title="恢复默认价格" onClose={() => setResetting(null)} busy={busy}><p className="delete-message">移除 <strong>{resetting.provider}/{resetting.name}</strong> 的自定义价格？没有默认价格的模型将不再显示自定义计价。</p>{error && <ErrorBlock message={error}/>}<div className="dialog-actions"><button className="button" disabled={busy} onClick={() => setResetting(null)}>取消</button><button className="button primary" disabled={busy} onClick={reset}>{busy ? '正在恢复…' : '确认恢复默认'}</button></div></Modal>}

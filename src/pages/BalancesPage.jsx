@@ -14,7 +14,7 @@ function channelState(option, channel, failures) {
   if (!option.enabled) return 'disabled';
   if (failures.length) return 'error';
   const connections = channel?.connections || [];
-  const funded = connections.some(connection => hasAmount(connection.wallet) || hasAmount(connection.available) || typeof connection.today?.cost === 'number');
+  const funded = connections.some(connection => hasAmount(connection.wallet) || hasAmount(connection.available) || typeof connection.today?.cost === 'number' || (connection.limits || []).some(row => !row.unlimited && typeof (row.limit ?? row.total) === 'number'));
   if (funded) return 'funded';
   if (connections.length) return 'empty';
   return 'unreachable';
@@ -22,6 +22,48 @@ function channelState(option, channel, failures) {
 const stateLabels = { funded: '有余额', error: '查询异常', empty: '上游无数据', unreachable: '上游未返回', disabled: '已关闭' };
 function Limits({ rows = [] }) {
   return rows.length ? <div className="table-shell"><table><thead><tr><th>额度窗口</th><th>已用</th><th>剩余</th><th>总额</th><th>重置时间</th></tr></thead><tbody>{rows.map((row, index) => <tr key={index}><td>{periodNames[row.period] || row.name || row.period || '额度'}</td><td>{formatNumber(row.used)} {row.currency || row.unit || ''}</td><td className="value-cache">{row.unlimited ? '不限额' : formatNumber(row.remaining)} {row.currency || row.unit || ''}</td><td>{row.unlimited ? '不限额' : formatNumber(row.limit ?? row.total)}</td><td>{formatDate(row.resetsAt || row.resetAt)}</td></tr>)}</tbody></table></div> : null;
+}
+// 预算型窗口（如 Codex 5 小时/每周额度，只有百分比，无钱包金额）用于渠道卡的醒目用量条；金额型窗口仍走额度明细折叠。
+function UsagePills({ rows = [] }) {
+  const entries = rows.map(row => {
+    const limit = row.limit ?? row.total;
+    if (row.unlimited || typeof limit !== 'number' || !limit) return null;
+    const remaining = typeof row.remaining === 'number' ? row.remaining : (typeof row.used === 'number' ? Math.max(limit - row.used, 0) : null);
+    if (remaining === null) return null;
+    return { name: periodNames[row.period] || row.name || row.period || '额度', percent: Math.min(100, Math.max(0, Math.round(remaining / limit * 100))), resetsAt: row.resetsAt || row.resetAt };
+  }).filter(Boolean);
+  return entries.length ? <div className="finance-usage">{entries.map((entry, index) => <div className="finance-usage-row" key={index} role="meter" aria-valuemin={0} aria-valuemax={100} aria-valuenow={entry.percent} aria-label={`${entry.name}剩余 ${entry.percent}%`}><span className="finance-usage-name">{entry.name}</span><span className="finance-usage-bar"><span className={`finance-usage-fill${entry.percent < 20 ? ' is-low' : ''}`} style={{ width: `${entry.percent}%` }}/></span><span className="finance-usage-value">{entry.percent}%</span>{entry.resetsAt && <span className="finance-usage-reset">{formatDate(entry.resetsAt)} 重置</span>}</div>)}</div> : null;
+}
+// 卡片主金额：钱包余额或密钥可用额度二选一；第 2 个有钱账号的金额才并列显示，其余归入账户列表，避免一排 $0.00 的零墙。
+function heroEntries(channel) {
+  if (!channel) return [];
+  const entries = [];
+  for (const connection of channel.connections || []) {
+    const wallet = hasAmount(connection.wallet) ? { kind: 'wallet', account: connection.name, label: '钱包余额', amount: connection.wallet } : null;
+    const available = hasAmount(connection.available) && (!wallet || connection.available.amount !== connection.wallet.amount) ? { kind: 'available', account: connection.name, label: '密钥可用额度', amount: connection.available } : null;
+    if (wallet) entries.push(wallet);
+    if (available) entries.push(available);
+  }
+  const positive = entries.filter(entry => entry.amount.amount > 0);
+  const uniquePositive = [...new Map(positive.map(entry => [`${entry.account}|${entry.amount.amount}|${entry.amount.currency}`, entry])).values()];
+  if (uniquePositive.length) return uniquePositive.slice(0, 2);
+  return entries.slice(0, 1);
+}
+// 渠道内金额型额度总数与最佳重置时间，用于折叠行的胶囊摘要。
+function limitSummary(channel) {
+  let count = 0;
+  let resets = [];
+  for (const connection of channel?.connections || []) {
+    count += (connection.limits || []).length;
+    for (const funding of connection.channelFunding || []) count += (funding.windows || []).length;
+    if (connection.keyQuota) count += 1;
+  }
+  for (const subscription of channel?.subscriptions || []) {
+    count += (subscription.windows || []).length;
+    if (subscription.expiresAt) resets.push(new Date(subscription.expiresAt).getTime());
+  }
+  resets = resets.filter(Number.isFinite).sort((a, b) => a - b);
+  return { count, nextReset: resets.length ? resets[0] : null };
 }
 export function BalancesPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -66,6 +108,8 @@ export function BalancesPage() {
   });
   const summary = channelViews.reduce((counts, view) => ({ ...counts, [view.state]: (counts[view.state] || 0) + 1 }), {});
   const stateOrder = ['funded', 'error', 'empty', 'unreachable', 'disabled'];
+  const fundedViews = channelViews.filter(view => view.state === 'funded');
+  const restViews = channelViews.filter(view => view.state !== 'funded');
   const quotaGroups = new Map();
   for (const connection of quotaAccounts) {
     const key = connection.provider || connection.providerName || 'unknown';
@@ -111,18 +155,62 @@ export function BalancesPage() {
     <section className="finance-section" role="tabpanel" id="finance-panel-balances" aria-labelledby="finance-tab-balances" hidden={activeTab !== 'balances'} tabIndex={0}>
       {error && <ErrorBlock message={error}/>}{balances.error && <ErrorBlock message={`渠道余额：${balances.error}`} onRetry={balances.refresh}/>}
       <div className="panel-heading"><h2>供应商余额</h2><span className="muted">{balances.loading && !balances.data ? '读取中' : `${visibleOptions.length} 个供应商`}</span></div>{balances.loading && !balances.data && <p className="muted">正在读取余额…</p>}
-      {balances.data && visibleOptions.length > 0 && <div className="balance-summary">{stateOrder.filter(state => summary[state]).map(state => <span key={state} className={`balance-summary-item is-${state}`}>{stateLabels[state]}<strong>{summary[state]}</strong></span>)}</div>}
-      {stateOrder.filter(state => channelViews.some(view => view.state === state)).map(state => <section className={`finance-group is-${state}`} key={state}>
-        <h2 className="finance-group-heading">{stateLabels[state]}<span className="muted">{channelViews.filter(view => view.state === state).length} 个</span></h2>
-        {channelViews.filter(view => view.state === state).map(({ option, channel, failures }) => <section className="finance-channel" key={option.id}><div className="panel-heading"><h3><Link to={`/dashboard/providers/${encodeURIComponent(option.id)}`}>{option.name}</Link></h3><label className="checkbox-filter"><input type="checkbox" aria-label={`查询余额 ${option.name}`} disabled={!managementEnabled || !!busy} checked={option.enabled} onChange={() => toggle(option)}/>查询余额</label></div>
-          {!option.enabled ? <p className="muted">余额查询已关闭，打开开关后才会向上游查询。</p> : <>{failures.map((item, index) => <ErrorBlock key={index} message={`${item.connectionName}：${item.error}`}/>)}{!channel && !failures.length && <p className="muted">该供应商尚未提供可查询的余额数据。</p>}
-          {channel?.connections.map(connection => <div className="finance-account" key={connection.id}><h4>{connection.name}</h4><div className="finance-values">{hasAmount(connection.wallet) && <span>钱包余额<strong>{money(connection.wallet)}</strong></span>}{hasAmount(connection.available) && <span>密钥可用额度<strong>{money(connection.available)}</strong></span>}{typeof connection.today?.cost === 'number' && <span>今日费用<strong>{`${formatNumber(connection.today.cost)} ${connection.today.currency || ''}`}</strong></span>}{typeof connection.today?.calls === 'number' && <span>今日调用<strong>{`${formatNumber(connection.today.calls)} 次`}</strong></span>}{typeof connection.today?.tokens === 'number' && <span>今日 Token<strong>{formatNumber(connection.today.tokens)}</strong></span>}<span>更新于<strong className="muted">{formatDate(connection.checkedAt)}{connection.stale ? ' · 上次数据' : connection.cached ? ' · 缓存' : ''}</strong></span></div>
-            {!hasAmount(connection.wallet) && !hasAmount(connection.available) && !connection.today && <p className="inline-note">{stateText[connection.status] || connection.notice || '上游未返回可展示的余额数据。'}</p>}{connection.walletUnavailable && <p className="inline-note">钱包余额需到供应商网站登录查看，接口额度不等于钱包余额。</p>}{connection.error && <ErrorBlock message={connection.error}/>}
-            <Limits rows={[...(connection.limits || []), ...(connection.keyQuota ? [{ name: '密钥额度', ...connection.keyQuota }] : [])]}/>
-            {(connection.channelFunding || []).map(funding => <div key={funding.id}><h4>{funding.name} · {funding.status === 'available' ? '可用' : '不可用'}</h4><Limits rows={funding.windows}/></div>)}
-          </div>)}{channel?.subscriptions.map((subscription, index) => <div key={subscription.id || index}><h4>{subscription.name || '订阅'} · 到期 {formatDate(subscription.expiresAt)}</h4><Limits rows={subscription.windows}/></div>)}</>}
-        </section>)}
-      </section>)}
+      {balances.data && visibleOptions.length > 0 && <div className="balance-summary">
+        <div className="balance-summary-item is-funded is-primary"><span className="balance-summary-label">有余额供应商</span><strong className="balance-summary-value">{summary.funded || 0}</strong><small className="balance-summary-note">共 {channelViews.length} 个供应商</small></div>
+        {stateOrder.filter(state => state !== 'funded' && summary[state]).map(state => <div key={state} className={`balance-summary-item is-${state}`}><span className="balance-summary-label">{stateLabels[state]}</span><strong className="balance-summary-value">{summary[state]}</strong><small className="balance-summary-note">{state === 'disabled' ? '未开启余额查询' : state === 'error' ? '需要复查上游' : state === 'unreachable' ? '接口无返回' : '无可展示数据'}</small></div>)}
+      </div>}
+      {fundedViews.length > 0 && <section className="finance-group is-funded">
+        <h2 className="finance-group-heading">有余额<span className="muted">{fundedViews.length} 个</span></h2>
+        <div className="finance-channel-grid">{fundedViews.map(({ option, channel, failures }) => <section className="finance-channel" key={option.id}>
+          <div className="finance-channel-head"><div className="finance-channel-title"><span className="finance-state-dot is-funded"/><h3><Link to={`/dashboard/providers/${encodeURIComponent(option.id)}`}>{option.name}</Link></h3><span className="finance-channel-meta">{channel?.connections.length || 0} 个账号</span></div><label className="checkbox-filter"><input type="checkbox" aria-label={`查询余额 ${option.name}`} disabled={!managementEnabled || !!busy} checked={option.enabled} onChange={() => toggle(option)}/>查询余额</label></div>
+          {failures.map((item, index) => <ErrorBlock key={index} message={`${item.connectionName}：${item.error}`}/>)}{!channel && !failures.length && <p className="muted">该供应商尚未提供可查询的余额数据。</p>}
+          <div className="finance-hero">{heroEntries(channel).map((entry, index) => <div className={`finance-hero-amount${entry.amount.amount === 0 ? ' is-zero' : ''}`} key={index}><span className="finance-hero-label">{entry.label}<span className="finance-hero-account">{entry.account}</span></span><strong>{money(entry.amount)}</strong></div>)}</div>
+          {(() => {
+            const allLimits = [];
+            const usageLimits = [];
+            const today = { cost: 0, costSet: false, calls: 0, callsSet: false, tokens: 0, tokensSet: false, currency: '' };
+            let checkedAt = null;
+            let staleAny = false;
+            let cachedAny = false;
+            for (const connection of channel?.connections || []) {
+              for (const row of connection.limits || []) {
+                const limit = row.limit ?? row.total;
+                const isUsage = !row.unlimited && typeof limit === 'number' && limit > 0 && (row.unit === '百分比' || row.name?.includes('使用') || row.name?.includes('限额') || !!(row.period && (row.name?.match(/小时|周|月|日/) || periodNames[row.period])));
+                (isUsage ? usageLimits : allLimits).push(row);
+              }
+              for (const funding of connection.channelFunding || []) for (const row of funding.windows || []) allLimits.push({ ...row, name: `${funding.name} · ${periodNames[row.period] || row.name || row.period || '额度'}` });
+              if (connection.keyQuota) allLimits.push({ name: '密钥额度', ...connection.keyQuota });
+              if (typeof connection.today?.cost === 'number') { today.cost += connection.today.cost; today.costSet = true; today.currency = connection.today.currency || today.currency; }
+              if (typeof connection.today?.calls === 'number') { today.calls += connection.today.calls; today.callsSet = true; }
+              if (typeof connection.today?.tokens === 'number') { today.tokens += connection.today.tokens; today.tokensSet = true; }
+              if (connection.checkedAt && (!checkedAt || new Date(connection.checkedAt) > new Date(checkedAt))) checkedAt = connection.checkedAt;
+              staleAny = staleAny || !!connection.stale;
+              cachedAny = cachedAny || !!connection.cached;
+            }
+            for (const subscription of channel?.subscriptions || []) for (const row of subscription.windows || []) allLimits.push({ ...row, name: `${subscription.name || '订阅'} · ${periodNames[row.period] || row.name || row.period || '额度'}` });
+            const meta = [];
+            if (today.costSet) meta.push(`今日费用 ${formatNumber(today.cost)} ${today.currency}`.trim());
+            if (today.callsSet) meta.push(`今日调用 ${formatNumber(today.calls)} 次`);
+            if (today.tokensSet) meta.push(`今日 Token ${formatNumber(today.tokens)}`);
+            const accountsWithData = (channel?.connections || []).filter(connection => hasAmount(connection.wallet) || hasAmount(connection.available) || typeof connection.today?.cost === 'number' || typeof connection.today?.calls === 'number');
+            return <>
+              <UsagePills rows={usageLimits}/>
+              {meta.length > 0 && <p className="finance-meta">{meta.join(' · ')}{checkedAt ? ` · 更新于 ${formatDate(checkedAt)}${staleAny ? '（上次数据）' : cachedAny ? '（缓存）' : ''}` : ''}</p>}
+              {accountsWithData.length > 1 && <div className="finance-accounts">{accountsWithData.map(connection => <div className="finance-account-line" key={connection.id}><span className="finance-account-name">{connection.name}</span><span className="finance-account-amount">{hasAmount(connection.wallet) ? money(connection.wallet) : hasAmount(connection.available) ? `${money(connection.available)}（密钥）` : typeof connection.today?.cost === 'number' ? `今日 ${formatNumber(connection.today.cost)} ${connection.today.currency || ''}` : '—'}</span></div>)}</div>}
+              {allLimits.length > 0 && <details className="finance-limits"><summary>额度明细<span>{allLimits.length} 项{limitSummary(channel).nextReset ? ` · ${formatDate(limitSummary(channel).nextReset)} 重置` : ''}</span></summary><Limits rows={allLimits}/></details>}
+            </>;
+          })()}
+        </section>)}</div>
+      </section>}
+      {restViews.length > 0 && <section className="finance-group is-secondary">
+        <h2 className="finance-group-heading">其他供应商<span className="muted">{restViews.length} 个</span></h2>
+        <div className="finance-compact-list">{restViews.map(({ option, channel, failures }) => { const rowState = channelState(option, channel, failures); return <section className={`finance-channel is-compact is-${rowState}`} key={option.id}>
+          <div className="finance-compact-row"><div className="finance-compact-main"><span className={`finance-state-dot is-${rowState}`}/><h3><Link to={`/dashboard/providers/${encodeURIComponent(option.id)}`}>{option.name}</Link></h3><span className="finance-compact-note">{!option.enabled ? '已关闭' : failures.length ? '查询异常' : !channel ? '该供应商尚未提供可查询的余额数据。' : (channel.connections || []).length ? '上游无数据' : '上游未返回'}</span></div><label className="checkbox-filter"><input type="checkbox" aria-label={`查询余额 ${option.name}`} disabled={!managementEnabled || !!busy} checked={option.enabled} onChange={() => toggle(option)}/>查询余额</label></div>
+          {failures.map((item, index) => <div className="finance-compact-detail" key={index}><ErrorBlock message={`${item.connectionName}：${item.error}`}/></div>)}
+          {!option.enabled && <p className="finance-compact-hint">余额查询已关闭，打开开关后才会向上游查询。</p>}
+          {channel?.subscriptions.map((subscription, index) => <div className="finance-compact-detail" key={subscription.id || index}><h4>{subscription.name || '订阅'} · 到期 {formatDate(subscription.expiresAt)}</h4><Limits rows={subscription.windows}/></div>)}
+        </section>; })}</div>
+      </section>}
       {(!balances.loading || balances.data) && !balances.error && !visibleOptions.length && <p className="empty-state">{queries.balances ? '没有匹配的余额账号。' : '暂无兼容供应商账号。'}</p>}
     </section>
   </div>;

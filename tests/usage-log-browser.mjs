@@ -49,12 +49,18 @@ try {
   assert.equal(await page.getByRole('columnheader', { name: '费用 · USD' }).count(), 0);
   await page.getByLabel('显示日志价格').check();
   await page.getByRole('columnheader', { name: '费用 · USD' }).waitFor();
+  // 失败记录只在「全部」视图出现；日志页默认筛选「成功」是有意的产品默认值。
+  await page.getByRole('button', { name: '全部', exact: true }).click();
   await page.getByRole('cell', { name: '$0.007635', exact: true }).waitFor();
+  await page.getByRole('button', { name: '成功', exact: true }).click();
+  await page.locator('.log-token-trigger').first().waitFor();
   await page.getByRole('button', { name: '查看请求 claude-sonnet', exact: true }).first().click();
   assert((await page.getByRole('dialog').innerText()).includes('当前价目表估算'));
   await page.getByRole('button', { name: '关闭窗口' }).click();
   await page.getByLabel('显示日志价格').uncheck();
   assert.equal(await page.getByRole('columnheader', { name: '费用 · USD' }).count(), 0);
+  // 演示夹具里该连接「成功」记录只有 1 页；翻页轮询需要「全部」视图的 2 页数据。
+  await page.getByRole('button', { name: '全部', exact: true }).click();
   await page.getByLabel('日志连接').selectOption('demo-codex');
   await page.getByRole('button', { name: '筛选', exact: true }).click();
   await page.getByRole('button', { name: '下一页日志' }).click();

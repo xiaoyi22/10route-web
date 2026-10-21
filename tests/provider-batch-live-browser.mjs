@@ -44,7 +44,8 @@ try {
     const all = page.getByLabel(view === 'providers' ? '全选当前供应商' : '全选当前账号', { exact: true });
     assert.equal(await all.isChecked(), false);
     await all.check();
-    const count = view === 'providers' ? providers.connections.length : group.connections.length;
+    // 页面按分组渲染，幽灵供应商（不在 provider-names.json）会被过滤掉，账号数应以页面分组为准。
+    const count = view === 'providers' ? populated.reduce((sum, item) => sum + item.connections.length, 0) : group.connections.length;
     const selected = view === 'providers' ? `已选 ${populated.length} 个供应商 · ${count} 个账号` : `已选 ${count} 个账号`;
     await page.locator('.provider-batch-toolbar').getByText(selected, { exact: true }).waitFor();
     for (const theme of ['dark', 'light']) {

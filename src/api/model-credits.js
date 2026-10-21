@@ -46,10 +46,20 @@ export function modelCreditStatus(model, { now = Date.now(), live, unavailable =
   if (nightPromotion) detail.push(`免费时段 ${nightPromotion.window_start}–${nightPromotion.window_end}（北京时间）${rate !== null ? `，常规倍率 ${rate}×` : ''}`);
   if (Number.isFinite(promoEnd)) detail.push(`免费活动${promoNow ? '截止' : '已结束于'} ${new Date(promoEnd).toLocaleString('zh-CN', { hour12: false, timeZone: 'Asia/Shanghai' })}（北京时间）`);
   const promotion = pricing.promotion;
-  if (promotion) {
+  const window = creditWindow(promotion, now);
+  const normalRate = promotion?.before_promotion_price_factor;
+  const discount = promotion?.discount_factor;
+  const schedule = isQoder(model.provider) && window && rate !== null && typeof normalRate === 'number' && Number.isFinite(normalRate) && normalRate >= 0 && typeof discount === 'number' && Number.isFinite(discount) && discount >= 0 && discount <= 1 ? {
+    timezone: ['Asia/Singapore', 'Asia/Shanghai'].includes(promotion.timezone || 'Asia/Singapore') ? '北京时间' : promotion.timezone,
+    periods: [
+      { label: '高峰', start: promotion.window_end, end: promotion.window_start, rate: window.active ? normalRate : rate, active: !window.active },
+      { label: '低谷', start: promotion.window_start, end: promotion.window_end, rate: window.active ? rate : Number((normalRate * discount).toPrecision(12)), active: window.active },
+    ],
+  } : null;
+  if (promotion && !schedule) {
     const badge = promotion.badge?.zh || promotion.badge?.en || '错峰优惠';
     detail.push(`${badge} · ${promotion.window_start || '?'}–${promotion.window_end || '?'}（${promotion.timezone || 'Asia/Singapore'}）${creditWindow(promotion, now)?.active ? '，当前时段生效' : '，当前时段未生效'}${typeof promotion.before_promotion_price_factor === 'number' ? `，原倍率 ${promotion.before_promotion_price_factor}×` : ''}`);
   }
   if (free) detail.push('使用免费额度，仍受账号权限、额度和限流约束');
-  return { label: nightNow ? '当前时段免费' : promoNow ? '限时免费' : rate === 0 ? '免费' : rate !== null ? `积分倍率 ${rate}×` : unknown.label, free, detail: detail.join('；'), source };
+  return { label: nightNow ? '当前时段免费' : promoNow ? '限时免费' : rate === 0 ? '免费' : rate !== null ? `积分倍率 ${rate}×` : unknown.label, free, detail: detail.join('；'), source, schedule };
 }

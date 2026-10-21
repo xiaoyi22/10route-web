@@ -40,35 +40,42 @@ export function IconButton({ icon, label, ...props }) {
 }
 
 export function CopyButton({ value, label = '复制' }) {
-  const [copied, setCopied] = useState(false);
-  const [error, setError] = useState(false);
+  const [state, setState] = useState('idle');
   const timer = useRef(null);
   useEffect(() => () => clearTimeout(timer.current), []);
   async function copy(event) {
+    const focused = document.activeElement;
+    const text = document.createElement('textarea');
+    text.value = value;
+    text.readOnly = true;
+    text.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
+    (event.currentTarget.closest('dialog') || document.body).appendChild(text);
+    let selected = false;
+    let mode = 'idle';
     try {
-      if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(value);
-      else {
-        const focused = document.activeElement;
-        const text = document.createElement('textarea');
-        text.value = value;
-        text.readOnly = true;
-        text.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
-        (event.currentTarget.closest('dialog') || document.body).appendChild(text);
-        try {
-          text.select();
-          if (!document.execCommand('copy')) throw new Error('复制失败');
-        } finally {
-          text.remove();
-          focused?.focus({ preventScroll: true });
-        }
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(value);
+        mode = 'copied';
+      } else {
+        // 非安全上下文下 execCommand 已失效，改为选中文本并提示手动复制。
+        text.select();
+        selected = text.selectionEnd > text.selectionStart;
+        mode = selected ? 'selected' : 'failed';
       }
-      setCopied(true);
-      setError(false);
-    } catch { setError(true); }
+    } catch {
+      text.select();
+      selected = text.selectionEnd > text.selectionStart;
+      mode = selected ? 'selected' : 'failed';
+    } finally {
+      if (!selected) { text.remove(); focused?.focus({ preventScroll: true }); }
+    }
+    setState(mode);
     clearTimeout(timer.current);
-    timer.current = setTimeout(() => { setCopied(false); setError(false); }, 2500);
+    timer.current = setTimeout(() => { text.remove(); setState('idle'); focused?.focus({ preventScroll: true }); }, 4000);
   }
-  return <span className="copy-control"><IconButton icon={copied ? 'check' : 'copy'} label={copied ? '已复制' : label} disabled={!value} onClick={copy}/>{error && <span className="error-message" role="alert">复制失败</span>}</span>;
+  const name = state === 'copied' ? '已复制' : state === 'selected' ? '已选中文本' : label;
+  const hint = state === 'copied' ? '已复制' : state === 'selected' ? '已选中，请按 Ctrl+C' : state === 'failed' ? '复制失败' : '';
+  return <span className="copy-control"><IconButton icon={state === 'copied' ? 'check' : 'copy'} label={name} disabled={!value} onClick={copy}/>{hint && <span className={state === 'failed' ? 'error-message' : 'copy-hint'} role="status">{hint}</span>}</span>;
 }
 
 export function Modal({ title, onClose, busy = false, className = '', children }) {

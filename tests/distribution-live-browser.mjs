@@ -6,7 +6,7 @@ import { parseEnv } from 'node:util';
 import { resolve } from 'node:path';
 import { modelCatalog } from '../src/api/data.js';
 
-const { chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT_MODULE || 'C:/Users/20449/AppData/Local/Temp/hermes-e2e/.venv/Lib/site-packages/playwright/driver/package');
+const { chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const base = process.env.PREVIEW_URL || 'http://127.0.0.1:4317';
 const browser = await chromium.launch({ channel: 'msedge', headless: true, args: ['--no-proxy-server'] });
 const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, permissions: ['clipboard-read', 'clipboard-write'] });

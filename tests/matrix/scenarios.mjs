@@ -34,15 +34,17 @@ export const scenarioProbes = {
     if (!selector) throw new Error(NOT_APPLICABLE + ' 本页无搜索框');
     await open(session.page, session.base, item.route);
     const box = session.page.locator(selector).first();
-    const total = await session.page.locator('tbody tr').count();
+    // 空态是一行含 td.table-empty 的占位行，不能算作数据行。
+    const rows = () => session.page.locator('tbody tr:not(:has(.table-empty))');
+    const total = await rows().count();
     if (total === 0) throw new Error(NOT_APPLICABLE + ' 无数据行可搜索');
     await box.fill('zzz-no-such-item-zzz');
     await session.page.waitForTimeout(600);
-    const miss = await session.page.locator('tbody tr').count();
+    const miss = await rows().count();
     if (miss >= total) throw new Error('输入无匹配词后行数未变化（' + total + '->' + miss + '）');
     await box.fill('');
     await session.page.waitForTimeout(600);
-    const restored = await session.page.locator('tbody tr').count();
+    const restored = await rows().count();
     if (restored !== total) throw new Error('清空搜索后未恢复（' + total + '->' + restored + '）');
   },
   async filter(session, item) {

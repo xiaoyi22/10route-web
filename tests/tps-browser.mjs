@@ -63,7 +63,7 @@ try {
   await page.getByRole('button', { name: '关闭窗口' }).click();
   await page.getByRole('button', { name: '查看请求 stream', exact: true }).click();
   await page.getByRole('dialog').getByText('50.00 Token/s', { exact: true }).waitFor();
-  assert((await page.getByRole('dialog').innerText()).includes('总耗时 − 首 Token 延迟'));
+  assert((await page.getByRole('dialog').innerText()).includes('总耗时 − 首包耗时'));
   await page.getByRole('button', { name: '关闭窗口' }).click();
   const downloading = page.waitForEvent('download');
   await page.getByRole('button', { name: '导出当前页', exact: true }).click();

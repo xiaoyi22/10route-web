@@ -61,7 +61,7 @@ try {
   assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
   await page.screenshot({ path: resolve(directory, 'mobile.png'), fullPage: true });
   await page.getByRole('button', { name: '关闭', exact: true }).click();
-  await page.locator('tbody tr').filter({ hasText: model.id }).getByText(report.result.ok === true ? '调用成功' : '调用失败', { exact: true }).waitFor();
+  await page.locator('.provider-model-card').filter({ hasText: model.id }).getByText(report.result.ok === true ? '调用成功' : '调用失败', { exact: true }).waitFor();
   await page.getByRole('button', { name: `编辑模型 ${model.id}`, exact: true }).click();
   assert.equal(await page.getByRole('button', { name: '保存并测试', exact: true }).isEnabled(), true);
   await page.getByRole('button', { name: '取消', exact: true }).click();

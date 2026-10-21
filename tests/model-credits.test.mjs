@@ -45,7 +45,7 @@ test('Qoder consumes live account price without multiplying its discount again',
   const status = modelCreditStatus(qoder, { now, live: priced });
   assert.equal(status.label, '积分倍率 0.4×');
   assert.equal(status.free, false);
-  assert.match(status.detail, /当前时段生效/);
+  assert.equal(status.schedule.periods.find(period => period.active).label, '低谷');
   assert.match(status.source, /参考账号/);
   assert.equal(modelCreditStatus(qoder, { now, live: live(now, { rateMultiplier: 0 }) }).label, '免费');
   assert.equal(creditWindow(promotion, at('22:00:00')).active, true);
@@ -62,4 +62,30 @@ test('Qoder never keeps a free claim after expiry, a window change, read failure
   assert.equal(modelCreditStatus({ ...qoder, upstreamId: 'missing' }, { now, live: priced }).label, '未提供积分信息');
   assert.equal(modelCreditStatus(qoder, { now }).free, false);
   assert.equal(modelCreditStatus(cn, { now: at('23:00:00'), unavailable: true }).free, false);
+});
+
+test('Qoder shows both peak and off-peak rules while the active price comes from the account', () => {
+  const peak = at('12:00:00');
+  const peakStatus = modelCreditStatus(qoder, { now: peak, live: live(peak, { rateMultiplier: 2, promotion }) });
+  assert.equal(peakStatus.schedule.timezone, '北京时间');
+  assert.deepEqual(peakStatus.schedule.periods, [
+    { label: '高峰', start: '08:00', end: '22:00', rate: 2, active: true },
+    { label: '低谷', start: '22:00', end: '08:00', rate: 0.4, active: false },
+  ]);
+  const valley = at('22:00:00');
+  const valleyStatus = modelCreditStatus(qoder, { now: valley, live: live(valley, { rateMultiplier: 0.35, promotion }) });
+  assert.equal(valleyStatus.schedule.periods[1].rate, 0.35);
+  assert.equal(valleyStatus.schedule.periods[1].active, true);
+  assert.equal(valleyStatus.label, '积分倍率 0.35×');
+  assert.equal(modelCreditStatus(qoder, { now: at('08:00:00'), live: live(at('07:59:59'), { rateMultiplier: 0.4, promotion }) }).schedule, undefined);
+});
+
+test('Qoder does not invent a peak/off-peak rule for missing or invalid discount metadata', () => {
+  const now = at('12:00:00');
+  for (const metadata of [null, { ...promotion, discount_factor: undefined }, { ...promotion, discount_factor: -1 }, { ...promotion, before_promotion_price_factor: NaN }, { ...promotion, timezone: 'invalid' }]) {
+    assert.equal(modelCreditStatus(qoder, { now, live: live(now, { rateMultiplier: 2, promotion: metadata }) }).schedule, null);
+  }
+  const status = modelCreditStatus(qoder, { now, live: live(now, { rateMultiplier: 0.1, promotion: { ...promotion, before_promotion_price_factor: 0.1, discount_factor: 0.4 } }) });
+  assert.equal(status.schedule.periods[1].rate, 0.04);
+  assert.equal(modelCreditStatus(qoder, { now, live: live(now, { rateMultiplier: 0, promotion }) }).schedule.periods[0].rate, 0);
 });

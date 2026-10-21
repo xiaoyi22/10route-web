@@ -97,6 +97,7 @@ export function normalizeProviders(data) {
       defaultModel: connection.defaultModel || '',
       authType: connection.authType || '',
       lastError: connection.lastError || '',
+      enabledModels: Array.isArray(connection.providerSpecificData?.enabledModels) ? connection.providerSpecificData.enabledModels : null,
       nodeName: connection.providerSpecificData?.nodeName || '',
       prefix: connection.providerSpecificData?.prefix || '',
       baseUrl: connection.providerSpecificData?.baseUrl || '',

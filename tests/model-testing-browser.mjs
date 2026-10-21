@@ -49,7 +49,7 @@ try {
   assert((await dialog.innerText()).includes('72 ms'));
   await dialog.getByText('测试说明', { exact: true }).waitFor();
   await page.getByRole('button', { name: '关闭', exact: true }).click();
-  const row = page.locator('tbody tr').filter({ hasText: `${prefix}/org/new-model` });
+  const row = page.locator('.provider-model-card').filter({ hasText: `${prefix}/org/new-model` });
   await row.getByText('调用成功', { exact: true }).waitFor();
   report.checks.push('保存无账号模型不触发测试；保存并测试使用供应商前缀及完整上游 ID，显示成功与耗时说明');
   const cases = [
@@ -82,7 +82,7 @@ try {
   await page.getByRole('button', { name: '关闭', exact: true }).click();
   await page.reload();
   await page.getByRole('button', { name: `测试模型 ${prefix}/org/new-model`, exact: true }).waitFor();
-  await page.locator('tbody tr').filter({ hasText: `${prefix}/org/new-model` }).getByText('未测试', { exact: true }).waitFor();
+  await page.locator('.provider-model-card').filter({ hasText: `${prefix}/org/new-model` }).getByText('未测试', { exact: true }).waitFor();
   const count = report.requests.length;
   await add('disabled-model');
   await page.getByLabel('向下游发布模型').uncheck();

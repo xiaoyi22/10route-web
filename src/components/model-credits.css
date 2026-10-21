@@ -1,3 +1,15 @@
 .model-credit { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; margin-top: 7px; min-width: 220px; max-width: 360px; }
 .model-credit small { color: var(--muted); font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; white-space: normal; }
 .model-credit .model-credit-free { color: var(--green); background: color-mix(in srgb, var(--green) 12%, transparent); }
+.model-credit-current { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.model-credit-periods { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; align-self: stretch; margin: 0; }
+.model-credit-periods > div { min-width: 0; padding: 7px 9px; border: 1px solid var(--border); border-radius: 4px; }
+.model-credit-periods > .current { border-color: var(--accent); background: var(--accent-soft); }
+.model-credit-periods dt { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; color: var(--muted); font-size: 12px; }
+.model-credit-periods dt span { color: var(--accent); font-size: 11px; }
+.model-credit-periods dd { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; margin: 3px 0 0; }
+.model-credit-periods strong { color: var(--text); font-size: 14px; font-weight: 600; }
+.model-credit-periods dd small { font-size: 11px; }
+.model-credit-source { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 20px; padding: 10px 0; border-bottom: 1px solid var(--border); color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
+.model-credit-source strong { color: var(--text); font-weight: 500; }
+.model-credit-source small { color: var(--dim); font-size: 12px; }

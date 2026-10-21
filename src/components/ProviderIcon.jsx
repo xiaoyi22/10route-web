@@ -3,7 +3,7 @@ import Icon from './Icon.jsx';
 import { providerId } from '../api/data.js';
 
 const images = import.meta.glob('../assets/providers/*.png', { query: '?url&no-inline', import: 'default' });
-const aliases = { claude: 'anthropic', google: 'gemini', 'gemini-api': 'gemini', 'ollama-local': 'ollama', 'codebuddy-cn': 'workbuddy', 'codebuddy-intl': 'workbuddy' };
+const aliases = { claude: 'anthropic', google: 'gemini', 'gemini-api': 'gemini', 'ollama-local': 'ollama', 'codebuddy-cn': 'workbuddy', 'codebuddy-intl': 'workbuddy', deepgram: 'anthropic', assemblyai: 'openai', clinepass: 'cline', copilot: 'github', nanobanana: 'gemini', hyperbolic: 'openrouter', 'kimi-coding': 'kimi' };
 
 export default function ProviderIcon({ provider }) {
   const [failedSource, setFailedSource] = useState(null);

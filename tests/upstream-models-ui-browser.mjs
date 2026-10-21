@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { mkdir } from 'node:fs/promises';
 
-const { chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT_MODULE || 'C:/Users/20449/AppData/Local/Temp/hermes-e2e/.venv/Lib/site-packages/playwright/driver/package');
+const { chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const base = process.env.PREVIEW_URL || 'http://127.0.0.1:4318';
 const screenshots = process.env.SCREENSHOT_DIR || 'screenshots/upstream-models';
 const browser = await chromium.launch({ channel: 'msedge', headless: true });
@@ -39,6 +39,7 @@ try {
     saved.push(body);
     return route.fulfill({ status: 201, json: { model: body } });
   });
+  await page.route('**/api/providers/good', route => route.fulfill({ json: { connection: connections[1] } }));
   let listing = items;
   const fetched = [];
   await page.route('**/api/providers/*/models', route => {
@@ -101,7 +102,7 @@ try {
   assert.equal(await dialog.getByLabel('导入 new-b', { exact: true }).isChecked(), true);
   failImport = false;
   await dialog.getByRole('button', { name: '导入所选模型（1）', exact: true }).click();
-  await dialog.getByText('已导入 1 个模型，已向下游发布。', { exact: true }).waitFor();
+  await dialog.getByText('已导入 1 个模型，请在「下游分发」确认发布范围。', { exact: true }).waitFor();
   assert.deepEqual(posted, ['new-a', 'new-b', 'new-b']);
   await dialog.getByLabel('登记状态').selectOption('registered');
   assert.equal(await dialog.locator('tbody tr').count(), 3);
