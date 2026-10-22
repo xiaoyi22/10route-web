@@ -33,7 +33,7 @@ export function classifyCheckinResponse(httpStatus, text, headers = {}) {
   const message = typeof body?.message === 'string' ? body.message : '';
   const cookies = headers['set-cookie'] || [];
   const wafCookies = (Array.isArray(cookies) ? cookies : [cookies]).some(cookie => /^(?:acw_tc|cdn_sec_tc|acw_sc__v2)=/i.test(cookie));
-  if (/turnstile|captcha|cloudflare|验证码|人机验证|challenge/i.test(text) || !body && (wafCookies || /acw_sc__v2|aliyunwaf|document\.cookie/i.test(text))) return { status: 'verification', diagnostic: 'waf', message: '站点防护要求人工验证，请到原站验证后更新完整 Cookie' };
+  if (body?.success !== true && /turnstile|captcha|cloudflare|验证码|人机验证|challenge/i.test(text) || !body && (wafCookies || /acw_sc__v2|aliyunwaf|document\.cookie/i.test(text))) return { status: 'verification', diagnostic: 'waf', message: '站点防护要求人工验证，请到原站验证后更新完整 Cookie' };
   if (httpStatus >= 300 && httpStatus < 400) return { status: 'verification', message: '需要到站点完成人工验证' };
   if (httpStatus === 401 || /登录已过期|未登录|登录失效|invalid.*token|unauthorized/i.test(message)) return { status: 'expired', message: '登录凭据已过期，请重新登录并更新凭据' };
   if (httpStatus === 404 || /签到.*(?:未启用|未开启|关闭)|check.?in.*disabled/i.test(message)) return { status: 'unsupported', message: '站点未开启签到或接口不兼容' };
@@ -220,8 +220,13 @@ export async function sendCheckin(account, { proxyUrl, lookup = proxyUrl ? hostn
       delete headers.Cookie;
     }
     const response = await requestCheckin(requester, url, { headers, agent, lookup: [selected] });
-    if (response.diagnostic) return { status: 'error', diagnostic: response.diagnostic, httpStatus: response.statusCode };
+    if (response.diagnostic) return { status: 'error', diagnostic: response.diagnostic, httpStatus: response.statusCode, ...(credentialPatch?.length ? { credentialPatch } : {}) };
     return { ...classifyCheckinResponse(response.statusCode, response.text, response.headers), httpStatus: response.statusCode, ...(credentialPatch?.length ? { credentialPatch } : {}) };
-  } catch (error) { throw requestFailure(error, 'network'); }
+  } catch (error) {
+    // The refresh already rotated the session cookie server-side; keep it even when the checkin itself fails.
+    const failure = requestFailure(error, 'network');
+    if (credentialPatch?.length) failure.credentialPatch = credentialPatch;
+    throw failure;
+  }
   finally { if (agent) agent.destroy(); }
 }

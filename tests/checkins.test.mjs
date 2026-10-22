@@ -94,6 +94,44 @@ test('refresh rotation persists the server-issued cookie replacement into the va
   } finally { await rm(directory, { recursive: true, force: true }); }
 });
 
+test('a rotated refresh cookie survives a checkin network failure and reaches the vault', async () => {
+  const refreshAccount = validateCheckinAccount({ ...account, authMode: 'refresh', userId: '', cookie: 'new_api_refresh=sid.oldhash' });
+  const requester = (url, options, callback) => {
+    const request = new EventEmitter();
+    request.destroy = error => request.emit('error', error);
+    request.end = () => queueMicrotask(() => {
+      if (url.pathname !== '/api/user/auth/refresh') return request.emit('error', Object.assign(new Error('reset'), { code: 'ECONNRESET' }));
+      const response = new EventEmitter();
+      response.statusCode = 200;
+      response.headers = { 'set-cookie': ['new_api_refresh=sid.newhash; Path=/; HttpOnly'] };
+      callback(response);
+      response.emit('data', Buffer.from('{"success":true,"data":{"access_token":"jwt-token"}}'));
+      response.emit('end');
+      request.emit('close');
+    });
+    return request;
+  };
+  const error = await sendCheckin(refreshAccount, { lookup: async () => [{ address: '8.8.8.8', family: 4 }], requester }).catch(value => value);
+  assert.equal(error.diagnostic, 'network');
+  assert.deepEqual(error.credentialPatch, [{ name: 'new_api_refresh', value: 'sid.newhash' }]);
+  const directory = await mkdtemp(join(tmpdir(), 'kn10-rotate-fail-'));
+  try {
+    const service = createCheckinService({ directory, runner: async () => { throw error; } });
+    const saved = await service.saveAccount({ ...refreshAccount, site: '刷新站', name: '失败轮换' });
+    await service.startJob({ ids: [saved.id] });
+    await service.waitForIdle();
+    const key = await readFile(join(directory, 'vault.key'));
+    const sealed = JSON.parse(await readFile(join(directory, 'vault.json'), 'utf8'));
+    const decipher = createDecipheriv('aes-256-gcm', key, Buffer.from(sealed.nonce, 'base64'));
+    decipher.setAuthTag(Buffer.from(sealed.tag, 'base64'));
+    const vault = JSON.parse(Buffer.concat([decipher.update(Buffer.from(sealed.data, 'base64')), decipher.final()]).toString('utf8'));
+    assert.equal(vault.accounts[0].cookie, 'new_api_refresh=sid.newhash');
+    assert.equal(vault.history[0].status, 'error');
+    assert(!JSON.stringify(vault.history).includes('newhash'));
+    await assert.rejects(service.saveAccount({ baseUrl: 'not a url' }, saved.id), /站点地址无效/);
+  } finally { await rm(directory, { recursive: true, force: true }); }
+});
+
 test('rotateCookieValue replaces in place and appends missing names', () => {
   assert.equal(rotateCookieValue('a=1; new_api_refresh=old; b=2', 'new_api_refresh', 'new'), 'a=1; new_api_refresh=new; b=2');
   assert.equal(rotateCookieValue('a=1', 'new_api_refresh', 'new'), 'a=1; new_api_refresh=new');
@@ -105,6 +143,8 @@ test('response classification preserves genuine failures and raw quota units', (
   assert.equal(classifyCheckinResponse(200, '{"success":false,"message":"今日已签到"}').status, 'already');
   assert.equal(classifyCheckinResponse(401, '{"message":"expired"}').status, 'expired');
   assert.equal(classifyCheckinResponse(403, '<html>Cloudflare Turnstile challenge</html>').status, 'verification');
+  assert.equal(classifyCheckinResponse(200, '{"success":true,"message":"签到成功，完成每日 challenge"}').status, 'success');
+  assert.equal(classifyCheckinResponse(200, '{"success":false,"message":"请完成 captcha 验证"}').status, 'verification');
   assert.equal(classifyCheckinResponse(302, '').status, 'verification');
   assert.equal(classifyCheckinResponse(429, '{"success":true}').status, 'error');
   assert.equal(classifyCheckinResponse(200, '<html>Login</html>').status, 'verification');

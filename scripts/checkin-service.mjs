@@ -120,7 +120,7 @@ export function createCheckinService({ directory, proxyUrl, runner = account => 
     for (const account of accounts) {
       let outcome;
       try { outcome = safeResult(getCheckinConfigurationIssue(account) ? { status: 'unsupported', diagnostic: 'interface' } : await runner(account)); }
-      catch (error) { outcome = safeResult(error instanceof CheckinRequestError ? { status: 'error', diagnostic: error.diagnostic } : null); }
+      catch (error) { outcome = safeResult(error instanceof CheckinRequestError ? { status: 'error', diagnostic: error.diagnostic, credentialPatch: error.credentialPatch } : null); }
       await transact(async () => {
         const next = structuredClone(state);
         const { credentialPatch, ...safeOutcome } = outcome;
@@ -155,7 +155,7 @@ export function createCheckinService({ directory, proxyUrl, runner = account => 
       const merged = { ...existing, ...input };
       const credential = merged.authMode === 'bearer' ? 'token' : 'cookie';
       if (existing && !input[credential]) {
-        if (input.baseUrl !== undefined && new URL(input.baseUrl).origin !== existing.baseUrl || merged.authMode !== existing.authMode || merged.checkinPath !== existing.checkinPath || merged.protocol !== existing.protocol || merged.userId !== existing.userId) reject('更换站点、接口或身份时须重新填写凭据');
+        if (input.baseUrl !== undefined && URL.canParse(input.baseUrl) && new URL(input.baseUrl).origin !== existing.baseUrl || merged.authMode !== existing.authMode || merged.checkinPath !== existing.checkinPath || merged.protocol !== existing.protocol || merged.userId !== existing.userId) reject('更换站点、接口或身份时须重新填写凭据');
         merged[credential] = existing[credential];
       }
       const value = { ...validateCheckinAccount(merged), id: existing?.id || randomUUID(), ...(existing?.lastResult ? { lastResult: existing.lastResult } : {}) };
