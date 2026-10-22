@@ -1,0 +1,19 @@
+.claude-passthrough { gap: 12px; padding: 16px; border: 1px solid var(--border); border-radius: 8px; background: var(--panel); transition: border-color 140ms, background-color 140ms; }
+.claude-passthrough.is-enabled { border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); background: var(--accent-soft); }
+.claude-passthrough-heading { display: flex; align-items: center; gap: 10px; }
+.claude-passthrough-icon { display: grid; place-items: center; flex: 0 0 32px; height: 32px; border: 1px solid var(--border); border-radius: 7px; background: var(--bg); color: var(--muted); }
+.is-enabled .claude-passthrough-icon { color: var(--accent); }
+.claude-passthrough-heading > div { flex: 1; min-width: 0; }
+.claude-passthrough-heading strong { display: block; color: var(--text); font-size: 13px; font-weight: 600; line-height: 1.5; }
+.claude-passthrough-state { display: block; margin-top: 3px; color: var(--muted); font-size: 11px; }
+.is-enabled .claude-passthrough-state { color: var(--accent); }
+.claude-passthrough .toggle-control { flex: 0 0 33px; flex-direction: row; gap: 0; }
+.claude-passthrough .toggle-control input { min-height: 0; padding: 0; }
+.claude-passthrough > p { color: var(--muted); font-size: 12px; line-height: 1.8; }
+.claude-passthrough-route { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 7px; padding: 10px 8px; border: 1px solid var(--border); border-radius: 5px; background: var(--bg); color: var(--muted); font-size: 11px; }
+.claude-passthrough-route code { color: var(--text); font: 11px var(--font-mono); }
+.claude-passthrough-route .icon { width: 12px; height: 12px; color: var(--dim); }
+.claude-passthrough-hint { display: flex; align-items: flex-start; gap: 7px; }
+.claude-passthrough-hint .icon { flex: 0 0 13px; width: 13px; height: 13px; margin-top: 4px; }
+.connection-name .claude-passthrough-badge { display: inline-flex; width: fit-content; align-items: center; gap: 5px; margin-top: 5px; padding: 2px 7px; border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border)); border-radius: 4px; background: var(--accent-soft); color: var(--accent); font-size: 11px; line-height: 1.6; }
+.claude-passthrough-badge .icon { width: 12px; height: 12px; }

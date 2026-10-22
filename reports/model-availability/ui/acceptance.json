@@ -1,0 +1,78 @@
+{
+  "base": "http://127.0.0.1:4338",
+  "http": [
+    {
+      "path": "/api/auth/status",
+      "status": 200
+    },
+    {
+      "path": "/api/model-availability",
+      "status": 200
+    },
+    {
+      "path": "/api/providers",
+      "status": 200
+    },
+    {
+      "path": "/api/models/distribution",
+      "status": 200
+    },
+    {
+      "path": "/api/model-availability",
+      "status": 200
+    },
+    {
+      "path": "/api/providers",
+      "status": 200
+    },
+    {
+      "path": "/api/models/distribution",
+      "status": 200
+    }
+  ],
+  "errors": [],
+  "interceptedWrites": [
+    {
+      "method": "POST",
+      "body": {
+        "provider": "openai-compatible-chat-a9fb2295-434b-4a0c-9623-715ca7cca344",
+        "connectionId": "5f41976e-bdcd-41eb-950a-440537ee7d83",
+        "model": "grok-4.7",
+        "action": "isolate",
+        "reason": "浏览器验收草稿，不写生产"
+      }
+    },
+    {
+      "method": "POST",
+      "body": {
+        "provider": "openai-compatible-chat-a9fb2295-434b-4a0c-9623-715ca7cca344",
+        "connectionId": "5f41976e-bdcd-41eb-950a-440537ee7d83",
+        "model": "grok-4.7",
+        "action": "release",
+        "reason": ""
+      }
+    },
+    {
+      "method": "PUT",
+      "body": {
+        "config": {
+          "mode": "observe",
+          "providers": [],
+          "failureThreshold": 4,
+          "windowMinutes": 15,
+          "cooldownMinutes": 10,
+          "staleHours": 24
+        },
+        "revision": 2
+      }
+    }
+  ],
+  "forbiddenProbes": [],
+  "screenshots": [
+    "reports/model-availability/ui/1440-dark.png",
+    "reports/model-availability/ui/1440-light.png",
+    "reports/model-availability/ui/375-dark.png",
+    "reports/model-availability/ui/375-light.png"
+  ],
+  "passed": true
+}

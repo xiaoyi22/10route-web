@@ -1,0 +1,47 @@
+{
+  "existing": [
+    {
+      "file": "src/App.jsx",
+      "before": "ea1b1faa448bc449eaed4234f06a94201ab9e1279bb5ce5745f7dcc674d74baf"
+    },
+    {
+      "file": "src/pages/DistributionPage.jsx",
+      "before": "265c2632e279ad5f08b38e4d2e820a16fecfd405b24dfd38d84d4cc7f9fafa70"
+    },
+    {
+      "file": "src/api/fingerprint.js",
+      "before": "4853af39e32ab6bc26a4a7778451d584a1b9e39f121aecf494552fd066d0f232"
+    },
+    {
+      "file": "src/api/policy.js",
+      "before": "b5c1cf5cb84751f2f89422ec445e269133674b8faae6c68277d340b00a8f5e20"
+    }
+  ],
+  "added": [
+    "src/pages/AvailabilityPage.jsx",
+    "src/api/availability.js",
+    "src/availability.css",
+    "tests/model-availability.test.mjs",
+    "tests/model-availability-live-browser.mjs",
+    "reports/model-availability/backend/src/lib/availability/core.js",
+    "reports/model-availability/backend/src/shared/utils/businessObservation.js"
+  ],
+  "providerOperations": [
+    [
+      "import { ModelsPage } from './CorePages.jsx';",
+      "import { ModelsPage } from './CorePages.jsx';\nimport { availabilityLink, connectionAvailability } from '../api/availability.js';"
+    ],
+    [
+      "  const settings = useResource('/api/settings');",
+      "  const settings = useResource('/api/settings');\n  const availability = useResource('/api/model-availability');"
+    ],
+    [
+      "          const failure = connection.lastError ? providerFailure(connection.lastError, connection.authType) : null;",
+      "          const failure = connection.lastError ? providerFailure(connection.lastError, connection.authType) : null;\n          const health = connectionAvailability(availability.data?.rows, connection.id);"
+    ],
+    [
+      "</div></button></td><td className=\"provider-test-status\">",
+      "</div></button><Link className={`availability-channel-link${health?.blocked ? ' paused' : ''}`} to={availabilityLink({ provider: connection.provider, connectionId: connection.id })}><Icon name=\"activity\"/>{health?.label || '查看模型可用性'}</Link></td><td className=\"provider-test-status\">"
+    ]
+  ]
+}

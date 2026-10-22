@@ -1,0 +1,14 @@
+{
+  "anonymousHttp": 401,
+  "loginHttp": 200,
+  "readHttp": 200,
+  "staleRuleHttp": 409,
+  "invalidControlHttp": 400,
+  "healthHttp": 200,
+  "mode": "observe",
+  "automaticProviders": [],
+  "channels": 803,
+  "observedRequests": 6,
+  "probeRequests": 0,
+  "passed": true
+}

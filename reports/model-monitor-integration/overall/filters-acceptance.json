@@ -1,0 +1,3162 @@
+{
+  "at": "2026-10-22T07:13:50.727Z",
+  "base": "http://127.0.0.1:4339",
+  "http": [
+    {
+      "path": "/api/auth/status",
+      "status": 200
+    },
+    {
+      "path": "/api/model-availability",
+      "status": 200
+    },
+    {
+      "path": "/api/iq-monitor",
+      "status": 200
+    },
+    {
+      "path": "/api/models/distribution",
+      "status": 200
+    },
+    {
+      "path": "/api/model-availability",
+      "status": 200
+    },
+    {
+      "path": "/api/iq-monitor",
+      "status": 200
+    },
+    {
+      "path": "/api/models/distribution",
+      "status": 200
+    }
+  ],
+  "errors": [],
+  "blockedWrites": [],
+  "upstreamProbes": 0,
+  "filters": [
+    {
+      "type": "all",
+      "count": 803
+    },
+    {
+      "type": "provider-status",
+      "provider": "openrouter",
+      "status": "",
+      "count": 1
+    },
+    {
+      "type": "provider-status",
+      "provider": "openrouter",
+      "status": "blocked",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openrouter",
+      "status": "healthy",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openrouter",
+      "status": "unknown",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openrouter",
+      "status": "suspect",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openrouter",
+      "status": "network",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openrouter",
+      "status": "cooling",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openrouter",
+      "status": "isolated",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openrouter",
+      "status": "waiting",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openrouter",
+      "status": "recovering",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openrouter",
+      "status": "disabled",
+      "count": 1
+    },
+    {
+      "type": "provider-status",
+      "provider": "sensenova",
+      "status": "",
+      "count": 6
+    },
+    {
+      "type": "provider-status",
+      "provider": "sensenova",
+      "status": "blocked",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "sensenova",
+      "status": "healthy",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "sensenova",
+      "status": "unknown",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "sensenova",
+      "status": "suspect",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "sensenova",
+      "status": "network",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "sensenova",
+      "status": "cooling",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "sensenova",
+      "status": "isolated",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "sensenova",
+      "status": "waiting",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "sensenova",
+      "status": "recovering",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "sensenova",
+      "status": "disabled",
+      "count": 6
+    },
+    {
+      "type": "provider-status",
+      "provider": "tokenrouter",
+      "status": "",
+      "count": 216
+    },
+    {
+      "type": "provider-status",
+      "provider": "tokenrouter",
+      "status": "blocked",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "tokenrouter",
+      "status": "healthy",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "tokenrouter",
+      "status": "unknown",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "tokenrouter",
+      "status": "suspect",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "tokenrouter",
+      "status": "network",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "tokenrouter",
+      "status": "cooling",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "tokenrouter",
+      "status": "isolated",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "tokenrouter",
+      "status": "waiting",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "tokenrouter",
+      "status": "recovering",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "tokenrouter",
+      "status": "disabled",
+      "count": 216
+    },
+    {
+      "type": "provider-status",
+      "provider": "bai",
+      "status": "",
+      "count": 105
+    },
+    {
+      "type": "provider-status",
+      "provider": "bai",
+      "status": "blocked",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "bai",
+      "status": "healthy",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "bai",
+      "status": "unknown",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "bai",
+      "status": "suspect",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "bai",
+      "status": "network",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "bai",
+      "status": "cooling",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "bai",
+      "status": "isolated",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "bai",
+      "status": "waiting",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "bai",
+      "status": "recovering",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "bai",
+      "status": "disabled",
+      "count": 105
+    },
+    {
+      "type": "provider-status",
+      "provider": "antigravity",
+      "status": "",
+      "count": 63
+    },
+    {
+      "type": "provider-status",
+      "provider": "antigravity",
+      "status": "blocked",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "antigravity",
+      "status": "healthy",
+      "count": 1
+    },
+    {
+      "type": "provider-status",
+      "provider": "antigravity",
+      "status": "unknown",
+      "count": 58
+    },
+    {
+      "type": "provider-status",
+      "provider": "antigravity",
+      "status": "suspect",
+      "count": 4
+    },
+    {
+      "type": "provider-status",
+      "provider": "antigravity",
+      "status": "network",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "antigravity",
+      "status": "cooling",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "antigravity",
+      "status": "isolated",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "antigravity",
+      "status": "waiting",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "antigravity",
+      "status": "recovering",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "antigravity",
+      "status": "disabled",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "gorouter",
+      "status": "",
+      "count": 1
+    },
+    {
+      "type": "provider-status",
+      "provider": "gorouter",
+      "status": "blocked",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "gorouter",
+      "status": "healthy",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "gorouter",
+      "status": "unknown",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "gorouter",
+      "status": "suspect",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "gorouter",
+      "status": "network",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "gorouter",
+      "status": "cooling",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "gorouter",
+      "status": "isolated",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "gorouter",
+      "status": "waiting",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "gorouter",
+      "status": "recovering",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "gorouter",
+      "status": "disabled",
+      "count": 1
+    },
+    {
+      "type": "provider-status",
+      "provider": "qoder",
+      "status": "",
+      "count": 60
+    },
+    {
+      "type": "provider-status",
+      "provider": "qoder",
+      "status": "blocked",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "qoder",
+      "status": "healthy",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "qoder",
+      "status": "unknown",
+      "count": 32
+    },
+    {
+      "type": "provider-status",
+      "provider": "qoder",
+      "status": "suspect",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "qoder",
+      "status": "network",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "qoder",
+      "status": "cooling",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "qoder",
+      "status": "isolated",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "qoder",
+      "status": "waiting",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "qoder",
+      "status": "recovering",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "qoder",
+      "status": "disabled",
+      "count": 28
+    },
+    {
+      "type": "provider-status",
+      "provider": "codebuddy-intl",
+      "status": "",
+      "count": 70
+    },
+    {
+      "type": "provider-status",
+      "provider": "codebuddy-intl",
+      "status": "blocked",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "codebuddy-intl",
+      "status": "healthy",
+      "count": 2
+    },
+    {
+      "type": "provider-status",
+      "provider": "codebuddy-intl",
+      "status": "unknown",
+      "count": 44
+    },
+    {
+      "type": "provider-status",
+      "provider": "codebuddy-intl",
+      "status": "suspect",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "codebuddy-intl",
+      "status": "network",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "codebuddy-intl",
+      "status": "cooling",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "codebuddy-intl",
+      "status": "isolated",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "codebuddy-intl",
+      "status": "waiting",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "codebuddy-intl",
+      "status": "recovering",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "codebuddy-intl",
+      "status": "disabled",
+      "count": 24
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-b145b409-4639-4a4e-9906-a9a16962ef17",
+      "status": "",
+      "count": 7
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-b145b409-4639-4a4e-9906-a9a16962ef17",
+      "status": "blocked",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-b145b409-4639-4a4e-9906-a9a16962ef17",
+      "status": "healthy",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-b145b409-4639-4a4e-9906-a9a16962ef17",
+      "status": "unknown",
+      "count": 7
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-b145b409-4639-4a4e-9906-a9a16962ef17",
+      "status": "suspect",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-b145b409-4639-4a4e-9906-a9a16962ef17",
+      "status": "network",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-b145b409-4639-4a4e-9906-a9a16962ef17",
+      "status": "cooling",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-b145b409-4639-4a4e-9906-a9a16962ef17",
+      "status": "isolated",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-b145b409-4639-4a4e-9906-a9a16962ef17",
+      "status": "waiting",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-b145b409-4639-4a4e-9906-a9a16962ef17",
+      "status": "recovering",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-b145b409-4639-4a4e-9906-a9a16962ef17",
+      "status": "disabled",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-843fd785-06f9-4403-9651-c621aee6de40",
+      "status": "",
+      "count": 9
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-843fd785-06f9-4403-9651-c621aee6de40",
+      "status": "blocked",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-843fd785-06f9-4403-9651-c621aee6de40",
+      "status": "healthy",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-843fd785-06f9-4403-9651-c621aee6de40",
+      "status": "unknown",
+      "count": 9
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-843fd785-06f9-4403-9651-c621aee6de40",
+      "status": "suspect",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-843fd785-06f9-4403-9651-c621aee6de40",
+      "status": "network",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-843fd785-06f9-4403-9651-c621aee6de40",
+      "status": "cooling",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-843fd785-06f9-4403-9651-c621aee6de40",
+      "status": "isolated",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-843fd785-06f9-4403-9651-c621aee6de40",
+      "status": "waiting",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-843fd785-06f9-4403-9651-c621aee6de40",
+      "status": "recovering",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-843fd785-06f9-4403-9651-c621aee6de40",
+      "status": "disabled",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-4854c48a-f6a8-4b79-b1c1-8f8a2f56b968",
+      "status": "",
+      "count": 50
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-4854c48a-f6a8-4b79-b1c1-8f8a2f56b968",
+      "status": "blocked",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-4854c48a-f6a8-4b79-b1c1-8f8a2f56b968",
+      "status": "healthy",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-4854c48a-f6a8-4b79-b1c1-8f8a2f56b968",
+      "status": "unknown",
+      "count": 50
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-4854c48a-f6a8-4b79-b1c1-8f8a2f56b968",
+      "status": "suspect",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-4854c48a-f6a8-4b79-b1c1-8f8a2f56b968",
+      "status": "network",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-4854c48a-f6a8-4b79-b1c1-8f8a2f56b968",
+      "status": "cooling",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-4854c48a-f6a8-4b79-b1c1-8f8a2f56b968",
+      "status": "isolated",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-4854c48a-f6a8-4b79-b1c1-8f8a2f56b968",
+      "status": "waiting",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-4854c48a-f6a8-4b79-b1c1-8f8a2f56b968",
+      "status": "recovering",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-4854c48a-f6a8-4b79-b1c1-8f8a2f56b968",
+      "status": "disabled",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-9361e849-9008-42ce-88d4-5531796031ab",
+      "status": "",
+      "count": 27
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-9361e849-9008-42ce-88d4-5531796031ab",
+      "status": "blocked",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-9361e849-9008-42ce-88d4-5531796031ab",
+      "status": "healthy",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-9361e849-9008-42ce-88d4-5531796031ab",
+      "status": "unknown",
+      "count": 27
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-9361e849-9008-42ce-88d4-5531796031ab",
+      "status": "suspect",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-9361e849-9008-42ce-88d4-5531796031ab",
+      "status": "network",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-9361e849-9008-42ce-88d4-5531796031ab",
+      "status": "cooling",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-9361e849-9008-42ce-88d4-5531796031ab",
+      "status": "isolated",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-9361e849-9008-42ce-88d4-5531796031ab",
+      "status": "waiting",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-9361e849-9008-42ce-88d4-5531796031ab",
+      "status": "recovering",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-9361e849-9008-42ce-88d4-5531796031ab",
+      "status": "disabled",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-responses-fb593c5b-26e2-4491-a4a1-b40a60c4b7c1",
+      "status": "",
+      "count": 16
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-responses-fb593c5b-26e2-4491-a4a1-b40a60c4b7c1",
+      "status": "blocked",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-responses-fb593c5b-26e2-4491-a4a1-b40a60c4b7c1",
+      "status": "healthy",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-responses-fb593c5b-26e2-4491-a4a1-b40a60c4b7c1",
+      "status": "unknown",
+      "count": 16
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-responses-fb593c5b-26e2-4491-a4a1-b40a60c4b7c1",
+      "status": "suspect",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-responses-fb593c5b-26e2-4491-a4a1-b40a60c4b7c1",
+      "status": "network",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-responses-fb593c5b-26e2-4491-a4a1-b40a60c4b7c1",
+      "status": "cooling",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-responses-fb593c5b-26e2-4491-a4a1-b40a60c4b7c1",
+      "status": "isolated",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-responses-fb593c5b-26e2-4491-a4a1-b40a60c4b7c1",
+      "status": "waiting",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-responses-fb593c5b-26e2-4491-a4a1-b40a60c4b7c1",
+      "status": "recovering",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-responses-fb593c5b-26e2-4491-a4a1-b40a60c4b7c1",
+      "status": "disabled",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-2e2987c6-d952-4d70-a570-0502f7d5cf16",
+      "status": "",
+      "count": 7
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-2e2987c6-d952-4d70-a570-0502f7d5cf16",
+      "status": "blocked",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-2e2987c6-d952-4d70-a570-0502f7d5cf16",
+      "status": "healthy",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-2e2987c6-d952-4d70-a570-0502f7d5cf16",
+      "status": "unknown",
+      "count": 7
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-2e2987c6-d952-4d70-a570-0502f7d5cf16",
+      "status": "suspect",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-2e2987c6-d952-4d70-a570-0502f7d5cf16",
+      "status": "network",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-2e2987c6-d952-4d70-a570-0502f7d5cf16",
+      "status": "cooling",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-2e2987c6-d952-4d70-a570-0502f7d5cf16",
+      "status": "isolated",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-2e2987c6-d952-4d70-a570-0502f7d5cf16",
+      "status": "waiting",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-2e2987c6-d952-4d70-a570-0502f7d5cf16",
+      "status": "recovering",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-2e2987c6-d952-4d70-a570-0502f7d5cf16",
+      "status": "disabled",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-bc96c6af-8311-450d-9e94-4275e5fbb31c",
+      "status": "",
+      "count": 22
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-bc96c6af-8311-450d-9e94-4275e5fbb31c",
+      "status": "blocked",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-bc96c6af-8311-450d-9e94-4275e5fbb31c",
+      "status": "healthy",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-bc96c6af-8311-450d-9e94-4275e5fbb31c",
+      "status": "unknown",
+      "count": 22
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-bc96c6af-8311-450d-9e94-4275e5fbb31c",
+      "status": "suspect",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-bc96c6af-8311-450d-9e94-4275e5fbb31c",
+      "status": "network",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-bc96c6af-8311-450d-9e94-4275e5fbb31c",
+      "status": "cooling",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-bc96c6af-8311-450d-9e94-4275e5fbb31c",
+      "status": "isolated",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-bc96c6af-8311-450d-9e94-4275e5fbb31c",
+      "status": "waiting",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-bc96c6af-8311-450d-9e94-4275e5fbb31c",
+      "status": "recovering",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-bc96c6af-8311-450d-9e94-4275e5fbb31c",
+      "status": "disabled",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-a9fb2295-434b-4a0c-9623-715ca7cca344",
+      "status": "",
+      "count": 4
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-a9fb2295-434b-4a0c-9623-715ca7cca344",
+      "status": "blocked",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-a9fb2295-434b-4a0c-9623-715ca7cca344",
+      "status": "healthy",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-a9fb2295-434b-4a0c-9623-715ca7cca344",
+      "status": "unknown",
+      "count": 4
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-a9fb2295-434b-4a0c-9623-715ca7cca344",
+      "status": "suspect",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-a9fb2295-434b-4a0c-9623-715ca7cca344",
+      "status": "network",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-a9fb2295-434b-4a0c-9623-715ca7cca344",
+      "status": "cooling",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-a9fb2295-434b-4a0c-9623-715ca7cca344",
+      "status": "isolated",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-a9fb2295-434b-4a0c-9623-715ca7cca344",
+      "status": "waiting",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-a9fb2295-434b-4a0c-9623-715ca7cca344",
+      "status": "recovering",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-a9fb2295-434b-4a0c-9623-715ca7cca344",
+      "status": "disabled",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "codebuddy-cn",
+      "status": "",
+      "count": 51
+    },
+    {
+      "type": "provider-status",
+      "provider": "codebuddy-cn",
+      "status": "blocked",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "codebuddy-cn",
+      "status": "healthy",
+      "count": 3
+    },
+    {
+      "type": "provider-status",
+      "provider": "codebuddy-cn",
+      "status": "unknown",
+      "count": 39
+    },
+    {
+      "type": "provider-status",
+      "provider": "codebuddy-cn",
+      "status": "suspect",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "codebuddy-cn",
+      "status": "network",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "codebuddy-cn",
+      "status": "cooling",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "codebuddy-cn",
+      "status": "isolated",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "codebuddy-cn",
+      "status": "waiting",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "codebuddy-cn",
+      "status": "recovering",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "codebuddy-cn",
+      "status": "disabled",
+      "count": 9
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-badbcd0b-256e-4006-b925-0105245b7f73",
+      "status": "",
+      "count": 51
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-badbcd0b-256e-4006-b925-0105245b7f73",
+      "status": "blocked",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-badbcd0b-256e-4006-b925-0105245b7f73",
+      "status": "healthy",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-badbcd0b-256e-4006-b925-0105245b7f73",
+      "status": "unknown",
+      "count": 51
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-badbcd0b-256e-4006-b925-0105245b7f73",
+      "status": "suspect",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-badbcd0b-256e-4006-b925-0105245b7f73",
+      "status": "network",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-badbcd0b-256e-4006-b925-0105245b7f73",
+      "status": "cooling",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-badbcd0b-256e-4006-b925-0105245b7f73",
+      "status": "isolated",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-badbcd0b-256e-4006-b925-0105245b7f73",
+      "status": "waiting",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-badbcd0b-256e-4006-b925-0105245b7f73",
+      "status": "recovering",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-badbcd0b-256e-4006-b925-0105245b7f73",
+      "status": "disabled",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-409d63de-5871-41f7-8cac-2d65a50b96b5",
+      "status": "",
+      "count": 5
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-409d63de-5871-41f7-8cac-2d65a50b96b5",
+      "status": "blocked",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-409d63de-5871-41f7-8cac-2d65a50b96b5",
+      "status": "healthy",
+      "count": 1
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-409d63de-5871-41f7-8cac-2d65a50b96b5",
+      "status": "unknown",
+      "count": 4
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-409d63de-5871-41f7-8cac-2d65a50b96b5",
+      "status": "suspect",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-409d63de-5871-41f7-8cac-2d65a50b96b5",
+      "status": "network",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-409d63de-5871-41f7-8cac-2d65a50b96b5",
+      "status": "cooling",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-409d63de-5871-41f7-8cac-2d65a50b96b5",
+      "status": "isolated",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-409d63de-5871-41f7-8cac-2d65a50b96b5",
+      "status": "waiting",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-409d63de-5871-41f7-8cac-2d65a50b96b5",
+      "status": "recovering",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-409d63de-5871-41f7-8cac-2d65a50b96b5",
+      "status": "disabled",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "tokenharbor",
+      "status": "",
+      "count": 9
+    },
+    {
+      "type": "provider-status",
+      "provider": "tokenharbor",
+      "status": "blocked",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "tokenharbor",
+      "status": "healthy",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "tokenharbor",
+      "status": "unknown",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "tokenharbor",
+      "status": "suspect",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "tokenharbor",
+      "status": "network",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "tokenharbor",
+      "status": "cooling",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "tokenharbor",
+      "status": "isolated",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "tokenharbor",
+      "status": "waiting",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "tokenharbor",
+      "status": "recovering",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "tokenharbor",
+      "status": "disabled",
+      "count": 9
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-073895ef-eedc-48ef-8b60-4bfcaed550db",
+      "status": "",
+      "count": 2
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-073895ef-eedc-48ef-8b60-4bfcaed550db",
+      "status": "blocked",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-073895ef-eedc-48ef-8b60-4bfcaed550db",
+      "status": "healthy",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-073895ef-eedc-48ef-8b60-4bfcaed550db",
+      "status": "unknown",
+      "count": 2
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-073895ef-eedc-48ef-8b60-4bfcaed550db",
+      "status": "suspect",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-073895ef-eedc-48ef-8b60-4bfcaed550db",
+      "status": "network",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-073895ef-eedc-48ef-8b60-4bfcaed550db",
+      "status": "cooling",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-073895ef-eedc-48ef-8b60-4bfcaed550db",
+      "status": "isolated",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-073895ef-eedc-48ef-8b60-4bfcaed550db",
+      "status": "waiting",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-073895ef-eedc-48ef-8b60-4bfcaed550db",
+      "status": "recovering",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-chat-073895ef-eedc-48ef-8b60-4bfcaed550db",
+      "status": "disabled",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-responses-a2706957-ab8c-4d30-ae6e-5e52544c5e2d",
+      "status": "",
+      "count": 21
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-responses-a2706957-ab8c-4d30-ae6e-5e52544c5e2d",
+      "status": "blocked",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-responses-a2706957-ab8c-4d30-ae6e-5e52544c5e2d",
+      "status": "healthy",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-responses-a2706957-ab8c-4d30-ae6e-5e52544c5e2d",
+      "status": "unknown",
+      "count": 20
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-responses-a2706957-ab8c-4d30-ae6e-5e52544c5e2d",
+      "status": "suspect",
+      "count": 1
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-responses-a2706957-ab8c-4d30-ae6e-5e52544c5e2d",
+      "status": "network",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-responses-a2706957-ab8c-4d30-ae6e-5e52544c5e2d",
+      "status": "cooling",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-responses-a2706957-ab8c-4d30-ae6e-5e52544c5e2d",
+      "status": "isolated",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-responses-a2706957-ab8c-4d30-ae6e-5e52544c5e2d",
+      "status": "waiting",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-responses-a2706957-ab8c-4d30-ae6e-5e52544c5e2d",
+      "status": "recovering",
+      "count": 0
+    },
+    {
+      "type": "provider-status",
+      "provider": "openai-compatible-responses-a2706957-ab8c-4d30-ae6e-5e52544c5e2d",
+      "status": "disabled",
+      "count": 0
+    },
+    {
+      "type": "model",
+      "model": "dots-studio/dots-3-note-preview:free",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "sensenova-6.8-flash-lite",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "deepseek-v4-flash",
+      "count": 21
+    },
+    {
+      "type": "model",
+      "model": "glm-5.2",
+      "count": 16
+    },
+    {
+      "type": "model",
+      "model": "MiniMax-M3",
+      "count": 13
+    },
+    {
+      "type": "model",
+      "model": "anthropic/claude-fable-5",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "anthropic/claude-haiku-4.5",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "anthropic/claude-opus-4.5",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "anthropic/claude-opus-4.6",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "anthropic/claude-opus-4.7",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "anthropic/claude-opus-4.7-fast",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "anthropic/claude-opus-4.8",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "anthropic/claude-opus-4.8-fast",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "anthropic/claude-opus-5",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "anthropic/claude-opus-5-fast",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "anthropic/claude-sonnet-4",
+      "count": 6
+    },
+    {
+      "type": "model",
+      "model": "anthropic/claude-sonnet-4.5",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "anthropic/claude-sonnet-4.6",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "anthropic/claude-sonnet-5",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "claude-haiku-4-5",
+      "count": 8
+    },
+    {
+      "type": "model",
+      "model": "claude-opus-4-8-m-aws",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "deepseek/deepseek-v3.2",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "deepseek/deepseek-v4-flash",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "deepseek/deepseek-v4-flash-0731",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "deepseek/deepseek-v4-pro",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "ex/gpt-5.4",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "google/gemini-2.5-flash-image",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "google/gemini-3-flash-preview",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "google/gemini-3-pro-image-preview",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "google/gemini-3.1-flash-image-preview",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "google/gemini-3.1-flash-lite-image",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "google/gemini-3.1-pro-preview",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "google/gemini-3.5-flash",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "google/gemini-3.5-flash-lite",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "google/gemini-3.6-flash",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "google/gemini-embedding-2",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "google/gemma-4-26b-a4b-it",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "microsoft/mai-image-2.5",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "minimax/minimax-m2-her",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "minimax/minimax-m2.1",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "minimax/minimax-m2.1-highspeed",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "minimax/minimax-m2.5",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "minimax/minimax-m2.7",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "minimax/minimax-m2.7-highspeed",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "miromind/mirothinker-1-7-deepresearch",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "miromind/mirothinker-1-7-deepresearch-mini",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "mistralai/devstral-2512",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "mistralai/mistral-medium-3-5",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "mistralai/mistral-small-2603",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "mistralai/voxtral-small-24b-2507",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "moonshotai/kimi-k2.5",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "moonshotai/kimi-k2.6",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "moonshotai/kimi-k2.7-code",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "moonshotai/kimi-k3",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "moonshotai/kimi-k3-free",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "nvidia/nemotron-3-super-120b-a12b",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "openai/gpt-4o-mini",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "openai/gpt-5",
+      "count": 28
+    },
+    {
+      "type": "model",
+      "model": "openai/gpt-5-image",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "openai/gpt-5-image-mini",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "openai/gpt-5-mini",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "openai/gpt-5.2",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "openai/gpt-5.4",
+      "count": 8
+    },
+    {
+      "type": "model",
+      "model": "openai/gpt-5.4-mini",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "openai/gpt-5.4-nano",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "openai/gpt-5.4-pro",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "openai/gpt-5.5",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "openai/gpt-5.5-pro",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "openai/gpt-5.6-luna",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "openai/gpt-5.6-sol",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "openai/gpt-5.6-terra",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "openai/gpt-oss-120b",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "qwen/qwen3-coder-next",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "qwen/qwen3.5-122b-a10b",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "qwen/qwen3.5-35b-a3b",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "qwen/qwen3.5-397b-a17b",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "qwen/qwen3.5-9b",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "qwen/qwen3.5-flash",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "qwen/qwen3.5-plus-02-15",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "qwen/qwen3.6-plus",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "qwen/qwen3.7-max",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "qwen/qwen3.7-plus",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "qwen/qwen3.8-max",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "qwen3.5-omni-plus",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "qwen3.6-flash",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "sakana/fugu-ultra",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "seed-2-0-code-preview-260328",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "seed-2-0-lite-260428",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "seed-2-0-mini-260428",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "seed-2-0-pro-260328",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "stepfun/step-3.5-flash",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "stepfun/step-3.7-flash",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "tencent/hy3-preview",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "x-ai/grok-4.1-fast",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "x-ai/grok-4.20-beta",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "x-ai/grok-4.3",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "x-ai/grok-4.5",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "x-ai/grok-build-0.1",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "xiaomi/mimo-v2-flash",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "xiaomi/mimo-v2-omni",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "xiaomi/mimo-v2-pro",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "xiaomi/mimo-v2.5",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "xiaomi/mimo-v2.5-pro",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "z-ai/glm-4.5-air",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "z-ai/glm-4.6",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "z-ai/glm-4.6v",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "z-ai/glm-4.7",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "z-ai/glm-5",
+      "count": 8
+    },
+    {
+      "type": "model",
+      "model": "z-ai/glm-5-turbo",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "z-ai/glm-5.1",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "z-ai/glm-5.2",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "deepseek-v4-pro",
+      "count": 17
+    },
+    {
+      "type": "model",
+      "model": "deepseek-v4-flash-vision-exp",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "deepseek-v3.2",
+      "count": 5
+    },
+    {
+      "type": "model",
+      "model": "deepseek-r1-0528",
+      "count": 3
+    },
+    {
+      "type": "model",
+      "model": "qwen3.8-flash",
+      "count": 5
+    },
+    {
+      "type": "model",
+      "model": "qwen3.8-27b",
+      "count": 5
+    },
+    {
+      "type": "model",
+      "model": "qwen3.8-max",
+      "count": 5
+    },
+    {
+      "type": "model",
+      "model": "qwen3.7-max",
+      "count": 5
+    },
+    {
+      "type": "model",
+      "model": "qwen3.6-27b",
+      "count": 3
+    },
+    {
+      "type": "model",
+      "model": "gpt-5.5",
+      "count": 10
+    },
+    {
+      "type": "model",
+      "model": "gpt-5.4",
+      "count": 21
+    },
+    {
+      "type": "model",
+      "model": "gpt-5.4-mini",
+      "count": 5
+    },
+    {
+      "type": "model",
+      "model": "gpt-5.4-nano",
+      "count": 5
+    },
+    {
+      "type": "model",
+      "model": "gpt-5",
+      "count": 82
+    },
+    {
+      "type": "model",
+      "model": "gpt-5-mini",
+      "count": 5
+    },
+    {
+      "type": "model",
+      "model": "gpt-5-nano",
+      "count": 3
+    },
+    {
+      "type": "model",
+      "model": "gpt-5.2",
+      "count": 5
+    },
+    {
+      "type": "model",
+      "model": "gpt-5.6-sol",
+      "count": 10
+    },
+    {
+      "type": "model",
+      "model": "gpt-5.6-terra",
+      "count": 9
+    },
+    {
+      "type": "model",
+      "model": "grok-4.6",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "grok-4.5",
+      "count": 8
+    },
+    {
+      "type": "model",
+      "model": "gemini-3.6-flash",
+      "count": 16
+    },
+    {
+      "type": "model",
+      "model": "gemini-3.5-flash",
+      "count": 18
+    },
+    {
+      "type": "model",
+      "model": "gemini-3-flash",
+      "count": 11
+    },
+    {
+      "type": "model",
+      "model": "mimo-v2.5-pro",
+      "count": 5
+    },
+    {
+      "type": "model",
+      "model": "mimo-v2.5",
+      "count": 10
+    },
+    {
+      "type": "model",
+      "model": "glm-5.3-flash",
+      "count": 17
+    },
+    {
+      "type": "model",
+      "model": "glm-5.3",
+      "count": 29
+    },
+    {
+      "type": "model",
+      "model": "glm-5.1",
+      "count": 10
+    },
+    {
+      "type": "model",
+      "model": "kimi-k2.5",
+      "count": 6
+    },
+    {
+      "type": "model",
+      "model": "minimax-m3",
+      "count": 13
+    },
+    {
+      "type": "model",
+      "model": "minimax-m2.7",
+      "count": 9
+    },
+    {
+      "type": "model",
+      "model": "hy3",
+      "count": 10
+    },
+    {
+      "type": "model",
+      "model": "gemini-3.8-flash-high",
+      "count": 3
+    },
+    {
+      "type": "model",
+      "model": "gemini-3.8-flash-medium",
+      "count": 3
+    },
+    {
+      "type": "model",
+      "model": "gemini-3.8-flash-low",
+      "count": 3
+    },
+    {
+      "type": "model",
+      "model": "gemini-3.8-flash",
+      "count": 17
+    },
+    {
+      "type": "model",
+      "model": "gemini-3.7-flash-high",
+      "count": 3
+    },
+    {
+      "type": "model",
+      "model": "gemini-3.7-flash-medium",
+      "count": 3
+    },
+    {
+      "type": "model",
+      "model": "gemini-3.7-flash-low",
+      "count": 3
+    },
+    {
+      "type": "model",
+      "model": "gemini-3.6-flash-high",
+      "count": 3
+    },
+    {
+      "type": "model",
+      "model": "gemini-3.6-flash-medium",
+      "count": 3
+    },
+    {
+      "type": "model",
+      "model": "gemini-3.6-flash-low",
+      "count": 3
+    },
+    {
+      "type": "model",
+      "model": "gemini-3.5-flash-high",
+      "count": 3
+    },
+    {
+      "type": "model",
+      "model": "gemini-3-flash-agent",
+      "count": 3
+    },
+    {
+      "type": "model",
+      "model": "gemini-3.5-flash-low",
+      "count": 3
+    },
+    {
+      "type": "model",
+      "model": "gemini-3.5-flash-extra-low",
+      "count": 3
+    },
+    {
+      "type": "model",
+      "model": "gemini-3.1-pro-high",
+      "count": 3
+    },
+    {
+      "type": "model",
+      "model": "gemini-pro-agent",
+      "count": 3
+    },
+    {
+      "type": "model",
+      "model": "gemini-3.1-pro-low",
+      "count": 3
+    },
+    {
+      "type": "model",
+      "model": "claude-sonnet-4-6",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "claude-opus-4-6-thinking",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "gpt-oss-120b-medium",
+      "count": 3
+    },
+    {
+      "type": "model",
+      "model": "auto",
+      "count": 5
+    },
+    {
+      "type": "model",
+      "model": "ultimate",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "performance",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "efficient",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "qmodel_38max",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "qmodel_latest",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "qmodel",
+      "count": 12
+    },
+    {
+      "type": "model",
+      "model": "qfmodel",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "kmodel_latest",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "kmodel",
+      "count": 8
+    },
+    {
+      "type": "model",
+      "model": "gmodel",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "gfmodel",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "dmodel",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "dfmodel",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "mmodel",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "qoder/auto",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "qoder/ultimate",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "qoder/performance",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "qoder/efficient",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "qoder/qmodel_38max",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "qoder/qfmodel",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "qoder/qmodel_latest",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "qoder/qmodel",
+      "count": 6
+    },
+    {
+      "type": "model",
+      "model": "qoder/kmodel_latest",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "qoder/kmodel",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "qoder/gmodel",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "qoder/gfmodel",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "qoder/dmodel",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "qoder/dfmodel",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "qoder/mmodel",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "hy4-preview",
+      "count": 5
+    },
+    {
+      "type": "model",
+      "model": "gpt-6-astra",
+      "count": 9
+    },
+    {
+      "type": "model",
+      "model": "gpt-6-luna",
+      "count": 6
+    },
+    {
+      "type": "model",
+      "model": "gpt-6-sol",
+      "count": 5
+    },
+    {
+      "type": "model",
+      "model": "gpt-5.6-luna",
+      "count": 7
+    },
+    {
+      "type": "model",
+      "model": "gpt-5.3-codex",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "gpt-6.1-sol",
+      "count": 6
+    },
+    {
+      "type": "model",
+      "model": "claude-opus-5.5",
+      "count": 3
+    },
+    {
+      "type": "model",
+      "model": "claude-sonnet-5.5",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "claude-opus-5",
+      "count": 15
+    },
+    {
+      "type": "model",
+      "model": "claude-sonnet-5",
+      "count": 12
+    },
+    {
+      "type": "model",
+      "model": "claude-opus-4.8",
+      "count": 6
+    },
+    {
+      "type": "model",
+      "model": "claude-opus-4.7",
+      "count": 6
+    },
+    {
+      "type": "model",
+      "model": "claude-opus-4.6",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "claude-sonnet-4.6",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "grok-4.7",
+      "count": 8
+    },
+    {
+      "type": "model",
+      "model": "space-bunny",
+      "count": 7
+    },
+    {
+      "type": "model",
+      "model": "glm-5v-turbo",
+      "count": 5
+    },
+    {
+      "type": "model",
+      "model": "kimi-k3",
+      "count": 15
+    },
+    {
+      "type": "model",
+      "model": "kimi-k2.7",
+      "count": 7
+    },
+    {
+      "type": "model",
+      "model": "kimi-k2.8-preview",
+      "count": 5
+    },
+    {
+      "type": "model",
+      "model": "kimi-k2.6",
+      "count": 8
+    },
+    {
+      "type": "model",
+      "model": "deepseek-v4.1-flash",
+      "count": 17
+    },
+    {
+      "type": "model",
+      "model": "codex-auto-review",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "deepseek-v4-pro-0813",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "laguna-s-2.1",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "muse-spark-1.3-contributor",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "solar-pro4",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "mimo-v2.6-flash",
+      "count": 5
+    },
+    {
+      "type": "model",
+      "model": "space-bunny-alpha",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "kiro-opus-4.8",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "claude-opus-4-8",
+      "count": 6
+    },
+    {
+      "type": "model",
+      "model": "claude-opus-4-8-thinking",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "claude-fable-5",
+      "count": 7
+    },
+    {
+      "type": "model",
+      "model": "claude-fable-5-1",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "claude-opus-4-7",
+      "count": 3
+    },
+    {
+      "type": "model",
+      "model": "deepseek-flash",
+      "count": 3
+    },
+    {
+      "type": "model",
+      "model": "sensenova-6.7-flash-lite",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "claude-opus-4-6",
+      "count": 7
+    },
+    {
+      "type": "model",
+      "model": "sensenova-u1.5-lite",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "gemini-3.7-flash",
+      "count": 11
+    },
+    {
+      "type": "model",
+      "model": "sensenova-u1-fast",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "claude-opus-5-thinking",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "sakana-namazu",
+      "count": 9
+    },
+    {
+      "type": "model",
+      "model": "sakana-namazu-rp",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "sakana-namazu-polite-search",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "sakana-namazu-osaka",
+      "count": 3
+    },
+    {
+      "type": "model",
+      "model": "sakana-namazu-polite-rp",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "grok-imagine-image-lite",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "sakana-namazu-polite",
+      "count": 3
+    },
+    {
+      "type": "model",
+      "model": "sakana-namazu-osaka-search",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "sakana-namazu-osaka-rp",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "grok-imagine-image-2.0",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "grok-imagine-image",
+      "count": 5
+    },
+    {
+      "type": "model",
+      "model": "grok-4.3",
+      "count": 3
+    },
+    {
+      "type": "model",
+      "model": "sakana-namazu-search",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "grok-imagine-image-edit",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "grok-imagine-video",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "grok-imagine-video-1.5",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "DeepSeek-V4-Flash-Vision-Exp",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "DeepSeek-V4-Pro-Qwen3.5-9B-MTP-GGUF",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "DeepSeek-V4.1-Flash",
+      "count": 17
+    },
+    {
+      "type": "model",
+      "model": "GLM-5.3-Flash",
+      "count": 17
+    },
+    {
+      "type": "model",
+      "model": "MiMo-V2.6-Flash",
+      "count": 5
+    },
+    {
+      "type": "model",
+      "model": "openrouter/free",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "Qwen-Image-2.1-PE-T2I-GGUF",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "Qwen3.8-27B",
+      "count": 5
+    },
+    {
+      "type": "model",
+      "model": "Qwen3.8-Flash-Next",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "stealth/ox-alpha",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "stealth/space-bunny-alpha",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "stealth/union-alpha",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "step-3.5-flash",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "step-3.5-flash-2603",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "step-3.7-flash",
+      "count": 3
+    },
+    {
+      "type": "model",
+      "model": "step-5-preview",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "step-image-edit-2",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "stepaudio-2.5-asr",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "stepaudio-2.5-tts",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "claude-3-5-haiku-20241022",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "claude-3-5-sonnet-20241022",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "claude-3-7-sonnet-20250219",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "claude-haiku-4-5-20251001",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "claude-opus-4-1-20250805",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "claude-opus-4-20250514",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "claude-opus-4-5-20251101",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "claude-opus-5-5",
+      "count": 3
+    },
+    {
+      "type": "model",
+      "model": "claude-sonnet-4-20250514",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "claude-sonnet-4-5-20250929",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "gemini-2.5-pro",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "gpt-5-codex",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "gpt-6-astra-cc-format",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "opencode/deepseek-v4.1-flash",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "gemini-3.1-pro",
+      "count": 9
+    },
+    {
+      "type": "model",
+      "model": "claude-sonnet-5-5",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "grok-4.20-multi-agent-0309",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "deepseek-v4-flash-0731",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "gemini-4-argon",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "jev-latest",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "gpt-oss-20b",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "glm-5.3-flashx",
+      "count": 3
+    },
+    {
+      "type": "model",
+      "model": "42-pro-0721-free",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "deepseek-v4.1-flash-thinking",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "glm-4.5-flash",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "mistral-code-fim-latest",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "claude-mythos-preview",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "deepseek-v4-flash-de",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "deepseek-v4-flash-es",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "deepseek-v4-flash-fr",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "deepseek-v4-pro-de",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "deepseek-v4-pro-es",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "deepseek-v4-pro-fr",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "deepseek-v4-vision",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "gpt-image-2",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "gpt-image-2-1024x1024",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "gpt-image-2-1024x1536",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "gpt-image-2-1536x1024",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "grok-3-mini",
+      "count": 2
+    },
+    {
+      "type": "model",
+      "model": "grok-3-mini-fast",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "grok-4.20-0309-non-reasoning",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "grok-4.20-0309-reasoning",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "jev-preview",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "llama3.1-8B",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "MiniMax-M2",
+      "count": 20
+    },
+    {
+      "type": "model",
+      "model": "MiniMax-M2.5",
+      "count": 4
+    },
+    {
+      "type": "model",
+      "model": "MiniMax-M2.5-highspeed",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "MiniMax-M2.7",
+      "count": 9
+    },
+    {
+      "type": "model",
+      "model": "MiniMax-M2.7-highspeed",
+      "count": 3
+    },
+    {
+      "type": "model",
+      "model": "spark-x2.5-1.7b",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "spark-x2.5-4b",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "claude-haiku-5.5:free",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "deepseek-v4.1-flash:free",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "qwen3.8-flash:free",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "mimo-v2.6-flash:free",
+      "count": 1
+    },
+    {
+      "type": "model",
+      "model": "claude-haiku-5-5",
+      "count": 1
+    },
+    {
+      "type": "empty",
+      "count": 0
+    },
+    {
+      "type": "search-refresh",
+      "count": 0
+    },
+    {
+      "type": "status-refresh",
+      "count": 5
+    },
+    {
+      "type": "legacy-account-link",
+      "count": 1
+    },
+    {
+      "type": "fingerprint-filters-refresh",
+      "count": 4
+    }
+  ],
+  "paginationRows": 803,
+  "passed": true
+}

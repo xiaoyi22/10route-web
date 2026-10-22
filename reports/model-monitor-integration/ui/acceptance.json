@@ -1,0 +1,113 @@
+{
+  "http": [
+    {
+      "path": "/api/auth/status",
+      "status": 200
+    },
+    {
+      "path": "/api/model-availability",
+      "status": 200
+    },
+    {
+      "path": "/api/iq-monitor",
+      "status": 200
+    },
+    {
+      "path": "/api/providers",
+      "status": 200
+    },
+    {
+      "path": "/api/models/distribution",
+      "status": 200
+    },
+    {
+      "path": "/api/iq-monitor",
+      "status": 200
+    },
+    {
+      "path": "/api/model-availability",
+      "status": 200
+    },
+    {
+      "path": "/api/providers",
+      "status": 200
+    },
+    {
+      "path": "/api/models/distribution",
+      "status": 200
+    }
+  ],
+  "errors": [],
+  "interceptedWrites": [
+    {
+      "path": "/api/models/test",
+      "body": {
+        "model": "ag/gemini-3.8-flash-high",
+        "kind": "llm",
+        "monitorTarget": {
+          "provider": "antigravity",
+          "model": "gemini-3.8-flash-high",
+          "connectionId": "e0449ba2-f715-4777-8889-efb298414b69"
+        }
+      }
+    },
+    {
+      "path": "/api/iq-monitor",
+      "body": {
+        "enabled": false,
+        "intervalMinutes": 10,
+        "providers": [
+          {
+            "id": "openai-compatible-chat-b145b409-4639-4a4e-9906-a9a16962ef17",
+            "mode": "selected",
+            "models": [
+              "gpt-6.1-sol"
+            ],
+            "modelChecks": {
+              "gpt-6.1-sol": [
+                "iq"
+              ]
+            },
+            "modelThinking": {
+              "deepseek-v4.1-flash": "high",
+              "gpt-6.1-sol": "high"
+            },
+            "excludedConnectionIds": []
+          },
+          {
+            "id": "openai-compatible-responses-a2706957-ab8c-4d30-ae6e-5e52544c5e2d",
+            "mode": "selected",
+            "models": [
+              "gpt-6.1-sol"
+            ],
+            "modelChecks": {
+              "gpt-6.1-sol": [
+                "iq"
+              ]
+            },
+            "excludedConnectionIds": []
+          }
+        ],
+        "questions": [
+          {
+            "question": "在一个黑色的袋子里放有三种口味的糖果，每种糖果有两种不同的形状(圆形和五角星形，不同的形状靠手感可以分辨)。现已知不同口味的糖和不同形状的数量统计如下表。参赛者需要在活动前决定摸出的糖果数目，那么，最少取出多少个糖果才能保证手中同时拥有不同形状的苹果味和桃子味的糖?(同时手中有圆形苹果味匹配五角星桃子味糖果，或者有圆形桃子味匹配五角星苹果味糖果都满足要求)\n苹果味 桃子味 西瓜味\n圆形 7 9 8\n五角星形 7 6 4\n最后一行只输出：IQ-ANSWER: <你的答案数字>",
+            "answer": "21"
+          }
+        ],
+        "revision": "be41d466-5b00-42ae-b878-d10bf00a0346",
+        "testingModes": {
+          "antigravity": "observe"
+        }
+      }
+    }
+  ],
+  "forbidden": [],
+  "screenshots": [
+    "reports/model-monitor-integration/ui/1440-dark.png",
+    "reports/model-monitor-integration/ui/1440-light.png",
+    "reports/model-monitor-integration/ui/375-dark.png",
+    "reports/model-monitor-integration/ui/375-light.png",
+    "reports/model-monitor-integration/ui/config.png"
+  ],
+  "passed": true
+}

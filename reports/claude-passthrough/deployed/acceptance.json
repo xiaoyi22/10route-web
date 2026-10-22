@@ -1,0 +1,59 @@
+{
+  "base": "http://192.168.11.150:4317",
+  "http": [
+    {
+      "path": "/api/auth/status",
+      "status": 200
+    },
+    {
+      "path": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "path": "/api/providers",
+      "status": 200
+    },
+    {
+      "path": "/api/provider-nodes",
+      "status": 200
+    },
+    {
+      "path": "/api/providers",
+      "status": 200
+    }
+  ],
+  "interceptedWrites": [
+    {
+      "path": "/api/providers/afdfd94c-a956-46ac-97fa-c86dfb8e7f0e",
+      "claudeCodePassthrough": false
+    },
+    {
+      "path": "/api/providers/afdfd94c-a956-46ac-97fa-c86dfb8e7f0e",
+      "claudeCodePassthrough": true
+    }
+  ],
+  "errors": [],
+  "views": [
+    {
+      "width": 1440,
+      "theme": "dark",
+      "screenshot": "reports/claude-passthrough/deployed/1440-dark.png"
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "screenshot": "reports/claude-passthrough/deployed/1440-light.png"
+    },
+    {
+      "width": 375,
+      "theme": "dark",
+      "screenshot": "reports/claude-passthrough/deployed/375-dark.png"
+    },
+    {
+      "width": 375,
+      "theme": "light",
+      "screenshot": "reports/claude-passthrough/deployed/375-light.png"
+    }
+  ],
+  "passed": true
+}

@@ -1,0 +1,24 @@
+{
+  "backendActive": "active",
+  "backendStarted": "ExecMainStartTimestamp=Thu 2026-10-22 12:13:04 CST",
+  "frontendRelease": "/home/meet/.local/share/10router-web/releases/20261022-115653",
+  "backendDeployPassed": true,
+  "offlineGatePassed": true,
+  "testsPassed": 5689,
+  "knownAssertionFailures": 95,
+  "testFilesExecuted": 504,
+  "patchChecksAdded": 12,
+  "sourceHashes": {
+    "src/lib/availability/core.js": "c23c7be53f4cd091fe5f9898803d15ed4a75af426344e59727e438b7113ef8fb",
+    "src/lib/availability/service.js": "3a49db6b6feaedba7fc8190914a18f02634a421b2f7087486f0932211e94c737",
+    "src/lib/usageDb.js": "4e814e459ddb9ccf0306c805a7a89f39b835b413e059cb425e945eec9ae293bb",
+    "src/shared/utils/businessObservation.js": "735932bb99b5e986f5b7c8404b9522bd32bf1721ead4b30e4c89431ec8ca9d8c",
+    "src/sse/services/auth.js": "18c7fb52de0ddbdbdb6ebc2a363caae3ec2e54505731f02e2bc5af05e4f51151",
+    "src/sse/handlers/chat.js": "790da128eb51f0917409b475944d24038d6c32cd4833ce6e76fa104f6a7d6c80",
+    "src/app/api/v1/models/route.js": "a933485d305e04b215fda4737db3c7a4e712577bcdbd4ca3f4df2d5eb35025a6",
+    "src/app/api/models/distribution/route.js": "75aca4b31d0107dccba218d1e9efcf9b874643b7e13470f51c9aa600ebf3e9da",
+    "src/app/api/model-availability/route.js": "844418749854b2d7ee6aafdaba6d6037cbfe564d55c633d34851c793f58a30c3",
+    "src/dashboardGuard.js": "9499aaa1153181e3df885120a274f535f247488dfce98b08523fd0fdabd5996a",
+    "open-sse/handlers/chatCore/requestDetail.js": "ba62e144cdc0d382d3a8ca175429cf497b05687fa8534d07170d813dd8eeaf87"
+  }
+}
