@@ -7,3 +7,7 @@ dist/
 screenshots/
 .checkins/
 checkin-data/
+
+# 本地测试文件（不纳入版本控制）
+tests/*.mjs
+tests/matrix/

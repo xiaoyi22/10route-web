@@ -2,7 +2,7 @@ import os from 'node:os';
 import { readFile } from 'node:fs/promises';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
-import { collectSystemInfo } from './system-info.mjs';
+import { attachRates, collectSystemInfo } from './system-info.mjs';
 
 const execute = promisify(execFile);
 
@@ -29,6 +29,7 @@ export function createSystemBridge({ backendUrl, sshTarget, sshIdentity, collect
   let sample;
   let sampledAt = 0;
   let pending;
+  let previous;
   const send = (response, status, data) => {
     if (response.destroyed || response.writableEnded) return;
     response.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' });
@@ -43,7 +44,12 @@ export function createSystemBridge({ backendUrl, sshTarget, sshIdentity, collect
       const auth = await authResponse.json();
       if (auth.authenticated !== true) return send(response, 401, { error: 'Unauthorized' });
       if (!sample || Date.now() - sampledAt >= 10000) {
-        pending ||= collect().then(data => { sample = data; sampledAt = Date.now(); return data; }).finally(() => { pending = null; });
+        pending ||= collect().then(data => {
+          sample = attachRates(data, previous);
+          previous = data;
+          sampledAt = Date.now();
+          return sample;
+        }).finally(() => { pending = null; });
         await pending;
       }
       return send(response, 200, sample);

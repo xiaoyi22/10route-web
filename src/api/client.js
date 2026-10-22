@@ -98,6 +98,7 @@ export function normalizeProviders(data) {
       authType: connection.authType || '',
       lastError: connection.lastError || '',
       enabledModels: Array.isArray(connection.providerSpecificData?.enabledModels) ? connection.providerSpecificData.enabledModels : null,
+      claudeCodePassthrough: connection.providerSpecificData?.claudeCodePassthrough === true,
       nodeName: connection.providerSpecificData?.nodeName || '',
       prefix: connection.providerSpecificData?.prefix || '',
       baseUrl: connection.providerSpecificData?.baseUrl || '',

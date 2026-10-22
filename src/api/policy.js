@@ -5,7 +5,7 @@ const reads = new Set([
   '/api/auth/status', '/api/health', '/api/system/info', '/api/providers', '/api/provider-nodes',
   '/api/keys', '/api/models', '/api/models/custom', '/api/usage/stats',
   '/api/usage/chart', '/api/usage/stream', '/api/usage/request-details',
-  '/api/proxy-pools', '/api/settings', '/api/pricing', '/api/iq-monitor',
+  '/api/proxy-pools', '/api/settings', '/api/pricing', '/api/iq-monitor', '/api/model-availability',
   '/api/models/caps', '/api/models/alias', '/api/models/disabled', '/api/models/distribution', '/api/combos',
   '/api/channel-balances', '/api/usage/quotas',
   '/api/settings/database',
@@ -51,6 +51,7 @@ export function isAllowedRequest(url, method = 'GET', management = false) {
   if (method === 'POST' && ['/api/auth/login', '/api/auth/logout'].includes(pathname)) return true;
   if (method === 'POST' && pathname === '/api/auth/saml/acs') return true;
   if (!management) return false;
+  if (pathname === '/api/model-availability' && ['PUT', 'POST'].includes(method)) return true;
   if (method === 'POST' && pathname === '/api/host-management') return true;
   if (method === 'POST' && ['/api/translator/translate', '/api/translator/send', '/api/translator/save', '/api/headroom/start', '/api/headroom/stop', '/api/headroom/restart', '/api/pxpipe/start', '/api/pxpipe/stop', '/api/pxpipe/restart', '/api/pxpipe/install', '/api/pxpipe/health'].includes(pathname)) return true;
   if (pathname === '/api/headroom/extras' && ['POST', 'DELETE'].includes(method)) return true;

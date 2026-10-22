@@ -16,6 +16,7 @@ import ModelEditor from '../components/ModelEditor.jsx';
 import UpstreamModels from '../components/UpstreamModels.jsx';
 import { ConfirmDelete, CopyButton, ErrorBlock, IconButton, Modal, PageHeading, formatDate, formatNumber, managementEnabled, useResource } from '../components/Controls.jsx';
 import { normalizeProviders, requestJson } from '../api/client.js';
+import ModelDrift, { useUpstreamDrift } from '../components/ModelDrift.jsx';
 
 const labels = { healthy: '测试正常', error: '连接异常', disabled: '已停用', unknown: '未测试 / 未知' };
 
@@ -124,16 +125,27 @@ export function ModelsPage({ providerId = '', onConnectionsChanged }) {
   const nodes = useResource('/api/provider-nodes');
   const caps = useResource('/api/models/caps');
   const disabled = useResource('/api/models/disabled');
+  const combos = useResource('/api/combos');
+  const keys = useResource('/api/keys');
   const [editor, setEditor] = useState(null);
   const [removingModel, setRemovingModel] = useState(null);
   const [actionError, setActionError] = useState('');
   const [busyModel, setBusyModel] = useState(null);
   const [upstream, setUpstream] = useState(false);
+  const [driftOpen, setDriftOpen] = useState(false);
   const [testModel, setTestModel] = useState(null);
   const [modelTests, setModelTests] = useState({});
   const [creditRevision, setCreditRevision] = useState(0);
   const creditPricing = useModelCredits(providers.data?.connections || [], creditRevision, providerId);
   const refreshModels = () => { builtIn.refresh(); custom.refresh(); providers.refresh(); nodes.refresh(); caps.refresh(); disabled.refresh(); setCreditRevision(value => value + 1); };
+  const connections = normalizeProviders(providers.data || {});
+  const directory = nodes.data?.nodes || [];
+  // 核对结果与这份登记表绑定：自定义模型、节点、账号或密钥任一处变了，旧结论就要作废。
+  const scopeConnections = providerId ? connections.filter(connection => providerInfo(connection.provider, directory, connection).id === providerId) : connections;
+  const driftNodes = providerId ? directory.filter(node => node.id === providerId) : directory;
+  const driftCustom = (custom.data?.models || []).filter(model => !providerId || model.providerAlias === providerId || driftNodes.some(node => node.prefix === model.providerAlias));
+  const driftSignature = providerId + JSON.stringify([driftCustom.map(model => [model.providerAlias, model.id, model.enabled !== false, model.name]), driftNodes.map(node => [node.id, node.prefix]), scopeConnections.map(connection => [connection.id, connection.isActive]), combos.data?.combos?.map(combo => [combo.name, combo.models]), keys.data?.keys?.map(key => [key.id, key.allowedModels, key.allowedCombos])]);
+  const drift = useUpstreamDrift({ connections: scopeConnections, nodes: driftNodes, custom: driftCustom, combos: combos.data?.combos || [], keys: keys.data?.keys || [], signature: driftSignature });
   const [query, setQuery] = useState('');
   const deferredQuery = useDeferredValue(query);
   const [scope, setScope] = useState(providerId ? 'all' : 'connected');
@@ -184,7 +196,7 @@ export function ModelsPage({ providerId = '', onConnectionsChanged }) {
     } catch (failure) { setActionError(failure.message); }
     finally { setBusyModel(null); }
   }
-  const actions = <><button className="button refresh-button" aria-label="刷新模型" aria-busy={loading} disabled={loading} onClick={refreshModels}><Icon name="refresh"/>{loading ? '更新中…' : '刷新模型'}</button>{managementEnabled && <><button className="button primary" disabled={loading || !suppliers.length} onClick={() => setEditor({})}><Icon name="plus"/>添加自定义模型</button>{providerId && <button className="button" disabled={loading || !upstreamConnections.length} onClick={() => setUpstream(true)}><Icon name="download"/>获取上游模型</button>}</>}</>;
+  const actions = <><button className="button refresh-button" aria-label="刷新模型" aria-busy={loading} disabled={loading} onClick={refreshModels}><Icon name="refresh"/>{loading ? '更新中…' : '刷新模型'}</button>{managementEnabled && <><button className="button primary" disabled={loading || !suppliers.length} onClick={() => setEditor({})}><Icon name="plus"/>添加自定义模型</button>{providerId && <button className="button" disabled={loading || !upstreamConnections.length} onClick={() => setUpstream(true)}><Icon name="download"/>获取上游模型</button>}<button className="button" disabled={loading || drift.busy || !driftNodes.length} onClick={() => { setDriftOpen(true); if (!drift.report) drift.refresh(); }}><Icon name="activity"/>核对上游</button></>}</>;
   return <>
     {providerId ? <><div className="panel-heading"><h2>供应商模型</h2></div><div className="section-toolbar">{actions}</div></> : <PageHeading title="模型" subtitle="我的网关 / 模型目录">{actions}</PageHeading>}
     {actionError && <ErrorBlock message={actionError}/>} {[caps, disabled].map((item, index) => item.error && <ErrorBlock key={index} message={item.error} onRetry={item.refresh}/>)}
@@ -197,6 +209,7 @@ export function ModelsPage({ providerId = '', onConnectionsChanged }) {
       <div className="dialog-actions"><button className="button" disabled={testResult?.running} onClick={() => setTestModel(null)}>关闭</button><button className="button primary" disabled={testResult?.running} onClick={() => runModelTest(testModel)}>{testResult?.running ? '正在测试…' : '重新测试'}</button></div>
     </Modal>}
     {upstream && <UpstreamModels supplier={providerInfo(providerId, nodes.data?.nodes)} connections={upstreamConnections} existing={scoped} onClose={() => setUpstream(false)} onSaved={refreshModels} onScopeSaved={() => { providers.refresh(); onConnectionsChanged?.(); }}/>}
+    {driftOpen && <ModelDrift report={drift.report} snapshot={drift.snapshot} busy={drift.busy} progress={drift.progress} error={drift.error} at={drift.at} stale={drift.stale} onRefresh={drift.refresh} onClose={() => setDriftOpen(false)} links={{ models: providerId ? `/dashboard/providers/${encodeURIComponent(providerId)}` : '/dashboard/models' }}/>}
     {removingModel && <ConfirmDelete title="删除自定义模型" name={removingModel.id} url={`/api/models/custom?${new URLSearchParams({ providerAlias: removingModel.provider, id: removingModel.upstreamId, type: removingModel.type || 'llm' })}`} onClose={() => setRemovingModel(null)} onDeleted={refreshModels}/>}
     <div className="section-toolbar">
       {!providerId && <div className="period-tabs" aria-label="模型范围">{[['connected', '已接入供应商'], ['all', '全部目录']].map(([value, name]) => <button key={value} type="button" aria-pressed={scope === value} className={scope === value ? 'selected' : ''} onClick={() => { setScope(value); setProvider(''); setPage(1); }}>{name}</button>)}</div>}

@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import Icon from '../components/Icon.jsx';
+import { useSearchParams } from 'react-router-dom';
 import ProviderIcon from '../components/ProviderIcon.jsx';
 import ProviderError from '../components/ProviderError.jsx';
 import { ErrorBlock, IconButton, Modal, PageHeading, formatDate, formatNumber, managementEnabled, useResource } from '../components/Controls.jsx';
@@ -44,26 +45,28 @@ function CheckDetail({ row, name, catalog, onClose }) {
   </Modal>;
 }
 
-function ManualTest({ target, check, routeId, thinkingLevels, initialThinkingLevel, persistedManualTests, onClose, onResult }) {
+export function ManualTest({ target, check, routeId, thinkingLevels, initialThinkingLevel, persistedManualTests, onClose, onResult }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [thinkingLevel, setThinkingLevel] = useState(check === 'iq' ? initialThinkingLevel || '' : '');
   const settings = useResource(check === 'iq' ? '/api/settings' : null);
+  const sending = useRef(false);
   async function run() {
+    if (sending.current) return;
     if (check === 'iq' && thinkingLevel && !monitorThinkingOptions(thinkingLevels).includes(thinkingLevel)) { setError('请选择当前模型支持的思考强度，或沿用网关默认设置。'); return; }
-    setBusy(true); setError('');
+    sending.current = true; setBusy(true); setError('');
     try {
       if (check === 'iq' && thinkingLevel && !persistedManualTests) throw new Error('当前后端尚未安装手动检测修复，请升级后端后再选择思考强度。');
-      const result = await requestJson('/api/models/test', { method: 'POST', body: JSON.stringify({ model: routeId, kind: 'llm', ...(check === 'iq' && { probe: 'iq' }), ...(persistedManualTests && { monitorTarget: { provider: target.provider, model: target.model }, ...(check === 'iq' && thinkingLevel && { thinkingLevel }) }) }) });
+      const result = await requestJson('/api/models/test', { method: 'POST', body: JSON.stringify({ model: routeId, kind: 'llm', ...(check === 'iq' && { probe: 'iq' }), ...(persistedManualTests && { monitorTarget: { provider: target.provider, model: target.model, ...(target.connectionId && { connectionId: target.connectionId }) }, ...(check === 'iq' && thinkingLevel && { thinkingLevel }) }) }) });
       onResult(result.monitorRow || manualCheckRow(result, check === 'iq' ? { ...target, thinkingLevel: thinkingLevel || null } : target, check));
     } catch (failure) {
       if (failure.status) onResult(manualCheckRow({ ok: false, status: failure.status, error: failure.details?.error || failure.message }, check === 'iq' ? { ...target, thinkingLevel: thinkingLevel || null } : target, check));
       else setError(failure.message);
     }
-    finally { setBusy(false); }
+    finally { sending.current = false; setBusy(false); }
   }
   return <Modal title={`单次${checkNames[check]} · ${target.model}`} onClose={onClose} busy={busy}>
-    <dl className="request-details"><div><dt>模型路由</dt><dd><code>{routeId}</code></dd></div><div><dt>账号选择</dt><dd>{persistedManualTests ? '使用本供应商可用账号，遵守检测计划排除项' : '由后端路由选择可用账号'}</dd></div><div><dt>请求次数</dt><dd>1 次真实模型请求，按上游规则计费</dd></div><div><dt>记录范围</dt><dd>{persistedManualTests ? '结果保存到检测历史并更新状态' : '结果保留在当前页面；后端升级后可保存记录'}</dd></div></dl>
+    {target.blocked && <p className="inline-note">此渠道仍处于隔离中。本次仅诊断指定账号，不开放业务调度；测试通过后可另行解除隔离。</p>}<dl className="request-details"><div><dt>模型路由</dt><dd><code>{routeId}</code></dd></div><div><dt>账号选择</dt><dd>{target.connectionId ? target.connectionName || target.connectionId : persistedManualTests ? '使用本供应商可用账号，遵守检测计划排除项' : '由后端路由选择可用账号'}</dd></div><div><dt>请求次数</dt><dd>1 次真实模型请求，按上游规则计费</dd></div><div><dt>记录范围</dt><dd>{persistedManualTests ? '保存到手动检测历史，不改变业务观察或隔离状态' : '结果保留在当前页面；后端升级后可保存记录'}</dd></div></dl>
     {check === 'iq' && <section className="monitor-answer"><label className="monitor-thinking-control">思考强度<ThinkingSelect label="单次智商检测思考强度" levels={thinkingLevels} value={thinkingLevel} onChange={setThinkingLevel} disabled={busy}/></label><p className="inline-note">仅用于本次智商检测，不修改自动检测计划。</p></section>}
     {check === 'iq' && <section className="monitor-answer"><h3>网关单次检测题目</h3>{settings.error ? <ErrorBlock message={settings.error} onRetry={settings.refresh}/> : settings.loading ? <p>正在读取题目…</p> : <><p>{settings.data?.iqProbe?.question || '后端未返回单题配置'}</p><span className="muted">标准答案：{settings.data?.iqProbe?.answer ?? '—'}</span></>}</section>}
     {error && <ErrorBlock message={error}/>}<div className="dialog-actions"><button className="button" disabled={busy} onClick={onClose}>取消</button><button className="button primary" disabled={busy || (check === 'iq' && (!settings.data?.iqProbe?.question || !!settings.error || (thinkingLevel && !monitorThinkingOptions(thinkingLevels).includes(thinkingLevel))))} onClick={run}><Icon name="play"/>{busy ? '正在检测…' : '开始检测'}</button></div>
@@ -72,7 +75,7 @@ function ManualTest({ target, check, routeId, thinkingLevels, initialThinkingLev
 
 const fingerprintStates = { pending: '等待发送', requesting: '正在请求', streaming: '正在接收', done: '已完成', error: '未采用' };
 
-function FingerprintTest({ target, routeOptions = [], routesLoading = false, routeWarning, initialResult, thinkingLevels, initialThinkingLevel, onResult, onClose }) {
+function FingerprintTest({ target, routeOptions = [], routesLoading = false, routeWarning, initialResult, thinkingLevels, initialThinkingLevel, canTest = true, onResult, onClose }) {
   const keys = useResource('/api/keys');
   const route = routeOptions[0] || '';
   const [thinkingLevel, setThinkingLevel] = useState(initialResult?.thinkingLevel || initialThinkingLevel || '');
@@ -95,6 +98,7 @@ function FingerprintTest({ target, routeOptions = [], routesLoading = false, rou
   const activeKey = activeKeys.find(key => key.id === keyChoice) || activeKeys[0];
   const source = fingerprintBank.source;
   async function run() {
+    if (!canTest) { setError('此站点仅允许业务观察，请先配置检测模式。'); return; }
     const apiKey = activeKey?.key;
     if (!apiKey) { setError('没有可用的网关密钥，请先在「账号授权 → 密钥」里创建。'); return; }
     if (routesLoading) { setError('正在读取网关分发配置，请稍候再开始检测。'); return; }
@@ -127,7 +131,7 @@ function FingerprintTest({ target, routeOptions = [], routesLoading = false, rou
       {result.claimed && <p className="inline-note">声称模型 {result.claimed}，识别首位 {result.analysis.results[0]?.display_name || result.analysis.results[0]?.model || '—'}</p>}<p><span className={`status ${result.verdict.tone}`}><span className="dot"/>{result.verdict.label}</span></p><p className="inline-note">{result.verdict.reason}</p>
       {result.analysis.results.length > 0 && <div className="table-shell"><table><thead><tr><th>排名</th><th>参考模型</th><th>家族</th><th>置信度</th></tr></thead><tbody>{result.analysis.results.slice(0, 5).map((item, index) => <tr key={item.model}><td className="mono">{index + 1}</td><td className="log-model">{item.display_name || item.model}{item.model === result.claimed && <small>声称模型</small>}</td><td>{item.family_name}</td><td className="mono">{item.probability == null ? '—' : `${(item.probability * 100).toFixed(1)}%`}</td></tr>)}</tbody></table></div>}
     </section>}
-    {error && <ErrorBlock message={error}/>}<div className="dialog-actions">{busy ? <button className="button" onClick={() => { controller.current?.abort(); }}>停止检测</button> : <button className="button" onClick={onClose}>关闭</button>}<button className="button primary" disabled={busy || !activeKey || !route || routesLoading} onClick={run}><Icon name="play"/>{busy ? `正在检测… ${duration(elapsed)}` : result ? '重新检测' : '开始检测'}</button></div>
+    {error && <ErrorBlock message={error}/>}<div className="dialog-actions">{busy ? <button className="button" onClick={() => { controller.current?.abort(); }}>停止检测</button> : <button className="button" onClick={onClose}>关闭</button>}<button className="button primary" disabled={!canTest || busy || !activeKey || !route || routesLoading} onClick={run}><Icon name="play"/>{busy ? `正在检测… ${duration(elapsed)}` : result ? '重新检测' : '开始检测'}</button></div>
   </Modal>;
 }
 
@@ -140,7 +144,8 @@ function MonitorConfig({ data, onSaved }) {
   const [query, setQuery] = useState('');
   const edit = patch => { setConfig(previous => ({ ...previous, ...patch })); setDirty(true); setMessage(''); };
   const changeProvider = (id, patch) => edit({ providers: config.providers.map(provider => provider.id === id ? { ...provider, ...patch } : provider) });
-  const targets = monitorTargets(config, data.catalog);
+  const targets = monitorTargets(config, data.catalog).filter(target => config.testingModes?.[target.provider] === 'scheduled');
+  const blockedPlans = config.providers.filter(item => config.testingModes?.[item.id] !== 'scheduled');
   const requests = targets.reduce((sum, target) => sum + (target.check === 'iq' ? config.questions.length : 1), 0);
   async function save(event) {
     event.preventDefault(); setError(''); setMessage('');
@@ -156,6 +161,7 @@ function MonitorConfig({ data, onSaved }) {
   }
   return <form className="monitor-config" onSubmit={save}>
     <fieldset disabled={!managementEnabled || busy}>
+      <section className="monitor-config-band"><div className="panel-heading"><h2>中转站检测模式</h2></div><p className="inline-note">仅业务观察不发出测试；手动测试只在点击后执行。允许定时检测还需下方计划启用。此设置与可用性自动隔离独立。</p><div className="monitor-testing-modes">{data.catalog.map(provider => <label key={provider.id}><span>{provider.name}<small>{Object.hasOwn(config.testingModes || {}, provider.id) ? '按本站设置执行' : '待确认 · 当前仅业务观察'}</small></span><select aria-label={provider.name + ' 检测模式'} value={config.testingModes?.[provider.id] || 'observe'} onChange={event => edit({ testingModes: { ...config.testingModes, [provider.id]: event.target.value } })}><option value="observe">仅业务观察</option><option value="manual">手动测试</option><option value="scheduled">允许定时检测</option></select></label>)}</div><p className="inline-note">保存后影响预览：{blockedPlans.length ? blockedPlans.map(item => data.catalog.find(provider => provider.id === item.id)?.name || item.id).join('、') + ' 的旧计划保留，但不执行定时检测。' : '当前已选计划均允许定时检测。'} 未修改的站点不会自动获得测试权限。</p></section>
       <section className="monitor-config-band"><div className="panel-heading"><h2>自动检测计划</h2><span className="muted">{dirty ? '有未保存更改' : '已保存配置'}</span></div><div className="monitor-plan-controls"><label className="checkbox-filter"><input type="checkbox" aria-label="启用自动检测" checked={config.enabled} onChange={event => edit({ enabled: event.target.checked })}/>启用自动检测</label><label>间隔（分钟）<input aria-label="检测间隔" aria-describedby="monitor-interval-hint" type="number" min="1" max="10080" step="1" required value={config.intervalMinutes} onChange={event => edit({ intervalMinutes: Number(event.target.value) })}/></label><span className="muted">{config.providers.length} 个供应商 · 每轮最多 {requests} 次请求</span></div><p className="inline-note" id="monitor-interval-hint">最小间隔 1 分钟，请输入整数。</p><p className="inline-note">检测会产生上游用量。单次测试使用网关单题，自动智商检测执行下方题库。</p></section>
       <section className="monitor-config-band"><div className="panel-heading"><h2>供应商与模型</h2></div><p className="inline-note">思考强度按模型设置，仅用于智商检测，不影响模型测活。</p><div className="filter-search"><Icon name="search"/><input aria-label="搜索检测配置供应商" placeholder="搜索供应商或模型…" value={query} onChange={event => setQuery(event.target.value)}/></div>
         {config.providers.filter(selected => !data.catalog.some(provider => provider.id === selected.id)).map(selected => <div className="error-block" key={selected.id}>供应商已不存在：{selected.id}<IconButton icon="trash" label={`移除 ${selected.id}`} onClick={() => edit({ providers: config.providers.filter(item => item.id !== selected.id) })}/></div>)}
@@ -182,28 +188,39 @@ function ProviderModelChecks({ provider, selected, onChange }) {
   return <div className="monitor-model-checks"><div className="filter-search"><Icon name="search"/><input aria-label={`搜索检测模型 ${provider.name}`} placeholder="搜索模型…" value={search} onChange={event => { setSearch(event.target.value); setPage(1); }}/></div><div className="table-shell"><table><thead><tr><th>模型</th><th>测活</th><th>智商检测</th><th>思考强度</th></tr></thead><tbody>{models.slice((current - 1) * 20, current * 20).map(model => <tr key={model}><td className="log-model">{model}{!provider.models.includes(model) && <small>当前不可用</small>}</td>{['availability', 'iq'].map(check => <td key={check}><input type="checkbox" aria-label={`${provider.name} ${model} ${checkNames[check]}`} checked={selected.modelChecks?.[model]?.includes(check) || false} disabled={!provider.models.includes(model) && !selected.modelChecks?.[model]?.includes(check)} onChange={event => onChange(toggleMonitorModel(selected, model, check, event.target.checked))}/></td>)}<td><ThinkingSelect label={provider.name + ' ' + model + ' 智商检测思考强度'} levels={provider.thinkingLevels?.[model]} value={Object.hasOwn(selected.modelThinking || {}, model) ? selected.modelThinking[model] : ''} disabled={!selected.modelChecks?.[model]?.includes('iq') || !provider.models.includes(model)} onChange={value => { const modelThinking = { ...selected.modelThinking }; if (value) modelThinking[model] = value; else delete modelThinking[model]; onChange({ modelThinking }); }}/></td></tr>)}</tbody></table></div><div className="table-footer"><span>{models.length} 个模型</span><div className="pagination"><IconButton icon="back" label={`上一页检测模型 ${provider.name}`} disabled={current <= 1} onClick={() => setPage(current - 1)}/><span>{current} / {pages}</span><IconButton icon="arrow" label={`下一页检测模型 ${provider.name}`} disabled={current >= pages} onClick={() => setPage(current + 1)}/></div></div></div>;
 }
 
-export function MonitorPage() {
+export function MonitorPage({ embedded = false }) {
+  const [params, navigateParams] = useSearchParams();
+  const setParams = (next, options) => navigateParams(typeof next === 'function' ? next(new URLSearchParams(window.location.search)) : next, options);
   const resource = useResource('/api/iq-monitor');
   const nodes = useResource('/api/provider-nodes');
   const distribution = useResource('/api/models/distribution');
-  const [view, setView] = useState('status');
-  const [check, setCheck] = useState('availability');
-  const [provider, setProvider] = useState('');
-  const [query, setQuery] = useState('');
-  const [scope, setScope] = useState('configured');
+  const view = ['status', 'history', 'config'].includes(params.get('toolView')) ? params.get('toolView') : 'status';
+  const setView = value => setParams(previous => { const next = new URLSearchParams(previous); next.set('toolView', value); return next; });
+  const check = ['availability', 'iq', 'fingerprint'].includes(params.get('check')) ? params.get('check') : 'availability';
+  const setCheck = value => setParams(previous => { const next = new URLSearchParams(previous); next.set('check', value); return next; });
+  const setFilterParam = (key, value, replace = false) => setParams(previous => { const next = new URLSearchParams(previous); if (value) next.set(key, value); else next.delete(key); return next; }, { replace });
+  const provider = params.get('provider') || '';
+  const setProvider = value => setFilterParam('provider', value);
+  const query = params.get('model') || '';
+  const setQuery = value => setFilterParam('model', value, true);
+  const scope = params.get('toolScope') || 'configured';
+  const setScope = value => setFilterParam('toolScope', value === 'configured' ? '' : value);
   const [page, setPage] = useState(1);
   const [detail, setDetail] = useState(null);
   const [manual, setManual] = useState(null);
   const [fingerprint, setFingerprint] = useState(null);
   const [fingerprintResults, setFingerprintResults] = useState(loadFingerprintResults);
-  const [fingerprintStatus, setFingerprintStatus] = useState('');
-  const [publishStatus, setPublishStatus] = useState('');
+  const fingerprintStatus = params.get('fingerprintStatus') || '';
+  const setFingerprintStatus = value => setFilterParam('fingerprintStatus', value);
+  const publishStatus = params.get('publishStatus') || '';
+  const setPublishStatus = value => setFilterParam('publishStatus', value);
   const [collapsedProviders, setCollapsedProviders] = useState(null);
   useEffect(() => { try { localStorage.setItem(FINGERPRINT_STORAGE_KEY, JSON.stringify(fingerprintResults)); } catch { /* 浏览器禁用存储时不记录 */ } }, [fingerprintResults]);
   const [manualResults, setManualResults] = useState({});
   const [autoRefresh, setAutoRefresh] = useState(true);
   useEffect(() => { if (!autoRefresh) return; const timer = setInterval(() => { if (!document.hidden && !resource.loading) resource.refresh(); }, 15000); return () => clearInterval(timer); }, [autoRefresh, resource.loading, resource.refresh]);
   const data = resource.data;
+  const testingAllowed = id => ['manual', 'scheduled'].includes(data?.config.testingModes?.[id]);
   const catalog = data?.catalog || [];
   const storedHistory = data?.state?.history || [];
   const history = [...storedHistory, ...Object.values(manualResults).filter(manual => !storedHistory.some(row => row.manual && row.provider === manual.provider && row.model === manual.model && row.check === manual.check && row.at === manual.at))];
@@ -254,9 +271,10 @@ export function MonitorPage() {
   const filter = (setter, value) => { setter(value); setCollapsedProviders(null); setPage(1); };
   const stateLabel = data?.running ? '检测中' : data?.config.enabled ? '等待下一轮' : '自动检测已关闭';
   return <>
-    <PageHeading title="模型检测" subtitle="模型测活 / 智商检测 / 指纹检测"><label className="checkbox-filter"><input aria-label="自动刷新检测结果" type="checkbox" checked={autoRefresh} onChange={event => setAutoRefresh(event.target.checked)}/>自动刷新</label><span className="last-updated">{resource.updated?.toLocaleTimeString('zh-CN') || '—'}</span><button className="button" disabled={resource.loading} onClick={resource.refresh}><Icon name="refresh"/>刷新</button></PageHeading>
+    <PageHeading title={embedded ? "检测工具" : "模型检测"} subtitle="模型测活 / 智商检测 / 指纹检测" compact={embedded}><label className="checkbox-filter"><input aria-label="自动刷新检测结果" type="checkbox" checked={autoRefresh} onChange={event => setAutoRefresh(event.target.checked)}/>自动刷新</label><span className="last-updated">{resource.updated?.toLocaleTimeString('zh-CN') || '—'}</span><button className="button" disabled={resource.loading} onClick={resource.refresh}><Icon name="refresh"/>刷新</button></PageHeading>
     {resource.error && <ErrorBlock message={`${resource.error}${data ? ' · 当前保留上次结果' : ''}`} onRetry={resource.refresh}/>}
-    <div className="monitor-view-tabs" role="tablist" aria-label="模型检测视图">{[['status', '模型状态'], ['history', '检测记录'], ['config', '自动检测配置']].map(([value, title]) => <button type="button" role="tab" aria-selected={view === value} key={value} onClick={() => { setView(value); setPage(1); }}>{title}</button>)}</div>
+    <p className="monitor-mode-hint">主动检测按中转站授权。未确认的站点仅观察业务；在「检测配置」中可改为手动测试。<button className="text-button" onClick={() => setView('config')}>配置检测模式</button></p>
+    <div className="monitor-view-tabs" role="tablist" aria-label="模型检测视图">{[['status', '模型状态'], ['history', '检测记录'], ['config', '检测配置']].map(([value, title]) => <button type="button" role="tab" aria-selected={view === value} key={value} onClick={() => { setView(value); setPage(1); }}>{title}</button>)}</div>
     {!data ? <p className="empty-state">{resource.error ? '检测数据读取失败' : '正在读取检测数据…'}</p> : <>
       <div className="monitor-runtime"><span className={`status ${data.running ? 'healthy' : 'unknown'}`}><span className="dot"/>{stateLabel}</span><span>上轮完成 {formatDate(data.state.completedAt)}</span><span>下轮 {data.config.enabled ? data.running ? '本轮完成后计算' : data.state.revision !== data.config.revision ? '等待后台检查' : formatDate(data.state.nextAt) : '—'}</span></div>
       {view === 'config' ? <MonitorConfig data={data} onSaved={resource.refresh}/> : <>
@@ -297,7 +315,7 @@ export function MonitorPage() {
               return <li key={key} className={result ? 'fingerprint-tested' : ''}>
                 <div className="fingerprint-model-name"><strong>{target.model}</strong>{target.kind !== 'none' && <span className="badge subdued">{referenceKinds[target.kind]}</span>}{distribution.data?.mode === 'allowlist' && <span className={`badge ${target.routes.length ? 'subdued' : 'warning'}`} title={target.routes.length ? target.routes.join('、') : '网关下游分发白名单未发布该模型，检测请求会被拒绝（404）'}>{target.routes.length ? '已发布' : '未发布'}</span>}</div>
                 <div className="fingerprint-model-meta">{result ? <><span className="mono">{formatDate(result.at)}</span><span className={`status ${result.verdict.tone}`}><span className="dot"/>{result.verdict.label}</span>{claim && <span className="muted">指纹 {claim.display_name || claim.model}{claim.probability == null ? '' : ` · ${(claim.probability * 100).toFixed(0)}%`}</span>}{top && top.model !== claim?.model && <span className="muted">首位 {top.display_name || top.model}</span>}</> : <span className="muted">{target.kind === 'none' ? '未收录' : '未检测'}</span>}</div>
-                <div className="fingerprint-model-actions">{result && <IconButton icon="eye" label={`查看指纹结果 ${target.model}`} onClick={() => setFingerprint(target)}/>}<button type="button" className="button" aria-label={`指纹检测 ${target.model}`} disabled={!managementEnabled || (distribution.data?.mode === 'allowlist' && !target.routes.length)} onClick={() => setFingerprint(target)}><Icon name="shield"/>{result ? '重测' : '检测'}</button></div>
+                <div className="fingerprint-model-actions">{result && <IconButton icon="eye" label={`查看指纹结果 ${target.model}`} onClick={() => setFingerprint(target)}/>}<button type="button" className="button" aria-label={`指纹检测 ${target.model}`} disabled={!managementEnabled || !testingAllowed(target.provider) || (distribution.data?.mode === 'allowlist' && !target.routes.length)} onClick={() => setFingerprint(target)}><Icon name="shield"/>{result ? '重测' : '检测'}</button></div>
               </li>;
             })}</ul>}
           </section>;
@@ -305,20 +323,20 @@ export function MonitorPage() {
           const target = { provider, model };
           const topRow = result.analysis.results[0];
           const claim = fingerprintTop(result, result.claimed);
-          return <tr key={fingerprintKey(provider, model)}><td><div className="connection-name"><ProviderIcon provider={provider}/><div className="log-model"><strong>{model}</strong><small>{name(provider)}</small></div></div></td><td className="mono muted">{formatDate(result.at)}</td><td><span className={`status ${result.verdict.tone}`}><span className="dot"/>{result.verdict.label}</span><small className="log-mode">{languageText(result)}提问 · {result.challenges?.length || 0} 次请求</small></td><td className="log-model">{topRow ? topRow.display_name || topRow.model : '—'}{claim && claim.probability != null && <small>{claim.display_name || claim.model} · {(claim.probability * 100).toFixed(1)}%</small>}</td><td className="mono">{Array.isArray(result.challenges) && result.challenges.some(item => item.status === 'error') ? `${result.challenges.filter(item => item.status === 'error').length} 条失败` : '成功'}{result.totalMs ? <small className="log-mode">{duration(result.totalMs)}</small> : null}</td><td><div className="monitor-actions"><div><IconButton icon="eye" label={`查看指纹结果 ${model}`} onClick={() => setFingerprint(target)}/><button type="button" className="button" aria-label={`指纹检测 ${model}`} disabled={!managementEnabled || (fingerprintAllowlist && !routesFor(provider, model).length)} onClick={() => setFingerprint(target)}><Icon name="shield"/>重测</button><IconButton icon="trash" label={`删除指纹记录 ${model}`} onClick={() => setFingerprintResults(previous => { const next = { ...previous }; delete next[fingerprintKey(provider, model)]; return next; })}/></div></div></td></tr>;
+          return <tr key={fingerprintKey(provider, model)}><td><div className="connection-name"><ProviderIcon provider={provider}/><div className="log-model"><strong>{model}</strong><small>{name(provider)}</small></div></div></td><td className="mono muted">{formatDate(result.at)}</td><td><span className={`status ${result.verdict.tone}`}><span className="dot"/>{result.verdict.label}</span><small className="log-mode">{languageText(result)}提问 · {result.challenges?.length || 0} 次请求</small></td><td className="log-model">{topRow ? topRow.display_name || topRow.model : '—'}{claim && claim.probability != null && <small>{claim.display_name || claim.model} · {(claim.probability * 100).toFixed(1)}%</small>}</td><td className="mono">{Array.isArray(result.challenges) && result.challenges.some(item => item.status === 'error') ? `${result.challenges.filter(item => item.status === 'error').length} 条失败` : '成功'}{result.totalMs ? <small className="log-mode">{duration(result.totalMs)}</small> : null}</td><td><div className="monitor-actions"><div><IconButton icon="eye" label={`查看指纹结果 ${model}`} onClick={() => setFingerprint(target)}/><button type="button" className="button" aria-label={`指纹检测 ${model}`} disabled={!managementEnabled || !testingAllowed(provider) || (fingerprintAllowlist && !routesFor(provider, model).length)} onClick={() => setFingerprint(target)}><Icon name="shield"/>重测</button><IconButton icon="trash" label={`删除指纹记录 ${model}`} onClick={() => setFingerprintResults(previous => { const next = { ...previous }; delete next[fingerprintKey(provider, model)]; return next; })}/></div></div></td></tr>;
         })}{!fingerprintHistory.length && <tr><td className="table-empty" colSpan="6">还没有指纹检测记录，到「模型状态 → 指纹检测」里跑一次就会出现在这里。</td></tr>}</tbody></table></div> : <div className="table-shell"><table className="monitor-table"><caption className="sr-only">{view === 'history' ? '检测历史' : '供应商模型检测状态'}</caption><thead><tr><th>模型 / 供应商</th><th>结果</th><th>{view === 'history' ? '检测时间' : '最近 30 轮'}</th><th>{check === 'iq' ? '题库正确率' : '最近通过率'}</th><th>本轮耗时</th><th>{view === 'history' ? '操作' : '最新检测 / 操作'}</th></tr></thead><tbody>{rows.slice((current - 1) * 20, current * 20).map((target, index) => {
           const previous = recentChecks(history, target.provider, target.model, check);
           const key = JSON.stringify([target.provider, target.model, check]);
           const row = view === 'history' ? target : latestFor(target);
           const success = previous.length ? previous.filter(item => ['available', 'correct'].includes(item.status)).length / previous.length * 100 : null;
           const backoff = data.state.backoff?.[target.provider];
-          return <tr key={view === 'history' ? `${key}-${target.at}-${index}` : key}><td><div className="connection-name"><ProviderIcon provider={target.provider}/><div className="log-model"><strong>{target.model}</strong><small>{name(target.provider)}</small></div></div></td><td><CheckStatus status={row?.status}/>{row?.manual && <small className="log-mode">单次测试</small>}{backoff > Date.now() && <small className="log-mode">退避至 {formatDate(backoff)}</small>}</td><td>{view === 'history' ? <span className="mono muted">{formatDate(row.at)}</span> : <div className="monitor-history-dots" aria-label="最近30轮检测，左旧右新">{Array.from({ length: 30 - previous.length }, (_, i) => <span key={`empty-${i}`} title="未检测"/>)}{[...previous].reverse().map((item, i) => <button type="button" key={`${item.at}-${i}`} className={resultTone(item.status)} title={`${formatDate(item.at)} · ${resultNames[item.status] || item.status}`} aria-label={`查看检测 ${target.model} ${formatDate(item.at)}`} onClick={() => setDetail(item)}/>)}</div>}</td><td className="mono">{check === 'iq' ? row?.score == null ? '—' : `${row.score}%` : percent(success)}{check === 'iq' && typeof row?.change === 'number' && <small className="log-mode">{row.change > 0 ? '+' : ''}{row.change} 分</small>}</td><td className="mono">{duration(checkLatency(row))}</td><td><div className="monitor-actions">{view === 'status' && <small>{formatDate(row?.at)}</small>}<div>{row && <IconButton icon="eye" label={`查看检测详情 ${target.model}`} onClick={() => setDetail(row)}/>} {view === 'status' && <IconButton icon="play" label={`单次${checkNames[check]} ${target.model}`} disabled={!managementEnabled} onClick={() => setManual({ target, check })}/>}</div></div></td></tr>;
+          return <tr key={view === 'history' ? `${key}-${target.at}-${index}` : key}><td><div className="connection-name"><ProviderIcon provider={target.provider}/><div className="log-model"><strong>{target.model}</strong><small>{name(target.provider)}</small></div></div></td><td><CheckStatus status={row?.status}/>{row?.manual && <small className="log-mode">单次测试</small>}{backoff > Date.now() && <small className="log-mode">退避至 {formatDate(backoff)}</small>}</td><td>{view === 'history' ? <span className="mono muted">{formatDate(row.at)}</span> : <div className="monitor-history-dots" aria-label="最近30轮检测，左旧右新">{Array.from({ length: 30 - previous.length }, (_, i) => <span key={`empty-${i}`} title="未检测"/>)}{[...previous].reverse().map((item, i) => <button type="button" key={`${item.at}-${i}`} className={resultTone(item.status)} title={`${formatDate(item.at)} · ${resultNames[item.status] || item.status}`} aria-label={`查看检测 ${target.model} ${formatDate(item.at)}`} onClick={() => setDetail(item)}/>)}</div>}</td><td className="mono">{check === 'iq' ? row?.score == null ? '—' : `${row.score}%` : percent(success)}{check === 'iq' && typeof row?.change === 'number' && <small className="log-mode">{row.change > 0 ? '+' : ''}{row.change} 分</small>}</td><td className="mono">{duration(checkLatency(row))}</td><td><div className="monitor-actions">{view === 'status' && <small>{formatDate(row?.at)}</small>}<div>{row && <IconButton icon="eye" label={`查看检测详情 ${target.model}`} onClick={() => setDetail(row)}/>} {view === 'status' && <IconButton icon="play" label={`单次${checkNames[check]} ${target.model}`} disabled={!managementEnabled || !testingAllowed(target.provider)} title={testingAllowed(target.provider) ? "单次真实测试" : "此站点仅允许业务观察"} onClick={() => setManual({ target, check })}/>}</div></div></td></tr>;
         })}{!rows.length && <tr><td className="table-empty" colSpan="6">{view === 'history' ? '暂无匹配的检测记录' : scope === 'configured' ? '暂无匹配的已配置模型' : '暂无匹配的可检测模型'}{view === 'status' && scope === 'configured' && <button type="button" className="text-button" onClick={() => setView('config')}>配置检测模型</button>}</td></tr>}</tbody></table></div>}
         <div className="table-footer"><span>{check === 'fingerprint' && view === 'status' ? fingerprintGroups.length + ' 个供应商' : rows.length + (view === 'history' ? ' 条记录' : ' 个模型')}</span><div className="pagination"><IconButton icon="back" label="上一页检测结果" disabled={current <= 1} onClick={() => setPage(current - 1)}/><span>{current} / {pages}</span><IconButton icon="arrow" label="下一页检测结果" disabled={current >= pages} onClick={() => setPage(current + 1)}/></div></div>
       </>}
     </>}
     {detail && <CheckDetail row={detail} name={name} catalog={catalog} onClose={() => setDetail(null)}/>}
-    {fingerprint && <FingerprintTest target={fingerprint} routeOptions={routesFor(fingerprint.provider, fingerprint.model)} routesLoading={distribution.loading && !distribution.data} routeWarning={distribution.data?.mode === 'allowlist' && !routesFor(fingerprint.provider, fingerprint.model).length ? '下游分发白名单未包含该模型' : ''} initialResult={fingerprintResults[JSON.stringify([fingerprint.provider, fingerprint.model])]} thinkingLevels={catalog.find(item => item.id === fingerprint.provider)?.thinkingLevels?.[fingerprint.model]} initialThinkingLevel={Object.hasOwn(manualThinking, fingerprint.model) ? manualThinking[fingerprint.model] : ''} onResult={result => setFingerprintResults(previous => ({ ...previous, [JSON.stringify([fingerprint.provider, fingerprint.model])]: result }))} onClose={() => setFingerprint(null)}/>}
+    {fingerprint && <FingerprintTest canTest={testingAllowed(fingerprint.provider)} target={fingerprint} routeOptions={routesFor(fingerprint.provider, fingerprint.model)} routesLoading={distribution.loading && !distribution.data} routeWarning={distribution.data?.mode === 'allowlist' && !routesFor(fingerprint.provider, fingerprint.model).length ? '下游分发白名单未包含该模型' : ''} initialResult={fingerprintResults[JSON.stringify([fingerprint.provider, fingerprint.model])]} thinkingLevels={catalog.find(item => item.id === fingerprint.provider)?.thinkingLevels?.[fingerprint.model]} initialThinkingLevel={Object.hasOwn(manualThinking, fingerprint.model) ? manualThinking[fingerprint.model] : ''} onResult={result => setFingerprintResults(previous => ({ ...previous, [JSON.stringify([fingerprint.provider, fingerprint.model])]: result }))} onClose={() => setFingerprint(null)}/>}
     {manual && <ManualTest {...manual} persistedManualTests={data?.capabilities?.manualTests === true} thinkingLevels={catalog.find(item => item.id === manual.target.provider)?.thinkingLevels?.[manual.target.model]} initialThinkingLevel={Object.hasOwn(manualThinking, manual.target.model) ? manualThinking[manual.target.model] : ''} routeId={`${providerInfo(manual.target.provider, nodes.data?.nodes).prefix || manual.target.provider}/${manual.target.model}`} onClose={() => setManual(null)} onResult={row => { setManualResults(previous => ({ ...previous, [JSON.stringify([row.provider, row.model, row.check])]: row })); setManual(null); setDetail(row); resource.refresh(); }}/>}
   </>;
 }

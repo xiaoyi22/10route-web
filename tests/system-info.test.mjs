@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import http from 'node:http';
 import { test } from 'node:test';
-import { cpuUsage, parseMemory } from '../scripts/system-info.mjs';
+import { attachRates, cpuUsage, parseDiskIo, parseMemory, parseMemDetail, parseNetwork, parsePressure, rateBetween } from '../scripts/system-info.mjs';
 import { createSystemBridge } from '../scripts/system-bridge.mjs';
 import { isAllowedRequest } from '../src/api/policy.js';
 
@@ -17,6 +17,42 @@ test('CPU usage is calculated over a sampling interval, not since boot', () => {
   assert.equal(cpuUsage([{ times: { user: 100, nice: 0, sys: 50, idle: 850, irq: 0 } }], [{ times: { user: 130, nice: 0, sys: 60, idle: 910, irq: 0 } }]), 40);
   assert.equal(cpuUsage([], []), null);
   assert.equal(cpuUsage([{ times: { idle: 1 } }], [{ times: { idle: 1 } }]), null);
+});
+
+test('/proc parsers keep missing counters unknown instead of inventing zero', () => {
+  const network = parseNetwork('Inter-|   Receive                                                |  Transmit\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\n    lo: 100 1 0 0 0 0 0 0 200 2 0 0 0 0 0 0\n ens18: 5000 10 0 0 0 0 0 0 7000 20 0 0 0 0 0 0\n  veth1: 1 1 0 0 0 0 0 0 2 1 0 0 0 0 0 0\n');
+  assert.deepEqual(network, [{ name: 'ens18', receivedBytes: 5000, transmittedBytes: 7000 }]);
+  const disk = parseDiskIo('   8       0 sda 100 0 2000 30 50 0 4000 60 0 70 90\n   8       1 sda1 1 0 2 3 4 0 5 6 0 7 8\n', ['sda']);
+  assert.deepEqual(disk, [{ name: 'sda', readBytes: 1024000, writtenBytes: 2048000, busyMilliseconds: 70 }]);
+  assert.deepEqual(parseDiskIo('', ['sda']), []);
+  assert.deepEqual(parsePressure('some avg10=0.24 avg60=0.19 avg300=0.26 total=12\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n'), { some: 0.24, full: 0 });
+  assert.deepEqual(parsePressure(''), { some: null, full: null });
+  const detail = parseMemDetail('MemTotal: 1000 kB\nBuffers: 10 kB\nCached: 20 kB\nSlab: 30 kB\n');
+  assert.deepEqual(detail, { buffersBytes: 10240, cachedBytes: 20480, slabBytes: 30720, dirtyBytes: null, anonymousBytes: null, swapCachedBytes: null });
+});
+
+test('rates use the elapsed interval and never turn a counter reset into traffic', () => {
+  const before = [{ name: 'ens18', receivedBytes: 1000, transmittedBytes: 500 }];
+  const after = [{ name: 'ens18', receivedBytes: 3000, transmittedBytes: 1500 }];
+  assert.deepEqual(rateBetween(before, after, 2000), [{ name: 'ens18', receivedBytes: 1000, transmittedBytes: 500 }]);
+  assert.deepEqual(rateBetween(after, before, 2000), [{ name: 'ens18', receivedBytes: 0, transmittedBytes: 0 }]);
+  assert.equal(rateBetween(before, after, 0), null);
+  assert.equal(rateBetween(null, after, 1000), null);
+  assert.equal(rateBetween(before, [{ name: 'eth9', receivedBytes: 1, transmittedBytes: 1 }], 1000), null);
+});
+
+test('rates are attached only when two samples share an interval', () => {
+  const first = { sampledAt: '2026-10-22T00:00:00.000Z', network: [{ name: 'ens18', receivedBytes: 1000, transmittedBytes: 500 }], diskActivity: { devices: [{ name: 'sda', readBytes: 4096, writtenBytes: 8192, busyMilliseconds: 100 }] } };
+  const second = { sampledAt: '2026-10-22T00:00:10.000Z', network: [{ name: 'ens18', receivedBytes: 3000, transmittedBytes: 2500 }], diskActivity: { devices: [{ name: 'sda', readBytes: 4096, writtenBytes: 83968, busyMilliseconds: 600 }] } };
+  const initial = attachRates(first, undefined);
+  assert.equal(initial.network[0].rate, null);
+  assert.equal(initial.diskActivity.rates, null);
+  const attached = attachRates(second, first);
+  assert.deepEqual(attached.network, [{ name: 'ens18', rate: { name: 'ens18', receivedBytes: 200, transmittedBytes: 200 } }]);
+  assert.deepEqual(attached.diskActivity.rates, [{ name: 'sda', readBytes: 0, writtenBytes: 7577.6, busyMilliseconds: 50 }]);
+  assert.equal(attached.diskActivity.sampledMilliseconds, 10000);
+  assert.equal(attached.diskActivity.busyPercent, 5);
+  assert.equal(attachRates(second, { ...first, sampledAt: second.sampledAt }).diskActivity.rates, null);
 });
 
 async function listen(handler) {

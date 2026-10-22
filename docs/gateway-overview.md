@@ -39,10 +39,13 @@ TENROUTER_SYSTEM_SSH_IDENTITY=
 ## 指标范围
 
 - CPU 使用率来自前后两次系统计数差值，返回实际采样时长；系统负载分别为 1/5/15 分钟负载，不是百分比。
-- 内存已用量为 MemTotal − MemAvailable，Swap 按 SwapTotal/SwapFree 计算；未启用 Swap 时不伪造使用率。
-- 磁盘使用量只表示根文件系统 `/`；可用容量按非特权用户可用块数计算，因此不必等于总容量减已用容量。
-- 主机名、发行版、内核、架构、运行时间指 Linux 采集环境；发现容器标记时标注容器范围，虚拟机数据也不表示物理宿主机。
-- 网关服务来自用户级 `10router.service` 的只读状态查询；RSS 是 systemd 主进程的驻留内存，不是服务全部子进程之和。服务状态不可读时只影响这一字段。
+- 内存已用量为 MemTotal − MemAvailable，Swap 按 SwapTotal/SwapFree 计算；未启用 Swap 时不伪造使用率。Buffers、Cached、Slab、AnonPages、Dirty、SwapCached 直接取自 `/proc/meminfo`，缺失时为空。
+- 磁盘使用量按挂载点分别列出 `/dev/*` 上的 ext4/xfs/btrfs/vfat 文件系统；可用容量按非特权用户可用块数计算，因此不必等于总容量减已用容量。
+- 磁盘读写速率与繁忙度来自 `/proc/diskstats` 的相邻两次差值，繁忙度取单块设备 iotick 占比并封顶 100%；网络速率来自 `/proc/net/dev` 相邻两次差值，排除 lo、docker0、br-* 与 veth。首次采集没有上一份计数器，速率显示“需要两次采样”而不是 0。
+- 压力值来自 `/proc/pressure/{cpu,io,memory}` 的 avg10，表示该窗口内至少有一个任务（some）或因资源完全停顿（full）的时间比例；内核未启用 PSI 时为空。
+- 主机名、发行版、内核、架构、运行时间、开机时间指 Linux 采集环境；DMI 硬件标识与虚拟机标记来自 `/sys/class/dmi/id`，虚拟机数据不表示物理宿主机。CPU 温度、风扇与功率在 KVM 下没有 hwmon/thermal 输入，不显示。
+- 网关服务来自用户级 `10router.service` 的只读状态查询；RSS 是 systemd 主进程的驻留内存，Cgroup 内存与任务数来自 systemd 记账，打开文件数与 TCP 套接字按主进程 PID 统计，不含子进程。服务状态不可读时只影响这一字段。
+- 失败单元同时查询用户级与系统级 `systemctl --failed`，只列出名称，不触发任何 start/stop。
 - 无数据保持未知，不显示假零；采集失败保留上次数据并明确标注过期。
 
 ## 刷新与验证

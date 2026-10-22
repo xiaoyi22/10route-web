@@ -236,7 +236,7 @@ export async function runFingerprint({ routeId, apiKey, detector, bank, thinking
     const onAbort = () => controller.abort();
     signal?.addEventListener('abort', onAbort, { once: true });
     try {
-      const response = await fetcher('/api/v1/chat/completions', { method: 'POST', credentials: 'same-origin', signal: controller.signal, headers: { 'Content-Type': 'application/json', Accept: 'text/event-stream', Authorization: `Bearer ${apiKey}` }, body: JSON.stringify({ model: routeId, messages: [{ role: 'user', content: challenge.prompt }], max_tokens: 8192, stream: true, ...(thinkingLevel && { reasoning_effort: thinkingLevel }) }) });
+      const response = await fetcher('/api/v1/chat/completions', { method: 'POST', credentials: 'same-origin', signal: controller.signal, headers: { 'Content-Type': 'application/json', Accept: 'text/event-stream', Authorization: `Bearer ${apiKey}`, 'x-10r-observation-source': 'fingerprint' }, body: JSON.stringify({ model: routeId, messages: [{ role: 'user', content: challenge.prompt }], max_tokens: 8192, stream: true, ...(thinkingLevel && { reasoning_effort: thinkingLevel }) }) });
       idle();
       const { text, capped } = await readChatStream(response, partial => { states[index] = { ...states[index], status: 'streaming', text: partial, numbers: parseNumbers(partial).length }; report(); idle(); }, { stopWhen: enough(challenge.expected_count) });
       states[index] = { ...states[index], status: 'done', capped, text, numbers: parseNumbers(text).length, latencyMs: Date.now() - started };

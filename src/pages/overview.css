@@ -62,6 +62,20 @@
 .overview-system-foot .status { margin-left: 8px; }
 .overview-system-foot small { display: block; font-size: 12px; margin-top: 4px; }
 .overview-footnote { font-size: 12px; color: var(--dim); margin-top: 14px; overflow-wrap: anywhere; }
+.overview-detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 32px; border-top: 1px solid var(--border); margin-top: 22px; padding-top: 20px; }
+.overview-detail { min-width: 0; margin-top: 22px; }
+.overview-detail-grid .overview-detail { margin-top: 0; }
+.overview-detail h3 { color: var(--muted); font-weight: 500; font-size: 12px; margin: 0 0 12px; }
+.overview-detail dl { margin: 0; }
+.overview-detail dl > div { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 16px; padding: 7px 0; border-bottom: 1px solid var(--border); }
+.overview-detail dl > div:last-child { border-bottom: 0; }
+.overview-detail dt { color: var(--muted); font-size: 12px; }
+.overview-detail dd { margin: 0; font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; text-align: right; }
+.overview-failed-units { list-style: none; margin: 0; padding: 0; }
+.overview-failed-units li { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 12px; padding: 7px 0; border-bottom: 1px solid var(--border); }
+.overview-failed-units li:last-child { border-bottom: 0; }
+.overview-failed-units code { font-size: 12px; overflow-wrap: anywhere; }
+.overview-clean { color: var(--muted); font-size: 12px; margin: 0; }
 .overview-operations-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; margin-bottom: 28px; }
 .overview-operation-list { padding: 0; margin: 0; list-style: none; }
 .overview-operation-list li { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--border); }
@@ -88,6 +102,7 @@
   .overview-rankings > .panel-heading { grid-column: 1 / -1; }
   .overview-ranking + .overview-ranking { margin: 0; padding: 0; border-top: 0; }
   .overview-resource-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  .overview-detail-grid { grid-template-columns: minmax(0, 1fr); gap: 22px; }
 }
 @media (max-width: 560px) {
   .overview-throughput { grid-template-columns: minmax(0, 1fr); padding: 14px; }
@@ -102,6 +117,8 @@
   .overview-metrics .metric-value { font-size: 26px; }
   .overview-data-toolbar > .text-button { margin-left: 0; }
   .overview-system { padding: 16px; }
+  .overview-detail dl > div { flex-direction: column; align-items: flex-start; }
+  .overview-detail dd { text-align: left; }
   .overview-host-facts { gap: 16px 12px; }
   .overview-cpu-identity > span { margin-left: 0; }
   .overview-resource-meter strong { font-size: 22px; }

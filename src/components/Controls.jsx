@@ -6,8 +6,9 @@ export const managementEnabled = __MANAGEMENT_ENABLED__;
 export const formatNumber = value => typeof value === 'number' && Number.isFinite(value) ? new Intl.NumberFormat('zh-CN').format(value) : '—';
 export const formatDate = value => value && Number.isFinite(new Date(value).getTime()) ? new Date(value).toLocaleString('zh-CN', { hour12: false }) : '—';
 
-export function PageHeading({ title, subtitle, children }) {
-  return <div className="page-heading"><div><h1>{title}</h1><p className="subtitle">{subtitle}</p></div><div className="heading-actions">{children}</div></div>;
+export function PageHeading({ title, subtitle, children, compact = false }) {
+  const Title = compact ? 'h2' : 'h1';
+  return <div className={`page-heading${compact ? ' monitor-embedded-heading' : ''}`}><div><Title>{title}</Title><p className="subtitle">{subtitle}</p></div><div className="heading-actions">{children}</div></div>;
 }
 
 export function ErrorBlock({ message, onRetry }) {
